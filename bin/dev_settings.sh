@@ -15,17 +15,19 @@
 # If an file name below is a directory it specifies all the
 # files in the directory.
 #
-# spdx_license_id
+# spdx_license_id, spdx_copyright_text
+# The SPDX license idenfifier and copyright text.
 # Each file, except those specified by no_copyright_list, should have a line
-# that ends with the following text:
+# that ends with each of the following text cases:
 spdx_license_id='EPL-2.0 OR GPL-2.0-or-later'
+spdx_copyright_text='Bradley M. Bell <bradbell@seanet.com>'
 #
 # package_name
-package_name=''
+package_name='ad_tensor'
 #
 # index_page_name
 # is the xrst index page_name for this projects documentation.
-index_page_name=''
+index_page_name='ad_tensor'
 #
 # version_file_list
 # The possible patterns for a latest version number are:
@@ -54,6 +56,7 @@ index_page_name=''
 #     archive/$tag.tar.gz
 # In addition, all occurrences of stable-yyyy and release-yyyy are updated.
 version_file_list='
+    CMakeLists.txt
 '
 # All the occurrences of the version in the files above are checked to see
 # that they agree.
@@ -65,6 +68,7 @@ version_file_list='
 # The entries are separate by white space, so the under bar character is used
 # for spaces in the full name.
 contributor_list='
+    bradbell:Bradley_M._Bell
 '
 #
 # no_copyright_list
@@ -72,6 +76,7 @@ contributor_list='
 # If an entry below is a directory it specifies all the files in the directory.
 # BEGIN_SORT_THIS_LINE_PLUS_2
 no_copyright_list='
+    .gitignore
 '
 # END_SORT_THIS_LINE_MINUS_2
 #

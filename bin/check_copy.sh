@@ -3,7 +3,7 @@ set -e -u
 # !! EDITS TO THIS FILE ARE LOST DURING UPDATES BY xrst.git/bin/dev_tools.sh !!
 # SPDX-License-Identifier: EPL-2.0 OR GPL-2.0-or-later
 # SPDX-FileCopyrightText: Bradley M. Bell <bradbell@seanet.com>
-# SPDX-FileContributor: 2023-25 Bradley M. Bell
+# SPDX-FileContributor: 2023-26 Bradley M. Bell
 # ----------------------------------------------------------------------------
 # bin/check_copy.sh
 # Checks that the copyright message, in all the source files,
@@ -25,7 +25,7 @@ fi
 # grep, sed
 source bin/grep_and_sed.sh
 #
-# spdx_license_id, no_copyright_list
+# spdx_license_id, spdx_copyright_text, no_copyright_list
 source bin/dev_settings.sh
 #
 # yy
@@ -86,8 +86,8 @@ copyright_changed=$(
     git status --porcelain | $sed -e 's|^...||' | $sed -f temp.sed
 )
 # ---------------------------------------------------------------------------
+# missing
 missing='no'
-changed='no'
 for file_name in $copyright_all
 do
     # if file has not been deleted
@@ -107,7 +107,41 @@ do
         fi
     fi
 done
+if [ "$missing" == 'yes' ]
+then
+    echo 'check_copy.sh: spdx_license_id is missing'
+    exit 1
+fi
 # ---------------------------------------------------------------------------
+# missing
+missing='no'
+for file_name in $copyright_all
+do
+    # if file has not been deleted
+    if [ -e $file_name ]
+    then
+        # if file does not have expected copyright text
+        if ! $grep "$spdx_copyright_text\$" $file_name > /dev/null
+        then
+            if [ "$missing" == 'no' ]
+            then
+                echo "Cannot find line that ends with:"
+                echo "   $spdx_copyright_text"
+                echo "In the following files:"
+            fi
+            echo "$file_name"
+            missing='yes'
+        fi
+    fi
+done
+if [ "$missing" == 'yes' ]
+then
+    echo 'check_copy.sh: spdx_copyright_text is missing'
+    exit 1
+fi
+# ---------------------------------------------------------------------------
+# changed
+changed='no'
 cat << EOF > temp.sed
 /SPDX-FileContributor:[ 0-9.-]*$fullname/! b end
 s|\\([0-9]\\{4\\}\\)[-0-9]* |\\1-$yy |
@@ -159,7 +193,7 @@ do
     fi
 done
 #
-if [ "$missing" = 'yes' ] || [ "$changed" == 'yes' ]
+if [ "$changed" == 'yes' ]
 then
     echo 'check_copy.sh: The copyright messages above were updated.'
     echo 'Re-execute bin/check_copy.sh ?'

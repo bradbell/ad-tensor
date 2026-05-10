@@ -3,3 +3,6 @@ temp
 temp.*
 # vim editor swap files
 *.swp
+#
+# git_commit files
+/git_commit.log
