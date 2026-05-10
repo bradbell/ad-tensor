@@ -1,0 +1,5 @@
+# temporary files
+temp
+temp.*
+# vim editor swap files
+*.swp
