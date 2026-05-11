@@ -2,8 +2,17 @@
 # SPDX-FileCopyrightText: Bradley M. Bell <bradbell@seanet.com>
 # SPDX-FileContributor: 2026 Bradley M. Bell
 # -----------------------------------------------------------------------------
-# Sets the minimum version of CMake required for the project
+#
+# cmake_minimum_required
 cmake_minimum_required(VERSION 3.10)
-
-# Defines the project name and version
-project(ad_tensor VERSION "2026.5.10")
+#
+# ad_tensor_SOURCE_DIR
+project(ad_tensor VERSION "2026.5.11")
+#
+# include_directories
+include_directories( ${ad_tensor_SOURCE_DIR}/include )
+#
+# If debug build
+if( include_tests )
+    ADD_SUBDIRECTORY(tests)
+endif()

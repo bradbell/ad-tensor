@@ -16,7 +16,7 @@
 # files in the directory.
 #
 # spdx_license_id, spdx_copyright_text
-# The SPDX license idenfifier and copyright text.
+# The SPDX license identifier and copyright text.
 # Each file, except those specified by no_copyright_list, should have a line
 # that ends with each of the following text cases:
 spdx_license_id='EPL-2.0 OR GPL-2.0-or-later'

@@ -84,9 +84,10 @@ set -e -u
 # SPDX-FileContributor: $year $fullname
 # -----------------------------------------------------------------------------
 EOF
+    chmod +x $path_to_file
     ;;
 
-    .txt)
+    .txt|.xrst)
     cat << EOF > $path_to_file
 # SPDX-License-Identifier: $spdx_license_id
 # SPDX-FileCopyrightText: $spdx_copyright_text

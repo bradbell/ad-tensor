@@ -6,3 +6,6 @@ temp.*
 #
 # git_commit files
 /git_commit.log
+#
+# build directory
+/build/
