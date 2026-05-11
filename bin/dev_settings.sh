@@ -27,7 +27,7 @@ package_name='ad_tensor'
 #
 # index_page_name
 # is the xrst index page_name for this projects documentation.
-index_page_name='ad_tensor'
+index_page_name='user'
 #
 # version_file_list
 # The possible patterns for a latest version number are:
@@ -77,6 +77,7 @@ contributor_list='
 # BEGIN_SORT_THIS_LINE_PLUS_2
 no_copyright_list='
     .gitignore
+    .readthedocs.yaml
     xrst.toml
 '
 # END_SORT_THIS_LINE_MINUS_2

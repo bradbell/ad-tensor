@@ -26,7 +26,7 @@ fi
 source bin/grep_and_sed.sh
 #
 # skip_check_copy, external_links
-external_links=''
+external_links='no'
 skip_check_copy='no'
 while [ $# -ge 1 ]
 do
@@ -35,7 +35,7 @@ do
         skip_check_copy='yes'
     elif [ "$1" == '--external_links' ]
     then
-        external_links='--external_links'
+        external_links='yes'
     else
         echo 'usage: bin/check_all.sh [-skip_check_copy]'
         exit 1
@@ -48,6 +48,14 @@ done
 if which typos > /dev/null
 then
      echo_eval typos
+fi
+#
+# run_xrsth.sh
+if [ "$external_links" == 'no' ]
+then
+    echo_eval bin/run_xrst.sh
+else
+    echo_eval bin/run_xrst.sh --external_links
 fi
 #
 # check_copy.sh

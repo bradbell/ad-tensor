@@ -2,7 +2,8 @@
 data = 'ad_tensor'
 
 [root_file]
-dev = 'docs/devel.xrst'
+default = 'docs/user.xrst'
+dev     = 'docs/devel.xrst'
 
 
 [heading]

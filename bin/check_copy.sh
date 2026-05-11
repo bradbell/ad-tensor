@@ -25,7 +25,7 @@ fi
 # grep, sed
 source bin/grep_and_sed.sh
 #
-# spdx_license_id, spdx_copyright_text, no_copyright_list
+# package_name, spdx_license_id, spdx_copyright_text, no_copyright_list
 source bin/dev_settings.sh
 #
 # yy
@@ -115,10 +115,40 @@ fi
 # ---------------------------------------------------------------------------
 # missing
 missing='no'
+#
+# dev_tools
+# The copyright text for the development tools does not change
+# BEGIN_SORT_THIS_LINE_PLUS_2
+dev_tools='
+    bin/check_copy.sh
+    bin/check_invisible.sh
+    bin/check_sort.sh
+    bin/check_tab.sh
+    bin/check_version.sh
+    bin/dev_settings.sh
+    bin/git_commit.sh
+    bin/grep_and_sed.sh
+    bin/new_file.sh
+    bin/new_release.sh
+    bin/sort.sh
+'
+# END_SORT_THIS_LINE_MINUS_1
 for file_name in $copyright_all
 do
+    check='yes'
+    if [ ! -e $file_name ]
+    then
+        check='no'
+    fi
+    if [[ "$dev_tools" == *"$file_name"* ]]
+    then
+        if [ "$package_name" != 'xrst' ]
+        then
+            check='no'
+        fi
+    fi
     # if file has not been deleted
-    if [ -e $file_name ]
+    if [ "$check" == 'yes' ]
     then
         # if file does not have expected copyright text
         if ! $grep "$spdx_copyright_text\$" $file_name > /dev/null
