@@ -3,7 +3,7 @@
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
 /*
-{xrst_begin op_enum}
+{xrst_begin op_enum dev}
 
 The Scoped Operator Enum Type
 #############################
@@ -19,12 +19,9 @@ Enum Values
 namespace ad_tensor {
     enum class op_enum {
         add, // addition
-        sub, // subtraction
-        mul, // multiplication
         div, // division
+        mul, // multiplication
+        sub, // subtraction
     };
 }
 // END_SORT_THIS_LINE_MINUS_3
-
-
-

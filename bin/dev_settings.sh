@@ -77,6 +77,7 @@ contributor_list='
 # BEGIN_SORT_THIS_LINE_PLUS_2
 no_copyright_list='
     .gitignore
+    xrst.toml
 '
 # END_SORT_THIS_LINE_MINUS_2
 #
