@@ -6,10 +6,10 @@
 #include <ad_tensor/devel/op_enum.hpp>
 //
 TEST(tests_devel, op_enum)  {
-    using ad_tensor::devel::op_enum;
+    using ad_tensor::devel::op_enum_t;
     //
-    EXPECT_EQ( op_enum::add,  op_enum::add );
-    EXPECT_NE( op_enum::add,  op_enum::sub );
-    EXPECT_NE( op_enum::add,  op_enum::mul );
-    EXPECT_NE( op_enum::add,  op_enum::div );
+    EXPECT_EQ( op_enum_t::add,  op_enum_t::add );
+    EXPECT_NE( op_enum_t::add,  op_enum_t::sub );
+    EXPECT_NE( op_enum_t::add,  op_enum_t::mul );
+    EXPECT_NE( op_enum_t::add,  op_enum_t::div );
 }

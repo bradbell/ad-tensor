@@ -5,6 +5,7 @@
 #
 add_executable(tests
     devel/op_enum.cpp
+    devel/test_op.cpp
 )
 #
 target_link_libraries(tests GTest::gtest_main)
