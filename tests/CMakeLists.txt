@@ -2,7 +2,6 @@
 # SPDX-FileCopyrightText: Bradley M. Bell <bradbell@seanet.com>
 # SPDX-FileContributor: 2026 Bradley M. Bell
 # -----------------------------------------------------------------------------
-find_package(GTest REQUIRED)
 #
 add_executable(tests
     op_enum.cpp
