@@ -4,7 +4,7 @@
 # -----------------------------------------------------------------------------
 #
 add_executable(tests
-    op_enum.cpp
+    devel/op_enum.cpp
 )
 #
 target_link_libraries(tests GTest::gtest_main)

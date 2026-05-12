@@ -5,8 +5,8 @@
 #include <gtest/gtest.h>
 #include <ad_tensor/devel/op_enum.hpp>
 //
-TEST(tests, op_enum)  {
-    using ad_tensor::op_enum;
+TEST(tests_devel, op_enum)  {
+    using ad_tensor::devel::op_enum;
     //
     EXPECT_EQ( op_enum::add,  op_enum::add );
     EXPECT_NE( op_enum::add,  op_enum::sub );

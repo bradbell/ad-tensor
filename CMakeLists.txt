@@ -7,7 +7,7 @@
 cmake_minimum_required(VERSION 3.10)
 #
 # ad_tensor_SOURCE_DIR
-project(ad_tensor VERSION "2026.5.11")
+project(ad_tensor VERSION "2026.5.12")
 #
 # include_directories
 include_directories( ${ad_tensor_SOURCE_DIR}/include )

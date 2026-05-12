@@ -16,12 +16,12 @@ Enum Values
 {xrst_end op_enum}
 */
 // BEGIN_SORT_THIS_LINE_PLUS_3
-namespace ad_tensor {
+namespace ad_tensor { namespace devel {
     enum class op_enum {
         add, // addition
         div, // division
         mul, // multiplication
         sub, // subtraction
     };
-}
+} }
 // END_SORT_THIS_LINE_MINUS_3
