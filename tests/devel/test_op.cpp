@@ -3,6 +3,8 @@
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
 #include <gtest/gtest.h>
+#include <torch/torch.h>
+//
 #include <ad_tensor/devel/op_enum.hpp>
 #include <ad_tensor/devel/ad_type.hpp>
 #include <ad_tensor/devel/op_base.hpp>
@@ -18,37 +20,93 @@ namespace {
     // vector
     using std::vector;
     //
-    // test_op_t
-    class test_op_t : public  op_base_t {
+    // Tensor
+    using torch::Tensor;
+    //
+    // add_op_t
+    class add_op_t : public  op_base_t {
     public:
         //
         // op_enum
         op_enum_t op_enum(void) const override {
-            return op_enum_t::test;
+            return op_enum_t::add;
         }
         //
-        // n_arg
-        size_t n_arg(
-            size_t                 offset      ,
-            const  vector<size_t>& arg_all     ,
-            const  vector<ad_type_t>& ad_type_all ) const override
-        {   return 2; }
+        // forward_par
+        void forward_par(
+            bool                              trace       ,
+            size_t                            op_index    ,
+            const std::vector<size_t>&        arg_start   ,
+            const std::vector<size_t>&        arg_all     ,
+            const std::vector<ad_type_t>&     ad_type_all ,
+            const std::vector<torch::Tensor>& con_vec     ,
+            std::vector<torch::Tensor>&       par_vec     ) const override
+        {
+            // op_index
+            EXPECT_LT( 0, op_index );
+            //
+            // n_arg
+            size_t n_arg = arg_start[op_index+1] - arg_start[op_index];
+            EXPECT_EQ( n_arg, 2 );
+            //
+            // arg_index
+            size_t arg_index = arg_start[op_index];
+            //
+            // lhs
+            Tensor lhs       = torch::empty( {0} );
+            size_t lhs_index = arg_all[arg_index];
+            if( ad_type_all[lhs_index] == ad_type_t::constant ) {
+                lhs = con_vec[ lhs_index ];
+            } else {
+                EXPECT_EQ( ad_type_all[lhs_index], ad_type_t::parameter );
+                EXPECT_LT( lhs_index, op_index );
+                lhs = par_vec[ lhs_index ];
+            }
+            //
+            // rhs
+            Tensor rhs       = torch::empty( {0} );
+            size_t rhs_index = arg_all[arg_index+1];
+            if( ad_type_all[rhs_index] == ad_type_t::constant ) {
+                rhs = con_vec[ rhs_index ];
+            } else {
+                EXPECT_EQ( ad_type_all[rhs_index], ad_type_t::parameter );
+                EXPECT_LT( rhs_index, op_index );
+                rhs = par_vec[ rhs_index ];
+            }
+            //
+            // par_vec
+            par_vec[op_index] = lhs + rhs;
+        }
     };
 }
 
 TEST(tests_devel, op_base)  {
     //
-    // test_op
-    test_op_t test_op;
+    // add_op
+    add_op_t add_op;
     //
     // op_enum
-    op_enum_t op_enum = test_op.op_enum();
-    EXPECT_EQ( op_enum,  op_enum_t::test );
+    EXPECT_EQ( op_enum_t::add, add_op.op_enum() );
     //
-    // n_arg
-    size_t offset = 0;
-    vector<size_t> arg_all;
-    vector<ad_type_t> ad_type_all;
-    size_t n_arg = test_op.n_arg(offset, arg_all, ad_type_all);
-    EXPECT_EQ( n_arg,    2);
+    // trace, arg_start, arg_all, ad_type_all, con_vec, par_vec
+    ad_type_t              par         = ad_type_t::parameter;
+    Tensor                 empty       = torch::empty( {0} );
+    Tensor                 ones        = torch::ones( {2} );
+    bool                   trace       = false;
+    size_t                 op_index    = 1;
+    std::vector<size_t>    arg_start   = {0, 0, 2};
+    std::vector<size_t>    arg_all     = {0, 0};
+    std::vector<ad_type_t> ad_type_all = {par, par};
+    std::vector<Tensor>    con_vec     = {};
+    std::vector<Tensor>    par_vec     = {ones, empty};
+    //
+    // par_vec[op_index]
+    add_op.forward_par(
+        trace, op_index, arg_start, arg_all, ad_type_all, con_vec, par_vec
+    );
+    //
+    // data_ptr
+    float* data_ptr = par_vec[op_index].data_ptr<float>();
+    EXPECT_EQ( data_ptr[0], 2.0 );
+    EXPECT_EQ( data_ptr[1], 2.0 );
 }

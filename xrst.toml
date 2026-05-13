@@ -11,3 +11,15 @@ dev     = 'docs/devel.xrst'
 character = [   '#',   '*',   '=',   '-',   '.',  ]
 overline  = [ false, false, false, false, false,  ]
 
+[project_dictionary]
+data = [
+    # C++ keywords
+    '''
+    const
+    ''',
+    # abbreviations
+    '''
+    var
+    vec
+    ''',
+]

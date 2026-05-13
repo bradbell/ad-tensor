@@ -17,6 +17,9 @@ then
    exit 1
 fi
 # -----------------------------------------------------------------------------
+# toch_dir
+torch_dir=$(bin/torch_dir.py)
+#
 # build
 if [ ! -e build ]
 then
@@ -31,7 +34,8 @@ fi
 # cmake
 echo_eval cmake -S .. -B . \
     -G Ninja \
-    -D include_tests=true
+    -D include_tests=true \
+    -D Torch_DIR=$torch_dir
 #
 echo_eval ninja tests
 echo_eval ./tests/tests

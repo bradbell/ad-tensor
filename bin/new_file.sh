@@ -89,7 +89,7 @@ EOF
     chmod +x $path_to_file
     ;;
 
-    .txt)
+    .txt|.py)
     cat << EOF > $path_to_file
 # SPDX-License-Identifier: $spdx_license_id
 # SPDX-FileCopyrightText: $spdx_copyright_text

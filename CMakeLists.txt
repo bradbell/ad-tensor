@@ -7,10 +7,18 @@
 cmake_minimum_required(VERSION 3.10)
 #
 # ad_tensor_SOURCE_DIR
-project(ad_tensor VERSION "2026.5.12")
+project(ad_tensor VERSION "2026.5.13")
+#
+# TORCH_INCLUDE_DIRS, TORCH_CXX_FLAGS, TORCH_LIBRARIES
+find_package(Torch REQUIRED)
+#
+# CMAKE_CXX_FLAGS
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${TORCH_CXX_FLAGS}")
 #
 # include_directories
+include_directories( ${TORCH_INCLUDE_DIRS} )
 include_directories( ${ad_tensor_SOURCE_DIR}/include )
+#
 #
 # If debug build
 if( include_tests )
