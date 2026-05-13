@@ -46,36 +46,36 @@ namespace {
             EXPECT_LT( 0, op_index );
             //
             // n_arg
-            size_t n_arg = arg_start[op_index+1] - arg_start[op_index];
+            size_t n_arg = arg_start.at(op_index+1) - arg_start.at(op_index);
             EXPECT_EQ( n_arg, 2 );
             //
             // arg_index
-            size_t arg_index = arg_start[op_index];
+            size_t arg_index = arg_start.at(op_index);
             //
             // lhs
             Tensor lhs       = torch::empty( {0} );
-            size_t lhs_index = arg_all[arg_index];
-            if( ad_type_all[lhs_index] == ad_type_t::constant ) {
-                lhs = con_vec[ lhs_index ];
+            size_t lhs_index = arg_all.at(arg_index);
+            if( ad_type_all.at(lhs_index) == ad_type_t::constant ) {
+                lhs = con_vec.at( lhs_index );
             } else {
-                EXPECT_EQ( ad_type_all[lhs_index], ad_type_t::parameter );
+                EXPECT_EQ( ad_type_all.at(lhs_index), ad_type_t::parameter );
                 EXPECT_LT( lhs_index, op_index );
-                lhs = par_vec[ lhs_index ];
+                lhs = par_vec.at( lhs_index );
             }
             //
             // rhs
             Tensor rhs       = torch::empty( {0} );
-            size_t rhs_index = arg_all[arg_index+1];
-            if( ad_type_all[rhs_index] == ad_type_t::constant ) {
-                rhs = con_vec[ rhs_index ];
+            size_t rhs_index = arg_all.at(arg_index+1);
+            if( ad_type_all.at(rhs_index) == ad_type_t::constant ) {
+                rhs = con_vec.at( rhs_index );
             } else {
-                EXPECT_EQ( ad_type_all[rhs_index], ad_type_t::parameter );
+                EXPECT_EQ( ad_type_all.at(rhs_index), ad_type_t::parameter );
                 EXPECT_LT( rhs_index, op_index );
-                rhs = par_vec[ rhs_index ];
+                rhs = par_vec.at( rhs_index );
             }
             //
             // par_vec
-            par_vec[op_index] = lhs + rhs;
+            par_vec.at(op_index) = lhs + rhs;
         }
     };
 }
