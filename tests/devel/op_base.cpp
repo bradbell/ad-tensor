@@ -7,6 +7,7 @@
 //
 #include <ad_tensor/devel/op_enum.hpp>
 #include <ad_tensor/devel/ad_type.hpp>
+#include <ad_tensor/devel/agraph.hpp>
 #include <ad_tensor/devel/op_base.hpp>
 //
 // empty namespace
@@ -15,6 +16,7 @@ namespace {
     // op_enum_t, ad_type_t
     using ad_tensor::devel::op_enum_t;
     using ad_tensor::devel::ad_type_t;
+    using ad_tensor::devel::agraph_t;
     using ad_tensor::devel::op_base_t;
     //
     // vector
@@ -36,14 +38,21 @@ namespace {
         void forward_par(
             bool                              trace       ,
             size_t                            op_index    ,
-            const std::vector<size_t>&        arg_start   ,
-            const std::vector<size_t>&        arg_all     ,
-            const std::vector<ad_type_t>&     ad_type_all ,
+            const agraph_t&                   agraph      ,
             const std::vector<torch::Tensor>& con_vec     ,
             std::vector<torch::Tensor>&       par_vec     ) const override
         {
             // op_index
             EXPECT_LT( 0, op_index );
+            //
+            // op_enum
+            op_enum_t op_enum = agraph.op_vec.at(op_index);
+            EXPECT_EQ( op_enum, op_enum_t::add );
+            //
+            // arg_start, arg_all, ad_type_all
+            const std::vector<size_t>& arg_start        = agraph.arg_start;
+            const std::vector<size_t>& arg_all          = agraph.arg_all;
+            const std::vector<ad_type_t>& ad_type_all   = agraph.ad_type_all;
             //
             // n_arg
             size_t n_arg = arg_start.at(op_index+1) - arg_start.at(op_index);
@@ -81,24 +90,26 @@ TEST(tests_devel, op_base)  {
     EXPECT_EQ( op_enum_t::add, add_op.op_enum() );
     //
     // trace, arg_start, arg_all, ad_type_all, con_vec, par_vec
+    op_enum_t              dom         = op_enum_t::dom;
+    op_enum_t              add         = op_enum_t::add;
     ad_type_t              par         = ad_type_t::parameter;
     Tensor                 empty       = torch::empty( {0} );
     Tensor                 ones        = torch::ones( {2} );
     bool                   trace       = false;
     size_t                 op_index    = 1;
-    std::vector<size_t>    arg_start   = {0, 0, 2};
-    std::vector<size_t>    arg_all     = {0, 0};
-    std::vector<ad_type_t> ad_type_all = {par, par};
     std::vector<Tensor>    con_vec     = {};
     std::vector<Tensor>    par_vec     = {ones, empty};
+    agraph_t               agraph;
+    agraph.op_vec     = std::vector<op_enum_t>( {dom, add} );
+    agraph.arg_start  = std::vector<size_t>( {0, 0, 2} );
+    agraph.arg_all    = std::vector<size_t>( {0, 0} );
+    agraph.ad_type_all = std::vector<ad_type_t>( {par, par} );
     //
     // par_vec[op_index]
-    add_op.forward_par(
-        trace, op_index, arg_start, arg_all, ad_type_all, con_vec, par_vec
-    );
+    add_op.forward_par(trace, op_index, agraph, con_vec, par_vec);
     //
     // data_ptr
-    float* data_ptr = par_vec[op_index].data_ptr<float>();
+    float* data_ptr = par_vec.at(op_index).data_ptr<float>();
     EXPECT_EQ( data_ptr[0], 2.0 );
     EXPECT_EQ( data_ptr[1], 2.0 );
 }

@@ -18,6 +18,7 @@ Enum Values
 */
 // BEGIN_SORT_THIS_LINE_PLUS_2
 namespace ad_tensor { namespace devel { enum class op_enum_t {
+    dom,  // domain tensor
     add,  // addition
     div,  // division
     mul,  // multiplication

@@ -42,23 +42,9 @@ It is also the index of the result for this operator.
 It must be greater than zero, because the first result is the
 independent parameter tensor.
 
-arg_start
-=========
-Let n_arg = arg_start[op_index+1] - arg_start[op_index].
-For i_arg = 0, ... n_arg,
-arg_index = arg_start[op_index] + i_arg is the index in arg_all and ad_type_all
-of the corresponding argument and ad_type for this operator usage.
-
-arg_all
-=======
-is a vector containing the arguments for all the operator uses.
-
-ad_type_all
-===========
-is a vector containing the AD type for all the operator uses.
-For each arg_index = arg[op_index] + i_arg,
-if ad_type_all[arg_index] is constant (parameter) [variable],
-val_index is an index in con_vec (par_vec) [var_vec].
+agraph
+======
+Is the :ref:`agraph-name` for the operation sequence that we are using.
 
 con_vec
 *******
@@ -100,6 +86,7 @@ and par_vec[op_index] is an output.
 //
 #include <ad_tensor/devel/op_enum.hpp>
 #include <ad_tensor/devel/ad_type.hpp>
+#include <ad_tensor/devel/agraph.hpp>
 //
 // BEGIN_OP_BASE
 namespace ad_tensor { namespace devel { class op_base_t
@@ -169,9 +156,7 @@ public:
     virtual void forward_par(
         bool                              trace       ,
         size_t                            op_index    ,
-        const std::vector<size_t>&        arg_start   ,
-        const std::vector<size_t>&        arg_all     ,
-        const std::vector<ad_type_t>&     ad_type_all ,
+        const agraph_t&                   agraph      ,
         const std::vector<torch::Tensor>& con_vec     ,
         std::vector<torch::Tensor>&       par_vec     ) const = 0;
     // END_FORWARD_PAR
