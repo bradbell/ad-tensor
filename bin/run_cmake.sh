@@ -17,6 +17,24 @@ then
    exit 1
 fi
 # -----------------------------------------------------------------------------
+cmake_build_type='debug'
+while [ "$#" -ge 1 ]
+do
+    case $1 in
+
+        '--release')
+        cmake_build_type='release'
+        ;;
+
+        *)
+        echo 'usage: bin/run_cmake.sh [flag1 [flag2 .. ] ]'
+        echo 'list of possible flags: --release'
+        ;;
+
+    esac
+    shift
+done
+# -----------------------------------------------------------------------------
 # toch_dir
 torch_dir=$(bin/torch_dir.py)
 #
@@ -53,6 +71,7 @@ EOF
 echo_eval cmake -S .. -B . \
     -G Ninja \
     -D include_tests=true \
+    -D CMAKE_BUILD_TYPE=$cmake_build_type \
     -D Torch_DIR=$torch_dir \
     |& sed -f temp.sed  > temp.out
 #
