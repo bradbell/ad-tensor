@@ -50,32 +50,24 @@ namespace {
             EXPECT_EQ( n_arg, 2 );
             //
             // arg_index
-            size_t arg_index = arg_start.at(op_index);
+            size_t arg_first = arg_start.at(op_index);
             //
-            // lhs
-            Tensor lhs       = torch::empty( {0} );
-            size_t lhs_index = arg_all.at(arg_index);
-            if( ad_type_all.at(lhs_index) == ad_type_t::constant ) {
-                lhs = con_vec.at( lhs_index );
-            } else {
-                EXPECT_EQ( ad_type_all.at(lhs_index), ad_type_t::parameter );
-                EXPECT_LT( lhs_index, op_index );
-                lhs = par_vec.at( lhs_index );
-            }
+            // lhs_tensor
+            size_t        lhs_index   = arg_all.at(arg_first);
+            ad_type_t     lhs_ad_type = ad_type_all.at(arg_first);
+            torch::Tensor lhs_tensor  = tensor_at_index(
+               lhs_ad_type, lhs_index, con_vec, par_vec
+            );
             //
-            // rhs
-            Tensor rhs       = torch::empty( {0} );
-            size_t rhs_index = arg_all.at(arg_index+1);
-            if( ad_type_all.at(rhs_index) == ad_type_t::constant ) {
-                rhs = con_vec.at( rhs_index );
-            } else {
-                EXPECT_EQ( ad_type_all.at(rhs_index), ad_type_t::parameter );
-                EXPECT_LT( rhs_index, op_index );
-                rhs = par_vec.at( rhs_index );
-            }
+            // rhs_tensor
+            size_t        rhs_index   = arg_all.at(arg_first + 1);
+            ad_type_t     rhs_ad_type = ad_type_all.at(arg_first + 1);
+            torch::Tensor rhs_tensor  = tensor_at_index(
+               rhs_ad_type, rhs_index, con_vec, par_vec
+            );
             //
             // par_vec
-            par_vec.at(op_index) = lhs + rhs;
+            par_vec.at(op_index) = lhs_tensor + rhs_tensor;
         }
     };
 }

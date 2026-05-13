@@ -72,6 +72,17 @@ var_vec
 *******
 is the vector containing all the variables.
 
+tensor_at_index
+***************
+This returns a reference to the tensor corresponding to
+the specified type and index.
+This is a reference to an element in the corresponding vector
+and hence its lifetime is restricted to the life of the vector.
+{xrst_literal ,
+    BEGIN_TENSOR_AT_INDEX, END_TENSOR_AT_INDEX
+    BEGIN_WITH_VAR_TENSOR_AT_INDEX, END_WITH_VAR_TENSOR_AT_INDEX
+}
+
 forward_par
 ***********
 For this function, ad_type_all[arg_index] is not variable.
@@ -83,6 +94,7 @@ and par_vec[op_index] is an output.
 
 {xrst_end op_base}
 */
+#include <cassert>
 #include <vector>
 #include <torch/torch.h>
 //
@@ -97,6 +109,61 @@ public:
     // BEGIN_OP_ENUM
     virtual op_enum_t op_enum(void) const = 0;
     // END_OP_ENUM
+    //
+    // BEGIN_TENSOR_AT_INDEX
+    static inline const torch::Tensor& tensor_at_index(
+        ad_type_t                        ad_type ,
+        size_t                           index   ,
+        const std::vector<torch::Tensor> con_vec ,
+        const std::vector<torch::Tensor> par_vec )
+    // END_TENSOR_AT_INDEX
+    {   switch( ad_type ) {
+            //
+            // constant
+            case ad_type_t::constant:
+            return con_vec.at(index);
+            //
+            // parameter
+            case ad_type_t::parameter:
+            return par_vec.at(index);
+            //
+            // default
+            default:
+            assert( false && "expected a constant or parameter" );
+        }
+        // should not get here
+        return par_vec.at(0);
+    }
+    //
+    // BEGIN_WITH_VAR_TENSOR_AT_INDEX
+    static inline const torch::Tensor& tensor_at_index(
+        ad_type_t                        ad_type ,
+        size_t                           index   ,
+        const std::vector<torch::Tensor> con_vec ,
+        const std::vector<torch::Tensor> par_vec ,
+        const std::vector<torch::Tensor> var_vec )
+    // END_WITH_VAR_TENSOR_AT_INDEX
+    {   switch( ad_type ) {
+            //
+            // constant
+            case ad_type_t::constant:
+            return con_vec.at(index);
+            //
+            // parameter
+            case ad_type_t::parameter:
+            return par_vec.at(index);
+            //
+            // variable
+            case ad_type_t::variable:
+            return var_vec.at(index);
+            //
+            // default
+            default:
+            assert( false && "expected a constant, parameter or variable" );
+        }
+        // should not get here
+        return var_vec.at(0);
+    }
     //
     // BEGIN_FORWARD_PAR
     virtual void forward_par(
