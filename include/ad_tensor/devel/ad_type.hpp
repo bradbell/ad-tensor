@@ -20,7 +20,7 @@ Enum Values
 {xrst_end ad_type}
 */
 // BEGIN_SORT_THIS_LINE_PLUS_3
-namespace ad_tensor { namespace devel { enum class ad_type_t {
+namespace ad_tensor { namespace devel { enum struct ad_type_t {
     constant,  // AD object does not depend on domain parameters or variables
     parameter, // AD object does not depend on domain variables
     variable,  // AD object depends on the domain variables

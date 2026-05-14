@@ -17,10 +17,10 @@ Enum Values
 {xrst_end op_enum}
 */
 // BEGIN_SORT_THIS_LINE_PLUS_2
-namespace ad_tensor { namespace devel { enum class op_enum_t {
-    dom,  // domain tensor
+namespace ad_tensor { namespace devel { enum struct op_enum_t {
     add,  // addition
     div,  // division
+    dom,  // domain tensor also called independent tensor
     mul,  // multiplication
     sub,  // subtraction
     test, // used for testing

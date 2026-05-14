@@ -43,8 +43,7 @@ val_index is an index in con_vec (par_vec) [var_vec].
 #include <ad_tensor/devel/ad_type.hpp>
 
 // BEGIN_AGRAPH
-namespace ad_tensor { namespace devel { class agraph_t {
-public:
+namespace ad_tensor { namespace devel { struct agraph_t {
     std::vector<op_enum_t> op_vec;
     std::vector<size_t>    arg_start;
     std::vector<size_t>    arg_all;

@@ -1,6 +1,5 @@
 #! /usr/bin/env bash
 set -e -u
-# !! EDITS TO THIS FILE ARE LOST DURING UPDATES BY xrst.git/bin/dev_tools.sh !!
 # SPDX-License-Identifier: EPL-2.0 OR GPL-2.0-or-later
 # SPDX-FileCopyrightText: Bradley M. Bell <bradbell@seanet.com>
 # SPDX-FileContributor: 2026 Bradley M. Bell
@@ -10,6 +9,8 @@ set -e -u
 #
 # If the file name ends with .sh, a bash shebang and sed -e -u are included.
 # In addition, the file mode is set to executable.
+#
+# If the file name ends with .hpp, #pragma once is included.
 # ----------------------------------------------------------------------------
 # path_to_file
 if [ "$0" != 'bin/new_file.sh' ]
@@ -76,30 +77,31 @@ ext=$(echo $path_to_file | sed -e 's|^.*[.]\([^.]*\)$|.\1|')
 # path_to_file
 case $ext in
 
-    .sh)
-    cat << EOF > $path_to_file
-#! /usr/bin/env bash
-set -e -u
-# !! EDITS TO THIS FILE ARE LOST DURING UPDATES BY xrst.git/bin/dev_tools.sh !!
+    .sh|.txt|.py)
+    if [ "$ext" == '.sh' ]
+    then
+        echo '#! /usr/bin/env bash' >> $path_to_file
+        echo 'set -e -u' >> $path_to_file
+    fi
+    cat << EOF >> $path_to_file
 # SPDX-License-Identifier: $spdx_license_id
 # SPDX-FileCopyrightText: $spdx_copyright_text
 # SPDX-FileContributor: $year $fullname
 # -----------------------------------------------------------------------------
 EOF
-    chmod +x $path_to_file
+    if [ "$ext" == '.sh' ]
+    then
+        chmod +x $path_to_file
+    fi
     ;;
 
-    .txt|.py)
-    cat << EOF > $path_to_file
-# SPDX-License-Identifier: $spdx_license_id
-# SPDX-FileCopyrightText: $spdx_copyright_text
-# SPDX-FileContributor: $year $fullname
-# -----------------------------------------------------------------------------
-EOF
-    ;;
 
     .hpp|.cpp)
-    cat << EOF > $path_to_file
+    if [ "$ext" == '.hpp' ]
+    then
+        echo '#pragma once' >> $path_to_file
+    fi
+    cat << EOF >> $path_to_file
 // SPDX-License-Identifier: $spdx_license_id
 // SPDX-FileCopyrightText: $spdx_copyright_text
 // SPDX-FileContributor: $year $fullname

@@ -89,10 +89,9 @@ and par_vec[op_index] is an output.
 #include <ad_tensor/devel/agraph.hpp>
 //
 // BEGIN_OP_BASE
-namespace ad_tensor { namespace devel { class op_base_t
+namespace ad_tensor { namespace devel { struct op_base_t
 // END_OP_BASE
 {
-public:
     // BEGIN_OP_ENUM
     virtual op_enum_t op_enum(void) const = 0;
     // END_OP_ENUM
