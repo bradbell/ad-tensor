@@ -9,3 +9,7 @@ temp.*
 #
 # build directory
 /build/
+#
+# new directories (used to cache files)
+/new/
+/new.*/

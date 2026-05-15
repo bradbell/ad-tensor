@@ -14,6 +14,7 @@ Contents
     include/ad_tensor/devel/op_enum.hpp
     include/ad_tensor/devel/ad_type.hpp
     include/ad_tensor/devel/agraph.hpp
+    include/ad_tensor/devel/tape.hpp
     include/ad_tensor/devel/op_base.hpp
 }
 

@@ -6,8 +6,8 @@
 /*
 {xrst_begin agraph dev}
 
-An Operation Sequence Acyclic Graph
-###################################
+Acyclic Graph Representation of an Operation Sequence
+#####################################################
 {xrst_literal ,
     BEGIN_AGRAPH, END_AGRAPH
 }
@@ -37,9 +37,18 @@ For each arg_index = arg[op_index] + i_arg,
 if ad_type_all[arg_index] is constant (parameter) [variable],
 val_index is an index in con_vec (par_vec) [var_vec].
 
+default constructor
+*******************
+This constructor creates an empty graph (all its vectors are empty).
+
+empty
+*****
+This member function returns true if all the vectors in the graph are empty.
+
 
 {xrst_end agraph}
 */
+#include <ad_tensor/devel/op_enum.hpp>
 #include <ad_tensor/devel/ad_type.hpp>
 
 // BEGIN_AGRAPH
@@ -49,12 +58,17 @@ namespace ad_tensor { namespace devel { struct agraph_t {
     std::vector<size_t>    arg_all;
     std::vector<ad_type_t> ad_type_all;
     //
-    // ctor
-    agraph_t() :
-        op_vec() ,
-        arg_start() ,
-        arg_all(),
-        ad_type_all()
+    // default constructor
+    agraph_t() : op_vec() , arg_start() , arg_all(), ad_type_all()
     { }
+    //
+    // empty
+    bool empty(void) {
+        return
+            op_vec.empty() &&
+            arg_start.empty() &&
+            arg_all.empty() &&
+            ad_type_all.empty();
+    }
 }; } }
 // END_AGRAPH

@@ -6,6 +6,7 @@
 add_executable(tests
     devel/op_enum.cpp
     devel/op_base.cpp
+    devel/tape.cpp
 )
 #
 target_link_libraries(tests GTest::gtest_main ${TORCH_LIBRARIES})
