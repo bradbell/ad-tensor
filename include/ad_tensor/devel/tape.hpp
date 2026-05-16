@@ -43,8 +43,8 @@ default constructor
 The default constructor creates an empty tape with tape_id zero and
 recording false.
 
-empty
-*****
+is_empty
+********
 returns true if the constant vector, the parameter graph,
 and the variable graph are empty.
 
@@ -68,9 +68,9 @@ namespace ad_tensor { namespace devel { struct tape_t {
     tape_t() : con(), par(), var(), tape_id(0), recording(false)
     { }
     //
-    // empty
-    bool empty(void) {
-        return con.empty() && par.empty() && var.empty();
+    // is_empty
+    bool is_empty(void) {
+        return con.empty() && par.is_empty() && var.is_empty();
     }
 }; } }
 // END_TAPE_T

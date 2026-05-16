@@ -41,8 +41,8 @@ default constructor
 *******************
 This constructor creates an empty graph (all its vectors are empty).
 
-empty
-*****
+is_empty
+********
 This member function returns true if all the vectors in the graph are empty.
 
 
@@ -62,8 +62,8 @@ namespace ad_tensor { namespace devel { struct agraph_t {
     agraph_t() : op_vec() , arg_start() , arg_all(), ad_type_all()
     { }
     //
-    // empty
-    bool empty(void) {
+    // is_empty
+    bool is_empty(void) {
         return
             op_vec.empty() &&
             arg_start.empty() &&
