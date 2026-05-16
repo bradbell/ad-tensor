@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: EPL-2.0 OR GPL-2.0-or-later
 // SPDX-FileCopyrightText: Bradley M. Bell <bradbell@seanet.com>
 // SPDX-FileContributor: 2026 Bradley M. Bell
-/* 
+/*
 ------------------------------------------------------------------------------
 {xrst_begin ad usr}
 {xrst_spell
@@ -35,8 +35,15 @@ For *op* equal ``+``, ``-``, ``*``, ``/`` :
     ad_t operator op (const ad_t& rhs) const
 {xrst_code}
 
+Example
+*******
+{xrst_literal ,
+    examples/ad.cpp
+    // BEGIN_CPP, // END_CPP
+}
+
 {xrst_end ad}
------------------------------------------------------------------------------- 
+------------------------------------------------------------------------------
 */
 # include <torch/torch.h>
 //
@@ -55,12 +62,12 @@ private:
 
 public:
     // BEGIN_FROM_TENSOR
-    ad_t( torch::Tensor&& tensor ) 
+    ad_t( torch::Tensor&& tensor )
     // END_FROM_TENSOR
     : tensor_(tensor)
     { }
     // BEGIN_TO_TENSOR
-    const torch::Tensor& tensor(void) const 
+    const torch::Tensor& tensor(void) const
     // END_TO_TENSOR
     {   return tensor_; }
     //

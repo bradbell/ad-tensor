@@ -11,9 +11,9 @@ echo_eval() {
    eval $*
 }
 # -----------------------------------------------------------------------------
-if [ "$0" != "bin/check_tests.sh" ]
+if [ "$0" != "bin/check_build.sh" ]
 then
-   echo "bin/check_tests.sh: must be executed from its parent directory"
+   echo "bin/check_build.sh: must be executed from its parent directory"
    exit 1
 fi
 # -----------------------------------------------------------------------------
@@ -21,8 +21,14 @@ fi
 # run_cmake.sh
 bin/run_cmake.sh
 #
-# build/tests/tests
+# build
 cd build
+#
+# build/examples/examples
+echo_eval ninja examples
+echo_eval ./examples/examples
+#
+# build/tests/tests
 echo_eval ninja tests
 echo_eval ./tests/tests
 #

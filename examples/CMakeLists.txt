@@ -3,10 +3,8 @@
 # SPDX-FileContributor: 2026 Bradley M. Bell
 # -----------------------------------------------------------------------------
 #
-add_executable(tests
-    devel/op_enum.cpp
-    devel/op_base.cpp
-    devel/tape.cpp
+add_executable(examples
+    ad.cpp
 )
 #
-target_link_libraries(tests GTest::gtest_main ${TORCH_LIBRARIES})
+target_link_libraries(examples GTest::gtest_main ${TORCH_LIBRARIES})

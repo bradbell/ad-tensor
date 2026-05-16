@@ -8,9 +8,6 @@
 
 Tape that Records Operation Sequences
 #####################################
-
-Fields
-******
 {xrst_literal ,
     BEGIN_TAPE_T, END_TAPE_T
 }

@@ -2,6 +2,7 @@
 // SPDX-FileCopyrightText: Bradley M. Bell <bradbell@seanet.com>
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
+// BEGIN_CPP
 #include <gtest/gtest.h>
 #include <torch/torch.h>
 //
@@ -28,3 +29,4 @@ TEST(tests, ad)  {
     equal = torch::all( product == aproduct.tensor() ).item<bool>();
     EXPECT_TRUE(equal);
 }
+// END_CPP

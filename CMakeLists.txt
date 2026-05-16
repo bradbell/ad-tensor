@@ -23,5 +23,6 @@ include_directories( ${ad_tensor_SOURCE_DIR}/include )
 # If debug build
 if( include_tests )
     find_package(GTest REQUIRED)
+    add_subdirectory(examples)
     add_subdirectory(tests)
 endif()
