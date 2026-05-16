@@ -3,9 +3,13 @@
 # SPDX-FileCopyrightText: Bradley M. Bell <bradbell@seanet.com>
 # SPDX-FileContributor: 2026 Bradley M. Bell
 # ---------------------------------------------------------------------------
-{xrst_begin user}
+{xrst_begin user usr}
 
 AD Tensor User Documentation
 ############################
+
+{xrst_toc_table
+    include/ad_tensor/ad.hpp
+}
 
 {xrst_end user}

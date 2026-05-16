@@ -4,6 +4,8 @@
 # -----------------------------------------------------------------------------
 #
 add_executable(tests
+    ad.cpp
+    #
     devel/op_enum.cpp
     devel/op_base.cpp
     devel/tape.cpp
