@@ -5,6 +5,7 @@
 #
 add_executable(examples
     ad.cpp
+    record.cpp
 )
 #
 target_link_libraries(examples GTest::gtest_main ${TORCH_LIBRARIES})

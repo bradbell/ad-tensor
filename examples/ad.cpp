@@ -8,7 +8,7 @@
 //
 #include <ad_tensor/ad.hpp>
 //
-TEST(tests, ad)  {
+TEST(examples, ad)  {
     using ad_tensor::ad_t;
     using torch::Tensor;
     //

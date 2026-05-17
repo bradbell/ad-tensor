@@ -19,7 +19,7 @@ The ad_t class
 From Tensor
 ***********
 {xrst_literal ,
-    BEGIN_FROM_TENSOR, END_FROM_TENSOR
+    BEGIN_PUBLIC_CTOR, END_PUBLIC_CTOR
 }
 
 To Tensor
@@ -45,7 +45,9 @@ Example
 {xrst_end ad}
 ------------------------------------------------------------------------------
 */
-# include <torch/torch.h>
+#include <torch/torch.h>
+//
+#include <ad_tensor/devel/ad_type.hpp>
 //
 // BINARY_OP
 # define BINARY_OP(op) \
@@ -55,16 +57,31 @@ Example
 // BEGIN_AD_CLASS
 namespace ad_tensor { class ad_t
 // END_AD_CLASS
-{
+    {   
+    //
+    // start_recording
+    friend std::tuple<ad_t, ad_t> start_recording(
+        torch::Tensor&& dom_par, torch::Tensor&& dom_var
+    );
+
 private:
-    // tensor_
-    torch::Tensor tensor_;
+    // BEGIN_PRIVATE_DATA
+    size_t           tape_id_;
+    devel::ad_type_t ad_type_;
+    torch::Tensor    tensor_;
+    // END_PRIVATE_DATA
+
+    // BEGIN_PRIVATE_CTOR
+    ad_t(size_t tape_id, devel::ad_type_t ad_type, torch::Tensor&& tensor)
+    : tape_id_(tape_id), ad_type_(ad_type), tensor_(tensor)
+    { }
+    // END_PRIVATE_CTOR
 
 public:
-    // BEGIN_FROM_TENSOR
+    // BEGIN_PUBLIC_CTOR
     ad_t( torch::Tensor&& tensor )
-    // END_FROM_TENSOR
-    : tensor_(tensor)
+    // END_PUBLIC_CTOR
+    : tape_id_(0), ad_type_(devel::ad_type_t::constant), tensor_(tensor)
     { }
     // BEGIN_TO_TENSOR
     const torch::Tensor& tensor(void) const
