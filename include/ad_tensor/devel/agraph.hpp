@@ -41,10 +41,17 @@ default constructor
 *******************
 This constructor creates an empty graph (all its vectors are empty).
 
+swap
+****
+Exchange the contents between two acyclic graphs.
+
 is_empty
 ********
 This member function returns true if all the vectors in the graph are empty.
 
+this_threads_tape
+*****************
+is the tape used to record AD operations on this thread.
 
 {xrst_end agraph}
 */
@@ -61,6 +68,14 @@ namespace ad_tensor { namespace devel { struct agraph_t {
     // default constructor
     agraph_t() : op_vec() , arg_start() , arg_all(), ad_type_all()
     { }
+    //
+    // swap
+    void swap(agraph_t& other) noexcept
+    {   op_vec.swap(      other.op_vec);
+        arg_start.swap(   other.arg_start);
+        arg_all.swap(     other.arg_all);
+        ad_type_all.swap( other.ad_type_all);
+    }
     //
     // is_empty
     bool is_empty(void) {

@@ -40,11 +40,18 @@ default constructor
 The default constructor creates an empty tape with tape_id zero and
 recording false.
 
+swap
+****
+Exchange the contents between two tapes.
+
 is_empty
 ********
 returns true if the constant vector, the parameter graph,
 and the variable graph are empty.
 
+this_threads_tape
+*****************
+is the tape used to record AD operations on this thread.
 
 {xrst_end tape}
 */
@@ -65,9 +72,25 @@ namespace ad_tensor { namespace devel { struct tape_t {
     tape_t() : con(), par(), var(), tape_id(0), recording(false)
     { }
     //
+    // swap
+    void swap(tape_t& other)
+    {   con.swap(other.con);
+        par.swap(other.par);
+        var.swap(other.var);
+        std::swap(tape_id, other.tape_id);
+        std::swap(recording, other.recording);
+    }
+    //
     // is_empty
     bool is_empty(void) {
         return con.empty() && par.is_empty() && var.is_empty();
     }
 }; } }
+//
+// this_threads_tape
+namespace ad_tensor { namespace devel { 
+    thread_local tape_t this_threads_tape;
+} }
 // END_TAPE_T
+
+
