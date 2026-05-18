@@ -78,7 +78,7 @@ namespace ad_tensor { namespace devel { struct agraph_t {
     }
     //
     // is_empty
-    bool is_empty(void) {
+    bool is_empty(void) const {
         return
             op_vec.empty() &&
             arg_start.empty() &&

@@ -59,38 +59,51 @@ is the tape used to record AD operations on this thread.
 #include <torch/torch.h>
 //
 #include <ad_tensor/devel/agraph.hpp>
+#include <ad_tensor/ad.hpp>
 //
 // BEGIN_TAPE_T
-namespace ad_tensor { namespace devel { struct tape_t {
-    std::vector<torch::Tensor> con;
-    agraph_t                   par;
-    agraph_t                   var;
-    size_t                     tape_id;
-    bool                       recording;
+namespace ad_tensor {
+    std::tuple<ad_t, ad_t> start_recording(torch::Tensor&&, torch::Tensor&&);
+}
+
+namespace ad_tensor { namespace devel { class tape_t {
+    friend std::tuple<ad_t, ad_t> ad_tensor::start_recording(
+        torch::Tensor&&, torch::Tensor&&
+    );
+private:
+    std::vector<torch::Tensor> con_;
+    agraph_t                   par_;
+    agraph_t                   var_;
+    size_t                     tape_id_;
+    bool                       recording_;
+public:
     //
     // default constructor
-    tape_t() : con(), par(), var(), tape_id(0), recording(false)
+    tape_t() : con_(), par_(), var_(), tape_id_(0), recording_(false)
     { }
+    //
+    // tape_id, recording
+    size_t tape_id(void) const noexcept { return tape_id_; }
+    size_t recording(void) const noexcept { return recording_; }
+    //
     //
     // swap
     void swap(tape_t& other)
-    {   con.swap(other.con);
-        par.swap(other.par);
-        var.swap(other.var);
-        std::swap(tape_id, other.tape_id);
-        std::swap(recording, other.recording);
+    {   con_.swap(other.con_);
+        par_.swap(other.par_);
+        var_.swap(other.var_);
+        std::swap(tape_id_, other.tape_id_);
+        std::swap(recording_, other.recording_);
     }
     //
     // is_empty
-    bool is_empty(void) {
-        return con.empty() && par.is_empty() && var.is_empty();
+    bool is_empty(void) const {
+        return con_.empty() && par_.is_empty() && var_.is_empty();
     }
 }; } }
 //
 // this_threads_tape
-namespace ad_tensor { namespace devel { 
+namespace ad_tensor { namespace devel {
     thread_local tape_t this_threads_tape;
 } }
 // END_TAPE_T
-
-

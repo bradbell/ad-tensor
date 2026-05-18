@@ -13,6 +13,6 @@ TEST(tests_devel, tape)  {
     ad_tensor::devel::tape_t tape;
     //
     EXPECT_TRUE( tape.is_empty() );
-    EXPECT_EQ( tape.tape_id,     0 );
-    EXPECT_FALSE( tape.recording );
+    EXPECT_EQ( tape.tape_id(),     0 );
+    EXPECT_FALSE( tape.recording() );
 }
