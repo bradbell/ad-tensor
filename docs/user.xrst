@@ -10,6 +10,7 @@ AD Tensor User Documentation
 
 {xrst_toc_table
     include/ad_tensor/ad.hpp
+    include/ad_tensor/record.hpp
 }
 
 {xrst_end user}

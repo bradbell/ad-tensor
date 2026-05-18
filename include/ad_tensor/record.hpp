@@ -3,6 +3,52 @@
 // SPDX-FileCopyrightText: Bradley M. Bell <bradbell@seanet.com>
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
+/*
+{xrst_begin start_recording usr}
+{xrst_spell
+    adom
+}
+
+Start Recording ad_t Operations
+###############################
+{xrst_literal ,
+    BEGIN_START_RECORDING, END_START_RECORDING
+}
+
+Recording
+*********
+This thread must not currently have a recording in progress
+when start_recording is called.
+The recording started by this call is stopped by calling stop_recording.
+
+dom_par
+*******
+This is the domain parameter tensor. Dependencies with respect to this
+tensor will be recorded.
+
+dom_var
+*******
+This is the domain variable tensor. The recording can be used to compute
+derivatives with respect to this tensor.
+
+adom_par
+********
+This is the domain parameter AD object. Dependencies with respect to this
+object will be recorded.
+
+adom_var
+********
+This is the domain variable AD object. The recording can be used to compute
+derivatives with respect to this object.
+
+Example
+*******
+{xrst_literal ,
+    examples/start_recording.cpp
+}
+
+{xrst_end start_recording}
+*/
 #include <torch/torch.h>
 //
 #include <ad_tensor/devel/ad_type.hpp>
@@ -11,12 +57,12 @@
 #include <ad_tensor/ad.hpp>
 //
 // BEGIN_START_RECORDING
+// auto [adom_par, adom_var] = start_recording(dom_par, dom_var)
 namespace ad_tensor { std::tuple<ad_t, ad_t> start_recording (
     torch::Tensor&& dom_par, torch::Tensor&& dom_var
 )
 // END_START_RECORDING
 {   //
-    //
     // next_tape_id
     // Since c++11, initialization of local static variables is thread safe.
     static size_t next_tape_id = 1;

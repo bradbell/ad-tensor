@@ -8,7 +8,7 @@
 //
 #include <ad_tensor/record.hpp>
 //
-TEST(examples, record)  {
+TEST(examples, start_recording)  {
     using ad_tensor::start_recording;
     using ad_tensor::ad_t;
     using torch::Tensor;
