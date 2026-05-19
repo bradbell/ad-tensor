@@ -57,15 +57,12 @@ is the tape used to record AD operations on this thread.
 #include <ad_tensor/devel/agraph.hpp>
 #include <ad_tensor/ad.hpp>
 //
+// record_t
+namespace ad_tensor { class record_t; }
+//
 // BEGIN_TAPE_T
-namespace ad_tensor {
-    std::tuple<ad_t, ad_t> start_recording(torch::Tensor&&, torch::Tensor&&);
-}
-
 namespace ad_tensor { namespace devel { class tape_t {
-    friend std::tuple<ad_t, ad_t> ad_tensor::start_recording(
-        torch::Tensor&&, torch::Tensor&&
-    );
+    friend class ad_tensor::record_t;
 private:
     std::vector<torch::Tensor> con_;
     agraph_t                   par_;

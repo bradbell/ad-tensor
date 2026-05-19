@@ -9,14 +9,14 @@
 #include <ad_tensor/record.hpp>
 //
 TEST(examples, start_recording)  {
-    using ad_tensor::start_recording;
+    using ad_tensor::record_t;
     using ad_tensor::ad_t;
     using torch::Tensor;
     //
     Tensor dom_par = torch::tensor( {2.0, 3.0} );
     Tensor dom_var = torch::tensor( {4.0, 5.0} );
     //
-    std::tuple<ad_t, ad_t> temp = start_recording(
+    std::tuple<ad_t, ad_t> temp = record_t::start(
         dom_par.clone(), dom_var.clone()
     );
     auto const&& [ adom_par, adom_var ] = std::move(temp);

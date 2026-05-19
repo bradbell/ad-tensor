@@ -54,16 +54,17 @@ Example
     ad_t operator op (const ad_t& rhs) const \
     { return ad_t( tensor_ op rhs.tensor_ ); }
 //
+// record
+namespace ad_tensor{ class record_t; }
+//
 // BEGIN_AD_CLASS
 namespace ad_tensor { class ad_t
 // END_AD_CLASS
-    {   
+    {
     //
-    // start_recording
-    friend std::tuple<ad_t, ad_t> start_recording(
-        torch::Tensor&& dom_par, torch::Tensor&& dom_var
-    );
-
+    // record_t
+    friend class record_t;
+    //
 private:
     // BEGIN_PRIVATE_DATA
     size_t           tape_id_;
