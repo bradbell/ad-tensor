@@ -40,10 +40,6 @@ default constructor
 The default constructor creates an empty tape with tape_id zero and
 recording false.
 
-swap
-****
-Exchange the contents between two tapes.
-
 is_empty
 ********
 returns true if the constant vector, the parameter graph,
@@ -85,16 +81,6 @@ public:
     // tape_id, recording
     size_t tape_id(void) const noexcept { return tape_id_; }
     size_t recording(void) const noexcept { return recording_; }
-    //
-    //
-    // swap
-    void swap(tape_t& other)
-    {   con_.swap(other.con_);
-        par_.swap(other.par_);
-        var_.swap(other.var_);
-        std::swap(tape_id_, other.tape_id_);
-        std::swap(recording_, other.recording_);
-    }
     //
     // is_empty
     bool is_empty(void) const {
