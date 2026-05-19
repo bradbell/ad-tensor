@@ -17,9 +17,10 @@ Start Recording ad_t Operations
 
 Recording
 *********
-This thread must not currently have a recording in progress
-when record_start is called.
-The recording started by this call is stopped by calling record_stop.
+This thread must not have a recording in progress
+when ``record_t::start`` is called.
+The recording started by this call is stopped by calling
+:ref:`record_t::stop <record_stop-name>` .
 
 dom_par
 *******
@@ -44,10 +45,47 @@ derivatives with respect to this object.
 Example
 *******
 {xrst_literal ,
-    examples/record_start.cpp
+    examples/record.cpp
 }
 
 {xrst_end record_start}
+-------------------------------------------------------------------------------
+{xrst_begin record_stop usr}
+{xrst_spell
+    adfn
+    arange
+}
+
+Stop Recording ad_t Operations
+##############################
+{xrst_literal,
+    BEGIN_STOP, END_STOP
+}
+
+Recording
+*********
+This thread must have a recording in progress
+when ``record_t::stop`` is called.
+The recording started by calling
+:ref:`record_t::start <record_start-name>` .
+
+arange
+******
+This AD object specifies the range tensor for the AD function *adfn* .
+
+adfn
+****
+The operation sequence that was recording is transferred to this AD function.
+The domain parameter and variable tensors for this function are defined
+in the corresponding :ref:`record_t::start<record_start-name>` .
+
+Example
+*******
+{xrst_literal ,
+    examples/record.cpp
+}
+
+{xrst_end record_stop}
 */
 #include <torch/torch.h>
 //
@@ -63,7 +101,7 @@ private:
     typedef devel::ad_type_t ad_type_t;
 public:
     // BEGIN_START
-    // auto [adom_par, adom_var] = ad_tensor::record::start(dom_par, dom_var)
+    // auto [adom_par, adom_var] = ad_tensor::record_t::start(dom_par, dom_var)
     static std::tuple<ad_t, ad_t> start(
         torch::Tensor&& dom_par, torch::Tensor&& dom_var
     )
@@ -106,6 +144,7 @@ public:
         };
     }
     // BEGIN_STOP
+    // adfn = ad_tensor::record_t::stop(arnage)
     static adfn_t stop(const ad_t& arange)
     // END_STOP
     {   //

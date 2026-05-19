@@ -8,7 +8,7 @@
 //
 #include <ad_tensor/record.hpp>
 //
-TEST(examples, record_start)  {
+TEST(examples, record)  {
     using ad_tensor::record_t;
     using ad_tensor::ad_t;
     using torch::Tensor;
@@ -16,10 +16,12 @@ TEST(examples, record_start)  {
     Tensor dom_par = torch::tensor( {2.0, 3.0} );
     Tensor dom_var = torch::tensor( {4.0, 5.0} );
     //
-    std::tuple<ad_t, ad_t> temp = record_t::start(
+    // record_start
+    auto const&& [ adom_par, adom_var ] = record_t::start(
         dom_par.clone(), dom_var.clone()
     );
-    auto const&& [ adom_par, adom_var ] = std::move(temp);
+    // record_stop
+    record_t::stop( adom_var );
     //
     bool equal;
     equal = torch::all( adom_par.tensor() == dom_par ).item<bool>();
