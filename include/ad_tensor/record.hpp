@@ -55,8 +55,12 @@ Example
 #include <ad_tensor/devel/op_enum.hpp>
 #include <ad_tensor/devel/tape.hpp>
 #include <ad_tensor/ad.hpp>
+#include <ad_tensor/adfn.hpp>
 //
 namespace ad_tensor { class record_t {
+private:
+    typedef devel::tape_t    tape_t;
+    typedef devel::ad_type_t ad_type_t;
 public:
     // BEGIN_START
     // auto [adom_par, adom_var] = ad_tensor::record::start(dom_par, dom_var)
@@ -65,6 +69,9 @@ public:
     )
     // END_START
     {   //
+        // tape
+        tape_t& tape = devel::this_threads_tape;
+        //
         // next_tape_id
         // Since c++11, initialization of local static variables is thread safe.
         static size_t next_tape_id = 1;
@@ -72,10 +79,10 @@ public:
         // tape_id_mutex
         static std::mutex tape_id_mutex;
         //
-        assert( ! devel::this_threads_tape.recording() &&
+        assert( ! tape.recording() &&
             "record_start: this threads tape is already recording"
         );
-        assert( devel::this_threads_tape.is_empty() &&
+        assert( tape.is_empty() &&
             "record_start: a tape that is not recording should be empty"
         );
         //
@@ -87,14 +94,46 @@ public:
         }
         //
         // this_threads_tape: tape_id, recording, par.op_vec, var.op_vec
-        devel::this_threads_tape.tape_id_   = tape_id;
-        devel::this_threads_tape.recording_ = true;
-        devel::this_threads_tape.par_.op_vec.push_back( devel::op_enum_t::dom );
-        devel::this_threads_tape.var_.op_vec.push_back( devel::op_enum_t::dom );
+        tape.tape_id_   = tape_id;
+        tape.recording_ = true;
+        tape.par_.op_vec.push_back( devel::op_enum_t::dom );
+        tape.var_.op_vec.push_back( devel::op_enum_t::dom );
         //
+        size_t index = 0;
         return {
-            ad_t(tape_id, devel::ad_type_t::parameter, std::move(dom_par) ) ,
-            ad_t(tape_id, devel::ad_type_t::variable,  std::move(dom_var) )
+            ad_t(tape_id, ad_type_t::parameter, index, std::move(dom_par) ) ,
+            ad_t(tape_id, ad_type_t::variable,  index, std::move(dom_var) )
         };
+    }
+    // BEGIN_STOP
+    static adfn_t stop(const ad_t& arange)
+    // END_STOP
+    {   //
+        // tape
+        tape_t& tape = devel::this_threads_tape;
+        //
+        assert( tape.recording() &&
+            "record::stop: this threads tape is not recording"
+        );
+        assert( ! tape.is_empty() &&
+            "record_stop: a tape that is recording should not be empty"
+        );
+        //
+        // tape
+        tape.recording_ = false;
+        //
+        // adfn
+        adfn_t adfn;
+        //
+        // adfn, tape
+        adfn.con_.swap( tape.con_ );
+        adfn.par_.swap( tape.par_ );
+        adfn.var_.swap( tape.var_ );
+        //
+        // adfn
+        adfn.rng_index_   = arange.index_;
+        adfn.rng_ad_type_ = arange.ad_type_;
+        //
+        return adfn;
     }
 }; }

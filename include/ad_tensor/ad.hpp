@@ -66,15 +66,21 @@ namespace ad_tensor { class ad_t
     friend class record_t;
     //
 private:
+    typedef devel::ad_type_t ad_type_t;
+    //
     // BEGIN_PRIVATE_DATA
     size_t           tape_id_;
-    devel::ad_type_t ad_type_;
+    ad_type_t        ad_type_;
+    size_t           index_;
     torch::Tensor    tensor_;
     // END_PRIVATE_DATA
 
     // BEGIN_PRIVATE_CTOR
-    ad_t(size_t tape_id, devel::ad_type_t ad_type, torch::Tensor&& tensor)
-    : tape_id_(tape_id), ad_type_(ad_type), tensor_(tensor)
+    ad_t(
+        size_t tape_id, ad_type_t ad_type, size_t index,
+        torch::Tensor&& tensor
+    )
+    : tape_id_(tape_id), ad_type_(ad_type), index_(index), tensor_(tensor)
     { }
     // END_PRIVATE_CTOR
 
@@ -82,7 +88,7 @@ public:
     // BEGIN_PUBLIC_CTOR
     ad_t( torch::Tensor&& tensor )
     // END_PUBLIC_CTOR
-    : tape_id_(0), ad_type_(devel::ad_type_t::constant), tensor_(tensor)
+    : tape_id_(0), ad_type_(ad_type_t::constant), tensor_(tensor)
     { }
     // BEGIN_TO_TENSOR
     const torch::Tensor& tensor(void) const
