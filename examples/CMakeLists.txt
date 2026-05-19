@@ -5,7 +5,7 @@
 #
 add_executable(examples
     ad.cpp
-    start_recording.cpp
+    record_start.cpp
 )
 #
 target_link_libraries(examples GTest::gtest_main ${TORCH_LIBRARIES})

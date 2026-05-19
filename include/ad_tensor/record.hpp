@@ -4,7 +4,7 @@
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
 /*
-{xrst_begin start_recording usr}
+{xrst_begin record_start usr}
 {xrst_spell
     adom
 }
@@ -18,8 +18,8 @@ Start Recording ad_t Operations
 Recording
 *********
 This thread must not currently have a recording in progress
-when start_recording is called.
-The recording started by this call is stopped by calling stop_recording.
+when record_start is called.
+The recording started by this call is stopped by calling record_stop.
 
 dom_par
 *******
@@ -44,10 +44,10 @@ derivatives with respect to this object.
 Example
 *******
 {xrst_literal ,
-    examples/start_recording.cpp
+    examples/record_start.cpp
 }
 
-{xrst_end start_recording}
+{xrst_end record_start}
 */
 #include <torch/torch.h>
 //
@@ -73,10 +73,10 @@ public:
         static std::mutex tape_id_mutex;
         //
         assert( ! devel::this_threads_tape.recording() &&
-            "start_recording: this threads tape is already recording"
+            "record_start: this threads tape is already recording"
         );
         assert( devel::this_threads_tape.is_empty() &&
-            "start_recording: a tape that is not recording should be empty"
+            "record_start: a tape that is not recording should be empty"
         );
         //
         // tape_id, next_tape_id
