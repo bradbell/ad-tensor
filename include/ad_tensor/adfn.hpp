@@ -17,7 +17,7 @@ namespace ad_tensor { class adfn_t
     {
         friend class record_t;
     private:
-        std::vector<torch::Tensor> con_;
+        std::vector<at::Tensor>    con_;
         devel::agraph_t            par_;
         devel::agraph_t            var_;
         size_t                     rng_index_;

@@ -11,7 +11,7 @@
 TEST(examples, record)  {
     using ad_tensor::record_t;
     using ad_tensor::ad_t;
-    using torch::Tensor;
+    using at::Tensor;
     //
     Tensor dom_par = torch::tensor( {2.0, 3.0} );
     Tensor dom_var = torch::tensor( {4.0, 5.0} );

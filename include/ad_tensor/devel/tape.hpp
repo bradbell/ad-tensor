@@ -64,7 +64,7 @@ namespace ad_tensor { class record_t; }
 namespace ad_tensor { namespace devel { class tape_t {
     friend class ad_tensor::record_t;
 private:
-    std::vector<torch::Tensor> con_;
+    std::vector<at::Tensor>    con_;
     agraph_t                   par_;
     agraph_t                   var_;
     size_t                     tape_id_;

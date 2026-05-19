@@ -97,11 +97,11 @@ namespace ad_tensor { namespace devel { struct op_base_t
     // END_OP_ENUM
     //
     // BEGIN_TENSOR_AT_INDEX
-    static inline const torch::Tensor& tensor_at_index(
+    static inline const at::Tensor& tensor_at_index(
         ad_type_t                        ad_type ,
         size_t                           index   ,
-        const std::vector<torch::Tensor> con_vec ,
-        const std::vector<torch::Tensor> par_vec )
+        const std::vector<at::Tensor> con_vec ,
+        const std::vector<at::Tensor> par_vec )
     // END_TENSOR_AT_INDEX
     {   switch( ad_type ) {
             //
@@ -122,12 +122,12 @@ namespace ad_tensor { namespace devel { struct op_base_t
     }
     //
     // BEGIN_WITH_VAR_TENSOR_AT_INDEX
-    static inline const torch::Tensor& tensor_at_index(
+    static inline const at::Tensor& tensor_at_index(
         ad_type_t                        ad_type ,
         size_t                           index   ,
-        const std::vector<torch::Tensor> con_vec ,
-        const std::vector<torch::Tensor> par_vec ,
-        const std::vector<torch::Tensor> var_vec )
+        const std::vector<at::Tensor>    con_vec ,
+        const std::vector<at::Tensor>    par_vec ,
+        const std::vector<at::Tensor>    var_vec )
     // END_WITH_VAR_TENSOR_AT_INDEX
     {   switch( ad_type ) {
             //
@@ -156,8 +156,8 @@ namespace ad_tensor { namespace devel { struct op_base_t
         bool                              trace       ,
         size_t                            op_index    ,
         const agraph_t&                   agraph      ,
-        const std::vector<torch::Tensor>& con_vec     ,
-        std::vector<torch::Tensor>&       par_vec     ) const = 0;
+        const std::vector<at::Tensor>&    con_vec     ,
+        std::vector<at::Tensor>&          par_vec     ) const = 0;
     // END_FORWARD_PAR
 
 };

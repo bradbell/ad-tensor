@@ -72,13 +72,13 @@ private:
     size_t           tape_id_;
     ad_type_t        ad_type_;
     size_t           index_;
-    torch::Tensor    tensor_;
+    at::Tensor    tensor_;
     // END_PRIVATE_DATA
 
     // BEGIN_PRIVATE_CTOR
     ad_t(
         size_t tape_id, ad_type_t ad_type, size_t index,
-        torch::Tensor&& tensor
+        at::Tensor&& tensor
     )
     : tape_id_(tape_id), ad_type_(ad_type), index_(index), tensor_(tensor)
     { }
@@ -86,12 +86,12 @@ private:
 
 public:
     // BEGIN_PUBLIC_CTOR
-    ad_t( torch::Tensor&& tensor )
+    ad_t( at::Tensor&& tensor )
     // END_PUBLIC_CTOR
     : tape_id_(0), ad_type_(ad_type_t::constant), tensor_(tensor)
     { }
     // BEGIN_TO_TENSOR
-    const torch::Tensor& tensor(void) const
+    const at::Tensor& tensor(void) const
     // END_TO_TENSOR
     {   return tensor_; }
     //

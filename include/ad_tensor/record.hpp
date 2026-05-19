@@ -103,7 +103,7 @@ public:
     // BEGIN_START
     // auto [adom_par, adom_var] = ad_tensor::record_t::start(dom_par, dom_var)
     static std::tuple<ad_t, ad_t> start(
-        torch::Tensor&& dom_par, torch::Tensor&& dom_var
+        at::Tensor&& dom_par, at::Tensor&& dom_var
     )
     // END_START
     {   //

@@ -10,7 +10,7 @@
 //
 TEST(examples, ad)  {
     using ad_tensor::ad_t;
-    using torch::Tensor;
+    using at::Tensor;
     //
     Tensor lhs     = torch::tensor( {2.0, 3.0} );
     Tensor rhs     = torch::tensor( {4.0, 5.0} );

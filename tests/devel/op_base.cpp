@@ -23,7 +23,7 @@ namespace {
     using std::vector;
     //
     // Tensor
-    using torch::Tensor;
+    using at::Tensor;
     //
     // add_op_t
     class add_op_t : public  op_base_t {
@@ -36,11 +36,11 @@ namespace {
         //
         // forward_par
         void forward_par(
-            bool                              trace       ,
-            size_t                            op_index    ,
-            const agraph_t&                   agraph      ,
-            const std::vector<torch::Tensor>& con_vec     ,
-            std::vector<torch::Tensor>&       par_vec     ) const override
+            bool                       trace       ,
+            size_t                     op_index    ,
+            const agraph_t&            agraph      ,
+            const std::vector<Tensor>& con_vec     ,
+            std::vector<Tensor>&       par_vec     ) const override
         {
             // op_index
             EXPECT_LT( 0, op_index );
@@ -64,14 +64,14 @@ namespace {
             // lhs_tensor
             size_t        lhs_index   = arg_all.at(arg_first);
             ad_type_t     lhs_ad_type = ad_type_all.at(arg_first);
-            torch::Tensor lhs_tensor  = tensor_at_index(
+            Tensor        lhs_tensor  = tensor_at_index(
                lhs_ad_type, lhs_index, con_vec, par_vec
             );
             //
             // rhs_tensor
             size_t        rhs_index   = arg_all.at(arg_first + 1);
             ad_type_t     rhs_ad_type = ad_type_all.at(arg_first + 1);
-            torch::Tensor rhs_tensor  = tensor_at_index(
+            Tensor        rhs_tensor  = tensor_at_index(
                rhs_ad_type, rhs_index, con_vec, par_vec
             );
             //
