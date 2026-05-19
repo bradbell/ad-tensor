@@ -16,9 +16,11 @@ TEST(examples, start_recording)  {
     Tensor dom_par = torch::tensor( {2.0, 3.0} );
     Tensor dom_var = torch::tensor( {4.0, 5.0} );
     //
-    auto [ adom_par, adom_var ] = start_recording(
+    std::tuple<ad_t, ad_t> temp = start_recording(
         dom_par.clone(), dom_var.clone()
     );
+    auto const&& [ adom_par, adom_var ] = std::move(temp);
+    //
     bool equal;
     equal = torch::all( adom_par.tensor() == dom_par ).item<bool>();
     EXPECT_TRUE(equal);
