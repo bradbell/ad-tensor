@@ -10,8 +10,8 @@
     rhs
 }
 
-The ad_t Class
-##############
+The AD Tensor Class
+###################
 {xrst_literal ,
     BEGIN_AD_CLASS, END_AD_CLASS
 }

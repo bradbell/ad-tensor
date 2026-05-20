@@ -9,7 +9,7 @@
     enum
 }
 
-The Types Corresponding to AD objects
+The Types Corresponding to AD tensors
 #####################################
 
 Enum Values
@@ -21,9 +21,9 @@ Enum Values
 */
 // BEGIN_SORT_THIS_LINE_PLUS_3
 namespace ad_tensor { namespace devel { enum struct ad_type_t {
-    constant,  // AD object does not depend on domain parameters or variables
-    parameter, // AD object does not depend on domain variables
-    variable,  // AD object depends on the domain variables
-    none,      // This does not correspond to an AD object
+    constant,  // AD tensor does not depend on domain parameters or variables
+    parameter, // AD tensor does not depend on domain variables
+    variable,  // AD tensor depends on the domain variables
+    none,      // This does not correspond to an AD tensor
 }; } }
 // END_SORT_THIS_LINE_MINUS_3

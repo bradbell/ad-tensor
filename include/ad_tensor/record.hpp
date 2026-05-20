@@ -34,12 +34,12 @@ derivatives with respect to this tensor.
 
 adom_par
 ********
-This is the domain parameter AD object. Dependencies with respect to this
+This is the domain parameter AD tensor. Dependencies with respect to this
 object will be recorded.
 
 adom_var
 ********
-This is the domain variable AD object. The recording can be used to compute
+This is the domain variable AD tensor. The recording can be used to compute
 derivatives with respect to this object.
 
 Example
@@ -71,7 +71,7 @@ The recording started by calling
 
 arange
 ******
-This AD object specifies the range tensor for the AD function *adfn* .
+This AD tensor specifies the range tensor for the AD function *adfn* .
 
 adfn
 ****
