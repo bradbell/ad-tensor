@@ -5,8 +5,8 @@
 #include <gtest/gtest.h>
 #include <torch/torch.h>
 //
+#include <ad_tensor/ad_type.hpp>
 #include <ad_tensor/devel/op_enum.hpp>
-#include <ad_tensor/devel/ad_type.hpp>
 #include <ad_tensor/devel/agraph.hpp>
 #include <ad_tensor/devel/op_base.hpp>
 //
@@ -15,7 +15,7 @@ namespace {
     //
     // op_enum_t, ad_type_t
     using ad_tensor::devel::op_enum_t;
-    using ad_tensor::devel::ad_type_t;
+    using ad_tensor::ad_type_t;
     using ad_tensor::devel::agraph_t;
     using ad_tensor::devel::op_base_t;
     //

@@ -4,7 +4,7 @@
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
 /*
-{xrst_begin ad_type dev}
+{xrst_begin ad_type usr}
 {xrst_spell
     enum
 }
@@ -42,10 +42,10 @@ Enum Values
 {xrst_end ad_type}
 */
 // BEGIN_SORT_THIS_LINE_PLUS_3
-namespace ad_tensor { namespace devel { enum struct ad_type_t {
+namespace ad_tensor { enum struct ad_type_t {
     constant,
     parameter,
     variable,
     none,      // This does not correspond to an AD tensor
-}; } }
+}; }
 // END_SORT_THIS_LINE_MINUS_3

@@ -6,8 +6,8 @@
 /*
 */
 #include <vector>
+#include <ad_tensor/ad_type.hpp>
 #include <ad_tensor/devel/agraph.hpp>
-#include <ad_tensor/devel/ad_type.hpp>
 //
 namespace ad_tensor { class record_t; }
 //
@@ -21,7 +21,7 @@ namespace ad_tensor { class adfn_t
         devel::agraph_t            par_;
         devel::agraph_t            var_;
         size_t                     rng_index_;
-        devel::ad_type_t           rng_ad_type_;
+        ad_type_t                  rng_ad_type_;
     public:
         //
         // BEGIN_DEFAULT_CTOR
@@ -31,7 +31,7 @@ namespace ad_tensor { class adfn_t
         , par_()
         , var_()
         , rng_index_(0)
-        , rng_ad_type_(devel::ad_type_t::constant)
+        , rng_ad_type_(ad_type_t::constant)
         { }
         //
         // BEGIN_IS_EMPTY

@@ -89,16 +89,15 @@ Example
 */
 #include <torch/torch.h>
 //
-#include <ad_tensor/devel/ad_type.hpp>
-#include <ad_tensor/devel/op_enum.hpp>
-#include <ad_tensor/devel/tape.hpp>
 #include <ad_tensor/ad.hpp>
 #include <ad_tensor/adfn.hpp>
+#include <ad_tensor/ad_type.hpp>
+#include <ad_tensor/devel/op_enum.hpp>
+#include <ad_tensor/devel/tape.hpp>
 //
 namespace ad_tensor { class record_t {
 private:
     typedef devel::tape_t    tape_t;
-    typedef devel::ad_type_t ad_type_t;
 public:
     // BEGIN_START
     // auto [adom_par, adom_var] = ad_tensor::record_t::start(dom_par, dom_var)

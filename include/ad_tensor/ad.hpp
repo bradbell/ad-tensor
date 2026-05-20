@@ -49,12 +49,6 @@ Example
 The ad_t Class Private Elements
 ###############################
 
-ad_type_t
-*********
-{xrst_literal ,
-    BEGIN_AD_TYPE, END_AD_TYPE
-}
-
 Member Data
 ***********
 {xrst_literal ,
@@ -73,7 +67,7 @@ Constructor
 */
 #include <torch/torch.h>
 //
-#include <ad_tensor/devel/ad_type.hpp>
+#include <ad_tensor/ad_type.hpp>
 //
 // BINARY_OP
 # define BINARY_OP(op) \
@@ -93,9 +87,6 @@ namespace ad_tensor { class ad_t
     //
 // BEGIN_PRIVATE
 private:
-    // BEGIN_AD_TYPE
-    typedef devel::ad_type_t ad_type_t;
-    // END_AD_TYPE
     //
     // BEGIN_MEMBER_DATA
     size_t        tape_id_;
