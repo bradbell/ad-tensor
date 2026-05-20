@@ -97,6 +97,7 @@ Example
 //
 namespace ad_tensor { class record_t {
 private:
+    typedef devel::op_enum_t op_enum_t;
     typedef devel::tape_t    tape_t;
 public:
     // BEGIN_START
@@ -131,10 +132,11 @@ public:
         }
         //
         // this_threads_tape: tape_id, recording, par.op_vec, var.op_vec
+        // use nop for op_index equal to zero (corresponds to domain values)
         tape.tape_id_   = tape_id;
         tape.recording_ = true;
-        tape.par_.op_vec.push_back( devel::op_enum_t::dom );
-        tape.var_.op_vec.push_back( devel::op_enum_t::dom );
+        tape.par_.op_vec.push_back( op_enum_t::nop );
+        tape.var_.op_vec.push_back( op_enum_t::nop );
         //
         size_t index = 0;
         return {
