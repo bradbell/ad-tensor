@@ -19,12 +19,12 @@ is the vector of constant values.
 par
 ***
 is the acyclic graph for the operation sequence that determines
-the dependent parameters.
+the dependent parameter tensors.
 
 var
 ***
 is the acyclic graph for the operation sequence that determines
-the dependent variables.
+the dependent variable tensors.
 
 tape_id
 *******

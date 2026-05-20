@@ -12,6 +12,28 @@
 The Types Corresponding to AD tensors
 #####################################
 
+constant
+********
+a constant tensor does not depend on the
+domain parameter tensor :ref:`record_start@dom_par` or
+the domain variable tensor :ref:`record_start@dom_var` .
+The elements of a constant tensor are called constants.
+
+parameter
+*********
+a parameter tensor depends on the
+domain parameter tensor but not on the domain variable tensor.
+The elements of a parameter tensor are called parameters.
+
+variable
+********
+a variable tensor depends on the domain variable tensor.
+The elements of a variable tensor are called variables.
+
+none
+****
+The type none is used when the ad_type does not correspond to an AD tensor.
+
 Enum Values
 ***********
 {xrst_literal ,
@@ -21,9 +43,9 @@ Enum Values
 */
 // BEGIN_SORT_THIS_LINE_PLUS_3
 namespace ad_tensor { namespace devel { enum struct ad_type_t {
-    constant,  // AD tensor does not depend on domain parameters or variables
-    parameter, // AD tensor does not depend on domain variables
-    variable,  // AD tensor depends on the domain variables
+    constant,
+    parameter,
+    variable,
     none,      // This does not correspond to an AD tensor
 }; } }
 // END_SORT_THIS_LINE_MINUS_3

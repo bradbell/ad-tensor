@@ -48,15 +48,15 @@ Is the :ref:`agraph-name` for the operation sequence that we are using.
 
 con_vec
 *******
-is the vector containing all the constants.
+is the vector containing all the constant tensors.
 
 par_vec
 *******
-is the vector containing all the parameters.
+is the vector containing all the parameter tensors.
 
 var_vec
 *******
-is the vector containing all the variables.
+is the vector containing all the variable tensors..
 
 tensor_at_index
 ***************
@@ -71,7 +71,7 @@ and hence its lifetime is restricted to the life of the vector.
 
 forward_par
 ***********
-For this function, ad_type_all[arg_index] is not variable.
+For this function, ad_type_all[arg_index] is never variable.
 In addition, par_vec[index] for index < op_index is an input for this function
 and par_vec[op_index] is an output.
 {xrst_literal ,
