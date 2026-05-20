@@ -11,9 +11,9 @@ echo_eval() {
    eval $*
 }
 # -----------------------------------------------------------------------------
-if [ "$0" != "bin/check_build.sh" ]
+if [ "$0" != "bin/check_gtest.sh" ]
 then
-   echo "bin/check_build.sh: must be executed from its parent directory"
+   echo "bin/check_gtest.sh: must be executed from its parent directory"
    exit 1
 fi
 # -----------------------------------------------------------------------------
@@ -32,5 +32,5 @@ echo_eval ./examples/examples
 echo_eval ninja tests
 echo_eval ./tests/tests
 #
-echo 'check_tests.sh: OK'
+echo 'check_gtest.sh: OK'
 exit 0
