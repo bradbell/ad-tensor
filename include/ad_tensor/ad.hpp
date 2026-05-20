@@ -10,7 +10,7 @@
     rhs
 }
 
-The ad_t class
+The ad_t Class
 ##############
 {xrst_literal ,
     BEGIN_AD_CLASS, END_AD_CLASS
@@ -44,6 +44,32 @@ Example
 
 {xrst_end ad}
 ------------------------------------------------------------------------------
+{xrst_begin ad_private dev}
+
+The ad_t Class Private Elements
+###############################
+
+ad_type_t
+*********
+{xrst_literal ,
+    BEGIN_AD_TYPE, END_AD_TYPE
+}
+
+Member Data
+***********
+{xrst_literal ,
+    BEGIN_MEMBER_DATA, END_MEMBER_DATA
+}
+
+Constructor
+***********
+{xrst_literal ,
+    BEGIN_PRIVATE_CTOR, END_PRIVATE_CTOR
+}
+
+
+{xrst_end ad_private}
+------------------------------------------------------------------------------
 */
 #include <torch/torch.h>
 //
@@ -65,21 +91,21 @@ namespace ad_tensor { class ad_t
     // record_t
     friend class record_t;
     //
+// BEGIN_PRIVATE
 private:
+    // BEGIN_AD_TYPE
     typedef devel::ad_type_t ad_type_t;
+    // END_AD_TYPE
     //
-    // BEGIN_PRIVATE_DATA
-    size_t           tape_id_;
-    ad_type_t        ad_type_;
-    size_t           index_;
+    // BEGIN_MEMBER_DATA
+    size_t        tape_id_;
+    ad_type_t     ad_type_;
+    size_t        index_;
     at::Tensor    tensor_;
-    // END_PRIVATE_DATA
-
+    // END_MEMBER_DATA
+    //
     // BEGIN_PRIVATE_CTOR
-    ad_t(
-        size_t tape_id, ad_type_t ad_type, size_t index,
-        at::Tensor&& tensor
-    )
+    ad_t( size_t tape_id, ad_type_t ad_type, size_t index, at::Tensor&& tensor)
     : tape_id_(tape_id), ad_type_(ad_type), index_(index), tensor_(tensor)
     { }
     // END_PRIVATE_CTOR
