@@ -135,13 +135,13 @@ public:
         tape.tape_id_   = tape_id;
         tape.recording_ = true;
         //
-        // tape.par_: n_dom, op_vec
-        tape.par_.n_dom = 1;
-        tape.par_.op_vec.push_back( op_enum_t::dom );
+        // tape.par_: n_dom_, op_vec_
+        tape.par_.n_dom_ = 1;
+        tape.par_.op_vec_.push_back( op_enum_t::dom );
         //
-        // tape.var_: n_dom, op_vec
-        tape.var_.n_dom = 1;
-        tape.var_.op_vec.push_back( op_enum_t::dom );
+        // tape.var_: n_dom_, op_vec_
+        tape.var_.n_dom_ = 1;
+        tape.var_.op_vec_.push_back( op_enum_t::dom );
         //
         size_t index = 0;
         return {

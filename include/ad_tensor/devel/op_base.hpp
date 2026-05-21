@@ -71,7 +71,7 @@ and hence its lifetime is restricted to the life of the vector.
 
 forward_par
 ***********
-For this function, ad_type_all[arg_index] is never variable.
+For this function, ad_type_all_[arg_index] is never variable.
 In addition, par_vec[index] for index < op_index is an input for this function
 and par_vec[op_index] is an output.
 {xrst_literal ,
