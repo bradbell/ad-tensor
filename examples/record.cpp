@@ -6,6 +6,7 @@
 #include <gtest/gtest.h>
 #include <torch/torch.h>
 //
+#include <ad_tensor/ad.hpp>
 #include <ad_tensor/record.hpp>
 //
 TEST(examples, record)  {
@@ -14,14 +15,18 @@ TEST(examples, record)  {
     using at::Tensor;
     using std::vector;
     //
+    // dom_par, dom_var
     vector<Tensor> dom_par = { torch::tensor( {2.0, 3.0} ) };
     vector<Tensor> dom_var = { torch::tensor( {4.0, 5.0} ) };
     //
-    // record_start
+    // adom_par, adom_var
     auto [ adom_par, adom_var ] = record_t::start(dom_par, dom_var);
     //
+    // arange
+    std::vector<ad_t> arange = { adom_par[0], adom_var[0] };
+    //
     // record_stop
-    record_t::stop( adom_var[0]  );
+    record_t::stop( arange  );
     //
     {   Tensor check =  adom_par[0].tensor() == dom_par[0];
         bool equal   = torch::all(check).item<bool>();

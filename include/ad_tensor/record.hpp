@@ -103,7 +103,7 @@ public:
     // BEGIN_START
     // auto [adom_par, adom_var] = ad_tensor::record_t::start(dom_par, dom_var)
     static std::tuple< std::vector<ad_t>, std::vector<ad_t> > start(
-        const std::vector<at::Tensor>& dom_par, 
+        const std::vector<at::Tensor>& dom_par,
         const std::vector<at::Tensor>& dom_var
     )
     // END_START
@@ -166,7 +166,7 @@ public:
     }
     // BEGIN_STOP
     // adfn = ad_tensor::record_t::stop(arnage)
-    static adfn_t stop(const ad_t& arange)
+    static adfn_t stop(const std::vector<ad_t>& arange)
     // END_STOP
     {   //
         // tape
@@ -191,8 +191,10 @@ public:
         adfn.var_.swap( tape.var_ );
         //
         // adfn
-        adfn.rng_index_   = arange.index_;
-        adfn.rng_ad_type_ = arange.ad_type_;
+        for(size_t i = 0; i < arange.size(); ++i)
+        {   adfn.rng_index_.push_back( arange.at(i).index_ );
+            adfn.rng_ad_type_.push_back( arange.at(i).ad_type_ );
+        }
         //
         return adfn;
     }

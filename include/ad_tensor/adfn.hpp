@@ -17,26 +17,32 @@ namespace ad_tensor { class adfn_t
     {
         friend class record_t;
     private:
-        std::vector<at::Tensor>    con_;
         devel::agraph_t            par_;
         devel::agraph_t            var_;
-        size_t                     rng_index_;
-        ad_type_t                  rng_ad_type_;
+        std::vector<at::Tensor>    con_;
+        std::vector<size_t>        rng_index_;
+        std::vector<ad_type_t>     rng_ad_type_;
     public:
         //
         // BEGIN_DEFAULT_CTOR
         adfn_t()
         // END_DEFAULT_CTOR
-        : con_()
-        , par_()
+        : par_()
         , var_()
-        , rng_index_(0)
-        , rng_ad_type_(ad_type_t::constant)
+        , con_()
+        , rng_index_()
+        , rng_ad_type_()
         { }
         //
         // BEGIN_IS_EMPTY
         bool is_empty(void) const
         // END_IS_EMPTY
-        { return con_.empty() && par_.is_empty() && var_.is_empty(); }
+        { return
+            par_.is_empty() &&
+            var_.is_empty() &&
+            con_.empty() &&
+            rng_index_.empty() &&
+            rng_ad_type_.empty();
+        }
     };
 }
