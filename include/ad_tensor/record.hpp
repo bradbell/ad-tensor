@@ -24,23 +24,21 @@ The recording started by this call is stopped by calling
 
 dom_par
 *******
-This is the domain parameter tensor. Dependencies with respect to this
-tensor will be recorded.
+This is the domain parameter vector of tensors.
 
 dom_var
 *******
-This is the domain variable tensor. The recording can be used to compute
-derivatives with respect to this tensor.
+This is the domain variable vector of tensors.
 
 adom_par
 ********
-This is the domain parameter AD tensor. Dependencies with respect to this
-object will be recorded.
+This is the domain parameter vector of AD tensors.
+Dependencies with respect to these tensors will be recorded.
 
 adom_var
 ********
-This is the domain variable AD tensor. The recording can be used to compute
-derivatives with respect to this object.
+This is the domain variable vectors of AD tensors.
+The recording can be used to compute derivatives with respect to these tensors.
 
 Example
 *******
@@ -71,7 +69,7 @@ The recording started by calling
 
 arange
 ******
-This AD tensor specifies the range tensor for the AD function *adfn* .
+This vector of AD tensors specifies the range for the AD function *adfn* .
 
 adfn
 ****
