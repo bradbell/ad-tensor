@@ -20,8 +20,8 @@ Enum Values
 namespace ad_tensor { namespace devel { enum struct op_enum_t {
     add,  // addition
     div,  // division
+    dom,  // domain tensor
     mul,  // multiplication
-    nop,  // no operation (result is not used or already computed)
     sub,  // subtraction
     test, // used for testing
 }; } }

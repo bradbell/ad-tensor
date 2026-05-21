@@ -90,7 +90,7 @@ TEST(tests_devel, op_base)  {
     EXPECT_EQ( op_enum_t::add, add_op.op_enum() );
     //
     // trace, arg_start, arg_all, ad_type_all, con_vec, par_vec
-    op_enum_t              nop         = op_enum_t::nop;
+    op_enum_t              dom         = op_enum_t::dom;
     op_enum_t              add         = op_enum_t::add;
     ad_type_t              par         = ad_type_t::parameter;
     Tensor                 empty       = torch::empty( {0} );
@@ -100,7 +100,7 @@ TEST(tests_devel, op_base)  {
     std::vector<Tensor>    con_vec     = {};
     std::vector<Tensor>    par_vec     = {ones, empty};
     agraph_t               agraph;
-    agraph.op_vec     = std::vector<op_enum_t>( {nop, add} );
+    agraph.op_vec     = std::vector<op_enum_t>( {dom, add} );
     agraph.arg_start  = std::vector<size_t>( {0, 0, 2} );
     agraph.arg_all    = std::vector<size_t>( {0, 0} );
     agraph.ad_type_all = std::vector<ad_type_t>( {par, par} );

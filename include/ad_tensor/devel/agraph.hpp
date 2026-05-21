@@ -12,6 +12,10 @@ Acyclic Graph Representation of an Operation Sequence
     BEGIN_AGRAPH, END_AGRAPH
 }
 
+n_dom
+*****
+is the number of domain tensors in this tape.
+
 op_vec
 ******
 This vector has one element for each operation in the operation sequence.
@@ -60,18 +64,20 @@ is the tape used to record AD operations on this thread.
 
 // BEGIN_AGRAPH
 namespace ad_tensor { namespace devel { struct agraph_t {
+    size_t                 n_dom;
     std::vector<op_enum_t> op_vec;
     std::vector<size_t>    arg_start;
     std::vector<size_t>    arg_all;
     std::vector<ad_type_t> ad_type_all;
     //
     // default constructor
-    agraph_t() : op_vec() , arg_start() , arg_all(), ad_type_all()
+    agraph_t() : n_dom(0), op_vec(), arg_start() , arg_all(), ad_type_all()
     { }
     //
     // swap
     void swap(agraph_t& other) noexcept
-    {   op_vec.swap(      other.op_vec);
+    {   std::swap( n_dom, other.n_dom );
+        op_vec.swap(      other.op_vec);
         arg_start.swap(   other.arg_start);
         arg_all.swap(     other.arg_all);
         ad_type_all.swap( other.ad_type_all);

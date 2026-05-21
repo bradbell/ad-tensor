@@ -131,12 +131,17 @@ public:
             ++next_tape_id;
         }
         //
-        // this_threads_tape: tape_id, recording, par.op_vec, var.op_vec
-        // use nop for op_index equal to zero (corresponds to domain values)
+        // tape: tape_id, recording
         tape.tape_id_   = tape_id;
         tape.recording_ = true;
-        tape.par_.op_vec.push_back( op_enum_t::nop );
-        tape.var_.op_vec.push_back( op_enum_t::nop );
+        //
+        // tape.par_: n_dom, op_vec
+        tape.par_.n_dom = 1;
+        tape.par_.op_vec.push_back( op_enum_t::dom );
+        //
+        // tape.var_: n_dom, op_vec
+        tape.var_.n_dom = 1;
+        tape.var_.op_vec.push_back( op_enum_t::dom );
         //
         size_t index = 0;
         return {
