@@ -102,8 +102,9 @@ private:
 public:
     // BEGIN_START
     // auto [adom_par, adom_var] = ad_tensor::record_t::start(dom_par, dom_var)
-    static std::tuple<ad_t, ad_t> start(
-        at::Tensor&& dom_par, at::Tensor&& dom_var
+    static std::tuple< std::vector<ad_t>, std::vector<ad_t> > start(
+        const std::vector<at::Tensor>& dom_par, 
+        const std::vector<at::Tensor>& dom_var
     )
     // END_START
     {   //
@@ -135,19 +136,33 @@ public:
         tape.tape_id_   = tape_id;
         tape.recording_ = true;
         //
+        // adom_par
         // tape.par_: n_dom_, op_vec_
-        tape.par_.n_dom_ = 1;
-        tape.par_.op_vec_.push_back( op_enum_t::dom );
+        ad_type_t parameter = ad_type_t::parameter;
+        tape.par_.n_dom_     = dom_par.size();
+        std::vector<ad_t> adom_par;
+        for(size_t index = 0; index < dom_par.size(); ++index)
+        {   tape.par_.op_vec_.push_back( op_enum_t::dom );
+            adom_par.push_back( ad_t(
+                tape_id, parameter, index, dom_par[index].clone()
+            ) );
+        }
         //
+        // adom_var
         // tape.var_: n_dom_, op_vec_
-        tape.var_.n_dom_ = 1;
-        tape.var_.op_vec_.push_back( op_enum_t::dom );
-        //
-        size_t index = 0;
-        return {
-            ad_t(tape_id, ad_type_t::parameter, index, std::move(dom_par) ) ,
-            ad_t(tape_id, ad_type_t::variable,  index, std::move(dom_var) )
-        };
+        ad_type_t variable = ad_type_t::variable;
+        tape.var_.n_dom_    = dom_var.size();
+        std::vector<ad_t> adom_var;
+        for(size_t index = 0; index < dom_var.size(); ++index)
+        {   tape.var_.op_vec_.push_back( op_enum_t::dom );
+            adom_var.push_back( ad_t(
+                tape_id, variable, index, dom_var[index].clone()
+            ) );
+        }
+
+        return std::tuple< std::vector<ad_t>, std::vector<ad_t> > (
+            adom_par, adom_var
+        );
     }
     // BEGIN_STOP
     // adfn = ad_tensor::record_t::stop(arnage)
