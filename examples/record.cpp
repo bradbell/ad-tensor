@@ -20,7 +20,14 @@ TEST(examples, record)  {
     vector<Tensor> dom_var = { torch::tensor( {4.0, 5.0} ) };
     //
     // adom_par, adom_var
-    auto [ adom_par, adom_var ] = record_t::start(dom_par, dom_var);
+    auto [ adom_par, adom_var ] = record_t::start(
+        std::move(dom_par), std::move(dom_var) 
+    );
+    //
+    // dom_par, dom_var
+    // change from unspecified state
+    dom_par = vector<Tensor>();
+    dom_var = vector<Tensor>();
     //
     // arange
     std::vector<ad_t> arange = { adom_par[0], adom_var[0] };
@@ -28,11 +35,11 @@ TEST(examples, record)  {
     // record_stop
     record_t::stop( arange  );
     //
-    {   Tensor check =  adom_par[0].tensor() == dom_par[0];
+    {   Tensor check =  adom_par[0].tensor() == torch::tensor( {2.0, 3.0} );
         bool equal   = torch::all(check).item<bool>();
         EXPECT_TRUE(equal);
     }
-    {   Tensor check =  adom_var[0].tensor() == dom_var[0];
+    {   Tensor check =  adom_var[0].tensor() == torch::tensor( {4.0, 5.0} );
         bool equal   = torch::all(check).item<bool>();
         EXPECT_TRUE(equal);
     }

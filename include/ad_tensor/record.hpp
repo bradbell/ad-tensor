@@ -101,8 +101,8 @@ public:
     // BEGIN_START
     // auto [adom_par, adom_var] = ad_tensor::record_t::start(dom_par, dom_var)
     static std::tuple< std::vector<ad_t>, std::vector<ad_t> > start(
-        const std::vector<at::Tensor>& dom_par,
-        const std::vector<at::Tensor>& dom_var
+        const std::vector<at::Tensor>&& dom_par,
+        const std::vector<at::Tensor>&& dom_var
     )
     // END_START
     {   //
