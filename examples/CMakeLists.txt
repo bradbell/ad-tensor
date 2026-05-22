@@ -8,4 +8,8 @@ add_executable(examples
     record.cpp
 )
 #
-target_link_libraries(examples GTest::gtest_main ${TORCH_LIBRARIES})
+target_link_libraries(examples
+    ad_tensor
+    GTest::gtest_main
+    ${TORCH_LIBRARIES}
+)

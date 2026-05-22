@@ -2,15 +2,6 @@
 # SPDX-FileCopyrightText: Bradley M. Bell <bradbell@seanet.com>
 # SPDX-FileContributor: 2026 Bradley M. Bell
 # -----------------------------------------------------------------------------
-#
-add_executable(tests
-    devel/op_enum.cpp
-    devel/op_base.cpp
-    devel/tape.cpp
-)
-#
-target_link_libraries(tests
-    ad_tensor
-    GTest::gtest_main
-    ${TORCH_LIBRARIES}
+add_library(ad_tensor SHARED
+    record.cpp
 )

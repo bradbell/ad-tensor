@@ -19,8 +19,10 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${TORCH_CXX_FLAGS}")
 include_directories( ${TORCH_INCLUDE_DIRS} )
 include_directories( ${ad_tensor_SOURCE_DIR}/include )
 #
+# src
+add_subdirectory(src)
 #
-# If debug build
+# examples, tests
 if( include_tests )
     find_package(GTest REQUIRED)
     add_subdirectory(examples)

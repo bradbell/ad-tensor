@@ -10,8 +10,8 @@ AD Tensor User Documentation
 
 {xrst_toc_table
     include/ad_tensor/ad.hpp
-    include/ad_tensor/record.hpp
     include/ad_tensor/ad_type.hpp
+    src/record.cpp
 }
 
 {xrst_end user}
