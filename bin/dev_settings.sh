@@ -78,6 +78,7 @@ contributor_list='
 no_copyright_list='
     .gitignore
     .readthedocs.yaml
+    typos.toml
     xrst.toml
 '
 # END_SORT_THIS_LINE_MINUS_2

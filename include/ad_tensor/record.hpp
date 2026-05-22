@@ -44,6 +44,7 @@ Example
 *******
 {xrst_literal ,
     examples/record.cpp
+    BEGIN_CPP, END_CPP
 }
 
 {xrst_end record_start}
@@ -81,6 +82,7 @@ Example
 *******
 {xrst_literal ,
     examples/record.cpp
+    BEGIN_CPP, END_CPP
 }
 
 {xrst_end record_stop}
@@ -93,107 +95,120 @@ Example
 #include <ad_tensor/devel/op_enum.hpp>
 #include <ad_tensor/devel/tape.hpp>
 //
-namespace ad_tensor { class record_t {
+namespace ad_tensor { // BEGIN_NAMESPACE_AD_TENSOR
+//
+// ---------------------------------------------------------------------------
+// record_t
+class record_t {
 private:
     typedef devel::op_enum_t op_enum_t;
     typedef devel::tape_t    tape_t;
 public:
     // BEGIN_START
-    // auto [adom_par, adom_var] = ad_tensor::record_t::start(dom_par, dom_var)
+    // auto [adom_par, adom_var] = record_t::start(dom_par, dom_var)
     static std::tuple< std::vector<ad_t>, std::vector<ad_t> > start(
-        const std::vector<at::Tensor>&& dom_par,
-        const std::vector<at::Tensor>&& dom_var
-    )
+        std::vector<at::Tensor>&& dom_par,
+        std::vector<at::Tensor>&& dom_var
+    );
     // END_START
-    {   //
-        // tape
-        tape_t& tape = devel::this_threads_tape;
-        //
-        // next_tape_id
-        // Since c++11, initialization of local static variables is thread safe.
-        static size_t next_tape_id = 1;
-        //
-        // tape_id_mutex
-        static std::mutex tape_id_mutex;
-        //
-        assert( ! tape.recording() &&
-            "record_start: this threads tape is already recording"
-        );
-        assert( tape.is_empty() &&
-            "record_start: a tape that is not recording should be empty"
-        );
-        //
-        // tape_id, next_tape_id
-        size_t tape_id;
-        {   std::lock_guard<std::mutex> lock(tape_id_mutex);
-            tape_id = next_tape_id;
-            ++next_tape_id;
-        }
-        //
-        // tape: tape_id, recording
-        tape.tape_id_   = tape_id;
-        tape.recording_ = true;
-        //
-        // adom_par
-        // tape.par_: n_dom_, op_vec_
-        ad_type_t parameter = ad_type_t::parameter;
-        tape.par_.n_dom_     = dom_par.size();
-        std::vector<ad_t> adom_par;
-        for(size_t index = 0; index < dom_par.size(); ++index)
-        {   tape.par_.op_vec_.push_back( op_enum_t::dom );
-            adom_par.push_back( ad_t(
-                tape_id, parameter, index, dom_par[index].clone()
-            ) );
-        }
-        //
-        // adom_var
-        // tape.var_: n_dom_, op_vec_
-        ad_type_t variable = ad_type_t::variable;
-        tape.var_.n_dom_    = dom_var.size();
-        std::vector<ad_t> adom_var;
-        for(size_t index = 0; index < dom_var.size(); ++index)
-        {   tape.var_.op_vec_.push_back( op_enum_t::dom );
-            adom_var.push_back( ad_t(
-                tape_id, variable, index, dom_var[index].clone()
-            ) );
-        }
-
-        return std::tuple< std::vector<ad_t>, std::vector<ad_t> > (
-            adom_par, adom_var
-        );
-    }
     // BEGIN_STOP
-    // adfn = ad_tensor::record_t::stop(arnage)
-    static adfn_t stop(const std::vector<ad_t>& arange)
+    // adfn = record_t::stop(arnage)
+    static adfn_t stop(const std::vector<ad_t>& arange);
     // END_STOP
-    {   //
-        // tape
-        tape_t& tape = devel::this_threads_tape;
-        //
-        assert( tape.recording() &&
-            "record::stop: this threads tape is not recording"
-        );
-        assert( ! tape.is_empty() &&
-            "record_stop: a tape that is recording should not be empty"
-        );
-        //
-        // tape
-        tape.recording_ = false;
-        //
-        // adfn
-        adfn_t adfn;
-        //
-        // adfn, tape
-        adfn.con_.swap( tape.con_ );
-        adfn.par_.swap( tape.par_ );
-        adfn.var_.swap( tape.var_ );
-        //
-        // adfn
-        for(size_t i = 0; i < arange.size(); ++i)
-        {   adfn.rng_index_.push_back( arange.at(i).index_ );
-            adfn.rng_ad_type_.push_back( arange.at(i).ad_type_ );
-        }
-        //
-        return adfn;
+};
+// ---------------------------------------------------------------------------
+std::tuple< std::vector<ad_t>, std::vector<ad_t> > record_t::start(
+        std::vector<at::Tensor>&& dom_par ,
+        std::vector<at::Tensor>&& dom_var
+)
+{   //
+    // tape
+    tape_t& tape = devel::this_threads_tape;
+    //
+    // next_tape_id
+    // Since c++11, initialization of local static variables is thread safe.
+    static size_t next_tape_id = 1;
+    //
+    // tape_id_mutex
+    static std::mutex tape_id_mutex;
+    //
+    assert( ! tape.recording() &&
+        "record_start: this threads tape is already recording"
+    );
+    assert( tape.is_empty() &&
+        "record_start: a tape that is not recording should be empty"
+    );
+    //
+    // tape_id, next_tape_id
+    size_t tape_id;
+    {   std::lock_guard<std::mutex> lock(tape_id_mutex);
+        tape_id = next_tape_id;
+        ++next_tape_id;
     }
-}; }
+    //
+    // tape: tape_id, recording
+    tape.tape_id_   = tape_id;
+    tape.recording_ = true;
+    //
+    // adom_par
+    // tape.par_: n_dom_, op_vec_
+    ad_type_t parameter = ad_type_t::parameter;
+    tape.par_.n_dom_     = dom_par.size();
+    std::vector<ad_t> adom_par;
+    for(size_t index = 0; index < dom_par.size(); ++index)
+    {   tape.par_.op_vec_.push_back( op_enum_t::dom );
+        adom_par.push_back( ad_t(
+            tape_id, parameter, index, dom_par[index].clone()
+        ) );
+    }
+    //
+    // adom_var
+    // tape.var_: n_dom_, op_vec_
+    ad_type_t variable = ad_type_t::variable;
+    tape.var_.n_dom_    = dom_var.size();
+    std::vector<ad_t> adom_var;
+    for(size_t index = 0; index < dom_var.size(); ++index)
+    {   tape.var_.op_vec_.push_back( op_enum_t::dom );
+        adom_var.push_back( ad_t(
+            tape_id, variable, index, dom_var[index].clone()
+        ) );
+    }
+
+    return std::tuple< std::vector<ad_t>, std::vector<ad_t> > (
+        adom_par, adom_var
+    );
+}
+// ---------------------------------------------------------------------------
+adfn_t record_t::stop(const std::vector<ad_t>& arange)
+{   //
+    // tape
+    tape_t& tape = devel::this_threads_tape;
+    //
+    assert( tape.recording() &&
+        "record::stop: this threads tape is not recording"
+    );
+    assert( ! tape.is_empty() &&
+        "record_stop: a tape that is recording should not be empty"
+    );
+    //
+    // tape
+    tape.recording_ = false;
+    //
+    // adfn
+    adfn_t adfn;
+    //
+    // adfn, tape
+    adfn.con_.swap( tape.con_ );
+    adfn.par_.swap( tape.par_ );
+    adfn.var_.swap( tape.var_ );
+    //
+    // adfn
+    for(size_t i = 0; i < arange.size(); ++i)
+    {   adfn.rng_index_.push_back( arange.at(i).index_ );
+        adfn.rng_ad_type_.push_back( arange.at(i).ad_type_ );
+    }
+    //
+    return adfn;
+}
+// ---------------------------------------------------------------------------
+} // END_NAMESPACE_AD_TENSOR
