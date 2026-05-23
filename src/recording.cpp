@@ -9,12 +9,12 @@
 #include <ad_tensor/ad_type.hpp>
 #include <ad_tensor/devel/op_enum.hpp>
 #include <ad_tensor/devel/tape.hpp>
-#include <ad_tensor/record.hpp>
+#include <ad_tensor/recording.hpp>
 //
 namespace ad_tensor { // BEGIN_NAMESPACE_AD_TENSOR
 /*
 ------------------------------------------------------------------------------
-{xrst_begin record_start usr}
+{xrst_begin recording_start usr}
 {xrst_spell
     adom
 }
@@ -22,16 +22,16 @@ namespace ad_tensor { // BEGIN_NAMESPACE_AD_TENSOR
 Start Recording ad_t Operations
 ###############################
 {xrst_literal ,
-    include/ad_tensor/record.hpp
+    include/ad_tensor/recording.hpp
     BEGIN_START, END_START
 }
 
 Recording
 *********
 This thread must not have a recording in progress
-when ``record_t::start`` is called.
+when ``recording::start`` is called.
 The recording started by this call is stopped by calling
-:ref:`record_t::stop <record_stop-name>` .
+:ref:`recording::stop <recording_stop-name>` .
 
 dom_par
 *******
@@ -54,13 +54,13 @@ The recording can be used to compute derivatives with respect to these tensors.
 Example
 *******
 {xrst_literal ,
-    examples/record.cpp
+    examples/recording.cpp
     BEGIN_CPP, END_CPP
 }
 
-{xrst_end record_start}
+{xrst_end recording_start}
 */
-std::tuple< std::vector<ad_t>, std::vector<ad_t> > record_t::start(
+std::tuple< std::vector<ad_t>, std::vector<ad_t> > recording::start(
         std::vector<at::Tensor>&& dom_par ,
         std::vector<at::Tensor>&& dom_var
 )
@@ -76,10 +76,10 @@ std::tuple< std::vector<ad_t>, std::vector<ad_t> > record_t::start(
     static std::mutex tape_id_mutex;
     //
     assert( ! tape.recording() &&
-        "record_start: this threads tape is already recording"
+        "recording_start: this threads tape is already recording"
     );
     assert( tape.is_empty() &&
-        "record_start: a tape that is not recording should be empty"
+        "recording_start: a tape that is not recording should be empty"
     );
     //
     // tape_id, next_tape_id
@@ -123,7 +123,7 @@ std::tuple< std::vector<ad_t>, std::vector<ad_t> > record_t::start(
 }
 /*
 ------------------------------------------------------------------------------
-{xrst_begin record_stop usr}
+{xrst_begin recording_stop usr}
 {xrst_spell
     adfn
     arange
@@ -132,16 +132,16 @@ std::tuple< std::vector<ad_t>, std::vector<ad_t> > record_t::start(
 Stop Recording ad_t Operations
 ##############################
 {xrst_literal,
-    include/ad_tensor/record.hpp
+    include/ad_tensor/recording.hpp
     BEGIN_STOP, END_STOP
 }
 
 Recording
 *********
 This thread must have a recording in progress
-when ``record_t::stop`` is called.
+when ``recording::stop`` is called.
 The recording started by calling
-:ref:`record_t::start <record_start-name>` .
+:ref:`recording::start <recording_start-name>` .
 
 arange
 ******
@@ -151,28 +151,28 @@ adfn
 ****
 The operation sequence that was recording is transferred to this AD function.
 The domain parameter and variable tensors for this function are defined
-in the corresponding :ref:`record_t::start<record_start-name>` .
+in the corresponding :ref:`recording::start<recording_start-name>` .
 
 Example
 *******
 {xrst_literal ,
-    examples/record.cpp
+    examples/recording.cpp
     BEGIN_CPP, END_CPP
 }
 
-{xrst_end record_stop}
+{xrst_end recording_stop}
 */
 // stop
-adfn_t record_t::stop(const std::vector<ad_t>& arange)
+adfn_t recording::stop(const std::vector<ad_t>& arange)
 {   //
     // tape
     devel::tape_t& tape = devel::this_threads_tape;
     //
     assert( tape.recording() &&
-        "record::stop: this threads tape is not recording"
+        "recording::stop: this threads tape is not recording"
     );
     assert( ! tape.is_empty() &&
-        "record_stop: a tape that is recording should not be empty"
+        "recording_stop: a tape that is recording should not be empty"
     );
     //
     // tape

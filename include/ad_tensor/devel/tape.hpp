@@ -57,12 +57,12 @@ is the tape used to record AD operations on this thread.
 #include <ad_tensor/devel/agraph.hpp>
 #include <ad_tensor/ad.hpp>
 //
-// record_t
-namespace ad_tensor { class record_t; }
+// recording
+namespace ad_tensor { class recording; }
 //
 // BEGIN_TAPE_T
 namespace ad_tensor { namespace devel { class tape_t {
-    friend class ad_tensor::record_t;
+    friend class ad_tensor::recording;
 private:
     std::vector<at::Tensor>    con_;
     agraph_t                   par_;

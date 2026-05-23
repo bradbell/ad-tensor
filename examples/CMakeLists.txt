@@ -5,7 +5,7 @@
 #
 add_executable(examples
     ad.cpp
-    record.cpp
+    recording.cpp
 )
 #
 target_link_libraries(examples

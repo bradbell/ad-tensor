@@ -75,15 +75,15 @@ Constructor
     { return ad_t( tensor_ op rhs.tensor_ ); }
 //
 // record
-namespace ad_tensor{ class record_t; }
+namespace ad_tensor{ class recording; }
 //
 // BEGIN_AD_CLASS
 namespace ad_tensor { class ad_t
 // END_AD_CLASS
     {
     //
-    // record_t
-    friend class record_t;
+    // recording
+    friend class recording;
     //
 // BEGIN_PRIVATE
 private:
