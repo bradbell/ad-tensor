@@ -4,6 +4,8 @@
 // ----------------------------------------------------------------------------
 #include <ad_tensor/ad.hpp>
 #include <ad_tensor/devel/tape.hpp>
+#include <ad_tensor/devel/op_enum.hpp>
+#include <ad_tensor/devel/agraph.hpp>
 
 namespace ad_tensor {
     ad_t::ad_t( at::Tensor&& tensor )
@@ -17,7 +19,91 @@ namespace ad_tensor {
         if( tape.recording_ ) {
             tape_id_ = tape.tape_id_;
             index_   = tape.con_.size();
-            tape.con_.push_back( tensor );
+            tape.con_.push_back( tensor.clone() );
         }
     }
 }
+namespace ad_tensor { // BEGIN_NAMESPACE_AD_TENSOR
+ad_t ad_t::binary(
+    devel::op_enum_t op_enum, const ad_t& lhs, const ad_t& rhs
+) {
+    //
+    // res_tensor
+    at::Tensor res_tensor;
+    switch(op_enum) {
+        //
+        // add
+        case devel::op_enum_t::add:
+        res_tensor = lhs.tensor() + rhs.tensor();
+        break;
+        //
+        // sub
+        case devel::op_enum_t::sub:
+        res_tensor = lhs.tensor() - rhs.tensor();
+        break;
+        //
+        // mul
+        case devel::op_enum_t::mul:
+        res_tensor = lhs.tensor() * rhs.tensor();
+        break;
+        //
+        // div
+        case devel::op_enum_t::div:
+        res_tensor = lhs.tensor() / rhs.tensor();
+        break;
+        //
+        default:
+        assert( false && "ad_t::binary: invalid value for op_enum");
+    }
+    //
+    // tape
+    devel::tape_t& tape = devel::this_threads_tape();
+    if( ! tape.recording_ )
+        return ad_t( std::move(res_tensor) );
+    assert( lhs.tape_id_ == tape.tape_id_  &&
+        "binary left operand does not match tape that is recording"
+    );
+    assert( rhs.tape_id_ == tape.tape_id_  &&
+        "binary right operand does not match tape that is recording"
+    );
+    //
+    // res_ad_type
+    ad_type_t res_ad_type = std::max( lhs.ad_type_, rhs.ad_type_ );
+    //
+    // res_tape_id
+    size_t res_tape_id = tape.tape_id_;
+    //
+    // res_index
+    size_t res_index;
+    //
+    if(res_ad_type == ad_type_t::constant ) {
+        // res_index, tape.con_
+        res_index = tape.con_.size();
+        tape.con_.push_back( res_tensor.clone() );
+    } else {
+        //
+        // agraph
+        devel::agraph_t* agraph = nullptr;
+        if( res_ad_type == ad_type_t::parameter )
+            agraph = &tape.par_;
+        else {
+            assert( res_ad_type == ad_type_t::variable  &&
+                "binary opereand is not constant, parameter, or variable"
+            );
+            agraph = &tape.var_;
+        }
+        //
+        // res_index, agraph
+        res_index       = agraph->op_vec_.size();
+        agraph->arg_start_.push_back( agraph->arg_all_.size() );
+        //
+        agraph->arg_all_.push_back( lhs.index_ );
+        agraph->ad_type_all_.push_back( lhs.ad_type_ );
+        //
+        agraph->arg_all_.push_back( lhs.index_ );
+        agraph->ad_type_all_.push_back( lhs.ad_type_ );
+    }
+    return ad_t(res_tape_id, res_index, std::move(res_tensor), res_ad_type);
+}
+// ---------------------------------------------------------------------------
+} // END_NAMESPACE_AD_TENSOR

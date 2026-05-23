@@ -105,12 +105,12 @@ std::tuple< std::vector<ad_t>, std::vector<ad_t> > recording::start(
     // adom_par
     // tape.par_: n_dom_, op_vec_
     ad_type_t parameter = ad_type_t::parameter;
-    tape.par_.n_dom_     = dom_par.size();
+    tape.par_.n_dom_    = dom_par.size();
     std::vector<ad_t> adom_par;
     for(size_t index = 0; index < dom_par.size(); ++index)
     {   tape.par_.op_vec_.push_back( devel::op_enum_t::dom );
         adom_par.push_back( ad_t(
-            tape_id, parameter, index, dom_par[index].clone()
+            tape_id, index, dom_par[index].clone(), parameter
         ) );
     }
     //
@@ -122,7 +122,7 @@ std::tuple< std::vector<ad_t>, std::vector<ad_t> > recording::start(
     for(size_t index = 0; index < dom_var.size(); ++index)
     {   tape.var_.op_vec_.push_back( devel::op_enum_t::dom );
         adom_var.push_back( ad_t(
-            tape_id, variable, index, dom_var[index].clone()
+            tape_id, index, dom_var[index].clone(), variable
         ) );
     }
 

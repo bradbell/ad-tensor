@@ -47,7 +47,7 @@ and the variable graph are empty.
 
 this_threads_tape
 *****************
-is the tape used to record AD operations on this thread.
+is the thread local tape used to record AD operations (on this thread).
 
 {xrst_end tape}
 */
@@ -57,12 +57,14 @@ is the tape used to record AD operations on this thread.
 #include <ad_tensor/devel/agraph.hpp>
 #include <ad_tensor/ad.hpp>
 //
-// recording
+// recording, record
 namespace ad_tensor { class recording; }
+namespace ad_tensor { namespace devel { class record; } }
 //
 // BEGIN_TAPE_T
 namespace ad_tensor { namespace devel { class tape_t {
     friend class ad_tensor::recording;
+    friend class ad_tensor::devel::record;
     friend class ad_tensor::ad_t;
 private:
     std::vector<at::Tensor>    con_;

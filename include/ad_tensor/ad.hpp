@@ -71,13 +71,14 @@ in the tape.
 #include <torch/torch.h>
 //
 #include <ad_tensor/ad_type.hpp>
+#include <ad_tensor/devel/op_enum.hpp>
 //
 // BINARY_OP
-# define BINARY_OP(op) \
+# define BINARY_OP(op, op_enum) \
     ad_t operator op (const ad_t& rhs) const \
-    { return ad_t( tensor_ op rhs.tensor_ ); }
+{ return binary( devel::op_enum_t:: op_enum, *this, rhs ); }
 //
-// record
+// recording
 namespace ad_tensor{ class recording; }
 //
 // BEGIN_AD_CLASS
@@ -85,7 +86,7 @@ namespace ad_tensor { class ad_t
 // END_AD_CLASS
     {
     //
-    // recording
+    // recording, record
     friend class recording;
     //
 // BEGIN_PRIVATE
@@ -93,17 +94,22 @@ private:
     //
     // BEGIN_MEMBER_DATA
     size_t        tape_id_;
-    ad_type_t     ad_type_;
     size_t        index_;
     at::Tensor    tensor_;
+    ad_type_t     ad_type_;
     // END_MEMBER_DATA
     //
     // BEGIN_PRIVATE_CTOR
-    ad_t( size_t tape_id, ad_type_t ad_type, size_t index, at::Tensor&& tensor)
-    : tape_id_(tape_id), ad_type_(ad_type), index_(index), tensor_(tensor)
+    ad_t( size_t tape_id, size_t index, at::Tensor&& tensor, ad_type_t ad_type)
+    : tape_id_(tape_id), index_(index), tensor_(tensor), ad_type_(ad_type)
     { }
     // END_PRIVATE_CTOR
-
+    //
+    // BEGIN_BINARY
+    static ad_t binary(
+        devel::op_enum_t op_enum, const ad_t& lhs, const ad_t& rhs
+    );
+    // END_BINARY
 public:
     // BEGIN_PUBLIC_CTOR
     ad_t( at::Tensor&& tensor );
@@ -115,8 +121,8 @@ public:
     {   return tensor_; }
     //
     // Binary operators
-    BINARY_OP(+)
-    BINARY_OP(-)
-    BINARY_OP(*)
-    BINARY_OP(/)
+    BINARY_OP(+, add)
+    BINARY_OP(-, sub)
+    BINARY_OP(*, mul)
+    BINARY_OP(/, div)
 }; }
