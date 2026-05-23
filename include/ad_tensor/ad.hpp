@@ -46,24 +46,11 @@ Example
 ------------------------------------------------------------------------------
 {xrst_begin ad_private dev}
 
-The ad_t Class Private Elements
-###############################
-
-Member Data
-***********
-{xrst_literal ,
-    BEGIN_MEMBER_DATA, END_MEMBER_DATA
+The ad_t Class Private Members
+##############################
+{xrst_toc_table
+    src/ad.cpp
 }
-
-Constructor
-***********
-This creates a :ref:`ad_type@constant` from a tensor.
-If this thread's tape is recording, a copy of the constant is placed
-in the tape.
-{xrst_literal ,
-    BEGIN_PRIVATE_CTOR, END_PRIVATE_CTOR
-}
-
 
 {xrst_end ad_private}
 ------------------------------------------------------------------------------
@@ -86,18 +73,16 @@ namespace ad_tensor { class ad_t
 // END_AD_CLASS
     {
     //
-    // recording, record
+    // recording
     friend class recording;
     //
-// BEGIN_PRIVATE
 private:
     //
-    // BEGIN_MEMBER_DATA
+    // tape_id_, index_, tensor_, ad_type_
     size_t        tape_id_;
     size_t        index_;
     at::Tensor    tensor_;
     ad_type_t     ad_type_;
-    // END_MEMBER_DATA
     //
     // BEGIN_PRIVATE_CTOR
     ad_t( size_t tape_id, size_t index, at::Tensor&& tensor, ad_type_t ad_type)

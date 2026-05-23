@@ -6,27 +6,66 @@
 #include <ad_tensor/devel/tape.hpp>
 #include <ad_tensor/devel/op_enum.hpp>
 #include <ad_tensor/devel/agraph.hpp>
-
-namespace ad_tensor {
-    ad_t::ad_t( at::Tensor&& tensor )
-    : tape_id_(0)
-    , index_(0)
-    , tensor_(tensor)
-    , ad_type_(ad_type_t::constant)
-    {   //
-        // tape
-        devel::tape_t& tape = devel::this_threads_tape();
-        if( tape.recording_ ) {
-            tape_id_ = tape.tape_id_;
-            index_   = tape.con_.size();
-            tape.con_.push_back( tensor.clone() );
-        }
+//
+namespace ad_tensor { // BEGIN_NAMESPACE_AD_TENSOR
+// ----------------------------------------------------------------------------
+ad_t::ad_t( at::Tensor&& tensor )
+: tape_id_(0)
+, index_(0)
+, tensor_(tensor)
+, ad_type_(ad_type_t::constant)
+{   //
+    // tape
+    devel::tape_t& tape = devel::this_threads_tape();
+    if( tape.recording_ ) {
+        tape_id_ = tape.tape_id_;
+        index_   = tape.con_.size();
+        tape.con_.push_back( tensor.clone() );
     }
 }
-namespace ad_tensor { // BEGIN_NAMESPACE_AD_TENSOR
-ad_t ad_t::binary(
+/*
+-------------------------------------------------------------------------------
+{xrst_begin ad_binary dev}
+{xrst_spell
+    lhs
+    rhs
+}
+
+Compute and Record Binary Operators
+###################################
+
+Prototype
+*********
+{xrst_literal ,
+    BEGIN_BINARY, END_BINARY
+}
+
+Recording
+*********
+If this thread's tape is recording, and the result is (is not) a constant,
+the constant is added to the tape (the operation is added to the tape).
+
+Operation
+*********
+If this thread's tape is recording and the result is a parameter (variable)
+the following is added to the parameter (variable) acyclic graph:
+
+.. csv-table::
+    :header-rows: 1
+
+    Index, arg_all, ad_type_all
+    start + 0, index for lhs, type for lhs
+    start + 1, index for rhs, type for rhs
+
+{xrst_end ad_binary}
+*/
+// BEGIN_BINARY
+/* ares = binary( op_enum, lhs, rhs)
+static */ ad_t ad_t::binary(
     devel::op_enum_t op_enum, const ad_t& lhs, const ad_t& rhs
-) {
+)
+// END_BINARY
+{
     //
     // res_tensor
     at::Tensor res_tensor;
