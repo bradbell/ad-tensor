@@ -14,6 +14,15 @@
 namespace ad_tensor { // BEGIN_NAMESPACE_AD_TENSOR
 /*
 ------------------------------------------------------------------------------
+{xrst_begin_parent recording usr}
+
+The recording Class
+###################
+This class is special in two ways;
+It only has static member functions and its name does not end with ``_t`` .
+
+{xrst_end recording}
+------------------------------------------------------------------------------
 {xrst_begin recording_start usr}
 {xrst_spell
     adom
