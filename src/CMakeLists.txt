@@ -3,5 +3,7 @@
 # SPDX-FileContributor: 2026 Bradley M. Bell
 # -----------------------------------------------------------------------------
 add_library(ad_tensor SHARED
+    ad.cpp
     recording.cpp
+    tape.cpp
 )

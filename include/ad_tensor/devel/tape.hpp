@@ -63,6 +63,7 @@ namespace ad_tensor { class recording; }
 // BEGIN_TAPE_T
 namespace ad_tensor { namespace devel { class tape_t {
     friend class ad_tensor::recording;
+    friend class ad_tensor::ad_t;
 private:
     std::vector<at::Tensor>    con_;
     agraph_t                   par_;
@@ -87,6 +88,6 @@ public:
 //
 // this_threads_tape
 namespace ad_tensor { namespace devel {
-    thread_local tape_t this_threads_tape;
+    tape_t& this_threads_tape(void);
 } }
 // END_TAPE_T

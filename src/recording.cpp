@@ -75,7 +75,7 @@ std::tuple< std::vector<ad_t>, std::vector<ad_t> > recording::start(
 )
 {   //
     // tape
-    devel::tape_t& tape = devel::this_threads_tape;
+    devel::tape_t& tape = devel::this_threads_tape();
     //
     // next_tape_id
     // Since c++11, initialization of local static variables is thread safe.
@@ -175,7 +175,7 @@ Example
 adfn_t recording::stop(const std::vector<ad_t>& arange)
 {   //
     // tape
-    devel::tape_t& tape = devel::this_threads_tape;
+    devel::tape_t& tape = devel::this_threads_tape();
     //
     assert( tape.recording() &&
         "recording::stop: this threads tape is not recording"

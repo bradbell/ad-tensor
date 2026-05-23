@@ -57,6 +57,9 @@ Member Data
 
 Constructor
 ***********
+This creates a :ref:`ad_type@constant` from a tensor.
+If this thread's tape is recording, a copy of the constant is placed
+in the tape.
 {xrst_literal ,
     BEGIN_PRIVATE_CTOR, END_PRIVATE_CTOR
 }
@@ -103,10 +106,9 @@ private:
 
 public:
     // BEGIN_PUBLIC_CTOR
-    ad_t( at::Tensor&& tensor )
+    ad_t( at::Tensor&& tensor );
     // END_PUBLIC_CTOR
-    : tape_id_(0), ad_type_(ad_type_t::constant), tensor_(tensor)
-    { }
+    //
     // BEGIN_TO_TENSOR
     const at::Tensor& tensor(void) const
     // END_TO_TENSOR
