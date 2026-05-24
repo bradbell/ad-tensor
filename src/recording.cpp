@@ -191,14 +191,14 @@ adfn_t recording::stop(const std::vector<ad_t>& arange)
     adfn_t adfn;
     //
     // adfn, tape
-    adfn.con_.swap( tape.con_ );
-    adfn.par_.swap( tape.par_ );
-    adfn.var_.swap( tape.var_ );
+    adfn.m_con.swap( tape.con_ );
+    adfn.m_par.swap( tape.par_ );
+    adfn.m_var.swap( tape.var_ );
     //
     // adfn
     for(size_t i = 0; i < arange.size(); ++i)
-    {   adfn.rng_index_.push_back( arange.at(i).m_index );
-        adfn.rng_ad_type_.push_back( arange.at(i).m_ad_type );
+    {   adfn.m_rng_index.push_back( arange.at(i).m_index );
+        adfn.m_rng_ad_type.push_back( arange.at(i).m_ad_type );
     }
     //
     return adfn;
