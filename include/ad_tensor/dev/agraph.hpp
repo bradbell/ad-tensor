@@ -84,10 +84,10 @@ public:
     // swap
     void swap(agraph_t& other) noexcept
     {   std::swap( n_dom_, other.n_dom_ );
-        m_op_seq.swap(      other.m_op_seq);
-        m_arg_start.swap(   other.m_arg_start);
-        m_arg_value.swap(     other.m_arg_value);
-        m_arg_type.swap( other.m_arg_type);
+        m_op_seq.swap(     other.m_op_seq);
+        m_arg_start.swap(  other.m_arg_start);
+        m_arg_value.swap(  other.m_arg_value);
+        m_arg_type.swap(   other.m_arg_type);
     }
     //
     // is_empty

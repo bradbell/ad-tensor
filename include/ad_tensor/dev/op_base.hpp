@@ -58,8 +58,8 @@ var_vec
 *******
 is the vector containing all the variable tensors..
 
-tensor_at_index
-***************
+tensor_at_arg_index
+*******************
 This returns a reference to the tensor corresponding to
 the specified type and index.
 This is a reference to an element in the corresponding vector
@@ -71,7 +71,7 @@ and hence its lifetime is restricted to the life of the vector.
 
 forward_par
 ***********
-For this function, ad_type_all_[arg_index] is never variable.
+For this function, arg_type[arg_index] is never variable.
 In addition, par_vec[index] for index < op_index is an input for this function
 and par_vec[op_index] is an output.
 {xrst_literal ,
@@ -91,20 +91,16 @@ and par_vec[op_index] is an output.
 // BEGIN_OP_BASE
 namespace ad_tensor { namespace dev { struct op_base_t
 // END_OP_BASE
-{
-    // BEGIN_OP_ENUM
-    virtual op_enum_t op_enum(void) const = 0;
-    // END_OP_ENUM
-    //
+{   //
     // BEGIN_TENSOR_AT_ARG_INDEX_PAR
-    static inline const at::Tensor& tensor_at_index(
-        size_t                           arg_index ,
-        const agraph_t&                  agraph    ,
-        const std::vector<at::Tensor>    con_vec   ,
-        const std::vector<at::Tensor>    par_vec   )
+    static const at::Tensor& tensor_at_arg_index(
+        size_t                        arg_index ,
+        const agraph_t&               agraph    ,
+        const std::vector<at::Tensor> con_vec   ,
+        const std::vector<at::Tensor> par_vec   )
     // END_TENSOR_AT_ARG_INDEX_PAR
-    {   ad_type_t ad_type  = agraph.m_arg_type[arg_index];
-        size_t    index    = agraph.m_arg_value[arg_index];
+    {   size_t    index   = agraph.m_arg_value.at(arg_index);
+        ad_type_t ad_type = agraph.m_arg_type.at(arg_index);
         switch( ad_type ) {
             //
             // constant
@@ -124,17 +120,16 @@ namespace ad_tensor { namespace dev { struct op_base_t
         // should not get here
         return par_vec.at(0);
     }
-    //
     // BEGIN_TENSOR_AT_ARG_INDEX_VAR
-    static inline const at::Tensor& tensor_at_index(
-        size_t                           arg_index ,
-        const agraph_t&                  agraph    ,
-        const std::vector<at::Tensor>    con_vec   ,
-        const std::vector<at::Tensor>    par_vec   ,
-        const std::vector<at::Tensor>    var_vec   )
+    static const at::Tensor& tensor_at_arg_index(
+        size_t                        arg_index ,
+        const agraph_t&               agraph    ,
+        const std::vector<at::Tensor> con_vec   ,
+        const std::vector<at::Tensor> par_vec   ,
+        const std::vector<at::Tensor> var_vec   )
     // END_TENSOR_AT_ARG_INDEX_VAR
-    {   ad_type_t ad_type  = agraph.m_arg_type[arg_index];
-        size_t    index    = agraph.m_arg_value[arg_index];
+    {   size_t    index   = agraph.m_arg_value.at(arg_index);
+        ad_type_t ad_type = agraph.m_arg_type.at(arg_index);
         switch( ad_type ) {
             //
             // constant
@@ -151,13 +146,16 @@ namespace ad_tensor { namespace dev { struct op_base_t
             //
             // default
             default:
-            assert( false && "tensor_at_arg_index"
-                "expected a constant or parameter"
+            assert( false && "tensor_at_arg_index:"
+                "expected a constant, parameter or variable"
             );
         }
         // should not get here
-        return par_vec.at(0);
+        return var_vec.at(0);
     }
+    // BEGIN_OP_ENUM
+    virtual op_enum_t op_enum(void) const = 0;
+    // END_OP_ENUM
     //
     // BEGIN_FORWARD_PAR
     virtual void forward_par(

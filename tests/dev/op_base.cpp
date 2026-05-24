@@ -52,10 +52,10 @@ namespace {
 # endif
             //
             // lhs_tensor, rhs_tensor
-            Tensor lhs_tensor  = tensor_at_index(
+            Tensor lhs_tensor  = tensor_at_arg_index(
                 arg_index, agraph, con_vec, par_vec
             );
-            Tensor rhs_tensor  = tensor_at_index(
+            Tensor rhs_tensor  = tensor_at_arg_index(
                 arg_index + 1, agraph, con_vec, par_vec
             );
             //
