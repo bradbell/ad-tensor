@@ -66,7 +66,7 @@ is the tape used to record AD operations on this thread.
 #include <ad_tensor/dev/op_enum.hpp>
 
 // BEGIN_AGRAPH
-namespace ad_tensor { namespace devel { class agraph_t {
+namespace ad_tensor { namespace dev { class agraph_t {
 public:
     size_t                 n_dom_;
     std::vector<op_enum_t> m_op_vec;

@@ -59,12 +59,12 @@ is the thread local tape used to record AD operations (on this thread).
 //
 // recording, record
 namespace ad_tensor { class recording; }
-namespace ad_tensor { namespace devel { class record; } }
+namespace ad_tensor { namespace dev { class record; } }
 //
 // BEGIN_TAPE_T
-namespace ad_tensor { namespace devel { class tape_t {
+namespace ad_tensor { namespace dev { class tape_t {
     friend class ad_tensor::recording;
-    friend class ad_tensor::devel::record;
+    friend class ad_tensor::dev::record;
     friend class ad_tensor::ad_t;
 private:
     std::vector<at::Tensor>    m_con;
@@ -89,7 +89,7 @@ public:
 }; } }
 //
 // this_threads_tape
-namespace ad_tensor { namespace devel {
+namespace ad_tensor { namespace dev {
     tape_t& this_threads_tape(void);
 } }
 // END_TAPE_T

@@ -16,7 +16,7 @@ ad_t::ad_t( at::Tensor&& tensor )
 , m_ad_type(ad_type_t::constant)
 {   //
     // tape
-    devel::tape_t& tape = devel::this_threads_tape();
+    dev::tape_t& tape = dev::this_threads_tape();
     if( tape.m_recording ) {
         m_tape_id = tape.m_tape_id;
         m_index   = tape.m_con.size();
@@ -77,7 +77,7 @@ std::tuple< std::vector<ad_t>, std::vector<ad_t> > ad_t::start_recording(
 )
 {   //
     // tape
-    devel::tape_t& tape = devel::this_threads_tape();
+    dev::tape_t& tape = dev::this_threads_tape();
     //
     // next_tape_id
     // Since c++11, initialization of local static variables is thread safe.
@@ -110,7 +110,7 @@ std::tuple< std::vector<ad_t>, std::vector<ad_t> > ad_t::start_recording(
     tape.m_par.n_dom_    = dom_par.size();
     std::vector<ad_t> adom_par;
     for(size_t index = 0; index < dom_par.size(); ++index)
-    {   tape.m_par.m_op_vec.push_back( devel::op_enum_t::dom );
+    {   tape.m_par.m_op_vec.push_back( dev::op_enum_t::dom );
         adom_par.push_back( ad_t(
             tape_id, index, dom_par[index].clone(), parameter
         ) );
@@ -122,7 +122,7 @@ std::tuple< std::vector<ad_t>, std::vector<ad_t> > ad_t::start_recording(
     tape.m_var.n_dom_    = dom_var.size();
     std::vector<ad_t> adom_var;
     for(size_t index = 0; index < dom_var.size(); ++index)
-    {   tape.m_var.m_op_vec.push_back( devel::op_enum_t::dom );
+    {   tape.m_var.m_op_vec.push_back( dev::op_enum_t::dom );
         adom_var.push_back( ad_t(
             tape_id, index, dom_var[index].clone(), variable
         ) );
@@ -175,7 +175,7 @@ Example
 adfn_t ad_t::stop_recording(const std::vector<ad_t>& arange)
 {   //
     // tape
-    devel::tape_t& tape = devel::this_threads_tape();
+    dev::tape_t& tape = dev::this_threads_tape();
     //
     assert( tape.recording() &&
         "stop_recording: this threads tape is not recording"

@@ -110,7 +110,7 @@ The ad_t Private Constructor
 // BINARY_OP
 # define BINARY_OP(op, op_enum) \
     ad_t operator op (const ad_t& rhs) const \
-{ return binary( devel::op_enum_t:: op_enum, *this, rhs ); }
+{ return binary( dev::op_enum_t:: op_enum, *this, rhs ); }
 //
 // recording
 namespace ad_tensor{ class recording; }
@@ -140,7 +140,7 @@ private:
     // BEGIN_BINARY
     // ares = binary( op_enum, lhs, rhs)
     static ad_t binary(
-        devel::op_enum_t op_enum, const ad_t& lhs, const ad_t& rhs
+        dev::op_enum_t op_enum, const ad_t& lhs, const ad_t& rhs
     );
     // END_BINARY
 public:

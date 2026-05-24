@@ -46,7 +46,7 @@ the following is added to the parameter (variable) acyclic graph:
 {xrst_end ad_binary}
 */
 ad_t ad_t::binary(
-    devel::op_enum_t op_enum, const ad_t& lhs, const ad_t& rhs
+    dev::op_enum_t op_enum, const ad_t& lhs, const ad_t& rhs
 )
 {
     //
@@ -55,22 +55,22 @@ ad_t ad_t::binary(
     switch(op_enum) {
         //
         // add
-        case devel::op_enum_t::add:
+        case dev::op_enum_t::add:
         res_tensor = lhs.tensor() + rhs.tensor();
         break;
         //
         // sub
-        case devel::op_enum_t::sub:
+        case dev::op_enum_t::sub:
         res_tensor = lhs.tensor() - rhs.tensor();
         break;
         //
         // mul
-        case devel::op_enum_t::mul:
+        case dev::op_enum_t::mul:
         res_tensor = lhs.tensor() * rhs.tensor();
         break;
         //
         // div
-        case devel::op_enum_t::div:
+        case dev::op_enum_t::div:
         res_tensor = lhs.tensor() / rhs.tensor();
         break;
         //
@@ -79,7 +79,7 @@ ad_t ad_t::binary(
     }
     //
     // tape
-    devel::tape_t& tape = devel::this_threads_tape();
+    dev::tape_t& tape = dev::this_threads_tape();
     if( ! tape.m_recording )
         return ad_t( std::move(res_tensor) );
     assert( lhs.m_tape_id == tape.m_tape_id  &&
@@ -105,7 +105,7 @@ ad_t ad_t::binary(
     } else {
         //
         // agraph
-        devel::agraph_t* agraph = nullptr;
+        dev::agraph_t* agraph = nullptr;
         if( res_ad_type == ad_type_t::parameter )
             agraph = &tape.m_par;
         else {

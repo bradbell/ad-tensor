@@ -10,7 +10,7 @@
 TEST(tests_devel, tape)  {
     //
     // tapoe
-    ad_tensor::devel::tape_t tape;
+    ad_tensor::dev::tape_t tape;
     //
     EXPECT_TRUE( tape.is_empty() );
     EXPECT_EQ( tape.tape_id(),     0 );

@@ -4,7 +4,7 @@
 // ----------------------------------------------------------------------------
 #include <ad_tensor/dev/tape.hpp>
 
-namespace ad_tensor { namespace devel {
+namespace ad_tensor { namespace dev {
     tape_t& this_threads_tape(void) {
         thread_local tape_t tape;
         return tape;

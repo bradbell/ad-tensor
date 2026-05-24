@@ -17,8 +17,8 @@ namespace ad_tensor { class adfn_t
     {
         friend class ad_t;
     private:
-        devel::agraph_t            m_par;
-        devel::agraph_t            m_var;
+        dev::agraph_t            m_par;
+        dev::agraph_t            m_var;
         std::vector<at::Tensor>    m_con;
         std::vector<size_t>        m_rng_index;
         std::vector<ad_type_t>     m_rng_ad_type;

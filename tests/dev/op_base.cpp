@@ -14,10 +14,10 @@
 namespace {
     //
     // op_enum_t, ad_type_t
-    using ad_tensor::devel::op_enum_t;
+    using ad_tensor::dev::op_enum_t;
     using ad_tensor::ad_type_t;
-    using ad_tensor::devel::agraph_t;
-    using ad_tensor::devel::op_base_t;
+    using ad_tensor::dev::agraph_t;
+    using ad_tensor::dev::op_base_t;
     //
     // vector
     using std::vector;

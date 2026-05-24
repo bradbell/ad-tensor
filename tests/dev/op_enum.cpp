@@ -6,7 +6,7 @@
 #include <ad_tensor/dev/op_enum.hpp>
 //
 TEST(tests_devel, op_enum)  {
-    using ad_tensor::devel::op_enum_t;
+    using ad_tensor::dev::op_enum_t;
     //
     EXPECT_EQ( op_enum_t::add,  op_enum_t::add );
     EXPECT_NE( op_enum_t::add,  op_enum_t::sub );
