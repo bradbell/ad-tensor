@@ -37,6 +37,7 @@ Compute and Record Binary Operators
 Prototype
 *********
 {xrst_literal ,
+    include/ad_tensor/ad.hpp
     BEGIN_BINARY, END_BINARY
 }
 
@@ -59,12 +60,9 @@ the following is added to the parameter (variable) acyclic graph:
 
 {xrst_end ad_binary}
 */
-// BEGIN_BINARY
-/* ares = binary( op_enum, lhs, rhs)
-static */ ad_t ad_t::binary(
+ad_t ad_t::binary(
     devel::op_enum_t op_enum, const ad_t& lhs, const ad_t& rhs
 )
-// END_BINARY
 {
     //
     // res_tensor

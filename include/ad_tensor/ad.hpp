@@ -44,15 +44,55 @@ Example
 
 {xrst_end ad}
 ------------------------------------------------------------------------------
-{xrst_begin ad_private dev}
+{xrst_begin_parent ad_dev dev}
 
-The ad_t Class Private Members
-##############################
-{xrst_toc_table
+The ad_t Class Developer Documentation
+######################################
+{xrst_toc_table after
     src/ad.cpp
 }
 
-{xrst_end ad_private}
+{xrst_end ad_dev}
+------------------------------------------------------------------------------
+{xrst_begin ad_member dev}
+
+The ad_t Member Data
+####################
+{xrst_literal ,
+    BEGIN_MEMBER_DATA, END_MEMBER_DATA
+}
+
+m_tape_id
+*********
+We say that this AD tensor matches the current recording if
+this thread is currently recording and its m_tape_id is the
+same as for this object.
+
+m_index
+*******
+If this thread matches the current recording,
+m_index is the index in this threads tape for this AD tensor.
+
+m_ad_type
+*********
+If this thread matches the current recording,
+m_ad_type is the :ref:`ad_type-name` in this threads tape for this AD tensor.
+
+m_tensor
+********
+is the tensor corresponding to this AD tensor.
+
+{xrst_end ad_member}
+------------------------------------------------------------------------------
+{xrst_begin ad_ctor_dev dev}
+
+The ad_t Private Constructor
+############################
+{xrst_literal ,
+    BEGIN_PRIVATE_CTOR, END_PRIVATE_CTOR
+}
+
+{xrst_end ad_ctor_dev}
 ------------------------------------------------------------------------------
 */
 #include <torch/torch.h>
@@ -71,18 +111,18 @@ namespace ad_tensor{ class recording; }
 // BEGIN_AD_CLASS
 namespace ad_tensor { class ad_t
 // END_AD_CLASS
-    {
-    //
+{
     // recording
     friend class recording;
     //
 private:
     //
-    // tape_id_, index_, tensor_, ad_type_
+    // BEGIN_MEMBER_DATA
     size_t        m_tape_id;
     size_t        m_index;
     at::Tensor    m_tensor;
     ad_type_t     m_ad_type;
+    // END_MEMBER_DATA
     //
     // BEGIN_PRIVATE_CTOR
     ad_t( size_t tape_id, size_t index, at::Tensor&& tensor, ad_type_t ad_type)
@@ -91,6 +131,7 @@ private:
     // END_PRIVATE_CTOR
     //
     // BEGIN_BINARY
+    // ares = binary( op_enum, lhs, rhs)
     static ad_t binary(
         devel::op_enum_t op_enum, const ad_t& lhs, const ad_t& rhs
     );
