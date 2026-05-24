@@ -5,6 +5,9 @@
 // ----------------------------------------------------------------------------
 /*
 {xrst_begin agraph dev}
+{xrst_spell
+    seq
+}
 
 Acyclic Graph Representation of an Operation Sequence
 #####################################################
@@ -14,35 +17,39 @@ Acyclic Graph Representation of an Operation Sequence
 
 n_dom_
 ******
-is the number of domain tensors in this tape.
+is the number of domain tensors in this operation sequence.
 
-m_op_vec
+m_op_seq
 ********
 This vector has one element for each operation in the operation sequence.
-The value m_op_vec[op_index] is the :ref:`op_enum-name` for the
-use of the operator corresponding to this operator use.
+The value m_op_seq[op_index]
+is the :ref:`op_enum-name` for this operator usage.
 
 m_arg_start
 ***********
-Let n_arg = m_arg_start[op_index+1] - m_arg_start[op_index].
+This vector has the same length as m_op_seq.
+The number of arguments for the op_index operator usage is
+
+    n_arg = m_arg_start[op_index+1] - m_arg_start[op_index].
+
+
+m_arg_value
+***********
 For i_arg = 0, ... n_arg,
-arg_index = m_arg_start[op_index] + i_arg
-is the index in m_arg_all and m_ad_type_all
-of the corresponding argument and ad_type for this operator usage.
 
-m_arg_all
-*********
-is a vector containing the arguments for all the operator uses.
-For each arg_index = m_arg_start[op_index] + i_arg,
-m_arg_all[arg_index] is the index for the corresponding argument.
+    m_arg_value[ m_arg_start[op_index] + i_arg ]
 
-m_ad_type_all
-*************
-is a vector containing the AD type for all the operator uses;
-see :ref:`ad_type-name` .
-For each arg_index = m_arg_start[op_index] + i_arg,
-if m_ad_type_all[arg_index] is constant (parameter) [variable],
-the corresponding index is in con_vec (par_vec) [var_vec].
+is he value of the i_arg argument for the op_index operator usage.
+
+
+m_arg_type
+**********
+This vector has the same length as m_arg_value.
+
+    m_arg_type[ m_arg_start[op_index] + i_arg ]
+
+is the AD type for the i_arg argument for the op_index operator usage.
+
 
 default constructor
 *******************
@@ -56,10 +63,6 @@ is_empty
 ********
 This member function returns true if all the vectors in the graph are empty.
 
-this_threads_tape
-*****************
-is the tape used to record AD operations on this thread.
-
 {xrst_end agraph}
 */
 #include <ad_tensor/ad_type.hpp>
@@ -69,31 +72,31 @@ is the tape used to record AD operations on this thread.
 namespace ad_tensor { namespace dev { class agraph_t {
 public:
     size_t                 n_dom_;
-    std::vector<op_enum_t> m_op_vec;
+    std::vector<op_enum_t> m_op_seq;
     std::vector<size_t>    m_arg_start;
-    std::vector<size_t>    m_arg_all;
-    std::vector<ad_type_t> m_ad_type_all;
+    std::vector<size_t>    m_arg_value;
+    std::vector<ad_type_t> m_arg_type;
     //
     // default constructor
-    agraph_t() : n_dom_(0), m_op_vec(), m_arg_start() , m_arg_all(), m_ad_type_all()
+    agraph_t() : n_dom_(0), m_op_seq(), m_arg_start() , m_arg_value(), m_arg_type()
     { }
     //
     // swap
     void swap(agraph_t& other) noexcept
     {   std::swap( n_dom_, other.n_dom_ );
-        m_op_vec.swap(      other.m_op_vec);
+        m_op_seq.swap(      other.m_op_seq);
         m_arg_start.swap(   other.m_arg_start);
-        m_arg_all.swap(     other.m_arg_all);
-        m_ad_type_all.swap( other.m_ad_type_all);
+        m_arg_value.swap(     other.m_arg_value);
+        m_arg_type.swap( other.m_arg_type);
     }
     //
     // is_empty
     bool is_empty(void) const {
         return
-            m_op_vec.empty() &&
+            m_op_seq.empty() &&
             m_arg_start.empty() &&
-            m_arg_all.empty() &&
-            m_ad_type_all.empty();
+            m_arg_value.empty() &&
+            m_arg_type.empty();
     }
 }; } }
 // END_AGRAPH

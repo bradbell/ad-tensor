@@ -116,14 +116,14 @@ ad_t ad_t::binary(
         }
         //
         // res_index, agraph
-        res_index       = agraph->m_op_vec.size();
-        agraph->m_arg_start.push_back( agraph->m_arg_all.size() );
+        res_index       = agraph->m_op_seq.size();
+        agraph->m_arg_start.push_back( agraph->m_arg_value.size() );
         //
-        agraph->m_arg_all.push_back( lhs.m_index );
-        agraph->m_ad_type_all.push_back( lhs.m_ad_type );
+        agraph->m_arg_value.push_back( lhs.m_index );
+        agraph->m_arg_type.push_back( lhs.m_ad_type );
         //
-        agraph->m_arg_all.push_back( lhs.m_index );
-        agraph->m_ad_type_all.push_back( lhs.m_ad_type );
+        agraph->m_arg_value.push_back( lhs.m_index );
+        agraph->m_arg_type.push_back( lhs.m_ad_type );
     }
     return ad_t(res_tape_id, res_index, std::move(res_tensor), res_ad_type);
 }

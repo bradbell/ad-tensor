@@ -105,24 +105,24 @@ std::tuple< std::vector<ad_t>, std::vector<ad_t> > ad_t::start_recording(
     tape.m_recording = true;
     //
     // adom_par
-    // tape.m_par: n_dom_, m_op_vec
+    // tape.m_par: n_dom_, m_op_seq
     ad_type_t parameter = ad_type_t::parameter;
     tape.m_par.n_dom_    = dom_par.size();
     std::vector<ad_t> adom_par;
     for(size_t index = 0; index < dom_par.size(); ++index)
-    {   tape.m_par.m_op_vec.push_back( dev::op_enum_t::dom );
+    {   tape.m_par.m_op_seq.push_back( dev::op_enum_t::dom );
         adom_par.push_back( ad_t(
             tape_id, index, dom_par[index].clone(), parameter
         ) );
     }
     //
     // adom_var
-    // tape.m_var: n_dom_, m_op_vec
+    // tape.m_var: n_dom_, m_op_seq
     ad_type_t variable = ad_type_t::variable;
     tape.m_var.n_dom_    = dom_var.size();
     std::vector<ad_t> adom_var;
     for(size_t index = 0; index < dom_var.size(); ++index)
-    {   tape.m_var.m_op_vec.push_back( dev::op_enum_t::dom );
+    {   tape.m_var.m_op_seq.push_back( dev::op_enum_t::dom );
         adom_var.push_back( ad_t(
             tape_id, index, dom_var[index].clone(), variable
         ) );
