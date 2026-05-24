@@ -28,11 +28,11 @@ namespace {
 
 TEST(tests_devel, op_base)  {
     //
-    // add_op
-    ad_tensor::dev::add_op_t add_op;
+    // base_op
+    op_base_t& base_op = ad_tensor::dev::add_op;
     //
     // op_enum
-    EXPECT_EQ( op_enum_t::add, add_op.op_enum() );
+    EXPECT_EQ( op_enum_t::add, base_op.op_enum() );
     //
     // trace, m_arg_start, m_arg_value, m_arg_type, con_vec, par_vec
     op_enum_t              dom         = op_enum_t::dom;
@@ -51,7 +51,7 @@ TEST(tests_devel, op_base)  {
     agraph.m_arg_type   = std::vector<ad_type_t>( {par, par} );
     //
     // par_vec[op_index]
-    add_op.forward_par(op_index, agraph, con_vec, par_vec);
+    base_op.forward_par(op_index, agraph, con_vec, par_vec);
     //
     // data_ptr
     float* data_ptr = par_vec.at(op_index).data_ptr<float>();
