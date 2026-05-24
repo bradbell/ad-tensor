@@ -4,6 +4,5 @@
 # -----------------------------------------------------------------------------
 add_library(ad_tensor SHARED
     ad.cpp
-    recording.cpp
     tape.cpp
 )

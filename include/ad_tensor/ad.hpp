@@ -103,6 +103,7 @@ The ad_t Private Constructor
 */
 #include <torch/torch.h>
 //
+#include <ad_tensor/adfn.hpp>
 #include <ad_tensor/ad_type.hpp>
 #include <ad_tensor/devel/op_enum.hpp>
 //
@@ -159,6 +160,11 @@ public:
         std::vector<at::Tensor>&& dom_var
     );
     // END_START_RECORDING
+    //
+    // BEGIN_STOP_RECORDING
+    // adfn = ad_t::stop_recording(arnage)
+    static adfn_t stop_recording(const std::vector<ad_t>& arange);
+    // END_STOP_RECORDING
     //
     // Binary operators
     BINARY_OP(+, add)

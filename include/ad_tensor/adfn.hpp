@@ -9,13 +9,13 @@
 #include <ad_tensor/ad_type.hpp>
 #include <ad_tensor/devel/agraph.hpp>
 //
-namespace ad_tensor { class recording; }
+namespace ad_tensor { class ad_t; }
 //
 // BEGIN_ADFN_T
 namespace ad_tensor { class adfn_t
 // END_ADFN_T
     {
-        friend class recording;
+        friend class ad_t;
     private:
         devel::agraph_t            m_par;
         devel::agraph_t            m_var;

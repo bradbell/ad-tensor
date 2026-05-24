@@ -7,10 +7,8 @@
 #include <torch/torch.h>
 //
 #include <ad_tensor/ad.hpp>
-#include <ad_tensor/recording.hpp>
 //
 TEST(examples, record)  {
-    using ad_tensor::recording;
     using ad_tensor::ad_t;
     using at::Tensor;
     using std::vector;
@@ -32,8 +30,8 @@ TEST(examples, record)  {
     // arange
     std::vector<ad_t> arange = { adom_par[0], adom_var[0] };
     //
-    // recording_stop
-    recording::stop( arange  );
+    // stop_recording
+    ad_t::stop_recording( arange  );
     //
     {   Tensor check =  adom_par[0].tensor() == torch::tensor( {2.0, 3.0} );
         bool equal   = torch::all(check).item<bool>();

@@ -42,7 +42,7 @@ Recording
 This thread must not have a recording in progress
 when ``start_recording`` is called.
 The recording started by this call is stopped by calling
-:ref:`recording::stop <recording_stop-name>` .
+:ref:`stop_recording-name` .
 
 dom_par
 *******
@@ -131,6 +131,77 @@ std::tuple< std::vector<ad_t>, std::vector<ad_t> > ad_t::start_recording(
     return std::tuple< std::vector<ad_t>, std::vector<ad_t> > (
         adom_par, adom_var
     );
+}
+/*
+------------------------------------------------------------------------------
+{xrst_begin stop_recording usr}
+{xrst_spell
+    adfn
+    arange
+}
+
+Stop Recording ad_t Operations
+##############################
+{xrst_literal,
+    include/ad_tensor/ad.hpp
+    BEGIN_STOP_RECORDING, END_STOP_RECORDING
+}
+
+Recording
+*********
+This thread must have a recording in progress
+when ``stop_recording`` is called.
+Recording are started by calling :ref:`start_recording-name` .
+
+arange
+******
+This vector of AD tensors specifies the range for the AD function *adfn* .
+
+adfn
+****
+The operation sequence that was recording is transferred to this AD function.
+The domain parameter and variable tensors for this function are defined
+in the corresponding :ref:`start_recording-name` .
+
+Example
+*******
+{xrst_literal ,
+    examples/recording.cpp
+    BEGIN_CPP, END_CPP
+}
+
+{xrst_end stop_recording}
+*/
+adfn_t ad_t::stop_recording(const std::vector<ad_t>& arange)
+{   //
+    // tape
+    devel::tape_t& tape = devel::this_threads_tape();
+    //
+    assert( tape.recording() &&
+        "stop_recording: this threads tape is not recording"
+    );
+    assert( ! tape.is_empty() &&
+        "stop_recording: a tape that is recording should not be empty"
+    );
+    //
+    // tape
+    tape.m_recording = false;
+    //
+    // adfn
+    adfn_t adfn;
+    //
+    // adfn, tape
+    adfn.m_con.swap( tape.m_con );
+    adfn.m_par.swap( tape.m_par );
+    adfn.m_var.swap( tape.m_var );
+    //
+    // adfn
+    for(size_t i = 0; i < arange.size(); ++i)
+    {   adfn.m_rng_index.push_back( arange.at(i).m_index );
+        adfn.m_rng_ad_type.push_back( arange.at(i).m_ad_type );
+    }
+    //
+    return adfn;
 }
 /*
 -------------------------------------------------------------------------------
