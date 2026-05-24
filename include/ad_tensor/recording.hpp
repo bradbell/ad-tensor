@@ -13,13 +13,6 @@ namespace ad_tensor { // BEGIN_NAMESPACE_AD_TENSOR
 // recording
 class recording {
 public:
-    // BEGIN_START
-    // auto [adom_par, adom_var] = recording::start(dom_par, dom_var)
-    static std::tuple< std::vector<ad_t>, std::vector<ad_t> > start(
-        std::vector<at::Tensor>&& dom_par,
-        std::vector<at::Tensor>&& dom_var
-    );
-    // END_START
     //
     // BEGIN_STOP
     // adfn = recording::stop(arnage)

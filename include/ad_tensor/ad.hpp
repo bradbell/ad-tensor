@@ -35,6 +35,12 @@ For *op* equal ``+``, ``-``, ``*``, ``/`` :
     ad_t operator op (const ad_t& rhs) const
 {xrst_code}
 
+Other Member Functions
+**********************
+{xrst_toc_table
+    src/ad.cpp
+}
+
 Example
 *******
 {xrst_literal ,
@@ -145,6 +151,14 @@ public:
     const at::Tensor& tensor(void) const
     // END_TO_TENSOR
     {   return m_tensor; }
+    //
+    // BEGIN_START_RECORDING
+    // auto [adom_par, adom_var] = ad_t::start_recording(dom_par, dom_var)
+    static std::tuple< std::vector<ad_t>, std::vector<ad_t> > start_recording(
+        std::vector<at::Tensor>&& dom_par,
+        std::vector<at::Tensor>&& dom_var
+    );
+    // END_START_RECORDING
     //
     // Binary operators
     BINARY_OP(+, add)

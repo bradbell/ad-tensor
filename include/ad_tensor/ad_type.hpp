@@ -15,8 +15,8 @@ The Types Corresponding to AD tensors
 constant
 ********
 a constant tensor does not depend on the
-domain parameter tensor :ref:`recording_start@dom_par` or
-the domain variable tensor :ref:`recording_start@dom_var` .
+domain parameter tensor :ref:`start_recording@dom_par` or
+the domain variable tensor :ref:`start_recording@dom_var` .
 The elements of a constant tensor are called constants.
 
 parameter
