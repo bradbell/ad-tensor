@@ -46,31 +46,32 @@ namespace {
             EXPECT_LT( 0, op_index );
             //
             // op_enum
-            op_enum_t op_enum = agraph.op_vec_.at(op_index);
+            op_enum_t op_enum = agraph.m_op_vec.at(op_index);
             EXPECT_EQ( op_enum, op_enum_t::add );
             //
-            // arg_start_, arg_all_, ad_type_all_
-            const std::vector<size_t>& arg_start_        = agraph.arg_start_;
-            const std::vector<size_t>& arg_all_          = agraph.arg_all_;
-            const std::vector<ad_type_t>& ad_type_all_   = agraph.ad_type_all_;
+            // m_arg_start, m_arg_all, m_ad_type_all
+            const std::vector<size_t>& m_arg_start      = agraph.m_arg_start;
+            const std::vector<size_t>& m_arg_all        = agraph.m_arg_all;
+            const std::vector<ad_type_t>& m_ad_type_all = agraph.m_ad_type_all;
             //
             // n_arg
-            size_t n_arg = arg_start_.at(op_index+1) - arg_start_.at(op_index);
+            size_t n_arg =
+                m_arg_start.at(op_index+1) - m_arg_start.at(op_index);
             EXPECT_EQ( n_arg, 2 );
             //
             // arg_index
-            size_t arg_first = arg_start_.at(op_index);
+            size_t arg_first = m_arg_start.at(op_index);
             //
             // lhs_tensor
-            size_t        lhs_index   = arg_all_.at(arg_first);
-            ad_type_t     lhs_ad_type = ad_type_all_.at(arg_first);
+            size_t        lhs_index   = m_arg_all.at(arg_first);
+            ad_type_t     lhs_ad_type = m_ad_type_all.at(arg_first);
             Tensor        lhs_tensor  = tensor_at_index(
                lhs_ad_type, lhs_index, con_vec, par_vec
             );
             //
             // rhs_tensor
-            size_t        rhs_index   = arg_all_.at(arg_first + 1);
-            ad_type_t     rhs_ad_type = ad_type_all_.at(arg_first + 1);
+            size_t        rhs_index   = m_arg_all.at(arg_first + 1);
+            ad_type_t     rhs_ad_type = m_ad_type_all.at(arg_first + 1);
             Tensor        rhs_tensor  = tensor_at_index(
                rhs_ad_type, rhs_index, con_vec, par_vec
             );
@@ -89,7 +90,7 @@ TEST(tests_devel, op_base)  {
     // op_enum
     EXPECT_EQ( op_enum_t::add, add_op.op_enum() );
     //
-    // trace, arg_start_, arg_all_, ad_type_all_, con_vec, par_vec
+    // trace, m_arg_start, m_arg_all, m_ad_type_all, con_vec, par_vec
     op_enum_t              dom         = op_enum_t::dom;
     op_enum_t              add         = op_enum_t::add;
     ad_type_t              par         = ad_type_t::parameter;
@@ -100,10 +101,10 @@ TEST(tests_devel, op_base)  {
     std::vector<Tensor>    con_vec     = {};
     std::vector<Tensor>    par_vec     = {ones, empty};
     agraph_t               agraph;
-    agraph.op_vec_     = std::vector<op_enum_t>( {dom, add} );
-    agraph.arg_start_  = std::vector<size_t>( {0, 0, 2} );
-    agraph.arg_all_    = std::vector<size_t>( {0, 0} );
-    agraph.ad_type_all_ = std::vector<ad_type_t>( {par, par} );
+    agraph.m_op_vec     = std::vector<op_enum_t>( {dom, add} );
+    agraph.m_arg_start  = std::vector<size_t>( {0, 0, 2} );
+    agraph.m_arg_all    = std::vector<size_t>( {0, 0} );
+    agraph.m_ad_type_all = std::vector<ad_type_t>( {par, par} );
     //
     // par_vec[op_index]
     add_op.forward_par(trace, op_index, agraph, con_vec, par_vec);

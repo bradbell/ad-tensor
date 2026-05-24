@@ -16,30 +16,33 @@ n_dom_
 ******
 is the number of domain tensors in this tape.
 
-op_vec_
-*******
+m_op_vec
+********
 This vector has one element for each operation in the operation sequence.
-The value op_vec_[op_index] is the :ref:`op_enum-name` for the
+The value m_op_vec[op_index] is the :ref:`op_enum-name` for the
 use of the operator corresponding to this operator use.
 
-arg_start_
-**********
-Let n_arg = arg_start_[op_index+1] - arg_start_[op_index].
+m_arg_start
+***********
+Let n_arg = m_arg_start[op_index+1] - m_arg_start[op_index].
 For i_arg = 0, ... n_arg,
-arg_index = arg_start_[op_index] + i_arg is the index in arg_all_ and ad_type_all_
+arg_index = m_arg_start[op_index] + i_arg
+is the index in m_arg_all and m_ad_type_all
 of the corresponding argument and ad_type for this operator usage.
 
-arg_all_
-********
+m_arg_all
+*********
 is a vector containing the arguments for all the operator uses.
+For each arg_index = m_arg_start[op_index] + i_arg,
+m_arg_all[arg_index] is the index for the corresponding argument.
 
-ad_type_all_
-************
+m_ad_type_all
+*************
 is a vector containing the AD type for all the operator uses;
 see :ref:`ad_type-name` .
-For each arg_index = arg[op_index] + i_arg,
-if ad_type_all_[arg_index] is constant (parameter) [variable],
-val_index is an index in con_vec (par_vec) [var_vec].
+For each arg_index = m_arg_start[op_index] + i_arg,
+if m_ad_type_all[arg_index] is constant (parameter) [variable],
+the corresponding index is in con_vec (par_vec) [var_vec].
 
 default constructor
 *******************
@@ -66,31 +69,31 @@ is the tape used to record AD operations on this thread.
 namespace ad_tensor { namespace devel { class agraph_t {
 public:
     size_t                 n_dom_;
-    std::vector<op_enum_t> op_vec_;
-    std::vector<size_t>    arg_start_;
-    std::vector<size_t>    arg_all_;
-    std::vector<ad_type_t> ad_type_all_;
+    std::vector<op_enum_t> m_op_vec;
+    std::vector<size_t>    m_arg_start;
+    std::vector<size_t>    m_arg_all;
+    std::vector<ad_type_t> m_ad_type_all;
     //
     // default constructor
-    agraph_t() : n_dom_(0), op_vec_(), arg_start_() , arg_all_(), ad_type_all_()
+    agraph_t() : n_dom_(0), m_op_vec(), m_arg_start() , m_arg_all(), m_ad_type_all()
     { }
     //
     // swap
     void swap(agraph_t& other) noexcept
     {   std::swap( n_dom_, other.n_dom_ );
-        op_vec_.swap(      other.op_vec_);
-        arg_start_.swap(   other.arg_start_);
-        arg_all_.swap(     other.arg_all_);
-        ad_type_all_.swap( other.ad_type_all_);
+        m_op_vec.swap(      other.m_op_vec);
+        m_arg_start.swap(   other.m_arg_start);
+        m_arg_all.swap(     other.m_arg_all);
+        m_ad_type_all.swap( other.m_ad_type_all);
     }
     //
     // is_empty
     bool is_empty(void) const {
         return
-            op_vec_.empty() &&
-            arg_start_.empty() &&
-            arg_all_.empty() &&
-            ad_type_all_.empty();
+            m_op_vec.empty() &&
+            m_arg_start.empty() &&
+            m_arg_all.empty() &&
+            m_ad_type_all.empty();
     }
 }; } }
 // END_AGRAPH
