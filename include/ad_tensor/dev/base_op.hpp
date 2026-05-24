@@ -21,6 +21,9 @@ All the member functions for this class are public and virtual.
 Their member functions are like static functions
 that are grouped together by operator; i.e.,
 they have no member data and are const.
+{xrst_toc_table
+    include/ad_tensor/dev/derive_op.hpp
+}
 
 op_enum
 *******
