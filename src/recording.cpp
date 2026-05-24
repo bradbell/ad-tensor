@@ -99,28 +99,28 @@ std::tuple< std::vector<ad_t>, std::vector<ad_t> > recording::start(
     }
     //
     // tape: tape_id, recording
-    tape.tape_id_   = tape_id;
-    tape.recording_ = true;
+    tape.m_tape_id   = tape_id;
+    tape.m_recording = true;
     //
     // adom_par
-    // tape.par_: n_dom_, m_op_vec
+    // tape.m_par: n_dom_, m_op_vec
     ad_type_t parameter = ad_type_t::parameter;
-    tape.par_.n_dom_    = dom_par.size();
+    tape.m_par.n_dom_    = dom_par.size();
     std::vector<ad_t> adom_par;
     for(size_t index = 0; index < dom_par.size(); ++index)
-    {   tape.par_.m_op_vec.push_back( devel::op_enum_t::dom );
+    {   tape.m_par.m_op_vec.push_back( devel::op_enum_t::dom );
         adom_par.push_back( ad_t(
             tape_id, index, dom_par[index].clone(), parameter
         ) );
     }
     //
     // adom_var
-    // tape.var_: n_dom_, m_op_vec
+    // tape.m_var: n_dom_, m_op_vec
     ad_type_t variable = ad_type_t::variable;
-    tape.var_.n_dom_    = dom_var.size();
+    tape.m_var.n_dom_    = dom_var.size();
     std::vector<ad_t> adom_var;
     for(size_t index = 0; index < dom_var.size(); ++index)
-    {   tape.var_.m_op_vec.push_back( devel::op_enum_t::dom );
+    {   tape.m_var.m_op_vec.push_back( devel::op_enum_t::dom );
         adom_var.push_back( ad_t(
             tape_id, index, dom_var[index].clone(), variable
         ) );
@@ -185,15 +185,15 @@ adfn_t recording::stop(const std::vector<ad_t>& arange)
     );
     //
     // tape
-    tape.recording_ = false;
+    tape.m_recording = false;
     //
     // adfn
     adfn_t adfn;
     //
     // adfn, tape
-    adfn.m_con.swap( tape.con_ );
-    adfn.m_par.swap( tape.par_ );
-    adfn.m_var.swap( tape.var_ );
+    adfn.m_con.swap( tape.m_con );
+    adfn.m_par.swap( tape.m_par );
+    adfn.m_var.swap( tape.m_var );
     //
     // adfn
     for(size_t i = 0; i < arange.size(); ++i)

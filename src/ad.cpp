@@ -17,10 +17,10 @@ ad_t::ad_t( at::Tensor&& tensor )
 {   //
     // tape
     devel::tape_t& tape = devel::this_threads_tape();
-    if( tape.recording_ ) {
-        m_tape_id = tape.tape_id_;
-        m_index   = tape.con_.size();
-        tape.con_.push_back( tensor.clone() );
+    if( tape.m_recording ) {
+        m_tape_id = tape.m_tape_id;
+        m_index   = tape.m_con.size();
+        tape.m_con.push_back( tensor.clone() );
     }
 }
 /*
@@ -97,12 +97,12 @@ static */ ad_t ad_t::binary(
     //
     // tape
     devel::tape_t& tape = devel::this_threads_tape();
-    if( ! tape.recording_ )
+    if( ! tape.m_recording )
         return ad_t( std::move(res_tensor) );
-    assert( lhs.m_tape_id == tape.tape_id_  &&
+    assert( lhs.m_tape_id == tape.m_tape_id  &&
         "binary left operand does not match tape that is recording"
     );
-    assert( rhs.m_tape_id == tape.tape_id_  &&
+    assert( rhs.m_tape_id == tape.m_tape_id  &&
         "binary right operand does not match tape that is recording"
     );
     //
@@ -110,26 +110,26 @@ static */ ad_t ad_t::binary(
     ad_type_t res_ad_type = std::max( lhs.m_ad_type, rhs.m_ad_type );
     //
     // res_tape_id
-    size_t res_tape_id = tape.tape_id_;
+    size_t res_tape_id = tape.m_tape_id;
     //
     // res_index
     size_t res_index;
     //
     if(res_ad_type == ad_type_t::constant ) {
-        // res_index, tape.con_
-        res_index = tape.con_.size();
-        tape.con_.push_back( res_tensor.clone() );
+        // res_index, tape.m_con
+        res_index = tape.m_con.size();
+        tape.m_con.push_back( res_tensor.clone() );
     } else {
         //
         // agraph
         devel::agraph_t* agraph = nullptr;
         if( res_ad_type == ad_type_t::parameter )
-            agraph = &tape.par_;
+            agraph = &tape.m_par;
         else {
             assert( res_ad_type == ad_type_t::variable  &&
                 "binary opereand is not constant, parameter, or variable"
             );
-            agraph = &tape.var_;
+            agraph = &tape.m_var;
         }
         //
         // res_index, agraph

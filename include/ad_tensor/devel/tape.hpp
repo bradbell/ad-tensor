@@ -67,24 +67,24 @@ namespace ad_tensor { namespace devel { class tape_t {
     friend class ad_tensor::devel::record;
     friend class ad_tensor::ad_t;
 private:
-    std::vector<at::Tensor>    con_;
-    agraph_t                   par_;
-    agraph_t                   var_;
-    size_t                     tape_id_;
-    bool                       recording_;
+    std::vector<at::Tensor>    m_con;
+    agraph_t                   m_par;
+    agraph_t                   m_var;
+    size_t                     m_tape_id;
+    bool                       m_recording;
 public:
     //
     // default constructor
-    tape_t() : con_(), par_(), var_(), tape_id_(0), recording_(false)
+    tape_t() : m_con(), m_par(), m_var(), m_tape_id(0), m_recording(false)
     { }
     //
     // tape_id, recording
-    size_t tape_id(void) const noexcept { return tape_id_; }
-    size_t recording(void) const noexcept { return recording_; }
+    size_t tape_id(void) const noexcept { return m_tape_id; }
+    size_t recording(void) const noexcept { return m_recording; }
     //
     // is_empty
     bool is_empty(void) const {
-        return con_.empty() && par_.is_empty() && var_.is_empty();
+        return m_con.empty() && m_par.is_empty() && m_var.is_empty();
     }
 }; } }
 //
