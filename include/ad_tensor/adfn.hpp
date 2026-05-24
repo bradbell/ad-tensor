@@ -7,7 +7,7 @@
 */
 #include <vector>
 #include <ad_tensor/ad_type.hpp>
-#include <ad_tensor/devel/agraph.hpp>
+#include <ad_tensor/dev/agraph.hpp>
 //
 namespace ad_tensor { class ad_t; }
 //

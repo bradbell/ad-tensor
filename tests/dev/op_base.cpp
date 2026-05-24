@@ -6,9 +6,9 @@
 #include <torch/torch.h>
 //
 #include <ad_tensor/ad_type.hpp>
-#include <ad_tensor/devel/op_enum.hpp>
-#include <ad_tensor/devel/agraph.hpp>
-#include <ad_tensor/devel/op_base.hpp>
+#include <ad_tensor/dev/op_enum.hpp>
+#include <ad_tensor/dev/agraph.hpp>
+#include <ad_tensor/dev/op_base.hpp>
 //
 // empty namespace
 namespace {

@@ -3,19 +3,19 @@
 # SPDX-FileCopyrightText: Bradley M. Bell <bradbell@seanet.com>
 # SPDX-FileContributor: 2026 Bradley M. Bell
 # ---------------------------------------------------------------------------
-{xrst_begin devel dev}
+{xrst_begin private dev}
 
-Developer Documentation
-#######################
+The AD Tensor Private Documentation
+###################################
 
 Contents
 ********
 {xrst_toc_table
     include/ad_tensor/ad.hpp
-    include/ad_tensor/devel/op_enum.hpp
-    include/ad_tensor/devel/agraph.hpp
-    include/ad_tensor/devel/tape.hpp
-    include/ad_tensor/devel/op_base.hpp
+    include/ad_tensor/dev/op_enum.hpp
+    include/ad_tensor/dev/agraph.hpp
+    include/ad_tensor/dev/tape.hpp
+    include/ad_tensor/dev/op_base.hpp
 }
 
-{xrst_end devel}
+{xrst_end private}

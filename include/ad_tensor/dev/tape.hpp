@@ -54,7 +54,7 @@ is the thread local tape used to record AD operations (on this thread).
 #include <vector>
 #include <torch/torch.h>
 //
-#include <ad_tensor/devel/agraph.hpp>
+#include <ad_tensor/dev/agraph.hpp>
 #include <ad_tensor/ad.hpp>
 //
 // recording, record

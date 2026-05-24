@@ -3,9 +3,9 @@
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
 #include <ad_tensor/ad.hpp>
-#include <ad_tensor/devel/tape.hpp>
-#include <ad_tensor/devel/op_enum.hpp>
-#include <ad_tensor/devel/agraph.hpp>
+#include <ad_tensor/dev/tape.hpp>
+#include <ad_tensor/dev/op_enum.hpp>
+#include <ad_tensor/dev/agraph.hpp>
 //
 namespace ad_tensor { // BEGIN_NAMESPACE_AD_TENSOR
 /*

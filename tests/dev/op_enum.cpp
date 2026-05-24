@@ -3,7 +3,7 @@
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
 #include <gtest/gtest.h>
-#include <ad_tensor/devel/op_enum.hpp>
+#include <ad_tensor/dev/op_enum.hpp>
 //
 TEST(tests_devel, op_enum)  {
     using ad_tensor::devel::op_enum_t;

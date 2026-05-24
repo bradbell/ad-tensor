@@ -27,7 +27,7 @@ package_name='ad_tensor'
 #
 # index_page_name
 # is the xrst index page_name for this projects documentation.
-index_page_name='user'
+index_page_name='public'
 #
 # version_file_list
 # The possible patterns for a latest version number are:

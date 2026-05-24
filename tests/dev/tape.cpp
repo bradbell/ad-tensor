@@ -5,7 +5,7 @@
 #include <gtest/gtest.h>
 #include <torch/torch.h>
 //
-#include <ad_tensor/devel/tape.hpp>
+#include <ad_tensor/dev/tape.hpp>
 //
 TEST(tests_devel, tape)  {
     //

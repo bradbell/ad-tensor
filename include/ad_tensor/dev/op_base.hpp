@@ -85,8 +85,8 @@ and par_vec[op_index] is an output.
 #include <torch/torch.h>
 //
 #include <ad_tensor/ad_type.hpp>
-#include <ad_tensor/devel/op_enum.hpp>
-#include <ad_tensor/devel/agraph.hpp>
+#include <ad_tensor/dev/op_enum.hpp>
+#include <ad_tensor/dev/agraph.hpp>
 //
 // BEGIN_OP_BASE
 namespace ad_tensor { namespace devel { struct op_base_t

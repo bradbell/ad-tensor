@@ -4,6 +4,6 @@
 # -----------------------------------------------------------------------------
 add_library(ad_tensor SHARED
     ad.cpp
-    devel/tape.cpp
-    devel/ad.cpp
+    dev/tape.cpp
+    dev/ad.cpp
 )

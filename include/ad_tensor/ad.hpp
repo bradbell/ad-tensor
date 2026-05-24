@@ -55,7 +55,7 @@ Example
 The ad_t Class Developer Documentation
 ######################################
 {xrst_toc_table after
-    src/devel/ad.cpp
+    src/dev/ad.cpp
 }
 
 {xrst_end ad_dev}
@@ -105,7 +105,7 @@ The ad_t Private Constructor
 //
 #include <ad_tensor/adfn.hpp>
 #include <ad_tensor/ad_type.hpp>
-#include <ad_tensor/devel/op_enum.hpp>
+#include <ad_tensor/dev/op_enum.hpp>
 //
 // BINARY_OP
 # define BINARY_OP(op, op_enum) \

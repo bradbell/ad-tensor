@@ -63,7 +63,7 @@ is the tape used to record AD operations on this thread.
 {xrst_end agraph}
 */
 #include <ad_tensor/ad_type.hpp>
-#include <ad_tensor/devel/op_enum.hpp>
+#include <ad_tensor/dev/op_enum.hpp>
 
 // BEGIN_AGRAPH
 namespace ad_tensor { namespace devel { class agraph_t {

@@ -2,8 +2,8 @@
 data = 'ad_tensor'
 
 [root_file]
-usr = 'docs/user.xrst'
-dev = 'docs/devel.xrst'
+usr = 'docs/public.xrst'
+dev = 'docs/private.xrst'
 
 [heading]
 #   level         0,     1,     2,     3,     4,

@@ -4,9 +4,9 @@
 # -----------------------------------------------------------------------------
 #
 add_executable(tests
-    devel/op_enum.cpp
-    devel/op_base.cpp
-    devel/tape.cpp
+    dev/op_enum.cpp
+    dev/op_base.cpp
+    dev/tape.cpp
 )
 #
 target_link_libraries(tests
