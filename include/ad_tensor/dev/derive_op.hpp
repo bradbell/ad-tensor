@@ -16,8 +16,10 @@
             const std::vector<at::Tensor>&    con_vec     , \
             std::vector<at::Tensor>&          par_vec     \
         ) const override; \
-    } op_name;
+    } const op_name;
 //
 namespace ad_tensor { namespace dev {
+    const base_op_t& op_enum2base_op(op_enum_t op_enum);
+    //
     OP_DERIVE(add_op)
 } }
