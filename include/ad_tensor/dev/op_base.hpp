@@ -159,7 +159,6 @@ namespace ad_tensor { namespace dev { struct op_base_t
     //
     // BEGIN_FORWARD_PAR
     virtual void forward_par(
-        bool                              trace       ,
         size_t                            op_index    ,
         const agraph_t&                   agraph      ,
         const std::vector<at::Tensor>&    con_vec     ,
