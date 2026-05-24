@@ -5,4 +5,5 @@
 add_library(ad_tensor SHARED
     ad.cpp
     tape.cpp
+    devel/ad.cpp
 )
