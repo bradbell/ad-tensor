@@ -42,38 +42,21 @@ namespace {
             const std::vector<Tensor>& con_vec     ,
             std::vector<Tensor>&       par_vec     ) const override
         {
-            // op_index
-            EXPECT_LT( 0, op_index );
-            //
-            // op_enum
-            op_enum_t op_enum = agraph.m_op_seq.at(op_index);
-            EXPECT_EQ( op_enum, op_enum_t::add );
-            //
-            // m_arg_start, m_arg_value, m_arg_type
-            const std::vector<size_t>& m_arg_start      = agraph.m_arg_start;
-            const std::vector<size_t>& m_arg_value        = agraph.m_arg_value;
-            const std::vector<ad_type_t>& m_arg_type = agraph.m_arg_type;
-            //
-            // n_arg
-            size_t n_arg =
-                m_arg_start.at(op_index+1) - m_arg_start.at(op_index);
-            EXPECT_EQ( n_arg, 2 );
             //
             // arg_index
-            size_t arg_first = m_arg_start.at(op_index);
+            size_t arg_index = agraph.m_arg_start.at(op_index);
             //
-            // lhs_tensor
-            size_t        lhs_index   = m_arg_value.at(arg_first);
-            ad_type_t     lhs_ad_type = m_arg_type.at(arg_first);
-            Tensor        lhs_tensor  = tensor_at_index(
-               lhs_ad_type, lhs_index, con_vec, par_vec
+#ifndef NDEBUG
+            size_t n_arg = agraph.m_arg_start.at(op_index+1) - arg_index;
+            assert( n_arg == 2 && "add_t: n_arg != 2" );
+# endif
+            //
+            // lhs_tensor, rhs_tensor
+            Tensor lhs_tensor  = tensor_at_index(
+                arg_index, agraph, con_vec, par_vec
             );
-            //
-            // rhs_tensor
-            size_t        rhs_index   = m_arg_value.at(arg_first + 1);
-            ad_type_t     rhs_ad_type = m_arg_type.at(arg_first + 1);
-            Tensor        rhs_tensor  = tensor_at_index(
-               rhs_ad_type, rhs_index, con_vec, par_vec
+            Tensor rhs_tensor  = tensor_at_index(
+                arg_index + 1, agraph, con_vec, par_vec
             );
             //
             // par_vec
