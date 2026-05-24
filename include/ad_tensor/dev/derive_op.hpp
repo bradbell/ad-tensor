@@ -20,6 +20,10 @@
 //
 namespace ad_tensor { namespace dev {
     const base_op_t& op_enum2base_op(op_enum_t op_enum);
-    //
+    // BEGIN_SORT_THIS_LINE_PLUS_1
     OP_DERIVE(add_op)
+    OP_DERIVE(sub_op)
+    OP_DERIVE(mul_op)
+    OP_DERIVE(div_op)
+    // END_SORT_THIS_LINE_MINUS_1
 } }
