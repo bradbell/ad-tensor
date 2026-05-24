@@ -197,8 +197,8 @@ adfn_t recording::stop(const std::vector<ad_t>& arange)
     //
     // adfn
     for(size_t i = 0; i < arange.size(); ++i)
-    {   adfn.rng_index_.push_back( arange.at(i).index_ );
-        adfn.rng_ad_type_.push_back( arange.at(i).ad_type_ );
+    {   adfn.rng_index_.push_back( arange.at(i).m_index );
+        adfn.rng_ad_type_.push_back( arange.at(i).m_ad_type );
     }
     //
     return adfn;

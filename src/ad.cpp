@@ -10,16 +10,16 @@
 namespace ad_tensor { // BEGIN_NAMESPACE_AD_TENSOR
 // ----------------------------------------------------------------------------
 ad_t::ad_t( at::Tensor&& tensor )
-: tape_id_(0)
-, index_(0)
-, tensor_(tensor)
-, ad_type_(ad_type_t::constant)
+: m_tape_id(0)
+, m_index(0)
+, m_tensor(tensor)
+, m_ad_type(ad_type_t::constant)
 {   //
     // tape
     devel::tape_t& tape = devel::this_threads_tape();
     if( tape.recording_ ) {
-        tape_id_ = tape.tape_id_;
-        index_   = tape.con_.size();
+        m_tape_id = tape.tape_id_;
+        m_index   = tape.con_.size();
         tape.con_.push_back( tensor.clone() );
     }
 }
@@ -99,15 +99,15 @@ static */ ad_t ad_t::binary(
     devel::tape_t& tape = devel::this_threads_tape();
     if( ! tape.recording_ )
         return ad_t( std::move(res_tensor) );
-    assert( lhs.tape_id_ == tape.tape_id_  &&
+    assert( lhs.m_tape_id == tape.tape_id_  &&
         "binary left operand does not match tape that is recording"
     );
-    assert( rhs.tape_id_ == tape.tape_id_  &&
+    assert( rhs.m_tape_id == tape.tape_id_  &&
         "binary right operand does not match tape that is recording"
     );
     //
     // res_ad_type
-    ad_type_t res_ad_type = std::max( lhs.ad_type_, rhs.ad_type_ );
+    ad_type_t res_ad_type = std::max( lhs.m_ad_type, rhs.m_ad_type );
     //
     // res_tape_id
     size_t res_tape_id = tape.tape_id_;
@@ -136,11 +136,11 @@ static */ ad_t ad_t::binary(
         res_index       = agraph->op_vec_.size();
         agraph->arg_start_.push_back( agraph->arg_all_.size() );
         //
-        agraph->arg_all_.push_back( lhs.index_ );
-        agraph->ad_type_all_.push_back( lhs.ad_type_ );
+        agraph->arg_all_.push_back( lhs.m_index );
+        agraph->ad_type_all_.push_back( lhs.m_ad_type );
         //
-        agraph->arg_all_.push_back( lhs.index_ );
-        agraph->ad_type_all_.push_back( lhs.ad_type_ );
+        agraph->arg_all_.push_back( lhs.m_index );
+        agraph->ad_type_all_.push_back( lhs.m_ad_type );
     }
     return ad_t(res_tape_id, res_index, std::move(res_tensor), res_ad_type);
 }

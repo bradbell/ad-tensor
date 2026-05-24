@@ -79,14 +79,14 @@ namespace ad_tensor { class ad_t
 private:
     //
     // tape_id_, index_, tensor_, ad_type_
-    size_t        tape_id_;
-    size_t        index_;
-    at::Tensor    tensor_;
-    ad_type_t     ad_type_;
+    size_t        m_tape_id;
+    size_t        m_index;
+    at::Tensor    m_tensor;
+    ad_type_t     m_ad_type;
     //
     // BEGIN_PRIVATE_CTOR
     ad_t( size_t tape_id, size_t index, at::Tensor&& tensor, ad_type_t ad_type)
-    : tape_id_(tape_id), index_(index), tensor_(tensor), ad_type_(ad_type)
+    : m_tape_id(tape_id), m_index(index), m_tensor(tensor), m_ad_type(ad_type)
     { }
     // END_PRIVATE_CTOR
     //
@@ -103,7 +103,7 @@ public:
     // BEGIN_TO_TENSOR
     const at::Tensor& tensor(void) const
     // END_TO_TENSOR
-    {   return tensor_; }
+    {   return m_tensor; }
     //
     // Binary operators
     BINARY_OP(+, add)
