@@ -8,7 +8,7 @@
 #include <ad_tensor/ad_type.hpp>
 #include <ad_tensor/dev/op_enum.hpp>
 #include <ad_tensor/dev/agraph.hpp>
-#include <ad_tensor/dev/op_derive.hpp>
+#include <ad_tensor/dev/derive_op.hpp>
 //
 // empty namespace
 namespace {
@@ -17,7 +17,7 @@ namespace {
     using ad_tensor::dev::op_enum_t;
     using ad_tensor::ad_type_t;
     using ad_tensor::dev::agraph_t;
-    using ad_tensor::dev::op_base_t;
+    using ad_tensor::dev::base_op_t;
     //
     // vector
     using std::vector;
@@ -29,7 +29,7 @@ namespace {
 TEST(tests_devel, op_base)  {
     //
     // base_op
-    op_base_t& base_op = ad_tensor::dev::add_op;
+    base_op_t& base_op = ad_tensor::dev::add_op;
     //
     // op_enum
     EXPECT_EQ( op_enum_t::add, base_op.op_enum() );

@@ -2,13 +2,13 @@
 // SPDX-FileCopyrightText: Bradley M. Bell <bradbell@seanet.com>
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
-#include <ad_tensor/dev/op_derive.hpp>
+#include <ad_tensor/dev/derive_op.hpp>
 //
-namespace ad_tensor { namespace dev { 
+namespace ad_tensor { namespace dev {
     //
     // op_enum
-    op_enum_t add_op_t::op_enum(void) const {   
-        return op_enum_t::add; 
+    op_enum_t add_op_t::op_enum(void) const {
+        return op_enum_t::add;
     }
     //
     // forward_par
@@ -16,7 +16,7 @@ namespace ad_tensor { namespace dev {
         size_t                            op_index    ,
         const agraph_t&                   agraph      ,
         const std::vector<at::Tensor>&    con_vec     ,
-        std::vector<at::Tensor>&          par_vec    
+        std::vector<at::Tensor>&          par_vec
     ) const {
         //
         // arg_index

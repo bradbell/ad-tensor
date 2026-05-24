@@ -89,7 +89,7 @@ and par_vec[op_index] is an output.
 #include <ad_tensor/dev/agraph.hpp>
 //
 // BEGIN_OP_BASE
-namespace ad_tensor { namespace dev { struct op_base_t
+namespace ad_tensor { namespace dev { struct base_op_t
 // END_OP_BASE
 {   //
     // BEGIN_TENSOR_AT_ARG_INDEX_PAR

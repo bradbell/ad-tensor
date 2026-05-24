@@ -5,7 +5,7 @@
 #
 add_executable(tests
     dev/op_enum.cpp
-    dev/op_base.cpp
+    dev/base_op.cpp
     dev/tape.cpp
 )
 #

@@ -3,10 +3,10 @@
 // SPDX-FileCopyrightText: Bradley M. Bell <bradbell@seanet.com>
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
-#include <ad_tensor/dev/op_base.hpp>
+#include <ad_tensor/dev/base_op.hpp>
 //
 #define OP_DERIVE(op_name) \
-    struct op_name ## _t : public op_base_t { \
+    struct op_name ## _t : public base_op_t { \
         \
         op_enum_t op_enum(void) const override; \
         \
