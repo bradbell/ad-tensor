@@ -8,6 +8,7 @@
 #include <ad_tensor/dev/base_op.hpp>
 #include <ad_tensor/dev/derive_op.hpp>
 #include <ad_tensor/dev/to_string.hpp>
+#include <ad_tensor/dev/user_assert.hpp>
 /*
 {xrst_begin adfn_forward_par usr}
 
@@ -51,20 +52,20 @@ std::vector<at::Tensor> adfn_t::forward_par(
             if( value == "true" )
                 trace = true;
             else {
-                assert( value == "false" && "forward_par: "
-                    "trace is not true of false"
+                dev::user_assert( value == "false" , 
+                    "forward_par: trace is not true of false"
                 );
             }
         } else {
-            assert( false && "forward_par: invalid key in options" );
+            dev::user_assert( false , "forward_par: invalid key in options" );
         }
     }
     if( trace ) {
         cout << "Begin tracing adfn::forward_par\n";
     }
     // dom_par
-    assert( dom_par.size() == m_par.m_n_dom && "forward_par: "
-        "dom_par does not have the expected number of tensors"
+    dev::user_assert( dom_par.size() == m_par.m_n_dom ,
+        "forward_par: dom_par does not have the expected number of tensors"
     );
     //
     // n_op, n_all, empty

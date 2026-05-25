@@ -6,6 +6,7 @@
 #include <ad_tensor/dev/tape.hpp>
 #include <ad_tensor/dev/op_enum.hpp>
 #include <ad_tensor/dev/agraph.hpp>
+#include <ad_tensor/dev/user_assert.hpp>
 //
 namespace ad_tensor { // BEGIN_NAMESPACE_AD_TENSOR
 /*
@@ -85,10 +86,10 @@ ad_t ad_t::binary(
     dev::tape_t& tape = dev::this_threads_tape();
     if( ! tape.m_recording )
         return ad_t( std::move(res_tensor) );
-    assert( lhs.m_tape_id == tape.m_tape_id  &&
+    dev::user_assert( lhs.m_tape_id == tape.m_tape_id ,
         "binary left operand does not match tape that is recording"
     );
-    assert( rhs.m_tape_id == tape.m_tape_id  &&
+    dev::user_assert( rhs.m_tape_id == tape.m_tape_id ,
         "binary right operand does not match tape that is recording"
     );
     //

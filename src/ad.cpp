@@ -6,6 +6,7 @@
 #include <ad_tensor/dev/tape.hpp>
 #include <ad_tensor/dev/op_enum.hpp>
 #include <ad_tensor/dev/agraph.hpp>
+#include <ad_tensor/dev/user_assert.hpp>
 //
 namespace ad_tensor { // BEGIN_NAMESPACE_AD_TENSOR
 // ----------------------------------------------------------------------------
@@ -86,7 +87,7 @@ std::tuple< std::vector<ad_t>, std::vector<ad_t> > ad_t::start_recording(
     // tape_id_mutex
     static std::mutex tape_id_mutex;
     //
-    assert( ! tape.recording() &&
+    dev::user_assert( ! tape.recording() ,
         "recording_start: this threads tape is already recording"
     );
     assert( tape.is_empty() &&
@@ -179,7 +180,7 @@ adfn_t ad_t::stop_recording(const std::vector<ad_t>& arange)
     // tape
     dev::tape_t& tape = dev::this_threads_tape();
     //
-    assert( tape.recording() &&
+    dev::user_assert( tape.recording() ,
         "stop_recording: this threads tape is not recording"
     );
     assert( ! tape.is_empty() &&
