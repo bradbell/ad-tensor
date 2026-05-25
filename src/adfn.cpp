@@ -15,31 +15,46 @@
 Compute The Dependent Parameters
 ################################
 
+Prototype
+*********
+{xrst_literal ,
+    BEGIN_FORWARD_PAR, END_FORWARD_PAR
+}
+
 dom_par
 *******
 Is the value of the domain parameters for this calculation.
 
 options
 *******
+The possible key,value pairs ( see :ref:`options-name` ) are
 
-trace
-=====
-The only implemented key is "trace" and its value values
-are "true" and "false".
-The default value for "trace" is "false".
+.. csv-table::
+    :header-rows: 1
 
+    Key, Default, Possible other Values
+    "trace", "false", "true"
 
+all_par
+*******
+This vector will contain all the parameter tensors in the order
+they are calculated.
+The vector dom_var is a sub-vector at the beginning of all_par;
+A tensor is a parameter tensor if it depends on the tensors in dom_par
+and does not depend on the tensors in dom_var .
 
 {xrst_end adfn_forward_par}
 */
 namespace ad_tensor { // BEGIN_NAMESPACE_AD_TENSOR
 //
-// adfn_t::forward_par
+// BEGIN_FORWARD_PAR
+// all_par = adfn.forward_par(dom_par, options)
 std::vector<at::Tensor> adfn_t::forward_par(
     std::vector<at::Tensor>&& dom_par ,
     const options_t&          options
-) const {
-    //
+) const
+// END_FORWARD_PAR
+{
     // cout
     using std::cout;
     using ad_tensor::dev::to_string;
@@ -52,7 +67,7 @@ std::vector<at::Tensor> adfn_t::forward_par(
             if( value == "true" )
                 trace = true;
             else {
-                dev::user_assert( value == "false" , 
+                dev::user_assert( value == "false" ,
                     "forward_par: trace is not true of false"
                 );
             }
@@ -62,6 +77,10 @@ std::vector<at::Tensor> adfn_t::forward_par(
     }
     if( trace ) {
         cout << "Begin tracing adfn::forward_par\n";
+        for(size_t i = 0; i < m_con.size(); ++i) {
+            std::string element = to_string( m_con.at(i) );
+            cout << "constant[" << i << "] = " << element << "\n";
+        }
     }
     // dom_par
     dev::user_assert( dom_par.size() == m_par.m_n_dom ,

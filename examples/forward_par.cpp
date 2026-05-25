@@ -26,9 +26,16 @@ TEST(examples, forward_par)  {
         std::move(dom_par), std::move(dom_var)
     );
     //
+    // acon
+    // create a constant after start_recording so can use it in the recording
+    ad_t acon( torch::tensor( {-1} ) );
+    //
+    // aprod
+    ad_t aprod = adom_par[0] * adom_par[1];
+    //
     // arange
     vector<ad_t> arange;
-    arange.push_back(  adom_par[0] * adom_par[1] );
+    arange.push_back(  acon + aprod);
     //
     // adfn
     adfn_t adfn = ad_t::stop_recording(arange);
@@ -47,7 +54,7 @@ TEST(examples, forward_par)  {
         std::move(dom_par), options
     );
     //
-    EXPECT_EQ( all_par.size(), 3 );
+    EXPECT_EQ( all_par.size(), 4 );
     //
     Tensor equal = all_par[0] == torch::tensor( {6.0, 7.0} );
     EXPECT_TRUE( torch::all(equal).item<bool>() );
@@ -55,7 +62,10 @@ TEST(examples, forward_par)  {
     equal = all_par[1] == torch::tensor( {8.0, 9.0} );
     EXPECT_TRUE( torch::all(equal).item<bool>() );
     //
-    equal = all_par[2] == torch::tensor( {48.0, 63.0} );
+    equal = all_par[2] == torch::tensor( {48.0 , 63.0} );
+    EXPECT_TRUE( torch::all(equal).item<bool>() );
+    //
+    equal = all_par[3] == torch::tensor( {47.0 , 62.0} );
     EXPECT_TRUE( torch::all(equal).item<bool>() );
 }
 // END_CPP

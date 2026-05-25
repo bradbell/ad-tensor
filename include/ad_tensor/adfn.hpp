@@ -74,12 +74,9 @@ namespace ad_tensor { class adfn_t
             m_rng_index.empty() &&
             m_rng_ad_type.empty();
         }
-        // BEGIN_FORWARD_PAR
-        // all_par = forward_par(dom_par)
         std::vector<at::Tensor> forward_par(
             std::vector<at::Tensor>&& dom_par ,
             const options_t&          options
         ) const;
-        // END_FORWARD_PAR
     };
 }
