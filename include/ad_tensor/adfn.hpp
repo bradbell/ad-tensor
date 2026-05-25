@@ -4,6 +4,34 @@
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
 /*
+{xrst_begin adfn usr}
+
+The AD Function Class
+#####################
+
+Default Constructor
+*******************
+This creates an empty AD function; i.e.,
+one that does not have any operations:
+{xrst_literal ,
+    BEGIN_ADFN_T, END_ADFN_T
+}
+
+is_empty
+********
+Returns true if there are no operations in this AD function:
+{xrst_literal ,
+    BEGIN_IS_EMPTY, END_IS_EMPTY
+}
+
+Other Public Members
+********************
+{xrst_toc_table
+    src/adfn.cpp
+}
+
+
+{xrst_end adfn}
 */
 #include <vector>
 #include <torch/torch.h>

@@ -10,7 +10,7 @@
 {xrst_begin adfn_forward_par usr}
 
 Compute The Dependent Parameters
-********************************
+################################
 
 dom_par
 *******
@@ -57,13 +57,13 @@ std::vector<at::Tensor> adfn_t::forward_par(
         }
     }
     // dom_par
-    assert( dom_par.size() == m_par.n_dom_ && "forward_par: "
+    assert( dom_par.size() == m_par.m_n_dom && "forward_par: "
         "dom_par does not have the expected number of tensors"
     );
     //
     // n_op, n_all, empty
     size_t n_op      = m_par.m_op_seq.size();
-    size_t n_all     = m_par.n_dom_ + n_op;
+    size_t n_all     = m_par.m_n_dom + n_op;
     at::Tensor empty = torch::empty( {0} );
     //
     // all_par
@@ -75,7 +75,7 @@ std::vector<at::Tensor> adfn_t::forward_par(
         for(size_t i = 0; i < m_con.size(); ++i) {
             cout << "constant[" << i << "] = " << m_con[i] << "\n";
         }
-        for(size_t i = 0; i < m_par.n_dom_; ++i) {
+        for(size_t i = 0; i < m_par.m_n_dom; ++i) {
             cout << "dom_par[" << i << "] = " << all_par[i] << "\n";
         }
     }

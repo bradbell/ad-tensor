@@ -15,8 +15,8 @@ Acyclic Graph Representation of an Operation Sequence
     BEGIN_AGRAPH, END_AGRAPH
 }
 
-n_dom_
-******
+m_n_dom
+*******
 is the number of domain tensors in this operation sequence.
 
 m_op_seq
@@ -71,23 +71,23 @@ This member function returns true if all the vectors in the graph are empty.
 // BEGIN_AGRAPH
 namespace ad_tensor { namespace dev { class agraph_t {
 public:
-    size_t                 n_dom_;
+    size_t                 m_n_dom;
     std::vector<op_enum_t> m_op_seq;
     std::vector<size_t>    m_arg_start;
     std::vector<size_t>    m_arg_value;
     std::vector<ad_type_t> m_arg_type;
     //
     // default constructor
-    agraph_t() : n_dom_(0), m_op_seq(), m_arg_start() , m_arg_value(), m_arg_type()
+    agraph_t() : m_n_dom(0), m_op_seq(), m_arg_start() , m_arg_value(), m_arg_type()
     { }
     //
     // swap
     void swap(agraph_t& other) noexcept
-    {   std::swap( n_dom_, other.n_dom_ );
-        m_op_seq.swap(     other.m_op_seq);
-        m_arg_start.swap(  other.m_arg_start);
-        m_arg_value.swap(  other.m_arg_value);
-        m_arg_type.swap(   other.m_arg_type);
+    {   std::swap( m_n_dom, other.m_n_dom );
+        m_op_seq.swap(      other.m_op_seq);
+        m_arg_start.swap(   other.m_arg_start);
+        m_arg_value.swap(   other.m_arg_value);
+        m_arg_type.swap(    other.m_arg_type);
     }
     //
     // is_empty
