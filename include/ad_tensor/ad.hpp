@@ -38,7 +38,7 @@ For *op* equal ``+``, ``-``, ``*``, ``/`` :
 Other Member Functions
 **********************
 {xrst_toc_table
-    src/ad.cpp
+    src/ad/recording.cpp
 }
 
 Example

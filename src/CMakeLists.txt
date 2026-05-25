@@ -4,7 +4,8 @@
 # -----------------------------------------------------------------------------
 add_library(ad_tensor SHARED
     # BEGIN_SORT_THIS_LINE_PLUS_1
-    ad.cpp
+    ad/ctor.cpp
+    ad/recording.cpp
     adfn/forward_par.cpp
     dev/ad.cpp
     dev/op_derive/add_op.cpp
