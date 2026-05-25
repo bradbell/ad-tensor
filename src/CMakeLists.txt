@@ -5,7 +5,7 @@
 add_library(ad_tensor SHARED
     # BEGIN_SORT_THIS_LINE_PLUS_1
     ad.cpp
-    adfn.cpp
+    adfn/forward_par.cpp
     dev/ad.cpp
     dev/op_derive/add_op.cpp
     dev/op_derive/div_op.cpp

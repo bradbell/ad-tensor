@@ -27,7 +27,7 @@ Returns true if there are no operations in this AD function:
 Other Public Members
 ********************
 {xrst_toc_table
-    src/adfn.cpp
+    src/adfn/forward_par.cpp
 }
 
 
