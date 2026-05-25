@@ -6,6 +6,8 @@
 /*
 */
 #include <vector>
+#include <torch/torch.h>
+#include <ad_tensor/options.hpp>
 #include <ad_tensor/ad_type.hpp>
 #include <ad_tensor/dev/agraph.hpp>
 //
@@ -17,8 +19,8 @@ namespace ad_tensor { class adfn_t
     {
         friend class ad_t;
     private:
-        dev::agraph_t            m_par;
-        dev::agraph_t            m_var;
+        dev::agraph_t              m_par;
+        dev::agraph_t              m_var;
         std::vector<at::Tensor>    m_con;
         std::vector<size_t>        m_rng_index;
         std::vector<ad_type_t>     m_rng_ad_type;
@@ -44,5 +46,12 @@ namespace ad_tensor { class adfn_t
             m_rng_index.empty() &&
             m_rng_ad_type.empty();
         }
+        // BEGIN_FORWARD_PAR
+        // all_par = forward_par(dom_par)
+        std::vector<at::Tensor> forward_par(
+            std::vector<at::Tensor>&& dom_par ,
+            const options_t&          options
+        ) const;
+        // END_FORWARD_PAR
     };
 }

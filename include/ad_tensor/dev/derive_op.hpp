@@ -39,6 +39,7 @@ This maps op_enum_t values to the corresponding op_name value:
     struct op_name ## _t : public base_op_t { \
         \
         op_enum_t op_enum(void) const override; \
+        std::string op_string(void) const override; \
         \
         void forward_par( \
             size_t                            op_index    , \

@@ -33,6 +33,13 @@ for the corresponding operator.
     BEGIN_OP_ENUM, END_OP_ENUM
 }
 
+op_string
+*********
+This function returns a string that identifies the derived class operator.
+{xrst_literal ,
+    BEGIN_OP_STRING, END_OP_STRING
+}
+
 Common Arguments
 ****************
 For each argument below, its documentation is common for
@@ -160,13 +167,18 @@ namespace ad_tensor { namespace dev { struct base_op_t
     virtual op_enum_t op_enum(void) const = 0;
     // END_OP_ENUM
     //
+    // BEGIN_OP_STRING
+    virtual std::string op_string(void) const = 0;
+    // END_OP_STRING
+    //
     // BEGIN_FORWARD_PAR
+    // all_par = base_op.forward_par(op_index, agraph, con_vec, par_vec)
     virtual void forward_par(
         size_t                            op_index    ,
         const agraph_t&                   agraph      ,
         const std::vector<at::Tensor>&    con_vec     ,
-        std::vector<at::Tensor>&          par_vec     ) const = 0;
+        std::vector<at::Tensor>&          par_vec
+    ) const = 0;
     // END_FORWARD_PAR
-
 };
 } }
