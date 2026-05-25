@@ -7,7 +7,7 @@
 //
 #include <ad_tensor/dev/tape.hpp>
 //
-TEST(tests_devel, tape)  {
+TEST(tests_dev, tape)  {
     //
     // tapoe
     ad_tensor::dev::tape_t tape;

@@ -26,7 +26,7 @@ namespace {
     using at::Tensor;
 }
 
-TEST(tests_devel, op_base)  {
+TEST(tests_dev, op_base)  {
     //
     // base_op
     const base_op_t& base_op = ad_tensor::dev::op_enum2base_op(op_enum_t::add);
