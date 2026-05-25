@@ -111,6 +111,7 @@ std::tuple< std::vector<ad_t>, std::vector<ad_t> > ad_t::start_recording(
     std::vector<ad_t> adom_par;
     for(size_t index = 0; index < dom_par.size(); ++index)
     {   tape.m_par.m_op_seq.push_back( dev::op_enum_t::dom );
+        tape.m_par.m_arg_start.push_back( 0 );
         adom_par.push_back( ad_t(
             tape_id, index, dom_par[index].clone(), parameter
         ) );
@@ -123,6 +124,7 @@ std::tuple< std::vector<ad_t>, std::vector<ad_t> > ad_t::start_recording(
     std::vector<ad_t> adom_var;
     for(size_t index = 0; index < dom_var.size(); ++index)
     {   tape.m_var.m_op_seq.push_back( dev::op_enum_t::dom );
+        tape.m_var.m_arg_start.push_back( 0 );
         adom_var.push_back( ad_t(
             tape_id, index, dom_var[index].clone(), variable
         ) );
@@ -183,9 +185,17 @@ adfn_t ad_t::stop_recording(const std::vector<ad_t>& arange)
     assert( ! tape.is_empty() &&
         "stop_recording: a tape that is recording should not be empty"
     );
+    assert( tape.m_par.m_arg_value.size() == tape.m_par.m_arg_type.size() &&
+        "stop_recording: tape.m_par size of arg_value and arg_type not equal"
+    );
+    assert( tape.m_var.m_arg_value.size() == tape.m_var.m_arg_type.size() &&
+        "stop_recording: tape.m_var size of arg_value and arg_type not equal"
+    );
     //
     // tape
     tape.m_recording = false;
+    tape.m_par.m_arg_start.push_back( tape.m_par.m_arg_value.size() );
+    tape.m_var.m_arg_start.push_back( tape.m_var.m_arg_value.size() );
     //
     // adfn
     adfn_t adfn;

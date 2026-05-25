@@ -11,6 +11,7 @@ namespace ad_tensor { namespace dev {
             // BEGIN_SORT_THIS_LINE_PLUS_1
             case op_enum_t::add: return add_op;
             case op_enum_t::div: return div_op;
+            case op_enum_t::dom: return dom_op;
             case op_enum_t::mul: return mul_op;
             case op_enum_t::sub: return sub_op;
             // END_SORT_THIS_LINE_MINUS_1

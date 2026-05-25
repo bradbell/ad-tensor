@@ -4,8 +4,10 @@
 // ----------------------------------------------------------------------------
 #include <ad_tensor/adfn.hpp>
 #include <ad_tensor/options.hpp>
+#include <ad_tensor/ad_type.hpp>
 #include <ad_tensor/dev/base_op.hpp>
 #include <ad_tensor/dev/derive_op.hpp>
+#include <ad_tensor/dev/to_string.hpp>
 /*
 {xrst_begin adfn_forward_par usr}
 
@@ -39,6 +41,7 @@ std::vector<at::Tensor> adfn_t::forward_par(
     //
     // cout
     using std::cout;
+    using ad_tensor::dev::to_string;
     //
     // trace
     bool trace = false;
@@ -56,6 +59,9 @@ std::vector<at::Tensor> adfn_t::forward_par(
             assert( false && "forward_par: invalid key in options" );
         }
     }
+    if( trace ) {
+        cout << "Begin tracing adfn::forward_par\n";
+    }
     // dom_par
     assert( dom_par.size() == m_par.m_n_dom && "forward_par: "
         "dom_par does not have the expected number of tensors"
@@ -63,22 +69,11 @@ std::vector<at::Tensor> adfn_t::forward_par(
     //
     // n_op, n_all, empty
     size_t n_op      = m_par.m_op_seq.size();
-    size_t n_all     = m_par.m_n_dom + n_op;
     at::Tensor empty = torch::empty( {0} );
     //
     // all_par
     std::vector<at::Tensor> all_par = std::move( dom_par );
-    all_par.resize( n_all, empty );
-    //
-    if( trace ) {
-        cout << "Begin tracing adfn::forward_par\n";
-        for(size_t i = 0; i < m_con.size(); ++i) {
-            cout << "constant[" << i << "] = " << m_con[i] << "\n";
-        }
-        for(size_t i = 0; i < m_par.m_n_dom; ++i) {
-            cout << "dom_par[" << i << "] = " << all_par[i] << "\n";
-        }
-    }
+    all_par.resize( n_op, empty );
     //
     // all_par
     for(size_t op_index = 0; op_index < n_op; ++op_index) {
@@ -91,8 +86,16 @@ std::vector<at::Tensor> adfn_t::forward_par(
         base_op.forward_par(op_index, m_par, m_con, all_par);
         //
         if( trace) {
-            cout << "all_par[" << op_index << "] = " << all_par.at(op_index);
-            cout << ", op = " << base_op.op_string() << "\n";
+            std::string element = to_string( all_par.at(op_index) );
+            cout << "all_par[" << op_index << "] = " << element;
+            cout << ", " << to_string(op_enum)  << "(";
+            size_t start = m_par.m_arg_start.at(op_index);
+            size_t stop  = m_par.m_arg_start.at(op_index + 1);
+            for(size_t i = start; i < stop; ++i) {
+                cout << "[" << m_par.m_arg_value.at(i) << ",";
+                cout << to_string( m_par.m_arg_type.at(i) ) << "]";
+            }
+            cout << ")\n";
         }
     }
     if( trace ) {

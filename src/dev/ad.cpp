@@ -39,9 +39,12 @@ the following is added to the parameter (variable) acyclic graph:
 .. csv-table::
     :header-rows: 1
 
-    Index, arg_all, ad_type_all
+    arg_index, arg_value, arg_type
     start + 0, index for lhs, type for lhs
     start + 1, index for rhs, type for rhs
+
+where start be the length of arg_value and arg_type before this call to
+``ad_t::binary`` .
 
 {xrst_end ad_binary}
 */
@@ -117,13 +120,14 @@ ad_t ad_t::binary(
         //
         // res_index, agraph
         res_index       = agraph->m_op_seq.size();
+        agraph->m_op_seq.push_back( op_enum);
         agraph->m_arg_start.push_back( agraph->m_arg_value.size() );
         //
         agraph->m_arg_value.push_back( lhs.m_index );
         agraph->m_arg_type.push_back( lhs.m_ad_type );
         //
-        agraph->m_arg_value.push_back( lhs.m_index );
-        agraph->m_arg_type.push_back( lhs.m_ad_type );
+        agraph->m_arg_value.push_back( rhs.m_index );
+        agraph->m_arg_type.push_back( rhs.m_ad_type );
     }
     return ad_t(res_tape_id, res_index, std::move(res_tensor), res_ad_type);
 }

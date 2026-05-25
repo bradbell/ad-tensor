@@ -37,15 +37,16 @@ The type none is used when the ad_type does not correspond to an AD tensor.
 Enum Values
 ***********
 {xrst_literal ,
-    BEGIN_SORT, END_SORT
+    BEGIN_AD_TYPE_T, END_AD_TYPE_T
 }
+
 {xrst_end ad_type}
 */
-// BEGIN_SORT_THIS_LINE_PLUS_3
+// BEGIN_AD_TYPE_T
 namespace ad_tensor { enum struct ad_type_t {
     constant,
     parameter,
     variable,
     none,      // This does not correspond to an AD tensor
 }; }
-// END_SORT_THIS_LINE_MINUS_3
+// END_AD_TYPE_T

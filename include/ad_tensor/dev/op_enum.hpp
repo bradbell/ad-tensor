@@ -14,8 +14,10 @@ Enum Values
 {xrst_literal ,
     BEGIN_SORT, END_SORT
 }
+
 {xrst_end op_enum}
 */
+// op_enum
 // BEGIN_SORT_THIS_LINE_PLUS_2
 namespace ad_tensor { namespace dev { enum struct op_enum_t {
     add,  // addition
@@ -23,6 +25,5 @@ namespace ad_tensor { namespace dev { enum struct op_enum_t {
     dom,  // domain tensor
     mul,  // multiplication
     sub,  // subtraction
-    test, // used for testing
 }; } }
 // END_SORT_THIS_LINE_MINUS_2

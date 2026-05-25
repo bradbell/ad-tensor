@@ -9,9 +9,11 @@ add_library(ad_tensor SHARED
     dev/ad.cpp
     dev/op_derive/add_op.cpp
     dev/op_derive/div_op.cpp
+    dev/op_derive/dom_op.cpp
     dev/op_derive/mul_op.cpp
     dev/op_derive/op_enum2base_op.cpp
     dev/op_derive/sub_op.cpp
     dev/tape.cpp
+    dev/to_string.cpp
     # END_SORT_THIS_LINE_MINUS_1
 )

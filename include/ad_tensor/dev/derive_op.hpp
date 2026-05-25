@@ -25,7 +25,7 @@ This is done inside the ``ad_tensor::dev`` namespace .
 
 op_enum2base_op
 ***************
-This maps op_enum_t values to the corresponding op_name value:
+This maps op_enum_t values to the corresponding base_op_t value:
 {xrst_literal ,
     BEGIN_OP_ENUM2BASE_OP, END_OP_ENUM2BASE_OP
 }
@@ -58,6 +58,7 @@ namespace ad_tensor { namespace dev {
     // BEGIN_SORT_THIS_LINE_PLUS_1
     OP_DERIVE(add_op)
     OP_DERIVE(div_op)
+    OP_DERIVE(dom_op)
     OP_DERIVE(mul_op)
     OP_DERIVE(sub_op)
     // END_SORT_THIS_LINE_MINUS_1
