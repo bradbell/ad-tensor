@@ -19,7 +19,7 @@ TEST(examples, record)  {
     //
     // adom_par, adom_var
     auto [ adom_par, adom_var ] = ad_t::start_recording(
-        std::move(dom_par), std::move(dom_var)
+        dom_par, dom_var
     );
     //
     // dom_par, dom_var

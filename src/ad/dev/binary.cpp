@@ -85,7 +85,7 @@ ad_t ad_t::binary(
     // tape
     dev::tape_t& tape = dev::this_threads_tape();
     if( ! tape.m_recording )
-        return ad_t( std::move(res_tensor) );
+        return ad_t( res_tensor );
     dev::user_assert( lhs.m_tape_id == tape.m_tape_id ,
         "binary left operand does not match tape that is recording"
     );
@@ -130,7 +130,7 @@ ad_t ad_t::binary(
         agraph->m_arg_value.push_back( rhs.m_index );
         agraph->m_arg_type.push_back( rhs.m_ad_type );
     }
-    return ad_t(res_tape_id, res_index, std::move(res_tensor), res_ad_type);
+    return ad_t(res_tape_id, res_index, res_tensor, res_ad_type);
 }
 // ---------------------------------------------------------------------------
 } // END_NAMESPACE_AD_TENSOR

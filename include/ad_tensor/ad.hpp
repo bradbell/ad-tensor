@@ -126,7 +126,7 @@ private:
     // END_MEMBER_DATA
     //
     // BEGIN_PRIVATE_CTOR
-    ad_t( size_t tape_id, size_t index, at::Tensor&& tensor, ad_type_t ad_type)
+    ad_t( size_t tape_id, size_t index, const at::Tensor& tensor, ad_type_t ad_type)
     : m_tape_id(tape_id), m_index(index), m_tensor(tensor), m_ad_type(ad_type)
     { }
     // END_PRIVATE_CTOR
@@ -139,7 +139,7 @@ private:
     // END_BINARY
 public:
     // BEGIN_PUBLIC_CTOR
-    ad_t( at::Tensor&& tensor );
+    ad_t( const at::Tensor& tensor );
     // END_PUBLIC_CTOR
     //
     // BEGIN_TO_TENSOR
@@ -150,8 +150,8 @@ public:
     // BEGIN_START_RECORDING
     // auto [adom_par, adom_var] = ad_t::start_recording(dom_par, dom_var)
     static std::tuple< std::vector<ad_t>, std::vector<ad_t> > start_recording(
-        std::vector<at::Tensor>&& dom_par,
-        std::vector<at::Tensor>&& dom_var
+        const std::vector<at::Tensor>& dom_par,
+        const std::vector<at::Tensor>& dom_var
     );
     // END_START_RECORDING
     //

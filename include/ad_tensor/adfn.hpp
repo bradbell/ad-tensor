@@ -79,14 +79,14 @@ public:
     //
     // forward_par
     std::vector<at::Tensor> forward_par(
-        std::vector<at::Tensor>&& dom_par ,
+        const std::vector<at::Tensor>& dom_par ,
         const options_t&          options
     ) const;
     //
     // forward_var
     std::vector<at::Tensor> forward_var(
         const std::vector<at::Tensor>& all_par ,
-        std::vector<at::Tensor>&&      dom_var ,
+        const std::vector<at::Tensor>&      dom_var ,
         const options_t&               options
     ) const;
     //

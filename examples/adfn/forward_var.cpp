@@ -23,7 +23,7 @@ TEST(examples, forward_var)  {
     // adom_var
     vector<Tensor> dom_par;
     auto [adom_par, adom_var] = ad_t::start_recording(
-        std::move(dom_par), std::move(dom_var)
+        dom_par, dom_var
     );
     //
     // acon
@@ -52,7 +52,7 @@ TEST(examples, forward_var)  {
     // all_var
     std::vector<Tensor> all_par;
     std::vector<Tensor> all_var = adfn.forward_var(
-        all_par, std::move(dom_var), options
+        all_par, dom_var, options
     );
     //
     EXPECT_EQ( all_var.size(), 4 );

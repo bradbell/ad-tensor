@@ -58,8 +58,8 @@ Example
 {xrst_end start_recording}
 */
 std::tuple< std::vector<ad_t>, std::vector<ad_t> > ad_t::start_recording(
-        std::vector<at::Tensor>&& dom_par ,
-        std::vector<at::Tensor>&& dom_var
+        const std::vector<at::Tensor>& dom_par ,
+        const std::vector<at::Tensor>& dom_var
 )
 {   //
     // tape
@@ -91,37 +91,25 @@ std::tuple< std::vector<ad_t>, std::vector<ad_t> > ad_t::start_recording(
     tape.m_recording = true;
     //
     // adom_par
-    // tape.m_par: m_n_dom, m_op_seq
+    // tape.m_par: m_n_dom, m_op_seq, m_arg_strt
     ad_type_t parameter = ad_type_t::parameter;
     tape.m_par.m_n_dom    = dom_par.size();
     std::vector<ad_t> adom_par;
-    {   auto itr_begin = std::make_move_iterator( dom_par.begin() );
-        auto itr_end   = std::make_move_iterator( dom_par.end() );
-        size_t index   = 0;
-        for(auto itr = itr_begin; itr != itr_end; ++itr )
-        {   tape.m_par.m_op_seq.push_back( dev::op_enum_t::dom );
-            tape.m_par.m_arg_start.push_back( 0 );
-            adom_par.push_back( ad_t( tape_id, index, *itr, parameter) );
-            ++index;
-        }
-        assert( index == tape.m_par.m_n_dom );
+    for(size_t index = 0; index < dom_par.size(); ++index) {
+        tape.m_par.m_op_seq.push_back( dev::op_enum_t::dom );
+        tape.m_par.m_arg_start.push_back( 0 );
+        adom_par.push_back( ad_t( tape_id, index, dom_par[index], parameter) );
     }
     //
     // adom_var
-    // tape.m_var: m_n_dom, m_op_seq
+    // tape.m_var: m_n_dom, m_op_seq, m_arg_strt
     ad_type_t variable = ad_type_t::variable;
     tape.m_var.m_n_dom    = dom_var.size();
     std::vector<ad_t> adom_var;
-    {   auto itr_begin = std::make_move_iterator( dom_var.begin() );
-        auto itr_end   = std::make_move_iterator( dom_var.end() );
-        size_t index   = 0;
-        for(auto itr = itr_begin; itr != itr_end; ++itr )
-        {   tape.m_var.m_op_seq.push_back( dev::op_enum_t::dom );
-            tape.m_var.m_arg_start.push_back( 0 );
-            adom_var.push_back( ad_t( tape_id, index, *itr, variable) );
-            ++index;
-        }
-        assert( index == tape.m_var.m_n_dom );
+    for(size_t index = 0; index < dom_var.size(); ++index) {
+        tape.m_var.m_op_seq.push_back( dev::op_enum_t::dom );
+        tape.m_var.m_arg_start.push_back( 0 );
+        adom_var.push_back( ad_t( tape_id, index, dom_var[index], variable) );
     }
     return std::tuple< std::vector<ad_t>, std::vector<ad_t> > (
         adom_par, adom_var

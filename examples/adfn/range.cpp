@@ -25,7 +25,7 @@ TEST(examples, range)  {
     //
     // adom_par, adom_var
     auto [adom_par, adom_var] = ad_t::start_recording(
-        std::move(dom_par), std::move(dom_var)
+        dom_par, dom_var
     );
     //
     // acon
@@ -60,10 +60,10 @@ TEST(examples, range)  {
     //
     // rng_vec
     std::vector<Tensor> all_par = adfn.forward_par(
-        std::move(dom_par), options
+        dom_par, options
     );
     std::vector<Tensor> all_var = adfn.forward_var(
-        all_par, std::move(dom_var), options
+        all_par, dom_var, options
     );
     std::vector<Tensor> rng_vec = adfn.range(all_par, all_var);
     //

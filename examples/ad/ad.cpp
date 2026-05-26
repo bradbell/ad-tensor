@@ -17,8 +17,8 @@ TEST(examples, ad)  {
     Tensor sum     = lhs + rhs;
     Tensor product = lhs * rhs;
     //
-    ad_t alhs     = ad_t( std::move(lhs) );
-    ad_t arhs     = ad_t( std::move(rhs) );
+    ad_t alhs     = ad_t( lhs );
+    ad_t arhs     = ad_t( rhs );
     ad_t asum     = alhs + arhs;
     ad_t aproduct = alhs * arhs;
     //

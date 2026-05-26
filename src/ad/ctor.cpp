@@ -10,7 +10,7 @@
 //
 namespace ad_tensor { // BEGIN_NAMESPACE_AD_TENSOR
 // ----------------------------------------------------------------------------
-ad_t::ad_t( at::Tensor&& tensor )
+ad_t::ad_t( const at::Tensor& tensor )
 : m_tape_id(0)
 , m_index(0)
 , m_tensor(tensor)
