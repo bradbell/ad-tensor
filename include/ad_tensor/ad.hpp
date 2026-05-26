@@ -112,16 +112,10 @@ The ad_t Private Constructor
     ad_t operator op (const ad_t& rhs) const \
 { return binary( dev::op_enum_t:: op_enum, *this, rhs ); }
 //
-// recording
-namespace ad_tensor{ class recording; }
-//
 // BEGIN_AD_CLASS
 namespace ad_tensor { class ad_t
 // END_AD_CLASS
 {
-    // recording
-    friend class recording;
-    //
 private:
     //
     // BEGIN_MEMBER_DATA
