@@ -4,9 +4,9 @@
 # -----------------------------------------------------------------------------
 #
 add_executable(examples
-    ad.cpp
+    ad/ad.cpp
+    ad/recording.cpp
     adfn/range.cpp
-    recording.cpp
     adfn/forward_par.cpp
     adfn/forward_var.cpp
 )

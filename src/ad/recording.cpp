@@ -51,7 +51,7 @@ The recording can be used to compute derivatives with respect to these tensors.
 Example
 *******
 {xrst_literal ,
-    examples/recording.cpp
+    examples/ad/recording.cpp
     BEGIN_CPP, END_CPP
 }
 
@@ -161,7 +161,7 @@ in the corresponding :ref:`start_recording-name` .
 Example
 *******
 {xrst_literal ,
-    examples/recording.cpp
+    examples/ad/recording.cpp
     BEGIN_CPP, END_CPP
 }
 
