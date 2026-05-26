@@ -11,11 +11,6 @@ namespace ad_tensor { namespace dev {
         return op_enum_t::add;
     }
     //
-    // op_string
-    std::string mul_op_t::op_string(void) const {
-        return std::string("mul");
-    }
-    //
     // forward_par
     void mul_op_t::forward_par(
         size_t                            op_index    ,

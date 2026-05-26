@@ -8,6 +8,7 @@ add_library(ad_tensor SHARED
     ad/dev/binary.cpp
     ad/recording.cpp
     adfn/forward_par.cpp
+    dev/base_op/static.cpp
     dev/op_derive/add_op.cpp
     dev/op_derive/div_op.cpp
     dev/op_derive/dom_op.cpp

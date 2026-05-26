@@ -11,10 +11,6 @@ namespace ad_tensor { namespace dev {
         return op_enum_t::dom;
     }
     //
-    // op_string
-    std::string dom_op_t::op_string(void) const {
-        return std::string("dom");
-    }
     //
     // forward_par
     void dom_op_t::forward_par(
