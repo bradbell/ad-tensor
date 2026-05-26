@@ -39,7 +39,7 @@ all_par
 *******
 This vector will contain all the parameter tensors in the order
 they are calculated.
-The vector dom_var is a sub-vector at the beginning of all_par;
+The vector dom_par is a sub-vector at the beginning of all_par;
 A tensor is a parameter tensor if it depends on the tensors in dom_par
 and does not depend on the tensors in dom_var .
 
