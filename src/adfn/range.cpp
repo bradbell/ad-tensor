@@ -5,6 +5,9 @@
 #include <ad_tensor/adfn.hpp>
 /*
 {xrst_begin adfn_range usr}
+{xrst_spell
+    rng
+}
 
 Get The Range Tensors
 #####################
@@ -32,7 +35,7 @@ all_par, all_var, and adfn do not change.
 Example
 *******
 {xrst_literal ,
-    examples/range.cpp
+    examples/adfn/range.cpp
     BEGIN_CPP, END_CPP
 }
 {xrst_end adfn_range}

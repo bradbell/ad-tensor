@@ -5,10 +5,10 @@
 #
 add_executable(examples
     ad.cpp
-    range.cpp
+    adfn/range.cpp
     recording.cpp
-    forward_par.cpp
-    forward_var.cpp
+    adfn/forward_par.cpp
+    adfn/forward_var.cpp
 )
 #
 target_link_libraries(examples

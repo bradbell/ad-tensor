@@ -52,7 +52,7 @@ A tensor is a variable tensor if it depends on the tensors in dom_var .
 Example
 *******
 {xrst_literal ,
-    examples/forward_var.cpp
+    examples/adfn/forward_var.cpp
     BEGIN_CPP, END_CPP
 }
 {xrst_end adfn_forward_var}

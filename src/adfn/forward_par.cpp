@@ -46,7 +46,7 @@ and does not depend on the tensors in dom_var .
 Example
 *******
 {xrst_literal ,
-    examples/forward_par.cpp
+    examples/adfn/forward_par.cpp
     BEGIN_CPP, END_CPP
 }
 

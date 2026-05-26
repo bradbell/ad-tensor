@@ -29,6 +29,7 @@ Other Public Members
 {xrst_toc_table
     src/adfn/forward_par.cpp
     src/adfn/forward_var.cpp
+    src/adfn/range.cpp
 }
 
 
