@@ -73,6 +73,15 @@ and par_vec[op_index] is an output.
     BEGIN_FORWARD_PAR, END_FORWARD_PAR
 }
 
+forward_var
+===========
+For this function, 
+var_vec[index] for index < op_index is an input for this function
+and var_vec[op_index] is an output.
+{xrst_literal ,
+    BEGIN_FORWARD_VAR, END_FORWARD_VAR
+}
+
 {xrst_end op_base}
 */
 #include <cassert>
@@ -106,7 +115,6 @@ namespace ad_tensor { namespace dev { struct base_op_t
     // END_OP_ENUM
     //
     // BEGIN_FORWARD_PAR
-    // all_par = base_op.forward_par(op_index, agraph, con_vec, par_vec)
     virtual void forward_par(
         size_t                            op_index    ,
         const agraph_t&                   agraph      ,
@@ -114,5 +122,15 @@ namespace ad_tensor { namespace dev { struct base_op_t
         std::vector<at::Tensor>&          par_vec
     ) const = 0;
     // END_FORWARD_PAR
+    //
+    // BEGIN_FORWARD_VAR
+    virtual void forward_var(
+        size_t                            op_index    ,
+        const agraph_t&                   agraph      ,
+        const std::vector<at::Tensor>&    con_vec     ,
+        const std::vector<at::Tensor>&    par_vec     ,
+        std::vector<at::Tensor>&          var_vec
+    ) const = 0;
+    // END_FORWARD_VAR
 };
 } }

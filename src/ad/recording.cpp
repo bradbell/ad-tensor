@@ -118,7 +118,7 @@ std::tuple< std::vector<ad_t>, std::vector<ad_t> > ad_t::start_recording(
         for(auto itr = itr_begin; itr != itr_end; ++itr )
         {   tape.m_var.m_op_seq.push_back( dev::op_enum_t::dom );
             tape.m_var.m_arg_start.push_back( 0 );
-            adom_var.push_back( ad_t( tape_id, index, *itr, parameter) );
+            adom_var.push_back( ad_t( tape_id, index, *itr, variable) );
             ++index;
         }
         assert( index == tape.m_var.m_n_dom );

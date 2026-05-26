@@ -7,6 +7,7 @@ add_executable(examples
     ad.cpp
     recording.cpp
     forward_par.cpp
+    forward_var.cpp
 )
 #
 target_link_libraries(examples

@@ -11,13 +11,22 @@ namespace ad_tensor { namespace dev {
         return op_enum_t::dom;
     }
     //
-    //
     // forward_par
     void dom_op_t::forward_par(
         size_t                            op_index    ,
         const agraph_t&                   agraph      ,
         const std::vector<at::Tensor>&    con_vec     ,
         std::vector<at::Tensor>&          par_vec
+    ) const
+    { }
+    //
+    // forward_var
+    void dom_op_t::forward_var(
+        size_t                            op_index    ,
+        const agraph_t&                   agraph      ,
+        const std::vector<at::Tensor>&    con_vec     ,
+        const std::vector<at::Tensor>&    par_vec     ,
+        std::vector<at::Tensor>&          var_vec
     ) const
     { }
 } }
