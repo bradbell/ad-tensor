@@ -9,12 +9,12 @@ add_library(ad_tensor SHARED
     ad/recording.cpp
     adfn/forward_par.cpp
     dev/base_op/static.cpp
-    dev/op_derive/add_op.cpp
-    dev/op_derive/div_op.cpp
-    dev/op_derive/dom_op.cpp
-    dev/op_derive/mul_op.cpp
-    dev/op_derive/op_enum2base_op.cpp
-    dev/op_derive/sub_op.cpp
+    dev/derive_op/add_op.cpp
+    dev/derive_op/div_op.cpp
+    dev/derive_op/dom_op.cpp
+    dev/derive_op/mul_op.cpp
+    dev/derive_op/op_enum2base_op.cpp
+    dev/derive_op/sub_op.cpp
     dev/tape.cpp
     dev/to_string.cpp
     # END_SORT_THIS_LINE_MINUS_1
