@@ -5,6 +5,7 @@
 #
 add_executable(examples
     ad.cpp
+    range.cpp
     recording.cpp
     forward_par.cpp
     forward_var.cpp

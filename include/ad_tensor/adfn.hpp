@@ -88,4 +88,10 @@ public:
         std::vector<at::Tensor>&&      dom_var ,
         const options_t&               options
     ) const;
+    //
+    // range
+    std::vector<at::Tensor> range(
+        const std::vector<at::Tensor>& all_par ,
+        const std::vector<at::Tensor>& all_var
+    ) const;
 }; }
