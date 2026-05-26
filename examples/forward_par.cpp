@@ -31,7 +31,7 @@ TEST(examples, forward_par)  {
     ad_t acon( torch::tensor( {-1} ) );
     //
     // aprod
-    ad_t aprod = adom_par[0] * adom_par[1];
+    ad_t aprod = adom_par.at(0) * adom_par.at(1);
     //
     // arange
     vector<ad_t> arange;
@@ -56,16 +56,16 @@ TEST(examples, forward_par)  {
     //
     EXPECT_EQ( all_par.size(), 4 );
     //
-    Tensor equal = all_par[0] == torch::tensor( {6.0, 7.0} );
+    Tensor equal = all_par.at(0) == torch::tensor( {6.0, 7.0} );
     EXPECT_TRUE( torch::all(equal).item<bool>() );
     //
-    equal = all_par[1] == torch::tensor( {8.0, 9.0} );
+    equal = all_par.at(1) == torch::tensor( {8.0, 9.0} );
     EXPECT_TRUE( torch::all(equal).item<bool>() );
     //
-    equal = all_par[2] == torch::tensor( {48.0 , 63.0} );
+    equal = all_par.at(2) == torch::tensor( {48.0 , 63.0} );
     EXPECT_TRUE( torch::all(equal).item<bool>() );
     //
-    equal = all_par[3] == torch::tensor( {47.0 , 62.0} );
+    equal = all_par.at(3) == torch::tensor( {47.0 , 62.0} );
     EXPECT_TRUE( torch::all(equal).item<bool>() );
 }
 // END_CPP
