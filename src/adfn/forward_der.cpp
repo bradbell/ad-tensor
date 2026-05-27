@@ -2,7 +2,6 @@
 // SPDX-FileCopyrightText: Bradley M. Bell <bradbell@seanet.com>
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
-#include <ad_tensor/dev/get_option.hpp>
 #include <ad_tensor/adfn.hpp>
 #include <ad_tensor/options.hpp>
 #include <ad_tensor/ad_type.hpp>
@@ -11,15 +10,19 @@
 #include <ad_tensor/dev/to_string.hpp>
 #include <ad_tensor/dev/user_assert.hpp>
 /*
-{xrst_begin adfn_forward_var usr}
+{xrst_begin adfn_forward_der usr}
+{xrst_spell
+    rng
+    dt
+}
 
-Compute The Dependent Variables
-###############################
+Compute A Directional Derivative
+################################
 
 Prototype
 *********
 {xrst_literal ,
-    BEGIN_FORWARD_VAR, END_FORWARD_VAR
+    BEGIN_FORWARD_DER, END_FORWARD_DER
 }
 
 all_par
@@ -29,9 +32,17 @@ This is usually calculated by :ref:`adfn_forward_par-name` .
 In the special case where dom_par is empty, all_par is also empty
 and need not be computed by adfn::forward_par .
 
-dom_var
+all_var
 *******
-Is the value of the domain variables for this calculation.
+is the value of all the variables for this function.
+This is usually calculated by :ref:`adfn_forward_var-name` .
+Since derivatives are only computed with respect to domain variables,
+it does not make sense for dom_var to be empty.
+
+dom_der
+*******
+This is the direction that the derivative is computed with respect to.
+
 
 options
 *******
@@ -40,42 +51,44 @@ The possible key,value pairs ( see :ref:`options-name` ) are
 .. csv-table::
     :header-rows: 1
 
-    Key, Default, Possible other values
+    Key, Default, Possible other Values
     "trace", "false", "true"
 
-all_var
+rng_der
 *******
-A tensor is a variable tensor if it depends on the tensors in dom_var.
-The vector all_var contains all the variable tensors that are calculated.
-The vector dom_var is a sub-vector at the beginning of all_par.
+is the directional derivative of the range in the dom_der direction; i.e.
+
+    rng_der = d/dt adfn(dom_par, dom_var + t * dom_der)
+
 
 Example
 *******
-{xrst_literal ,
-    examples/adfn/forward_var.cpp
+{xrst_comment ,
+    examples/adfn/forward_der.cpp
     BEGIN_CPP, END_CPP
 }
-{xrst_end adfn_forward_var}
+{xrst_end adfn_forward_der}
 */
 namespace ad_tensor { // BEGIN_NAMESPACE_AD_TENSOR
 //
-// BEGIN_FORWARD_VAR
-// all_var = adfn.forward_var(all_par, dom_var, options)
-std::vector<at::Tensor> adfn_t::forward_var(
+// BEGIN_FORWARD_DER
+// rng_der = adfn.forward_der(all_par, all_var, dom_der, options)
+std::vector<at::Tensor> adfn_t::forward_der(
     const std::vector<at::Tensor>& all_par ,
-    const std::vector<at::Tensor>& dom_var ,
+    const std::vector<at::Tensor>& all_var ,
+    const std::vector<at::Tensor>& dom_der ,
     const options_t&               options
 ) const
-// END_FORWARD_VAR
+// END_FORWARD_DER
 {
     // cout
     using std::cout;
     using std::string;
     using ad_tensor::dev::to_string;
     //
-    // dom_var
-    dev::user_assert( dom_var.size() == m_var.m_n_dom ,
-        "forward_var: dom_var does not have the expected number of tensors"
+    // dom_der
+    dev::user_assert( dom_der.size() == m_var.m_n_dom ,
+        "forward_der: dom_der does not have the expected number of tensors"
     );
     //
     // trace
@@ -85,12 +98,16 @@ std::vector<at::Tensor> adfn_t::forward_var(
     string value = dev::get_option(options, key, default_value, other_values);
     bool trace = value == "true";
     if( trace ) {
-        cout << "Begin tracing adfn::forward_var\n";
+        cout << "Begin tracing adfn::forward_der\n";
         for(size_t i = 0; i < m_con.size(); ++i) {
             string element = to_string( m_con.at(i) );
             cout << "constant[" << i << "] = " << element << "\n";
         }
         for(size_t i = 0; i < all_par.size(); ++i) {
+            string element = to_string( all_par.at(i) );
+            cout << "all_par[" << i << "] = " << element << "\n";
+        }
+        for(size_t i = 0; i < all_var.size(); ++i) {
             string element = to_string( all_par.at(i) );
             cout << "all_par[" << i << "] = " << element << "\n";
         }
@@ -100,23 +117,23 @@ std::vector<at::Tensor> adfn_t::forward_var(
     size_t n_op      = m_var.m_op_seq.size();
     at::Tensor empty = torch::empty( {0} );
     //
-    // all_var
-    std::vector<at::Tensor> all_var =  dom_var ;
-    all_var.resize( n_op, empty );
+    // all_der
+    std::vector<at::Tensor> all_der =  dom_der ;
+    all_der.resize( n_op, empty );
     //
-    // all_var
+    // all_der
     for(size_t op_index = 0; op_index < n_op; ++op_index) {
         //
         // base_op
         dev::op_enum_t op_enum = m_var.m_op_seq.at( op_index );
         const dev::base_op_t& base_op = dev::op_enum2base_op( op_enum );
         //
-        // all_var
-        base_op.forward_var(op_index, m_var, m_con, all_par, all_var);
+        // all_der
+        base_op.forward_der(op_index, m_var, m_con, all_par, all_var, all_der);
         //
         if( trace) {
-            string element = to_string( all_var.at(op_index) );
-            cout << "all_var[" << op_index << "] = " << element;
+            string element = to_string( all_der.at(op_index) );
+            cout << "all_der[" << op_index << "] = " << element;
             cout << ", " << to_string(op_enum)  << "(";
             size_t start = m_var.m_arg_start.at(op_index);
             size_t stop  = m_var.m_arg_start.at(op_index + 1);
@@ -127,10 +144,25 @@ std::vector<at::Tensor> adfn_t::forward_var(
             cout << ")\n";
         }
     }
-    if( trace ) {
-        cout << "End tracing adfn::forward_var\n";
+    //
+    // rng_der
+    std::vector<at::Tensor> rng_der;
+    at::Tensor zero = torch::tensor( { 0.0 } );
+    for(size_t i = 0; i < m_rng_index.size(); ++i) {
+        if( m_rng_ad_type[i] ==  ad_type_t::variable ) {
+            rng_der.push_back( all_der[ m_rng_index[i] ];
+        } else {
+            rng_der.push_back( zero );
+        }
     }
-    return all_var;
+    if( trace ) {
+    {   for(size_t i = 0; i < m_rng_index.size(); ++i) {
+            string element = to_string( rng_der[i] );
+            cout << "rmg_der[" << i << "] = " << element << "\n";
+        }
+        cout << "End tracing adfn::forward_der\n";
+    }
+    return all_der;
 }
 
 } // END_NAMESPACE_AD_TENSOR

@@ -10,7 +10,7 @@ namespace ad_tensor { namespace dev {
     op_enum_t mul_op_t::op_enum(void) const {
         return op_enum_t::mul;
     }
-    //
+    // ------------------------------------------------------------------------
     // forward_par
     void mul_op_t::forward_par(
         size_t                            op_index    ,
@@ -38,7 +38,7 @@ namespace ad_tensor { namespace dev {
         // par_vec
         par_vec.at(op_index) = lhs_tensor * rhs_tensor;
     }
-    //
+    // ------------------------------------------------------------------------
     // forward_var
     void mul_op_t::forward_var(
         size_t                            op_index    ,
@@ -66,5 +66,82 @@ namespace ad_tensor { namespace dev {
         //
         // var_vec
         var_vec.at(op_index) = lhs_tensor * rhs_tensor;
+    }
+    // ------------------------------------------------------------------------
+    // forward_der
+    void mul_op_t::forward_der(
+        size_t                            op_index    ,
+        const agraph_t&                   agraph      ,
+        const std::vector<at::Tensor>&    con_vec     ,
+        const std::vector<at::Tensor>&    par_vec     ,
+        const std::vector<at::Tensor>&    var_vec     ,
+        std::vector<at::Tensor>&          for_der
+    ) const {
+        //
+        // arg_index
+        size_t arg_index = agraph.m_arg_start.at(op_index);
+        //
+#ifndef NDEBUG
+        size_t n_arg = agraph.m_arg_start.at(op_index+1) - arg_index;
+        assert( n_arg == 2 && "mul_t: n_arg != 2" );
+# endif
+        //
+        // lhs_type, rhs_type
+        ad_type_t lhs_type = agraph.m_arg_type.at(arg_index);
+        ad_type_t rhs_type = agraph.m_arg_type.at(arg_index + 1);
+        //
+        if( lhs_type != ad_type_t::variable ) {
+            assert( rhs_type == ad_type_t::variable );
+            //
+            // lhs_tensor
+            at::Tensor lhs_tensor  = tensor_at_arg_index(
+                arg_index, agraph, con_vec, par_vec, var_vec
+            );
+            // drhs_tensor
+            at::Tensor drhs_tensor  = tensor_at_arg_index(
+                arg_index + 1, agraph, con_vec, par_vec, for_der
+            );
+            //
+            // for_der
+            for_der[op_index] = lhs_tensor * drhs_tensor;
+            //
+        } else if( rhs_type != ad_type_t::variable ) {
+            assert( lhs_type == ad_type_t::variable );
+            //
+            // dlhs_tensor
+            at::Tensor dlhs_tensor  = tensor_at_arg_index(
+                arg_index, agraph, con_vec, par_vec, for_der
+            );
+            // rhs_tensor
+            at::Tensor rhs_tensor  = tensor_at_arg_index(
+                arg_index + 1, agraph, con_vec, par_vec, var_vec
+            );
+            //
+            // for_der
+            for_der[op_index] = dlhs_tensor * rhs_tensor;
+            //
+        } else {
+            //
+            // lhs_tensor
+            at::Tensor lhs_tensor  = tensor_at_arg_index(
+                arg_index, agraph, con_vec, par_vec, var_vec
+            );
+            // dlhs_tensor
+            at::Tensor dlhs_tensor  = tensor_at_arg_index(
+                arg_index, agraph, con_vec, par_vec, for_der
+            );
+            // rhs_tensor
+            at::Tensor rhs_tensor  = tensor_at_arg_index(
+                arg_index + 1, agraph, con_vec, par_vec, var_vec
+            );
+            // drhs_tensor
+            at::Tensor drhs_tensor  = tensor_at_arg_index(
+                arg_index + 1, agraph, con_vec, par_vec, for_der
+            );
+            //
+            // for_der
+            for_der[op_index] =
+                lhs_tensor * drhs_tensor + dlhs_tensor * rhs_tensor;
+        };
     }
 } }

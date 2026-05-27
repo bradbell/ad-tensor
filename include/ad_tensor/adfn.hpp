@@ -30,6 +30,7 @@ Other Public Members
     src/adfn/forward_par.cpp
     src/adfn/forward_var.cpp
     src/adfn/get_range.cpp
+    src/adfn/forward_der.cpp
 }
 
 
@@ -80,13 +81,13 @@ public:
     // forward_par
     std::vector<at::Tensor> forward_par(
         const std::vector<at::Tensor>& dom_par ,
-        const options_t&          options
+        const options_t&               options
     ) const;
     //
     // forward_var
     std::vector<at::Tensor> forward_var(
         const std::vector<at::Tensor>& all_par ,
-        const std::vector<at::Tensor>&      dom_var ,
+        const std::vector<at::Tensor>& dom_var ,
         const options_t&               options
     ) const;
     //
@@ -94,5 +95,13 @@ public:
     std::vector<at::Tensor> get_range(
         const std::vector<at::Tensor>& all_par ,
         const std::vector<at::Tensor>& all_var
+    ) const;
+    //
+    // forward_der
+    std::vector<at::Tensor> forward_der(
+        const std::vector<at::Tensor>& all_par ,
+        const std::vector<at::Tensor>& all_var ,
+        const std::vector<at::Tensor>& dom_der ,
+        const options_t&               options
     ) const;
 }; }

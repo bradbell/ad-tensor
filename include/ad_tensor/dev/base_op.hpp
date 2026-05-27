@@ -5,6 +5,9 @@
 // ----------------------------------------------------------------------------
 /*
 {xrst_begin op_base dev}
+{xrst_spell
+    der
+}
 
 The Operator Base Class
 #######################
@@ -53,6 +56,10 @@ var_vec
 =======
 is the vector containing all the variable tensors..
 
+for_der
+=======
+is a vector containing the directional derivative for each variable.
+
 Pure Virtual Functions
 **********************
 
@@ -67,7 +74,7 @@ for the corresponding operator.
 forward_par
 ===========
 For this function, arg_type[arg_index] is never variable.
-In addition, par_vec[index] for index < op_index is an input for this function
+In addition, par_vec[index] for index < op_index is an input
 and par_vec[op_index] is an output.
 {xrst_literal ,
     BEGIN_FORWARD_PAR, END_FORWARD_PAR
@@ -75,11 +82,20 @@ and par_vec[op_index] is an output.
 
 forward_var
 ===========
-For this function, 
-var_vec[index] for index < op_index is an input for this function
+For this function,
+var_vec[index] for index < op_index is an input
 and var_vec[op_index] is an output.
 {xrst_literal ,
     BEGIN_FORWARD_VAR, END_FORWARD_VAR
+}
+
+forward_der
+===========
+For this function,
+der_vec[index] for index < op_index is an input
+and der_vec[op_index] is an output.
+{xrst_literal ,
+    BEGIN_FORWARD_DER, END_FORWARD_DER
 }
 
 {xrst_end op_base}
@@ -132,5 +148,16 @@ namespace ad_tensor { namespace dev { struct base_op_t
         std::vector<at::Tensor>&          var_vec
     ) const = 0;
     // END_FORWARD_VAR
+    //
+    // BEGIN_FORWARD_DER
+    virtual void forward_der(
+        size_t                            op_index    ,
+        const agraph_t&                   agraph      ,
+        const std::vector<at::Tensor>&    con_vec     ,
+        const std::vector<at::Tensor>&    par_vec     ,
+        const std::vector<at::Tensor>&    var_vec     ,
+        std::vector<at::Tensor>&          for_der
+    ) const = 0;
+    // END_FORWARD_DER
 };
 } }

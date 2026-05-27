@@ -54,6 +54,15 @@ This maps op_enum_t values to the corresponding base_op_t value:
             const std::vector<at::Tensor>&    par_vec     , \
             std::vector<at::Tensor>&          var_vec \
         ) const override; \
+        \
+        void forward_der( \
+            size_t                            op_index    , \
+            const agraph_t&                   agraph      , \
+            const std::vector<at::Tensor>&    con_vec     , \
+            const std::vector<at::Tensor>&    par_vec     , \
+            const std::vector<at::Tensor>&    var_vec     , \
+            std::vector<at::Tensor>&          for_der \
+        ) const override; \
     } const op_name;
 //
 namespace ad_tensor { namespace dev {

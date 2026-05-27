@@ -29,4 +29,15 @@ namespace ad_tensor { namespace dev {
         std::vector<at::Tensor>&          var_vec
     ) const
     { }
+    //
+    // forward_der
+    void dom_op_t::forward_der(
+        size_t                            op_index    ,
+        const agraph_t&                   agraph      ,
+        const std::vector<at::Tensor>&    con_vec     ,
+        const std::vector<at::Tensor>&    par_vec     ,
+        const std::vector<at::Tensor>&    var_vec     ,
+        std::vector<at::Tensor>&          for_der
+    ) const
+    { }
 } }

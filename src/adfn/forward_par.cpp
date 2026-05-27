@@ -67,6 +67,11 @@ std::vector<at::Tensor> adfn_t::forward_par(
     using ad_tensor::dev::to_string;
     using std::string;
     //
+    // dom_par
+    dev::user_assert( dom_par.size() == m_par.m_n_dom ,
+        "forward_par: dom_par does not have the expected number of tensors"
+    );
+    //
     // trace
     string           key           = "trace";
     string           default_value = "false";
@@ -80,10 +85,6 @@ std::vector<at::Tensor> adfn_t::forward_par(
             cout << "constant[" << i << "] = " << element << "\n";
         }
     }
-    // dom_par
-    dev::user_assert( dom_par.size() == m_par.m_n_dom ,
-        "forward_par: dom_par does not have the expected number of tensors"
-    );
     //
     // n_op, n_all, empty
     size_t n_op      = m_par.m_op_seq.size();
