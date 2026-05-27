@@ -62,7 +62,7 @@ namespace ad_tensor { // BEGIN_NAMESPACE_AD_TENSOR
 // all_var = adfn.forward_var(all_par, dom_var, options)
 std::vector<at::Tensor> adfn_t::forward_var(
     const std::vector<at::Tensor>& all_par ,
-    const std::vector<at::Tensor>&      dom_var ,
+    const std::vector<at::Tensor>& dom_var ,
     const options_t&               options
 ) const
 // END_FORWARD_VAR

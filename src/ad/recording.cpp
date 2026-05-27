@@ -32,7 +32,7 @@ This starts a recording of a function:
 
 This thread must not have a recording in progress
 when ``start_recording`` is called.
-The recording started by this call is stopped by calling
+The range space is defined when the recording is stopped; see
 :ref:`stop_recording-name` .
 
 dom_par
@@ -143,7 +143,8 @@ This completes the recording of a function:
 
 This thread must have a recording in progress
 when ``stop_recording`` is called.
-Recording are started by calling :ref:`start_recording-name` .
+The dom_par and dom_var spaces are defined when the recording is started; see
+ref:`start_recording-name` .
 
 arange
 ******

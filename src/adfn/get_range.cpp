@@ -32,6 +32,8 @@ range
 *****
 is the value of the range vector as function of dom_par and dom_var.
 
+    range = adfn(dom_par, dom_var)
+
 Example
 *******
 {xrst_literal ,
