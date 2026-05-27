@@ -18,6 +18,11 @@ Prototype
     BEGIN_RANGE, END_RANGE
 }
 
+This returns the range tensors for
+
+    range = adfn(dom_par, dom_var)
+
+
 all_par
 *******
 is the value of all the parameters as a function of dom_par.
@@ -28,9 +33,7 @@ is the value of all the variables as a function of dom_par and dom_var.
 
 rng_vec
 *******
-is the value of the range vector as a function of dom_par and dom_var.
-The returned references are only valid for as long as
-all_par, all_var, and adfn do not change.
+is the value of the range vector as function of dom_par and dom_var.
 
 Example
 *******

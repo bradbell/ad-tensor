@@ -42,7 +42,7 @@ TEST(examples, range)  {
     arange.push_back( adom_par.at(0) + acon );    // a parameter
     arange.push_back( adom_var.at(0) * acon );    // a variable
     //
-    // adfn
+    // range = adfn(dom_par, dom_var)
     adfn_t adfn = ad_t::stop_recording(arange);
     //
     // dom_par

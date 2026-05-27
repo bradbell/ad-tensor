@@ -44,10 +44,9 @@ The possible key,value pairs ( see :ref:`options-name` ) are
 
 all_var
 *******
-This vector will contain all the variable tensors in the order
-they are calculated.
-The vector dom_var is a sub-vector at the beginning of all_var;
-A tensor is a variable tensor if it depends on the tensors in dom_var .
+A tensor is a variable tensor if it depends on the tensors in dom_var.
+The vector all_var contains all the variable tensors that are calculated.
+The vector dom_var is a sub-vector at the beginning of all_par.
 
 Example
 *******

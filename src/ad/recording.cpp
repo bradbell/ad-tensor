@@ -13,6 +13,7 @@ namespace ad_tensor { // BEGIN_NAMESPACE_AD_TENSOR
 ------------------------------------------------------------------------------
 {xrst_begin start_recording usr}
 {xrst_spell
+    adfn
     adom
 }
 
@@ -25,6 +26,10 @@ Start Recording ad_t Operations
 
 Recording
 *********
+This starts a recording of a function:
+
+    range = adfn(dom_par, dom_var)
+
 This thread must not have a recording in progress
 when ``start_recording`` is called.
 The recording started by this call is stopped by calling
@@ -132,6 +137,10 @@ Stop Recording ad_t Operations
 
 Recording
 *********
+This completes the recording of a function:
+
+    range = adfn(dom_par, dom_var)
+
 This thread must have a recording in progress
 when ``stop_recording`` is called.
 Recording are started by calling :ref:`start_recording-name` .

@@ -37,7 +37,7 @@ TEST(examples, forward_par)  {
     vector<ad_t> arange;
     arange.push_back(  acon + aprod);
     //
-    // adfn
+    // range = adfn(dom_par, dom_var)
     adfn_t adfn = ad_t::stop_recording(arange);
     //
     // dom_par
