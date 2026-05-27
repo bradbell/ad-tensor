@@ -8,7 +8,7 @@
 //
 #include <ad_tensor/ad.hpp>
 //
-TEST(examples, forward_par)  {
+TEST(examples, adfn_forward_par)  {
     using ad_tensor::ad_t;
     using ad_tensor::adfn_t;
     using ad_tensor::options_t;

@@ -3,13 +3,16 @@
 # SPDX-FileContributor: 2026 Bradley M. Bell
 # -----------------------------------------------------------------------------
 #
+# BEGIN_SORT_THIS_LINE_PLUS_2
 add_executable(examples
     ad/ad.cpp
     ad/recording.cpp
-    adfn/get_range.cpp
+    adfn/forward_der.cpp
     adfn/forward_par.cpp
     adfn/forward_var.cpp
+    adfn/get_range.cpp
 )
+# END_SORT_THIS_LINE_MINUS_2
 #
 target_link_libraries(examples
     ad_tensor

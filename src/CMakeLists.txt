@@ -7,6 +7,7 @@ add_library(ad_tensor SHARED
     ad/ctor.cpp
     ad/dev/binary.cpp
     ad/recording.cpp
+    adfn/forward_der.cpp
     adfn/forward_par.cpp
     adfn/forward_var.cpp
     adfn/get_range.cpp

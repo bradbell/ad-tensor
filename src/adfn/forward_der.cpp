@@ -2,6 +2,7 @@
 // SPDX-FileCopyrightText: Bradley M. Bell <bradbell@seanet.com>
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
+#include <ad_tensor/dev/get_option.hpp>
 #include <ad_tensor/adfn.hpp>
 #include <ad_tensor/options.hpp>
 #include <ad_tensor/ad_type.hpp>
@@ -63,7 +64,7 @@ is the directional derivative of the range in the dom_der direction; i.e.
 
 Example
 *******
-{xrst_comment ,
+{xrst_literal ,
     examples/adfn/forward_der.cpp
     BEGIN_CPP, END_CPP
 }
@@ -108,8 +109,8 @@ std::vector<at::Tensor> adfn_t::forward_der(
             cout << "all_par[" << i << "] = " << element << "\n";
         }
         for(size_t i = 0; i < all_var.size(); ++i) {
-            string element = to_string( all_par.at(i) );
-            cout << "all_par[" << i << "] = " << element << "\n";
+            string element = to_string( all_var.at(i) );
+            cout << "all_var[" << i << "] = " << element << "\n";
         }
     }
     //
@@ -149,20 +150,20 @@ std::vector<at::Tensor> adfn_t::forward_der(
     std::vector<at::Tensor> rng_der;
     at::Tensor zero = torch::tensor( { 0.0 } );
     for(size_t i = 0; i < m_rng_index.size(); ++i) {
-        if( m_rng_ad_type[i] ==  ad_type_t::variable ) {
-            rng_der.push_back( all_der[ m_rng_index[i] ];
+        if( m_rng_ad_type.at(i) ==  ad_type_t::variable ) {
+            rng_der.push_back( all_der.at( m_rng_index.at(i) ) );
         } else {
             rng_der.push_back( zero );
         }
     }
     if( trace ) {
-    {   for(size_t i = 0; i < m_rng_index.size(); ++i) {
-            string element = to_string( rng_der[i] );
+        for(size_t i = 0; i < m_rng_index.size(); ++i) {
+            string element = to_string( rng_der.at(i) );
             cout << "rmg_der[" << i << "] = " << element << "\n";
         }
         cout << "End tracing adfn::forward_der\n";
     }
-    return all_der;
+    return rng_der;
 }
 
 } // END_NAMESPACE_AD_TENSOR
