@@ -29,7 +29,7 @@ Other Public Members
 {xrst_toc_table
     src/adfn/forward_par.cpp
     src/adfn/forward_var.cpp
-    src/adfn/range.cpp
+    src/adfn/get_range.cpp
 }
 
 
@@ -90,8 +90,8 @@ public:
         const options_t&               options
     ) const;
     //
-    // range
-    std::vector<at::Tensor> range(
+    // get_range
+    std::vector<at::Tensor> get_range(
         const std::vector<at::Tensor>& all_par ,
         const std::vector<at::Tensor>& all_var
     ) const;

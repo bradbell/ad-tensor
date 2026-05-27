@@ -9,7 +9,7 @@ add_library(ad_tensor SHARED
     ad/recording.cpp
     adfn/forward_par.cpp
     adfn/forward_var.cpp
-    adfn/range.cpp
+    adfn/get_range.cpp
     dev/base_op/static.cpp
     dev/derive_op/add_op.cpp
     dev/derive_op/div_op.cpp

@@ -58,24 +58,24 @@ TEST(examples, range)  {
     // options
     options_t options;
     //
-    // rng_vec
+    // range
     std::vector<Tensor> all_par = adfn.forward_par(
         dom_par, options
     );
     std::vector<Tensor> all_var = adfn.forward_var(
         all_par, dom_var, options
     );
-    std::vector<Tensor> rng_vec = adfn.range(all_par, all_var);
+    std::vector<Tensor> range = adfn.get_range(all_par, all_var);
     //
-    EXPECT_EQ( rng_vec.size(), 3 );
+    EXPECT_EQ( range.size(), 3 );
     //
-    Tensor equal = rng_vec.at(0) == torch::tensor( {6.0} );
+    Tensor equal = range.at(0) == torch::tensor( {6.0} );
     EXPECT_TRUE( torch::all(equal).item<bool>() );
     //
-    equal = rng_vec.at(1) == torch::tensor( {13.0, 14.0} );
+    equal = range.at(1) == torch::tensor( {13.0, 14.0} );
     EXPECT_TRUE( torch::all(equal).item<bool>() );
     //
-    equal = rng_vec.at(2) == torch::tensor( {54.0 , 60.0} );
+    equal = range.at(2) == torch::tensor( {54.0 , 60.0} );
     EXPECT_TRUE( torch::all(equal).item<bool>() );
 }
 // END_CPP

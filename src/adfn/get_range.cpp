@@ -4,10 +4,7 @@
 // ----------------------------------------------------------------------------
 #include <ad_tensor/adfn.hpp>
 /*
-{xrst_begin adfn_range usr}
-{xrst_spell
-    rng
-}
+{xrst_begin adfn_get_range usr}
 
 Get The Range Tensors
 #####################
@@ -31,23 +28,23 @@ all_var
 *******
 is the value of all the variables as a function of dom_par and dom_var.
 
-rng_vec
-*******
+range
+*****
 is the value of the range vector as function of dom_par and dom_var.
 
 Example
 *******
 {xrst_literal ,
-    examples/adfn/range.cpp
+    examples/adfn/get_range.cpp
     BEGIN_CPP, END_CPP
 }
-{xrst_end adfn_range}
+{xrst_end adfn_get_range}
 */
 namespace ad_tensor { // BEGIN_NAMESPACE_AD_TENSOR
 //
 // BEGIN_RANGE
-// rng_vec = adfn.range(all_par, all_var)
-std::vector<at::Tensor> adfn_t::range(
+// rng_vec = adfn.get_range(all_par, all_var)
+std::vector<at::Tensor> adfn_t::get_range(
     const std::vector<at::Tensor>& all_par ,
     const std::vector<at::Tensor>& all_var
 ) const
@@ -77,7 +74,7 @@ std::vector<at::Tensor> adfn_t::range(
             break;
             //
             default:
-            assert( false && "adfn.range: "
+            assert( false && "adfn.get_range: "
                 "a range type is not constant, parameter or variable"
             );
         }

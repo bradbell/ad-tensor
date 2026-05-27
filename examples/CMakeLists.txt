@@ -6,7 +6,7 @@
 add_executable(examples
     ad/ad.cpp
     ad/recording.cpp
-    adfn/range.cpp
+    adfn/get_range.cpp
     adfn/forward_par.cpp
     adfn/forward_var.cpp
 )
