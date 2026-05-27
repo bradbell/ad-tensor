@@ -17,6 +17,7 @@ add_library(ad_tensor SHARED
     dev/derive_op/mul_op.cpp
     dev/derive_op/op_enum2base_op.cpp
     dev/derive_op/sub_op.cpp
+    dev/get_option.cpp
     dev/tape.cpp
     dev/to_string.cpp
     # END_SORT_THIS_LINE_MINUS_1

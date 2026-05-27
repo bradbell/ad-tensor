@@ -3,11 +3,13 @@
 // SPDX-FileCopyrightText: Bradley M. Bell <bradbell@seanet.com>
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
+#include <iostream>
+#include <cassert>
 
 namespace ad_tensor { namespace dev {
     void inline user_assert(bool condition, const std::string& msg)
     {   if( ! condition ) {
-            std::cerr << msg;
+            std::cerr << msg << "\n";
             assert( condition );
         }
     }

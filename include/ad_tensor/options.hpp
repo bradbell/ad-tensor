@@ -14,6 +14,9 @@ The Options Key Value Map
 
 {xrst_end options}
 */
+#include<map>
+#include<string>
+
 // BEGIN_HPP
 namespace ad_tensor {
     typedef std::map< std::string, std::string> options_t;

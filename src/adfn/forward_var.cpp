@@ -2,6 +2,7 @@
 // SPDX-FileCopyrightText: Bradley M. Bell <bradbell@seanet.com>
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
+#include <ad_tensor/dev/get_option.hpp>
 #include <ad_tensor/adfn.hpp>
 #include <ad_tensor/options.hpp>
 #include <ad_tensor/ad_type.hpp>
@@ -39,7 +40,7 @@ The possible key,value pairs ( see :ref:`options-name` ) are
 .. csv-table::
     :header-rows: 1
 
-    Key, Default, Possible other Values
+    Key, Default, Possible other values
     "trace", "false", "true"
 
 all_var
@@ -69,32 +70,23 @@ std::vector<at::Tensor> adfn_t::forward_var(
 {
     // cout
     using std::cout;
+    using std::string;
     using ad_tensor::dev::to_string;
     //
     // trace
-    bool trace = false;
-    for( auto itr = options.begin(); itr != options.end(); ++itr)
-    {   if( itr->first == "trace" )
-        {   std::string value = itr->second;
-            if( value == "true" )
-                trace = true;
-            else {
-                dev::user_assert( value == "false" ,
-                    "forward_var: trace is not true of false"
-                );
-            }
-        } else {
-            dev::user_assert( false , "forward_var: invalid key in options" );
-        }
-    }
+    string           key           = "trace";
+    string           default_value = "false";
+    std::set<string> other_values  = { "true" };
+    string value = dev::get_option(options, key, default_value, other_values);
+    bool trace = value == "true";
     if( trace ) {
         cout << "Begin tracing adfn::forward_var\n";
         for(size_t i = 0; i < m_con.size(); ++i) {
-            std::string element = to_string( m_con.at(i) );
+            string element = to_string( m_con.at(i) );
             cout << "constant[" << i << "] = " << element << "\n";
         }
         for(size_t i = 0; i < all_par.size(); ++i) {
-            std::string element = to_string( all_par.at(i) );
+            string element = to_string( all_par.at(i) );
             cout << "all_par[" << i << "] = " << element << "\n";
         }
     }
@@ -122,7 +114,7 @@ std::vector<at::Tensor> adfn_t::forward_var(
         base_op.forward_var(op_index, m_var, m_con, all_par, all_var);
         //
         if( trace) {
-            std::string element = to_string( all_var.at(op_index) );
+            string element = to_string( all_var.at(op_index) );
             cout << "all_var[" << op_index << "] = " << element;
             cout << ", " << to_string(op_enum)  << "(";
             size_t start = m_var.m_arg_start.at(op_index);

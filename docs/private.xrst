@@ -16,6 +16,7 @@ Contents
     include/ad_tensor/dev/agraph.hpp
     include/ad_tensor/dev/tape.hpp
     include/ad_tensor/dev/base_op.hpp
+    include/ad_tensor/dev/get_option.hpp
 }
 
 {xrst_end private}

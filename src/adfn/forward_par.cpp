@@ -9,6 +9,7 @@
 #include <ad_tensor/dev/derive_op.hpp>
 #include <ad_tensor/dev/to_string.hpp>
 #include <ad_tensor/dev/user_assert.hpp>
+#include <ad_tensor/dev/get_option.hpp>
 /*
 {xrst_begin adfn_forward_par usr}
 
@@ -32,7 +33,7 @@ The possible key,value pairs ( see :ref:`options-name` ) are
 .. csv-table::
     :header-rows: 1
 
-    Key, Default, Possible other Values
+    Key, Default, Possible other values
     "trace", "false", "true"
 
 all_par
@@ -64,27 +65,18 @@ std::vector<at::Tensor> adfn_t::forward_par(
     // cout
     using std::cout;
     using ad_tensor::dev::to_string;
+    using std::string;
     //
     // trace
-    bool trace = false;
-    for( auto itr = options.begin(); itr != options.end(); ++itr)
-    {   if( itr->first == "trace" )
-        {   std::string value = itr->second;
-            if( value == "true" )
-                trace = true;
-            else {
-                dev::user_assert( value == "false" ,
-                    "forward_par: trace is not true of false"
-                );
-            }
-        } else {
-            dev::user_assert( false , "forward_par: invalid key in options" );
-        }
-    }
+    string           key           = "trace";
+    string           default_value = "false";
+    std::set<string> other_values  = { "true" };
+    string value = dev::get_option(options, key, default_value, other_values);
+    bool trace = value == "true";
     if( trace ) {
         cout << "Begin tracing adfn::forward_par\n";
         for(size_t i = 0; i < m_con.size(); ++i) {
-            std::string element = to_string( m_con.at(i) );
+            string element = to_string( m_con.at(i) );
             cout << "constant[" << i << "] = " << element << "\n";
         }
     }
@@ -112,7 +104,7 @@ std::vector<at::Tensor> adfn_t::forward_par(
         base_op.forward_par(op_index, m_par, m_con, all_par);
         //
         if( trace) {
-            std::string element = to_string( all_par.at(op_index) );
+            string element = to_string( all_par.at(op_index) );
             cout << "all_par[" << op_index << "] = " << element;
             cout << ", " << to_string(op_enum)  << "(";
             size_t start = m_par.m_arg_start.at(op_index);
