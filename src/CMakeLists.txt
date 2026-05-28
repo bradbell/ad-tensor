@@ -11,6 +11,7 @@ add_library(ad_tensor SHARED
     adfn/forward_par.cpp
     adfn/forward_var.cpp
     adfn/get_range.cpp
+    adfn/reverse_der.cpp
     dev/base_op/static.cpp
     dev/derive_op/add_op.cpp
     dev/derive_op/div_op.cpp

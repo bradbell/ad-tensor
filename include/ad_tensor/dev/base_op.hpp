@@ -56,10 +56,6 @@ var_vec
 =======
 is the vector containing all the variable tensors..
 
-for_der
-=======
-is a vector containing the directional derivative for each variable.
-
 Pure Virtual Functions
 **********************
 
@@ -91,11 +87,27 @@ and var_vec[op_index] is an output.
 
 forward_der
 ===========
-For this function,
-der_vec[index] for index < op_index is an input
-and der_vec[op_index] is an output.
+On input, for_der contains the derivative w.r.t. the domain direction
+of all the variables up to but no including op_index; hence,
+for_der[index] for index < op_index is an input to this routine.
+Upon return for_der[op_index] contains the derivative w.r.t
+the domain direction of the variable corresponding to op_index.
 {xrst_literal ,
     BEGIN_FORWARD_DER, END_FORWARD_DER
+}
+
+reverse_der
+===========
+On input, for_der contains the derivative of the range direction summation
+w.r.t the variables from index zero to index op_index.
+Hence for_der[index] for index <= op_index are inputs to this routine.
+Upon return, for_der contains the derivative of the range direction summation
+w.r.t the variables from index zero to index op_index - 1.
+Hence for_der[index] for index < op_index are inputs to this routine.
+Actually all the outputs correspond to index values that are
+arguments to the operator at index op_index.
+{xrst_literal ,
+    BEGIN_REVERSE_DER, END_REVERSE_DER
 }
 
 {xrst_end op_base}
@@ -159,5 +171,16 @@ namespace ad_tensor { namespace dev { struct base_op_t
         std::vector<at::Tensor>&          for_der
     ) const = 0;
     // END_FORWARD_DER
+    //
+    // BEGIN_REVERSE_DER
+    virtual void reverse_der(
+        size_t                            op_index    ,
+        const agraph_t&                   agraph      ,
+        const std::vector<at::Tensor>&    con_vec     ,
+        const std::vector<at::Tensor>&    par_vec     ,
+        const std::vector<at::Tensor>&    var_vec     ,
+        std::vector<at::Tensor>&          rev_der
+    ) const = 0;
+    // END_REVERSE_DER
 };
 } }

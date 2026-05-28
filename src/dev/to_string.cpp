@@ -30,11 +30,20 @@ namespace ad_tensor { namespace dev {
         }
     }
     std::string to_string(const at::Tensor& tensor) {
-        size_t n = tensor.numel();
-        std::string res = "[";
-        for(size_t i = 0; i < n; ++i) {
+        at::IntArrayRef sizes  = tensor.sizes();
+        std::string res = "(";
+        for(size_t i = 0; i < sizes.size(); ++i) {
+            res += std::to_string( sizes[i] );
+            if( i + 1 < sizes.size() )
+                res += ", ";
+        }
+        res += ")";
+        //
+        size_t length = tensor.numel();
+        res += "[";
+        for(size_t i = 0; i < length; ++i) {
             res += std::to_string( tensor.data()[i].item<float>() );
-            if( i + 1 < n )
+            if( i + 1 < length )
                 res += ", ";
         }
         res += "]";

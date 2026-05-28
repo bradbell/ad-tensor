@@ -35,6 +35,10 @@ This maps op_enum_t values to the corresponding base_op_t value:
 */
 #include <ad_tensor/dev/base_op.hpp>
 //
+// This is included so that derived operators that do not implement a virtual
+// routine can report the routine and operator this to the user.
+#include <ad_tensor/dev/user_assert.hpp>
+//
 #define OP_DERIVE(op_name) \
     struct op_name ## _t : public base_op_t { \
         \
@@ -62,6 +66,15 @@ This maps op_enum_t values to the corresponding base_op_t value:
             const std::vector<at::Tensor>&    par_vec     , \
             const std::vector<at::Tensor>&    var_vec     , \
             std::vector<at::Tensor>&          for_der \
+        ) const override; \
+        \
+        void reverse_der( \
+            size_t                            op_index    , \
+            const agraph_t&                   agraph      , \
+            const std::vector<at::Tensor>&    con_vec     , \
+            const std::vector<at::Tensor>&    par_vec     , \
+            const std::vector<at::Tensor>&    var_vec     , \
+            std::vector<at::Tensor>&          rev_der \
         ) const override; \
     } const op_name;
 //

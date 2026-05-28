@@ -127,4 +127,16 @@ namespace ad_tensor { namespace dev {
             for_der[op_index] = dlhs_tensor - drhs_tensor;
         };
     }
+    // ------------------------------------------------------------------------
+    // reverse_der
+    void sub_op_t::reverse_der(
+        size_t                            op_index    ,
+        const agraph_t&                   agraph      ,
+        const std::vector<at::Tensor>&    con_vec     ,
+        const std::vector<at::Tensor>&    par_vec     ,
+        const std::vector<at::Tensor>&    var_vec     ,
+        std::vector<at::Tensor>&          rev_der
+    ) const {
+        user_assert(false, "reverse_der not implemented for sub operator");
+    }
 } }

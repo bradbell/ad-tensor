@@ -31,6 +31,7 @@ Other Public Members
     src/adfn/forward_var.cpp
     src/adfn/get_range.cpp
     src/adfn/forward_der.cpp
+    src/adfn/reverse_der.cpp
 }
 
 
@@ -102,6 +103,14 @@ public:
         const std::vector<at::Tensor>& all_par ,
         const std::vector<at::Tensor>& all_var ,
         const std::vector<at::Tensor>& dom_der ,
+        const options_t&               options
+    ) const;
+    //
+    // reverse_der
+    std::vector<at::Tensor> reverse_der(
+        const std::vector<at::Tensor>& all_par ,
+        const std::vector<at::Tensor>& all_var ,
+        const std::vector<at::Tensor>& rng_der ,
         const options_t&               options
     ) const;
 }; }

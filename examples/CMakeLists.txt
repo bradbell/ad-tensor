@@ -11,6 +11,7 @@ add_executable(examples
     adfn/forward_par.cpp
     adfn/forward_var.cpp
     adfn/get_range.cpp
+    adfn/reverse_der.cpp
 )
 # END_SORT_THIS_LINE_MINUS_2
 #

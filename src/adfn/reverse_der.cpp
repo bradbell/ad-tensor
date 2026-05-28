@@ -11,19 +11,18 @@
 #include <ad_tensor/dev/to_string.hpp>
 #include <ad_tensor/dev/user_assert.hpp>
 /*
-{xrst_begin adfn_forward_der usr}
+{xrst_begin adfn_reverse_der usr}
 {xrst_spell
     rng
-    dt
 }
 
-Compute A Domain Directional Derivative
-#######################################
+Compute Derivative of A Range Direction Summation
+#################################################
 
 Prototype
 *********
 {xrst_literal ,
-    BEGIN_FORWARD_DER, END_FORWARD_DER
+    BEGIN_REVERSE_DER, END_REVERSE_DER
 }
 
 all_par
@@ -40,9 +39,9 @@ This is usually calculated by :ref:`adfn_forward_var-name` .
 Since derivatives are only computed with respect to domain variables,
 it does not make sense for dom_var to be empty.
 
-dom_der
+rng_der
 *******
-This is the domain direction that the derivative is computed with respect to.
+This is the range direction that the derivative is computed with respect to.
 
 
 options
@@ -55,41 +54,41 @@ The possible key,value pairs ( see :ref:`options-name` ) are
     Key, Default, Possible other Values
     "trace", "false", "true"
 
-rng_der
+dom_der
 *******
-is the directional derivative of the range in the dom_der direction; i.e.
+is the domain derivative of the range space direction; i.e.
 
-    rng_der = d/dt adfn(dom_par, dom_var + t * dom_der)
+    dom_der =  (d / d dom_var) sum[ rng_der * adfn(dom_par, dom_var ) ]
 
 
 Example
 *******
 {xrst_literal ,
-    examples/adfn/forward_der.cpp
+    examples/adfn/reverse_der.cpp
     BEGIN_CPP, END_CPP
 }
-{xrst_end adfn_forward_der}
+{xrst_end adfn_reverse_der}
 */
 namespace ad_tensor { // BEGIN_NAMESPACE_AD_TENSOR
 //
-// BEGIN_FORWARD_DER
-// rng_der = adfn.forward_der(all_par, all_var, dom_der, options)
-std::vector<at::Tensor> adfn_t::forward_der(
+// BEGIN_REVERSE_DER
+// dom_der = adfn.reverse_der(all_par, all_var, rng_der, options)
+std::vector<at::Tensor> adfn_t::reverse_der(
     const std::vector<at::Tensor>& all_par ,
     const std::vector<at::Tensor>& all_var ,
-    const std::vector<at::Tensor>& dom_der ,
+    const std::vector<at::Tensor>& rng_der ,
     const options_t&               options
 ) const
-// END_FORWARD_DER
+// END_REVERSE_DER
 {
     // cout
     using std::cout;
     using std::string;
     using ad_tensor::dev::to_string;
     //
-    // dom_der
-    dev::user_assert( dom_der.size() == m_var.m_n_dom ,
-        "forward_der: dom_der does not have the expected number of tensors"
+    // rng_der
+    dev::user_assert( rng_der.size() == m_rng_index.size(),
+        "reverse_der: rng_der does not have the expected number of tensors"
     );
     //
     // trace
@@ -99,7 +98,7 @@ std::vector<at::Tensor> adfn_t::forward_der(
     string value = dev::get_option(options, key, default_value, other_values);
     bool trace = value == "true";
     if( trace ) {
-        cout << "Begin tracing adfn::forward_der\n";
+        cout << "Begin tracing adfn::reverse_der\n";
         for(size_t i = 0; i < m_con.size(); ++i) {
             string element = to_string( m_con.at(i) );
             cout << "constant[" << i << "] = " << element << "\n";
@@ -119,18 +118,25 @@ std::vector<at::Tensor> adfn_t::forward_der(
     at::Tensor empty = torch::empty( {0} );
     //
     // all_der
-    std::vector<at::Tensor> all_der =  dom_der ;
-    all_der.resize( n_op, empty );
+    at::Tensor zero = torch::tensor( { 0.0 } );
+    std::vector<at::Tensor> all_der( n_op, zero );
+    for(size_t i = 0; i < m_rng_index.size(); ++i) {
+        if( m_rng_ad_type.at(i) == ad_type_t::variable )  {
+            all_der.at( m_rng_index.at(i) ) = rng_der.at(i);
+        }
+    }
     //
     // all_der
-    for(size_t op_index = 0; op_index < n_op; ++op_index) {
+    size_t op_index = n_op;
+    while( m_var.m_n_dom < op_index )
+    {   --op_index;
         //
         // base_op
         dev::op_enum_t op_enum = m_var.m_op_seq.at( op_index );
         const dev::base_op_t& base_op = dev::op_enum2base_op( op_enum );
         //
         // all_der
-        base_op.forward_der(op_index, m_var, m_con, all_par, all_var, all_der);
+        base_op.reverse_der(op_index, m_var, m_con, all_par, all_var, all_der);
         //
         if( trace) {
             string element = to_string( all_der.at(op_index) );
@@ -146,24 +152,19 @@ std::vector<at::Tensor> adfn_t::forward_der(
         }
     }
     //
-    // rng_der
-    std::vector<at::Tensor> rng_der;
-    at::Tensor zero = torch::tensor( { 0.0 } );
-    for(size_t i = 0; i < m_rng_index.size(); ++i) {
-        if( m_rng_ad_type.at(i) ==  ad_type_t::variable ) {
-            rng_der.push_back( all_der.at( m_rng_index.at(i) ) );
-        } else {
-            rng_der.push_back( zero );
-        }
+    // dom_der
+    std::vector<at::Tensor> dom_der;
+    for(size_t j = 0; j < m_var.m_n_dom; ++j) {
+        dom_der.push_back( all_der.at(j) );
     }
     if( trace ) {
-        for(size_t i = 0; i < m_rng_index.size(); ++i) {
-            string element = to_string( rng_der.at(i) );
-            cout << "rmg_der[" << i << "] = " << element << "\n";
+        for(size_t j = 0; j < m_var.m_n_dom; ++j) {
+            string element = to_string( dom_der.at(j) );
+            cout << "dom_der[" << j << "] = " << element << "\n";
         }
-        cout << "End tracing adfn::forward_der\n";
+        cout << "End tracing adfn::reverse_der\n";
     }
-    return rng_der;
+    return dom_der;
 }
 
 } // END_NAMESPACE_AD_TENSOR
