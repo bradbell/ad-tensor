@@ -87,11 +87,11 @@ ad_tensor::vector<at::Tensor> adfn_t::forward_var(
     if( trace ) {
         cout << "Begin tracing adfn::forward_var\n";
         for(size_t i = 0; i < m_con.size(); ++i) {
-            string element = to_string( m_con.at(i) );
+            string element = to_string( m_con[i] );
             cout << "constant[" << i << "] = " << element << "\n";
         }
         for(size_t i = 0; i < all_par.size(); ++i) {
-            string element = to_string( all_par.at(i) );
+            string element = to_string( all_par[i] );
             cout << "all_par[" << i << "] = " << element << "\n";
         }
     }
@@ -108,21 +108,21 @@ ad_tensor::vector<at::Tensor> adfn_t::forward_var(
     for(size_t op_index = 0; op_index < n_op; ++op_index) {
         //
         // base_op
-        dev::op_enum_t op_enum = m_var.m_op_seq.at( op_index );
+        dev::op_enum_t op_enum = m_var.m_op_seq[ op_index ];
         const dev::base_op_t& base_op = dev::op_enum2base_op( op_enum );
         //
         // all_var
         base_op.forward_var(op_index, m_var, m_con, all_par, all_var);
         //
         if( trace) {
-            string element = to_string( all_var.at(op_index) );
+            string element = to_string( all_var[op_index] );
             cout << "all_var[" << op_index << "] = " << element;
             cout << ", " << to_string(op_enum)  << "(";
-            size_t start = m_var.m_arg_start.at(op_index);
-            size_t stop  = m_var.m_arg_start.at(op_index + 1);
+            size_t start = m_var.m_arg_start[op_index];
+            size_t stop  = m_var.m_arg_start[op_index + 1];
             for(size_t i = start; i < stop; ++i) {
-                cout << "[" << m_var.m_arg_value.at(i) << ",";
-                cout << to_string( m_var.m_arg_type.at(i) ) << "]";
+                cout << "[" << m_var.m_arg_value[i] << ",";
+                cout << to_string( m_var.m_arg_type[i] ) << "]";
             }
             cout << ")\n";
         }

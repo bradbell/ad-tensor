@@ -28,10 +28,10 @@ TEST(examples, adfn_forward_der)  {
     //
     // arange
     vector<ad_t> arange;
-    arange.push_back(  adom_var.at(0) + adom_var.at(1) );
-    arange.push_back(  adom_var.at(0) - adom_var.at(1) );
-    arange.push_back(  adom_var.at(0) * adom_var.at(1) );
-    arange.push_back(  adom_var.at(0) / adom_var.at(1) );
+    arange.push_back(  adom_var[0] + adom_var[1] );
+    arange.push_back(  adom_var[0] - adom_var[1] );
+    arange.push_back(  adom_var[0] * adom_var[1] );
+    arange.push_back(  adom_var[0] / adom_var[1] );
     //
     // range = adfn(dom_par, dom_var)
     adfn_t adfn = ad_t::stop_recording(arange);
@@ -48,7 +48,7 @@ TEST(examples, adfn_forward_der)  {
     //
     EXPECT_EQ( range.size(), arange.size() );
     //
-    Tensor equal = range.at(0) == torch::tensor( {6.0, 10.0} );
+    Tensor equal = range[0] == torch::tensor( {6.0, 10.0} );
     EXPECT_TRUE( torch::all(equal).item<bool>() );
     //
     // dom_der
@@ -63,16 +63,16 @@ TEST(examples, adfn_forward_der)  {
     //
     EXPECT_EQ( rng_der.size(), range.size() );
     //
-    equal = rng_der.at(0) == torch::tensor( {2.0, 2.0} );
+    equal = rng_der[0] == torch::tensor( {2.0, 2.0} );
     EXPECT_TRUE( torch::all(equal).item<bool>() );
     //
-    equal = rng_der.at(1) == torch::tensor( {0.0, 0.0} );
+    equal = rng_der[1] == torch::tensor( {0.0, 0.0} );
     EXPECT_TRUE( torch::all(equal).item<bool>() );
     //
-    equal = rng_der.at(2) == torch::tensor( {2.0 + 4.0, 2.0 + 8.0} );
+    equal = rng_der[2] == torch::tensor( {2.0 + 4.0, 2.0 + 8.0} );
     EXPECT_TRUE( torch::all(equal).item<bool>() );
     //
-    equal = rng_der.at(3) == torch::tensor({ (2.0-4.0)/4.0, (2.0-8.0)/4.0 });
+    equal = rng_der[3] == torch::tensor({ (2.0-4.0)/4.0, (2.0-8.0)/4.0 });
     EXPECT_TRUE( torch::all(equal).item<bool>() );
 }
 // END_CPP

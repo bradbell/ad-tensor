@@ -198,8 +198,8 @@ adfn_t ad_t::stop_recording(const ad_tensor::vector<ad_t>& arange)
     //
     // adfn
     for(size_t i = 0; i < arange.size(); ++i)
-    {   adfn.m_rng_index.push_back( arange.at(i).m_index );
-        adfn.m_rng_ad_type.push_back( arange.at(i).m_ad_type );
+    {   adfn.m_rng_index.push_back( arange[i].m_index );
+        adfn.m_rng_ad_type.push_back( arange[i].m_ad_type );
     }
     //
     return adfn;

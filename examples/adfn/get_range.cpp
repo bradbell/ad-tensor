@@ -33,14 +33,14 @@ TEST(examples, adfn_range)  {
     ad_t acon( torch::tensor( {6} ) );
     //
     // create a parameter and variable that are not used
-    adom_par.at(0) - acon;
-    adom_var.at(0) / acon;
+    adom_par[0] - acon;
+    adom_var[0] / acon;
     //
     // arange
     vector<ad_t> arange;
     arange.push_back( acon );                     // a constant
-    arange.push_back( adom_par.at(0) + acon );    // a parameter
-    arange.push_back( adom_var.at(0) * acon );    // a variable
+    arange.push_back( adom_par[0] + acon );    // a parameter
+    arange.push_back( adom_var[0] * acon );    // a variable
     //
     // range = adfn(dom_par, dom_var)
     adfn_t adfn = ad_t::stop_recording(arange);
@@ -69,13 +69,13 @@ TEST(examples, adfn_range)  {
     //
     EXPECT_EQ( range.size(), 3 );
     //
-    Tensor equal = range.at(0) == torch::tensor( {6.0} );
+    Tensor equal = range[0] == torch::tensor( {6.0} );
     EXPECT_TRUE( torch::all(equal).item<bool>() );
     //
-    equal = range.at(1) == torch::tensor( {13.0, 14.0} );
+    equal = range[1] == torch::tensor( {13.0, 14.0} );
     EXPECT_TRUE( torch::all(equal).item<bool>() );
     //
-    equal = range.at(2) == torch::tensor( {54.0 , 60.0} );
+    equal = range[2] == torch::tensor( {54.0 , 60.0} );
     EXPECT_TRUE( torch::all(equal).item<bool>() );
 }
 // END_CPP

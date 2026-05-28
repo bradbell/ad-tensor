@@ -28,16 +28,16 @@ TEST(examples, record)  {
     dom_var = vector<Tensor>();
     //
     // arange
-    ad_tensor::vector<ad_t> arange = { adom_par.at(0), adom_var.at(0) };
+    ad_tensor::vector<ad_t> arange = { adom_par[0], adom_var[0] };
     //
     // stop_recording
     ad_t::stop_recording( arange  );
     //
-    {   Tensor check =  adom_par.at(0).tensor() == torch::tensor( {2.0, 3.0} );
+    {   Tensor check =  adom_par[0].tensor() == torch::tensor( {2.0, 3.0} );
         bool equal   = torch::all(check).item<bool>();
         EXPECT_TRUE(equal);
     }
-    {   Tensor check =  adom_var.at(0).tensor() == torch::tensor( {4.0, 5.0} );
+    {   Tensor check =  adom_var[0].tensor() == torch::tensor( {4.0, 5.0} );
         bool equal   = torch::all(check).item<bool>();
         EXPECT_TRUE(equal);
     }

@@ -55,7 +55,7 @@ TEST(tests_dev, op_base)  {
     base_op.forward_par(op_index, agraph, con_vec, par_vec);
     //
     // data_ptr
-    float* data_ptr = par_vec.at(op_index).data_ptr<float>();
+    float* data_ptr = par_vec[op_index].data_ptr<float>();
     EXPECT_EQ( data_ptr[0], 2.0 );
     EXPECT_EQ( data_ptr[1], 2.0 );
 }

@@ -59,20 +59,20 @@ ad_tensor::vector<at::Tensor> adfn_t::get_range(
     // rng_vec
     ad_tensor::vector<at::Tensor> rng_vec;
     for(size_t i = 0; i < m_rng_index.size(); ++i)
-    {   size_t    index    = m_rng_index.at(i);
-        ad_type_t ad_type  = m_rng_ad_type.at(i);
+    {   size_t    index    = m_rng_index[i];
+        ad_type_t ad_type  = m_rng_ad_type[i];
         switch(ad_type) {
             //
             case ad_type_t::constant:
-            rng_vec.push_back( m_con.at(index) );
+            rng_vec.push_back( m_con[index] );
             break;
             //
             case ad_type_t::parameter:
-            rng_vec.push_back( all_par.at(index) );
+            rng_vec.push_back( all_par[index] );
             break;
             //
             case ad_type_t::variable:
-            rng_vec.push_back( all_var.at(index) );
+            rng_vec.push_back( all_var[index] );
             break;
             //
             default:

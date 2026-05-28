@@ -69,17 +69,17 @@ namespace ad_tensor { namespace dev {
         const agraph_t&               agraph    ,
         const ad_tensor::vector<at::Tensor> con_vec   ,
         const ad_tensor::vector<at::Tensor> par_vec   )
-    {   size_t    index   = agraph.m_arg_value.at(arg_index);
-        ad_type_t ad_type = agraph.m_arg_type.at(arg_index);
+    {   size_t    index   = agraph.m_arg_value[arg_index];
+        ad_type_t ad_type = agraph.m_arg_type[arg_index];
         switch( ad_type ) {
             //
             // constant
             case ad_type_t::constant:
-            return con_vec.at(index);
+            return con_vec[index];
             //
             // parameter
             case ad_type_t::parameter:
-            return par_vec.at(index);
+            return par_vec[index];
             //
             // default
             default:
@@ -88,7 +88,7 @@ namespace ad_tensor { namespace dev {
             );
         }
         // should not get here
-        return par_vec.at(0);
+        return par_vec[0];
     }
     const at::Tensor& base_op_t::tensor_at_arg_index(
         size_t                        arg_index ,
@@ -96,21 +96,21 @@ namespace ad_tensor { namespace dev {
         const ad_tensor::vector<at::Tensor> con_vec   ,
         const ad_tensor::vector<at::Tensor> par_vec   ,
         const ad_tensor::vector<at::Tensor> var_vec   )
-    {   size_t    index   = agraph.m_arg_value.at(arg_index);
-        ad_type_t ad_type = agraph.m_arg_type.at(arg_index);
+    {   size_t    index   = agraph.m_arg_value[arg_index];
+        ad_type_t ad_type = agraph.m_arg_type[arg_index];
         switch( ad_type ) {
             //
             // constant
             case ad_type_t::constant:
-            return con_vec.at(index);
+            return con_vec[index];
             //
             // parameter
             case ad_type_t::parameter:
-            return par_vec.at(index);
+            return par_vec[index];
             //
             // variable
             case ad_type_t::variable:
-            return var_vec.at(index);
+            return var_vec[index];
             //
             // default
             default:
@@ -119,6 +119,6 @@ namespace ad_tensor { namespace dev {
             );
         }
         // should not get here
-        return var_vec.at(0);
+        return var_vec[0];
     }
 } }

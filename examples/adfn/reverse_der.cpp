@@ -30,7 +30,7 @@ TEST(examples, adfn_reverse_der)  {
     //
     // arange
     vector<ad_t> arange;
-    arange.push_back(  adom_var.at(0) + adom_var.at(1) );
+    arange.push_back(  adom_var[0] + adom_var[1] );
     //
     // range = adfn(dom_par, dom_var)
     adfn_t adfn = ad_t::stop_recording(arange);
@@ -47,7 +47,7 @@ TEST(examples, adfn_reverse_der)  {
     //
     EXPECT_EQ( range.size(), arange.size() );
     //
-    Tensor equal = range.at(0) == torch::tensor( {6.0, 10.0} );
+    Tensor equal = range[0] == torch::tensor( {6.0, 10.0} );
     EXPECT_TRUE( torch::all(equal).item<bool>() );
     //
     // rng_der
@@ -61,10 +61,10 @@ TEST(examples, adfn_reverse_der)  {
     //
     EXPECT_EQ( dom_der.size(), dom_var.size() );
     //
-    equal = dom_der.at(0) == torch::tensor( {1.0, 2.0} );
+    equal = dom_der[0] == torch::tensor( {1.0, 2.0} );
     EXPECT_TRUE( torch::all(equal).item<bool>() );
     //
-    equal = dom_der.at(1) == torch::tensor( {1.0, 2.0} );
+    equal = dom_der[1] == torch::tensor( {1.0, 2.0} );
     EXPECT_TRUE( torch::all(equal).item<bool>() );
 }
 // END_CPP

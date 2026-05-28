@@ -20,10 +20,10 @@ namespace ad_tensor { namespace dev {
     ) const {
         //
         // arg_index
-        size_t arg_index = agraph.m_arg_start.at(op_index);
+        size_t arg_index = agraph.m_arg_start[op_index];
         //
 #ifndef NDEBUG
-        size_t n_arg = agraph.m_arg_start.at(op_index+1) - arg_index;
+        size_t n_arg = agraph.m_arg_start[op_index+1] - arg_index;
         assert( n_arg == 2 && "mul_t: n_arg != 2" );
 # endif
         //
@@ -36,7 +36,7 @@ namespace ad_tensor { namespace dev {
         );
         //
         // par_vec
-        par_vec.at(op_index) = lhs_tensor * rhs_tensor;
+        par_vec[op_index] = lhs_tensor * rhs_tensor;
     }
     // ------------------------------------------------------------------------
     // forward_var
@@ -49,10 +49,10 @@ namespace ad_tensor { namespace dev {
     ) const {
         //
         // arg_index
-        size_t arg_index = agraph.m_arg_start.at(op_index);
+        size_t arg_index = agraph.m_arg_start[op_index];
         //
 #ifndef NDEBUG
-        size_t n_arg = agraph.m_arg_start.at(op_index+1) - arg_index;
+        size_t n_arg = agraph.m_arg_start[op_index+1] - arg_index;
         assert( n_arg == 2 && "mul_t: n_arg != 2" );
 # endif
         //
@@ -65,7 +65,7 @@ namespace ad_tensor { namespace dev {
         );
         //
         // var_vec
-        var_vec.at(op_index) = lhs_tensor * rhs_tensor;
+        var_vec[op_index] = lhs_tensor * rhs_tensor;
     }
     // ------------------------------------------------------------------------
     // forward_der
@@ -79,16 +79,16 @@ namespace ad_tensor { namespace dev {
     ) const {
         //
         // arg_index
-        size_t arg_index = agraph.m_arg_start.at(op_index);
+        size_t arg_index = agraph.m_arg_start[op_index];
         //
 #ifndef NDEBUG
-        size_t n_arg = agraph.m_arg_start.at(op_index+1) - arg_index;
+        size_t n_arg = agraph.m_arg_start[op_index+1] - arg_index;
         assert( n_arg == 2 && "mul_t: n_arg != 2" );
 # endif
         //
         // lhs_type, rhs_type
-        ad_type_t lhs_type = agraph.m_arg_type.at(arg_index);
-        ad_type_t rhs_type = agraph.m_arg_type.at(arg_index + 1);
+        ad_type_t lhs_type = agraph.m_arg_type[arg_index];
+        ad_type_t rhs_type = agraph.m_arg_type[arg_index + 1];
         //
         if( lhs_type != ad_type_t::variable ) {
             assert( rhs_type == ad_type_t::variable );
