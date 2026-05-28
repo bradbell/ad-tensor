@@ -151,7 +151,7 @@ ad_tensor::vector<at::Tensor> adfn_t::forward_der(
     at::Tensor zero = torch::tensor( { 0.0 } );
     for(size_t i = 0; i < m_rng_index.size(); ++i) {
         if( m_rng_ad_type[i] ==  ad_type_t::variable ) {
-            rng_der.push_back( all_der.at( m_rng_index[i] ) );
+            rng_der.push_back( all_der[ m_rng_index[i] ] );
         } else {
             rng_der.push_back( zero );
         }

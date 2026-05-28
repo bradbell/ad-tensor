@@ -122,7 +122,7 @@ ad_tensor::vector<at::Tensor> adfn_t::reverse_der(
     ad_tensor::vector<at::Tensor> all_der( n_op, zero );
     for(size_t i = 0; i < m_rng_index.size(); ++i) {
         if( m_rng_ad_type[i] == ad_type_t::variable )  {
-            all_der.at( m_rng_index[i] ) = rng_der[i];
+            all_der[ m_rng_index[i] ] = rng_der[i];
         }
     }
     //
