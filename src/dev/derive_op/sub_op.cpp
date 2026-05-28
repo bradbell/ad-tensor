@@ -15,8 +15,8 @@ namespace ad_tensor { namespace dev {
     void sub_op_t::forward_par(
         size_t                            op_index    ,
         const agraph_t&                   agraph      ,
-        const std::vector<at::Tensor>&    con_vec     ,
-        std::vector<at::Tensor>&          par_vec
+        const ad_tensor::vector<at::Tensor>&    con_vec     ,
+        ad_tensor::vector<at::Tensor>&          par_vec
     ) const {
         //
         // arg_index
@@ -43,9 +43,9 @@ namespace ad_tensor { namespace dev {
     void sub_op_t::forward_var(
         size_t                            op_index    ,
         const agraph_t&                   agraph      ,
-        const std::vector<at::Tensor>&    con_vec     ,
-        const std::vector<at::Tensor>&    par_vec     ,
-        std::vector<at::Tensor>&          var_vec
+        const ad_tensor::vector<at::Tensor>&    con_vec     ,
+        const ad_tensor::vector<at::Tensor>&    par_vec     ,
+        ad_tensor::vector<at::Tensor>&          var_vec
     ) const {
         //
         // arg_index
@@ -72,10 +72,10 @@ namespace ad_tensor { namespace dev {
     void sub_op_t::forward_der(
         size_t                            op_index    ,
         const agraph_t&                   agraph      ,
-        const std::vector<at::Tensor>&    con_vec     ,
-        const std::vector<at::Tensor>&    par_vec     ,
-        const std::vector<at::Tensor>&    var_vec     ,
-        std::vector<at::Tensor>&          for_der
+        const ad_tensor::vector<at::Tensor>&    con_vec     ,
+        const ad_tensor::vector<at::Tensor>&    par_vec     ,
+        const ad_tensor::vector<at::Tensor>&    var_vec     ,
+        ad_tensor::vector<at::Tensor>&          for_der
     ) const {
         //
         // arg_index
@@ -132,10 +132,10 @@ namespace ad_tensor { namespace dev {
     void sub_op_t::reverse_der(
         size_t                            op_index    ,
         const agraph_t&                   agraph      ,
-        const std::vector<at::Tensor>&    con_vec     ,
-        const std::vector<at::Tensor>&    par_vec     ,
-        const std::vector<at::Tensor>&    var_vec     ,
-        std::vector<at::Tensor>&          rev_der
+        const ad_tensor::vector<at::Tensor>&    con_vec     ,
+        const ad_tensor::vector<at::Tensor>&    par_vec     ,
+        const ad_tensor::vector<at::Tensor>&    var_vec     ,
+        ad_tensor::vector<at::Tensor>&          rev_der
     ) const {
         user_assert(false, "reverse_der not implemented for sub operator");
     }

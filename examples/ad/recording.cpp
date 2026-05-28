@@ -11,7 +11,7 @@
 TEST(examples, record)  {
     using ad_tensor::ad_t;
     using at::Tensor;
-    using std::vector;
+    using ad_tensor::vector;
     //
     // dom_par, dom_var
     vector<Tensor> dom_par = { torch::tensor( {2.0, 3.0} ) };
@@ -28,7 +28,7 @@ TEST(examples, record)  {
     dom_var = vector<Tensor>();
     //
     // arange
-    std::vector<ad_t> arange = { adom_par.at(0), adom_var.at(0) };
+    ad_tensor::vector<ad_t> arange = { adom_par.at(0), adom_var.at(0) };
     //
     // stop_recording
     ad_t::stop_recording( arange  );

@@ -14,7 +14,7 @@ TEST(examples, adfn_reverse_der)  {
     using ad_tensor::adfn_t;
     using ad_tensor::options_t;
     using at::Tensor;
-    using std::vector;
+    using ad_tensor::vector;
     using ad_tensor::dev::to_string;
     //
     // dom_var

@@ -73,10 +73,10 @@ namespace ad_tensor { // BEGIN_NAMESPACE_AD_TENSOR
 //
 // BEGIN_REVERSE_DER
 // dom_der = adfn.reverse_der(all_par, all_var, rng_der, options)
-std::vector<at::Tensor> adfn_t::reverse_der(
-    const std::vector<at::Tensor>& all_par ,
-    const std::vector<at::Tensor>& all_var ,
-    const std::vector<at::Tensor>& rng_der ,
+ad_tensor::vector<at::Tensor> adfn_t::reverse_der(
+    const ad_tensor::vector<at::Tensor>& all_par ,
+    const ad_tensor::vector<at::Tensor>& all_var ,
+    const ad_tensor::vector<at::Tensor>& rng_der ,
     const options_t&               options
 ) const
 // END_REVERSE_DER
@@ -119,7 +119,7 @@ std::vector<at::Tensor> adfn_t::reverse_der(
     //
     // all_der
     at::Tensor zero = torch::tensor( { 0.0 } );
-    std::vector<at::Tensor> all_der( n_op, zero );
+    ad_tensor::vector<at::Tensor> all_der( n_op, zero );
     for(size_t i = 0; i < m_rng_index.size(); ++i) {
         if( m_rng_ad_type.at(i) == ad_type_t::variable )  {
             all_der.at( m_rng_index.at(i) ) = rng_der.at(i);
@@ -153,7 +153,7 @@ std::vector<at::Tensor> adfn_t::reverse_der(
     }
     //
     // dom_der
-    std::vector<at::Tensor> dom_der;
+    ad_tensor::vector<at::Tensor> dom_der;
     for(size_t j = 0; j < m_var.m_n_dom; ++j) {
         dom_der.push_back( all_der.at(j) );
     }

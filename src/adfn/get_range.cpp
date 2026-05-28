@@ -46,9 +46,9 @@ namespace ad_tensor { // BEGIN_NAMESPACE_AD_TENSOR
 //
 // BEGIN_RANGE
 // rng_vec = adfn.get_range(all_par, all_var)
-std::vector<at::Tensor> adfn_t::get_range(
-    const std::vector<at::Tensor>& all_par ,
-    const std::vector<at::Tensor>& all_var
+ad_tensor::vector<at::Tensor> adfn_t::get_range(
+    const ad_tensor::vector<at::Tensor>& all_par ,
+    const ad_tensor::vector<at::Tensor>& all_var
 ) const
 // END_RANGE
 {   //
@@ -57,7 +57,7 @@ std::vector<at::Tensor> adfn_t::get_range(
     );
     //
     // rng_vec
-    std::vector<at::Tensor> rng_vec;
+    ad_tensor::vector<at::Tensor> rng_vec;
     for(size_t i = 0; i < m_rng_index.size(); ++i)
     {   size_t    index    = m_rng_index.at(i);
         ad_type_t ad_type  = m_rng_ad_type.at(i);

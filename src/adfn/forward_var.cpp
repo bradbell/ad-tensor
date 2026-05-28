@@ -61,9 +61,9 @@ namespace ad_tensor { // BEGIN_NAMESPACE_AD_TENSOR
 //
 // BEGIN_FORWARD_VAR
 // all_var = adfn.forward_var(all_par, dom_var, options)
-std::vector<at::Tensor> adfn_t::forward_var(
-    const std::vector<at::Tensor>& all_par ,
-    const std::vector<at::Tensor>& dom_var ,
+ad_tensor::vector<at::Tensor> adfn_t::forward_var(
+    const ad_tensor::vector<at::Tensor>& all_par ,
+    const ad_tensor::vector<at::Tensor>& dom_var ,
     const options_t&               options
 ) const
 // END_FORWARD_VAR
@@ -101,7 +101,7 @@ std::vector<at::Tensor> adfn_t::forward_var(
     at::Tensor empty = torch::empty( {0} );
     //
     // all_var
-    std::vector<at::Tensor> all_var =  dom_var ;
+    ad_tensor::vector<at::Tensor> all_var =  dom_var ;
     all_var.resize( n_op, empty );
     //
     // all_var

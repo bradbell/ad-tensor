@@ -37,7 +37,7 @@ Other Public Members
 
 {xrst_end adfn}
 */
-#include <vector>
+#include <ad_tensor/vector.hpp>
 #include <torch/torch.h>
 #include <ad_tensor/options.hpp>
 #include <ad_tensor/ad_type.hpp>
@@ -53,9 +53,9 @@ namespace ad_tensor { class adfn_t
 private:
     dev::agraph_t              m_par;
     dev::agraph_t              m_var;
-    std::vector<at::Tensor>    m_con;
-    std::vector<size_t>        m_rng_index;
-    std::vector<ad_type_t>     m_rng_ad_type;
+    ad_tensor::vector<at::Tensor>    m_con;
+    ad_tensor::vector<size_t>        m_rng_index;
+    ad_tensor::vector<ad_type_t>     m_rng_ad_type;
 public:
     //
     // BEGIN_DEFAULT_CTOR
@@ -80,37 +80,37 @@ public:
     }
     //
     // forward_par
-    std::vector<at::Tensor> forward_par(
-        const std::vector<at::Tensor>& dom_par ,
+    ad_tensor::vector<at::Tensor> forward_par(
+        const ad_tensor::vector<at::Tensor>& dom_par ,
         const options_t&               options
     ) const;
     //
     // forward_var
-    std::vector<at::Tensor> forward_var(
-        const std::vector<at::Tensor>& all_par ,
-        const std::vector<at::Tensor>& dom_var ,
+    ad_tensor::vector<at::Tensor> forward_var(
+        const ad_tensor::vector<at::Tensor>& all_par ,
+        const ad_tensor::vector<at::Tensor>& dom_var ,
         const options_t&               options
     ) const;
     //
     // get_range
-    std::vector<at::Tensor> get_range(
-        const std::vector<at::Tensor>& all_par ,
-        const std::vector<at::Tensor>& all_var
+    ad_tensor::vector<at::Tensor> get_range(
+        const ad_tensor::vector<at::Tensor>& all_par ,
+        const ad_tensor::vector<at::Tensor>& all_var
     ) const;
     //
     // forward_der
-    std::vector<at::Tensor> forward_der(
-        const std::vector<at::Tensor>& all_par ,
-        const std::vector<at::Tensor>& all_var ,
-        const std::vector<at::Tensor>& dom_der ,
+    ad_tensor::vector<at::Tensor> forward_der(
+        const ad_tensor::vector<at::Tensor>& all_par ,
+        const ad_tensor::vector<at::Tensor>& all_var ,
+        const ad_tensor::vector<at::Tensor>& dom_der ,
         const options_t&               options
     ) const;
     //
     // reverse_der
-    std::vector<at::Tensor> reverse_der(
-        const std::vector<at::Tensor>& all_par ,
-        const std::vector<at::Tensor>& all_var ,
-        const std::vector<at::Tensor>& rng_der ,
+    ad_tensor::vector<at::Tensor> reverse_der(
+        const ad_tensor::vector<at::Tensor>& all_par ,
+        const ad_tensor::vector<at::Tensor>& all_var ,
+        const ad_tensor::vector<at::Tensor>& rng_der ,
         const options_t&               options
     ) const;
 }; }

@@ -113,7 +113,7 @@ arguments to the operator at index op_index.
 {xrst_end op_base}
 */
 #include <cassert>
-#include <vector>
+#include <ad_tensor/vector.hpp>
 #include <torch/torch.h>
 //
 #include <ad_tensor/ad_type.hpp>
@@ -128,14 +128,14 @@ namespace ad_tensor { namespace dev { struct base_op_t
     static const at::Tensor& tensor_at_arg_index(
         size_t                        arg_index ,
         const agraph_t&               agraph    ,
-        const std::vector<at::Tensor> con_vec   ,
-        const std::vector<at::Tensor> par_vec   );
+        const ad_tensor::vector<at::Tensor> con_vec   ,
+        const ad_tensor::vector<at::Tensor> par_vec   );
     static const at::Tensor& tensor_at_arg_index(
         size_t                        arg_index ,
         const agraph_t&               agraph    ,
-        const std::vector<at::Tensor> con_vec   ,
-        const std::vector<at::Tensor> par_vec   ,
-        const std::vector<at::Tensor> var_vec   );
+        const ad_tensor::vector<at::Tensor> con_vec   ,
+        const ad_tensor::vector<at::Tensor> par_vec   ,
+        const ad_tensor::vector<at::Tensor> var_vec   );
     // END_TENSOR_AT_ARG_INDEX
     //
     // BEGIN_OP_ENUM
@@ -146,8 +146,8 @@ namespace ad_tensor { namespace dev { struct base_op_t
     virtual void forward_par(
         size_t                            op_index    ,
         const agraph_t&                   agraph      ,
-        const std::vector<at::Tensor>&    con_vec     ,
-        std::vector<at::Tensor>&          par_vec
+        const ad_tensor::vector<at::Tensor>&    con_vec     ,
+        ad_tensor::vector<at::Tensor>&          par_vec
     ) const = 0;
     // END_FORWARD_PAR
     //
@@ -155,9 +155,9 @@ namespace ad_tensor { namespace dev { struct base_op_t
     virtual void forward_var(
         size_t                            op_index    ,
         const agraph_t&                   agraph      ,
-        const std::vector<at::Tensor>&    con_vec     ,
-        const std::vector<at::Tensor>&    par_vec     ,
-        std::vector<at::Tensor>&          var_vec
+        const ad_tensor::vector<at::Tensor>&    con_vec     ,
+        const ad_tensor::vector<at::Tensor>&    par_vec     ,
+        ad_tensor::vector<at::Tensor>&          var_vec
     ) const = 0;
     // END_FORWARD_VAR
     //
@@ -165,10 +165,10 @@ namespace ad_tensor { namespace dev { struct base_op_t
     virtual void forward_der(
         size_t                            op_index    ,
         const agraph_t&                   agraph      ,
-        const std::vector<at::Tensor>&    con_vec     ,
-        const std::vector<at::Tensor>&    par_vec     ,
-        const std::vector<at::Tensor>&    var_vec     ,
-        std::vector<at::Tensor>&          for_der
+        const ad_tensor::vector<at::Tensor>&    con_vec     ,
+        const ad_tensor::vector<at::Tensor>&    par_vec     ,
+        const ad_tensor::vector<at::Tensor>&    var_vec     ,
+        ad_tensor::vector<at::Tensor>&          for_der
     ) const = 0;
     // END_FORWARD_DER
     //
@@ -176,10 +176,10 @@ namespace ad_tensor { namespace dev { struct base_op_t
     virtual void reverse_der(
         size_t                            op_index    ,
         const agraph_t&                   agraph      ,
-        const std::vector<at::Tensor>&    con_vec     ,
-        const std::vector<at::Tensor>&    par_vec     ,
-        const std::vector<at::Tensor>&    var_vec     ,
-        std::vector<at::Tensor>&          rev_der
+        const ad_tensor::vector<at::Tensor>&    con_vec     ,
+        const ad_tensor::vector<at::Tensor>&    par_vec     ,
+        const ad_tensor::vector<at::Tensor>&    var_vec     ,
+        ad_tensor::vector<at::Tensor>&          rev_der
     ) const = 0;
     // END_REVERSE_DER
 };

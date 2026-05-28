@@ -13,7 +13,7 @@ TEST(examples, adfn_range)  {
     using ad_tensor::adfn_t;
     using ad_tensor::options_t;
     using at::Tensor;
-    using std::vector;
+    using ad_tensor::vector;
     //
     // dom_par
     vector<Tensor> dom_par;
@@ -59,13 +59,13 @@ TEST(examples, adfn_range)  {
     options_t options;
     //
     // range
-    std::vector<Tensor> all_par = adfn.forward_par(
+    ad_tensor::vector<Tensor> all_par = adfn.forward_par(
         dom_par, options
     );
-    std::vector<Tensor> all_var = adfn.forward_var(
+    ad_tensor::vector<Tensor> all_var = adfn.forward_var(
         all_par, dom_var, options
     );
-    std::vector<Tensor> range = adfn.get_range(all_par, all_var);
+    ad_tensor::vector<Tensor> range = adfn.get_range(all_par, all_var);
     //
     EXPECT_EQ( range.size(), 3 );
     //

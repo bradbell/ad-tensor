@@ -57,7 +57,7 @@ The return is the tensor corresponding to this argument and operator usage.
 {xrst_end base_op_static}
 */
 #include <cassert>
-#include <vector>
+#include <ad_tensor/vector.hpp>
 #include <torch/torch.h>
 //
 #include <ad_tensor/dev/base_op.hpp>
@@ -67,8 +67,8 @@ namespace ad_tensor { namespace dev {
     const at::Tensor& base_op_t::tensor_at_arg_index(
         size_t                        arg_index ,
         const agraph_t&               agraph    ,
-        const std::vector<at::Tensor> con_vec   ,
-        const std::vector<at::Tensor> par_vec   )
+        const ad_tensor::vector<at::Tensor> con_vec   ,
+        const ad_tensor::vector<at::Tensor> par_vec   )
     {   size_t    index   = agraph.m_arg_value.at(arg_index);
         ad_type_t ad_type = agraph.m_arg_type.at(arg_index);
         switch( ad_type ) {
@@ -93,9 +93,9 @@ namespace ad_tensor { namespace dev {
     const at::Tensor& base_op_t::tensor_at_arg_index(
         size_t                        arg_index ,
         const agraph_t&               agraph    ,
-        const std::vector<at::Tensor> con_vec   ,
-        const std::vector<at::Tensor> par_vec   ,
-        const std::vector<at::Tensor> var_vec   )
+        const ad_tensor::vector<at::Tensor> con_vec   ,
+        const ad_tensor::vector<at::Tensor> par_vec   ,
+        const ad_tensor::vector<at::Tensor> var_vec   )
     {   size_t    index   = agraph.m_arg_value.at(arg_index);
         ad_type_t ad_type = agraph.m_arg_type.at(arg_index);
         switch( ad_type ) {

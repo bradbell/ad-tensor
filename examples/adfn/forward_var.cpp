@@ -13,7 +13,7 @@ TEST(examples, adfn_forward_var)  {
     using ad_tensor::adfn_t;
     using ad_tensor::options_t;
     using at::Tensor;
-    using std::vector;
+    using ad_tensor::vector;
     //
     // dom_var
     vector<Tensor> dom_var;
@@ -50,8 +50,8 @@ TEST(examples, adfn_forward_var)  {
     options_t options;
     //
     // all_var
-    std::vector<Tensor> all_par;
-    std::vector<Tensor> all_var = adfn.forward_var(
+    ad_tensor::vector<Tensor> all_par;
+    ad_tensor::vector<Tensor> all_var = adfn.forward_var(
         all_par, dom_var, options
     );
     //

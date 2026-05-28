@@ -62,9 +62,9 @@ Example
 
 {xrst_end start_recording}
 */
-std::tuple< std::vector<ad_t>, std::vector<ad_t> > ad_t::start_recording(
-        const std::vector<at::Tensor>& dom_par ,
-        const std::vector<at::Tensor>& dom_var
+std::tuple< ad_tensor::vector<ad_t>, ad_tensor::vector<ad_t> > ad_t::start_recording(
+        const ad_tensor::vector<at::Tensor>& dom_par ,
+        const ad_tensor::vector<at::Tensor>& dom_var
 )
 {   //
     // tape
@@ -99,7 +99,7 @@ std::tuple< std::vector<ad_t>, std::vector<ad_t> > ad_t::start_recording(
     // tape.m_par: m_n_dom, m_op_seq, m_arg_strt
     ad_type_t parameter = ad_type_t::parameter;
     tape.m_par.m_n_dom    = dom_par.size();
-    std::vector<ad_t> adom_par;
+    ad_tensor::vector<ad_t> adom_par;
     for(size_t index = 0; index < dom_par.size(); ++index) {
         tape.m_par.m_op_seq.push_back( dev::op_enum_t::dom );
         tape.m_par.m_arg_start.push_back( 0 );
@@ -110,13 +110,13 @@ std::tuple< std::vector<ad_t>, std::vector<ad_t> > ad_t::start_recording(
     // tape.m_var: m_n_dom, m_op_seq, m_arg_strt
     ad_type_t variable = ad_type_t::variable;
     tape.m_var.m_n_dom    = dom_var.size();
-    std::vector<ad_t> adom_var;
+    ad_tensor::vector<ad_t> adom_var;
     for(size_t index = 0; index < dom_var.size(); ++index) {
         tape.m_var.m_op_seq.push_back( dev::op_enum_t::dom );
         tape.m_var.m_arg_start.push_back( 0 );
         adom_var.push_back( ad_t( tape_id, index, dom_var[index], variable) );
     }
-    return std::tuple< std::vector<ad_t>, std::vector<ad_t> > (
+    return std::tuple< ad_tensor::vector<ad_t>, ad_tensor::vector<ad_t> > (
         adom_par, adom_var
     );
 }
@@ -165,7 +165,7 @@ Example
 
 {xrst_end stop_recording}
 */
-adfn_t ad_t::stop_recording(const std::vector<ad_t>& arange)
+adfn_t ad_t::stop_recording(const ad_tensor::vector<ad_t>& arange)
 {   //
     // tape
     dev::tape_t& tape = dev::this_threads_tape();

@@ -13,7 +13,7 @@ TEST(examples, adfn_forward_der)  {
     using ad_tensor::adfn_t;
     using ad_tensor::options_t;
     using at::Tensor;
-    using std::vector;
+    using ad_tensor::vector;
     //
     // dom_var
     vector<Tensor> dom_var;

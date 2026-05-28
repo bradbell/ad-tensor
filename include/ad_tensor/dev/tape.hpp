@@ -51,7 +51,7 @@ is the thread local tape used to record AD operations (on this thread).
 
 {xrst_end tape}
 */
-#include <vector>
+#include <ad_tensor/vector.hpp>
 #include <torch/torch.h>
 //
 #include <ad_tensor/dev/agraph.hpp>
@@ -61,7 +61,7 @@ is the thread local tape used to record AD operations (on this thread).
 namespace ad_tensor { namespace dev { class tape_t {
     friend class ad_tensor::ad_t;
 private:
-    std::vector<at::Tensor>    m_con;
+    ad_tensor::vector<at::Tensor>    m_con;
     agraph_t                   m_par;
     agraph_t                   m_var;
     size_t                     m_tape_id;

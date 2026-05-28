@@ -74,10 +74,10 @@ namespace ad_tensor { // BEGIN_NAMESPACE_AD_TENSOR
 //
 // BEGIN_FORWARD_DER
 // rng_der = adfn.forward_der(all_par, all_var, dom_der, options)
-std::vector<at::Tensor> adfn_t::forward_der(
-    const std::vector<at::Tensor>& all_par ,
-    const std::vector<at::Tensor>& all_var ,
-    const std::vector<at::Tensor>& dom_der ,
+ad_tensor::vector<at::Tensor> adfn_t::forward_der(
+    const ad_tensor::vector<at::Tensor>& all_par ,
+    const ad_tensor::vector<at::Tensor>& all_var ,
+    const ad_tensor::vector<at::Tensor>& dom_der ,
     const options_t&               options
 ) const
 // END_FORWARD_DER
@@ -119,7 +119,7 @@ std::vector<at::Tensor> adfn_t::forward_der(
     at::Tensor empty = torch::empty( {0} );
     //
     // all_der
-    std::vector<at::Tensor> all_der =  dom_der ;
+    ad_tensor::vector<at::Tensor> all_der =  dom_der ;
     all_der.resize( n_op, empty );
     //
     // all_der
@@ -147,7 +147,7 @@ std::vector<at::Tensor> adfn_t::forward_der(
     }
     //
     // rng_der
-    std::vector<at::Tensor> rng_der;
+    ad_tensor::vector<at::Tensor> rng_der;
     at::Tensor zero = torch::tensor( { 0.0 } );
     for(size_t i = 0; i < m_rng_index.size(); ++i) {
         if( m_rng_ad_type.at(i) ==  ad_type_t::variable ) {
