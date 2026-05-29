@@ -13,6 +13,7 @@ add_library(ad_tensor SHARED
     adfn/get_range.cpp
     adfn/reverse_der.cpp
     dev/base_op/static.cpp
+    dev/broadcast.cpp
     dev/derive_op/add_op.cpp
     dev/derive_op/div_op.cpp
     dev/derive_op/dom_op.cpp

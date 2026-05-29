@@ -118,8 +118,7 @@ ad_tensor::vector<at::Tensor> adfn_t::reverse_der(
     at::Tensor empty = torch::empty( {0} );
     //
     // all_der
-    at::Tensor zero = torch::tensor( { 0.0 } );
-    ad_tensor::vector<at::Tensor> all_der( n_op, zero );
+    ad_tensor::vector<at::Tensor> all_der( n_op, empty );
     for(size_t i = 0; i < m_rng_index.size(); ++i) {
         if( m_rng_ad_type[i] == ad_type_t::variable )  {
             all_der[ m_rng_index[i] ] = rng_der[i];
@@ -130,32 +129,43 @@ ad_tensor::vector<at::Tensor> adfn_t::reverse_der(
     size_t op_index = n_op;
     while( m_var.m_n_dom < op_index )
     {   --op_index;
-        //
-        // base_op
-        dev::op_enum_t op_enum = m_var.m_op_seq[ op_index ];
-        const dev::base_op_t& base_op = dev::op_enum2base_op( op_enum );
-        //
-        // all_der
-        base_op.reverse_der(op_index, m_var, m_con, all_par, all_var, all_der);
-        //
-        if( trace) {
-            string element = to_string( all_der[op_index] );
-            cout << "all_der[" << op_index << "] = " << element;
-            cout << ", " << to_string(op_enum)  << "(";
-            size_t start = m_var.m_arg_start[op_index];
-            size_t stop  = m_var.m_arg_start[op_index + 1];
-            for(size_t i = start; i < stop; ++i) {
-                cout << "[" << m_var.m_arg_value[i] << ",";
-                cout << to_string( m_var.m_arg_type[i] ) << "]";
+        if( all_der[op_index].numel() != 0 ) {
+            //
+            // base_op
+            dev::op_enum_t op_enum = m_var.m_op_seq[ op_index ];
+            const dev::base_op_t& base_op = dev::op_enum2base_op( op_enum );
+            //
+            // all_der
+            base_op.reverse_der(
+                op_index, m_var, m_con, all_par, all_var, all_der
+            );
+            //
+            if( trace) {
+                string element = to_string( all_der[op_index] );
+                cout << "all_der[" << op_index << "] = " << element;
+                cout << ", " << to_string(op_enum)  << "(";
+                size_t start = m_var.m_arg_start[op_index];
+                size_t stop  = m_var.m_arg_start[op_index + 1];
+                for(size_t i = start; i < stop; ++i) {
+                    cout << "[" << m_var.m_arg_value[i] << ",";
+                    cout << to_string( m_var.m_arg_type[i] ) << "]";
+                }
+                cout << ")\n";
             }
-            cout << ")\n";
+        } else {
+            // no longer need this memory so free it.
+            all_der[op_index] = torch::empty( {0} );
         }
     }
     //
     // dom_der
     ad_tensor::vector<at::Tensor> dom_der;
     for(size_t j = 0; j < m_var.m_n_dom; ++j) {
-        dom_der.push_back( all_der[j] );
+        if( all_der[j].numel() == 0 ) {
+            dom_der.push_back( torch::zeros( all_var[j].sizes() ) );
+        } else {
+            dom_der.push_back( all_der[j] );
+        }
     }
     if( trace ) {
         for(size_t j = 0; j < m_var.m_n_dom; ++j) {

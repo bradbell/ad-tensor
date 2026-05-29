@@ -20,7 +20,7 @@ TEST(examples, adfn_reverse_der)  {
     // dom_var
     vector<Tensor> dom_var;
     dom_var.push_back( torch::tensor( {4.0, 8.0} ) );
-    dom_var.push_back( torch::tensor( {2.0, 2.0} ) );
+    dom_var.push_back( torch::tensor( {2.0} ) );
     //
     // adom_var
     vector<Tensor> dom_par;
@@ -37,6 +37,7 @@ TEST(examples, adfn_reverse_der)  {
     //
     // options
     options_t options;
+    options["trace"] = "true";
     //
     // all_var
     vector<Tensor> all_par;
@@ -64,7 +65,7 @@ TEST(examples, adfn_reverse_der)  {
     equal = dom_der[0] == torch::tensor( {1.0, 2.0} );
     EXPECT_TRUE( torch::all(equal).item<bool>() );
     //
-    equal = dom_der[1] == torch::tensor( {1.0, 2.0} );
+    equal = dom_der[1] == torch::tensor( {3.0} );
     EXPECT_TRUE( torch::all(equal).item<bool>() );
 }
 // END_CPP

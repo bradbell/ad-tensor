@@ -28,9 +28,9 @@ Prototype
 */
 // BEGIN_TOP
 namespace ad_tensor {
-# ifdef NDEBUG
+#ifdef NDEBUG
         using std::vector;
-# else
+#else
     template <class T> class vector : public std::vector<T>
     {
     public:
@@ -86,6 +86,6 @@ namespace ad_tensor {
         const_reference operator[](size_type pos) const
         {   return this->at(pos); }
     };
-# endif
+#endif
 }
 // END_BOTTOM

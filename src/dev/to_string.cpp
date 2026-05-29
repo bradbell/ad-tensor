@@ -42,7 +42,7 @@ namespace ad_tensor { namespace dev {
         size_t length = tensor.numel();
         res += "[";
         for(size_t i = 0; i < length; ++i) {
-            res += std::to_string( tensor.data()[i].item<float>() );
+            res += std::to_string( tensor.data_ptr<float>()[i] );
             if( i + 1 < length )
                 res += ", ";
         }

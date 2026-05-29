@@ -3,6 +3,7 @@
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
 #include <ad_tensor/dev/derive_op.hpp>
+#include <ad_tensor/dev/broadcast.hpp>
 //
 namespace ad_tensor { namespace dev {
     // ------------------------------------------------------------------------
@@ -156,9 +157,24 @@ namespace ad_tensor { namespace dev {
             // lhs_index
             size_t lhs_index = agraph.m_arg_value[arg_index];
             //
-            // rev_der
-            rev_der[lhs_index] =
-                rev_der[lhs_index] + rev_der[op_index];
+            // dim
+            c10::ArrayRef<long int> dim = broadcast(
+                var_vec[op_index], var_vec[lhs_index]
+            );
+            if( dim.size() == 0 ) {
+                if( rev_der[lhs_index].numel() == 0 ) {
+                    rev_der[lhs_index] = rev_der[op_index];
+                } else {
+                    rev_der[lhs_index] += rev_der[op_index];
+                }
+            } else {
+                at::Tensor compress = rev_der[op_index].sum(dim);
+                if( rev_der[lhs_index].numel() == 0 ) {
+                    rev_der[lhs_index] = compress;
+                } else {
+                    rev_der[lhs_index] += compress;
+                }
+            }
         }
         //
         // rev_der[rhs_index]
@@ -167,9 +183,29 @@ namespace ad_tensor { namespace dev {
             // rhs_index
             size_t rhs_index = agraph.m_arg_value[arg_index + 1];
             //
-            // rev_der
-            rev_der[rhs_index] =
-                rev_der[rhs_index] + rev_der[op_index];
+            // dim
+            c10::ArrayRef<long int> dim = broadcast(
+                var_vec[op_index], var_vec[rhs_index]
+            );
+            if( dim.size() == 0 ) {
+                if( rev_der[rhs_index].numel() == 0 ) {
+                    rev_der[rhs_index] = rev_der[op_index];
+                } else {
+                    rev_der[rhs_index] += rev_der[op_index];
+                }
+            } else {
+                at::Tensor compress = rev_der[op_index].sum(dim);
+                using std::cout;
+                cout << "dim.size()  = " << dim.size()  << "\n";
+                cout << "dim[0]  = " << dim[0]  << "\n";
+                cout << "rev_der[op_index] = " << rev_der[op_index] << "\n";
+                cout << "compress  = " << compress  << "\n";
+                if( rev_der[rhs_index].numel() == 0 ) {
+                    rev_der[rhs_index] = compress;
+                } else {
+                    rev_der[rhs_index] += compress;
+                }
+            }
         }
     }
 } }
