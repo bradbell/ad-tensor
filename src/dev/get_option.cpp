@@ -26,8 +26,8 @@ std::string get_option(
                     msg += ", possible = { " + default_value;
                     auto begin = other_values.begin();
                     auto end   = other_values.end();
-                    for(auto itr = begin; itr != end; ++itr) {
-                        msg += ", " + *itr;
+                    for(auto tmp_itr = begin; tmp_itr != end; ++tmp_itr) {
+                        msg += ", " + *tmp_itr;
                     }
                     msg += " }\n";
                     msg += "value is not in possible set for this key";

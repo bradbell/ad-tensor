@@ -65,6 +65,9 @@ d
 #
 : end
 EOF
+#
+# cxx_flags
+cxx_flags='-Wall -pedantic-errors -Wshadow -Wfloat-conversion -Wconversion'
 
 #
 # cmake
@@ -73,6 +76,7 @@ echo_eval cmake -S .. -B . \
     -D include_tests=true \
     -D CMAKE_BUILD_TYPE=$cmake_build_type \
     -D Torch_DIR=$torch_dir \
+    -D CMAKE_CXX_FLAGS="'$cxx_flags'" \
     |& sed -f temp.sed  > temp.out
 #
 cat temp.out

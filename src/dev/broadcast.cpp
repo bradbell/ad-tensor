@@ -7,6 +7,9 @@
 #include <ad_tensor/dev/broadcast.hpp>
 /*
 {xrst_begin broadcast dev}
+{xrst_spell
+    res
+}
 
 Determine Broadcast Dimensions for a Result Argument Pair
 #########################################################
@@ -72,15 +75,15 @@ namespace ad_tensor { namespace dev {
     assert( arg_len <= res_len && "binary_broadcast: "
         "arg.sizes() is longer than res.sizes()"
     );
-    for(long int i = 0; i < res_len; ++i)
-    {   long int res_index  = res_len - i - 1;
+    for(size_t i = 0; i < res_len; ++i)
+    {   size_t res_index  = res_len - i - 1;
         if( i < arg_len )
-        {   long int arg_index = arg_len - i - 1;
+        {   size_t arg_index = arg_len - i - 1;
             if( arg_sizes[arg_index] != res_sizes[res_index] )
             {   assert( arg_sizes == 1 && "binary_broadcast: "
                     "arg size is one one and different from res size"
                 );
-                dim.push_back(res_index);
+                dim.push_back( static_cast<long int>(res_index) );
             }
         } else if( 1 < res_sizes[res_index] ) {
             dim.push_back(res_index);

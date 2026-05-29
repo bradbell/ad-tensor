@@ -37,7 +37,6 @@ TEST(examples, adfn_reverse_der)  {
     //
     // options
     options_t options;
-    options["trace"] = "true";
     //
     // all_var
     vector<Tensor> all_par;

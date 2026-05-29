@@ -35,13 +35,12 @@ TEST(tests_dev, op_base)  {
     // op_enum
     EXPECT_EQ( op_enum_t::add, base_op.op_enum() );
     //
-    // trace, m_arg_start, m_arg_value, m_arg_type, con_vec, par_vec
+    // m_arg_start, m_arg_value, m_arg_type, con_vec, par_vec
     op_enum_t              dom         = op_enum_t::dom;
     op_enum_t              add         = op_enum_t::add;
     ad_type_t              par         = ad_type_t::parameter;
     Tensor                 empty       = torch::empty( {0} );
     Tensor                 ones        = torch::ones( {2} );
-    bool                   trace       = false;
     size_t                 op_index    = 1;
     ad_tensor::vector<Tensor>    con_vec     = {};
     ad_tensor::vector<Tensor>    par_vec     = {ones, empty};

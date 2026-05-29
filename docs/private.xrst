@@ -17,6 +17,7 @@ Contents
     include/ad_tensor/dev/tape.hpp
     include/ad_tensor/dev/base_op.hpp
     include/ad_tensor/dev/get_option.hpp
+    src/dev/broadcast.cpp
 }
 
 {xrst_end private}
