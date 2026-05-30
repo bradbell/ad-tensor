@@ -5,6 +5,7 @@
 #include <torch/torch.h>
 #include <cassert>
 #include <ad_tensor/dev/broadcast.hpp>
+#include <ad_tensor/vector.hpp>
 /*
 {xrst_begin broadcast dev}
 {xrst_spell

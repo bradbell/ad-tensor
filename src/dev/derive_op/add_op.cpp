@@ -4,6 +4,7 @@
 // ----------------------------------------------------------------------------
 #include <ad_tensor/dev/derive_op.hpp>
 #include <ad_tensor/dev/broadcast.hpp>
+#include <ad_tensor/dev/rev_plus_equal.hpp>
 //
 namespace ad_tensor { namespace dev {
     // ------------------------------------------------------------------------
@@ -14,8 +15,8 @@ namespace ad_tensor { namespace dev {
     // ------------------------------------------------------------------------
     // forward_par
     void add_op_t::forward_par(
-        size_t                            op_index    ,
-        const agraph_t&                   agraph      ,
+        size_t                                  op_index    ,
+        const agraph_t&                         agraph      ,
         const ad_tensor::vector<at::Tensor>&    con_vec     ,
         ad_tensor::vector<at::Tensor>&          par_vec
     ) const {
@@ -42,8 +43,8 @@ namespace ad_tensor { namespace dev {
     // ------------------------------------------------------------------------
     // forward_var
     void add_op_t::forward_var(
-        size_t                            op_index    ,
-        const agraph_t&                   agraph      ,
+        size_t                                  op_index    ,
+        const agraph_t&                         agraph      ,
         const ad_tensor::vector<at::Tensor>&    con_vec     ,
         const ad_tensor::vector<at::Tensor>&    par_vec     ,
         ad_tensor::vector<at::Tensor>&          var_vec
@@ -71,8 +72,8 @@ namespace ad_tensor { namespace dev {
     // ------------------------------------------------------------------------
     // forward_der
     void add_op_t::forward_der(
-        size_t                            op_index    ,
-        const agraph_t&                   agraph      ,
+        size_t                                  op_index    ,
+        const agraph_t&                         agraph      ,
         const ad_tensor::vector<at::Tensor>&    con_vec     ,
         const ad_tensor::vector<at::Tensor>&    par_vec     ,
         const ad_tensor::vector<at::Tensor>&    var_vec     ,
@@ -131,8 +132,8 @@ namespace ad_tensor { namespace dev {
     // ------------------------------------------------------------------------
     // reverse_der
     void add_op_t::reverse_der(
-        size_t                            op_index    ,
-        const agraph_t&                   agraph      ,
+        size_t                                  op_index    ,
+        const agraph_t&                         agraph      ,
         const ad_tensor::vector<at::Tensor>&    con_vec     ,
         const ad_tensor::vector<at::Tensor>&    par_vec     ,
         const ad_tensor::vector<at::Tensor>&    var_vec     ,
@@ -161,20 +162,9 @@ namespace ad_tensor { namespace dev {
             c10::ArrayRef<long int> dim = broadcast(
                 var_vec[op_index], var_vec[lhs_index]
             );
-            if( dim.size() == 0 ) {
-                if( rev_der[lhs_index].numel() == 0 ) {
-                    rev_der[lhs_index] = rev_der[op_index];
-                } else {
-                    rev_der[lhs_index] += rev_der[op_index];
-                }
-            } else {
-                at::Tensor compress = rev_der[op_index].sum(dim);
-                if( rev_der[lhs_index].numel() == 0 ) {
-                    rev_der[lhs_index] = compress;
-                } else {
-                    rev_der[lhs_index] += compress;
-                }
-            }
+            //
+            // rev_der[lhs_index] += rev_der[op_index]
+            rev_plus_equal(dim, rev_der[op_index], rev_der[lhs_index]);
         }
         //
         // rev_der[rhs_index]
@@ -187,25 +177,9 @@ namespace ad_tensor { namespace dev {
             c10::ArrayRef<long int> dim = broadcast(
                 var_vec[op_index], var_vec[rhs_index]
             );
-            if( dim.size() == 0 ) {
-                if( rev_der[rhs_index].numel() == 0 ) {
-                    rev_der[rhs_index] = rev_der[op_index];
-                } else {
-                    rev_der[rhs_index] += rev_der[op_index];
-                }
-            } else {
-                at::Tensor compress = rev_der[op_index].sum(dim);
-                using std::cout;
-                cout << "dim.size()  = " << dim.size()  << "\n";
-                cout << "dim[0]  = " << dim[0]  << "\n";
-                cout << "rev_der[op_index] = " << rev_der[op_index] << "\n";
-                cout << "compress  = " << compress  << "\n";
-                if( rev_der[rhs_index].numel() == 0 ) {
-                    rev_der[rhs_index] = compress;
-                } else {
-                    rev_der[rhs_index] += compress;
-                }
-            }
+            //
+            // rev_der[rhs_index] += rev_der[op_index]
+            rev_plus_equal(dim, rev_der[op_index], rev_der[rhs_index]);
         }
     }
 } }

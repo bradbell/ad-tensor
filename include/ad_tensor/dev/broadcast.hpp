@@ -4,7 +4,6 @@
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
 #include <torch/torch.h>
-#include <ad_tensor/vector.hpp>
 //
 namespace ad_tensor { namespace dev {
     c10::ArrayRef<long int> broadcast(
