@@ -8,7 +8,7 @@
 #include <torch/torch.h>
 #include <ad_tensor/ad.hpp>
 //
-TEST(examples, adfn_reverse_der)  {
+TEST(tests, adfn_reverse_der)  {
     using ad_tensor::ad_t;
     using ad_tensor::adfn_t;
     using ad_tensor::options_t;
@@ -17,8 +17,8 @@ TEST(examples, adfn_reverse_der)  {
     //
     // x
     vector<Tensor> x;
-    x.push_back( torch::tensor( {4.0, 8.0} ) );
-    x.push_back( torch::tensor( {2.0} ) );
+    x.push_back( torch::tensor( {4.0, 5.0} ) );
+    x.push_back( torch::tensor( {2.0, 3.0} ) );
     //
     // ax
     vector<Tensor> p;
@@ -27,6 +27,7 @@ TEST(examples, adfn_reverse_der)  {
     // ay
     vector<ad_t> ay;
     ay.push_back(  ax[0] + ax[1] );
+    ay.push_back(  ax[0] * ax[1] );
     //
     // y = f(p, x)
     adfn_t f = ad_t::stop_recording(ay);
@@ -46,21 +47,23 @@ TEST(examples, adfn_reverse_der)  {
     Tensor equal = y[0] == x[0] + x[1];
     EXPECT_TRUE( torch::all(equal).item<bool>() );
     //
+    equal = y[1] == x[0] * x[1];
+    EXPECT_TRUE( torch::all(equal).item<bool>() );
+    //
     // dy
     vector<Tensor> dy;
     dy.push_back( torch::tensor( {1.0, 2.0} ) );
+    dy.push_back( torch::tensor( {1.0, 2.0} ) );
     //
     // dx
-    vector<Tensor> dx = f.reverse_der(
-        all_par, all_var, dy, options
-    );
+    vector<Tensor> dx = f.reverse_der(all_par, all_var, dy, options);
     //
     EXPECT_EQ( dx.size(), x.size() );
     //
-    equal = dx[0] == dy[0];
+    equal = dx[0] == dy[0] + dy[1] * x[1];
     EXPECT_TRUE( torch::all(equal).item<bool>() );
     //
-    equal = dx[1] == dy[0].sum();
+    equal = dx[1] == dy[0] + dy[1] * x[0];
     EXPECT_TRUE( torch::all(equal).item<bool>() );
 }
 // END_CPP

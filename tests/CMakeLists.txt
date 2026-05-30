@@ -4,6 +4,7 @@
 # -----------------------------------------------------------------------------
 #
 add_executable(tests
+    adfn/reverse_der.cpp
     dev/op_enum.cpp
     dev/base_op.cpp
     dev/tape.cpp
