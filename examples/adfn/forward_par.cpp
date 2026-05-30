@@ -16,15 +16,14 @@ TEST(examples, f_forward_par)  {
     using ad_tensor::vector;
     //
     // p
+    // We use p for the domain parameters
     vector<Tensor> p;
     p.push_back( torch::tensor( {2.0, 3.0} ) );
     p.push_back( torch::tensor( {4.0, 5.0} ) );
     //
     // ap
     vector<Tensor> x;
-    auto [ap, ax] = ad_t::start_recording(
-        p, x
-    );
+    auto [ap, ax] = ad_t::start_recording(p, x);
     //
     // acon
     // create a constant after start_recording so can use it in the recording
@@ -34,15 +33,15 @@ TEST(examples, f_forward_par)  {
     ad_t aprod = ap[0] * ap[1];
     //
     // ay
+    // We use y for the range space.
     vector<ad_t> ay;
-    ay.push_back(  acon + aprod);
+    ay.push_back( acon + aprod );
     //
-    // y = f(p, x)
+    // y = f(p)
     adfn_t f = ad_t::stop_recording(ay);
     //
     // p
-    // p is valid but unspecified before assignment
-    p = vector<Tensor>();
+    p.resize(0);
     p.push_back( torch::tensor( {6.0, 7.0} ) );
     p.push_back( torch::tensor( {8.0, 9.0} ) );
     //
@@ -50,9 +49,7 @@ TEST(examples, f_forward_par)  {
     options_t options;
     //
     // all_par
-    ad_tensor::vector<Tensor> all_par = f.forward_par(
-        p, options
-    );
+    ad_tensor::vector<Tensor> all_par = f.forward_par(p, options);
     //
     EXPECT_EQ( all_par.size(), 4 );
     //

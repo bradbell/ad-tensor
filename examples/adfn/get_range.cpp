@@ -24,9 +24,7 @@ TEST(examples, f_y)  {
     x.push_back( torch::tensor( {4.0, 5.0} ) );
     //
     // ap, ax
-    auto [ap, ax] = ad_t::start_recording(
-        p, x
-    );
+    auto [ap, ax] = ad_t::start_recording(p, x);
     //
     // acon
     // create a constant after start_recording so can use it in the recording
@@ -38,7 +36,7 @@ TEST(examples, f_y)  {
     //
     // ay
     vector<ad_t> ay;
-    ay.push_back( acon );                     // a constant
+    ay.push_back( acon );            // a constant
     ay.push_back( ap[0] + acon );    // a parameter
     ay.push_back( ax[0] * acon );    // a variable
     //
@@ -46,26 +44,20 @@ TEST(examples, f_y)  {
     adfn_t f = ad_t::stop_recording(ay);
     //
     // p
-    // p is valid but unspecified before assignment
-    p = vector<Tensor>();
+    p.resize(0);
     p.push_back( torch::tensor( {7.0, 8.0} ) );
     //
     // x
-    // x is valid but unspecified before assignment
-    x = vector<Tensor>();
+    x.resize(0);
     x.push_back( torch::tensor( {9.0, 10.0} ) );
     //
     // options
     options_t options;
     //
     // y
-    ad_tensor::vector<Tensor> all_par = f.forward_par(
-        p, options
-    );
-    ad_tensor::vector<Tensor> all_var = f.forward_var(
-        all_par, x, options
-    );
-    ad_tensor::vector<Tensor> y = f.get_range(all_par, all_var);
+    ad_tensor::vector<Tensor> all_par = f.forward_par(p, options);
+    ad_tensor::vector<Tensor> all_var = f.forward_var(all_par, x, options);
+    ad_tensor::vector<Tensor> y       = f.get_range(all_par, all_var);
     //
     EXPECT_EQ( y.size(), 3 );
     //

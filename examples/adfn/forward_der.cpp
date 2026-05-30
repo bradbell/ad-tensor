@@ -16,24 +16,25 @@ TEST(examples, f_forward_der)  {
     using ad_tensor::vector;
     //
     // x
+    // We use x for the domain variables
     vector<Tensor> x;
     x.push_back( torch::tensor( {4.0, 8.0} ) );
     x.push_back( torch::tensor( {2.0} ) );
     //
     // ax
     vector<Tensor> p;
-    auto [ap, ax] = ad_t::start_recording(
-        p, x
-    );
+    auto [ap, ax] = ad_t::start_recording(p, x);
     //
     // ay
+    // We use y for the range space
     vector<ad_t> ay;
     ay.push_back(  ax[0] + ax[1] );
     ay.push_back(  ax[0] - ax[1] );
     ay.push_back(  ax[0] * ax[1] );
     ay.push_back(  ax[0] / ax[1] );
     //
-    // y = f(p, x)
+    // y = f(x)
+    // We use f for the adfn_t object.
     adfn_t f = ad_t::stop_recording(ay);
     //
     // options

@@ -16,6 +16,7 @@ TEST(examples, f_reverse_der)  {
     using ad_tensor::vector;
     //
     // x
+    // We use x for the domain parameters
     vector<Tensor> x;
     x.push_back( torch::tensor( {4.0, 8.0} ) );
     x.push_back( torch::tensor( {2.0} ) );
@@ -25,10 +26,11 @@ TEST(examples, f_reverse_der)  {
     auto [ap, ax] = ad_t::start_recording(p, x);
     //
     // ay
+    // we use y for the range space
     vector<ad_t> ay;
     ay.push_back(  ax[0] + ax[1] );
     //
-    // y = f(p, x)
+    // y = f(x)
     adfn_t f = ad_t::stop_recording(ay);
     //
     // options
@@ -51,9 +53,7 @@ TEST(examples, f_reverse_der)  {
     dy.push_back( torch::tensor( {1.0, 2.0} ) );
     //
     // dx
-    vector<Tensor> dx = f.reverse_der(
-        all_par, all_var, dy, options
-    );
+    vector<Tensor> dx = f.reverse_der(all_par, all_var, dy, options);
     //
     EXPECT_EQ( dx.size(), x.size() );
     //

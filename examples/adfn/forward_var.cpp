@@ -16,15 +16,14 @@ TEST(examples, f_forward_var)  {
     using ad_tensor::vector;
     //
     // x
+    // We use x for the domain variables
     vector<Tensor> x;
     x.push_back( torch::tensor( {2.0, 3.0} ) );
     x.push_back( torch::tensor( {4.0, 5.0} ) );
     //
     // ax
     vector<Tensor> p;
-    auto [ap, ax] = ad_t::start_recording(
-        p, x
-    );
+    auto [ap, ax] = ad_t::start_recording(p, x);
     //
     // acon
     // create a constant after start_recording so can use it in the recording
@@ -34,15 +33,15 @@ TEST(examples, f_forward_var)  {
     ad_t aprod = ax[0] * ax[1];
     //
     // ay
+    // We use y for the range space.
     vector<ad_t> ay;
-    ay.push_back(  acon + aprod);
+    ay.push_back( acon + aprod);
     //
-    // y = f(p, x)
+    // y = f(x)
     adfn_t f = ad_t::stop_recording(ay);
     //
     // x
-    // x is valid but unspecified before assignment
-    x = vector<Tensor>();
+    x.resize(0);
     x.push_back( torch::tensor( {6.0, 7.0} ) );
     x.push_back( torch::tensor( {8.0, 9.0} ) );
     //
@@ -51,9 +50,7 @@ TEST(examples, f_forward_var)  {
     //
     // all_var
     ad_tensor::vector<Tensor> all_par;
-    ad_tensor::vector<Tensor> all_var = f.forward_var(
-        all_par, x, options
-    );
+    ad_tensor::vector<Tensor> all_var = f.forward_var(all_par, x, options);
     //
     EXPECT_EQ( all_var.size(), 4 );
     //
