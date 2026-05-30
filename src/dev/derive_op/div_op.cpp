@@ -90,54 +90,28 @@ namespace ad_tensor { namespace dev {
         ad_type_t lhs_type = agraph.m_arg_type[arg_index];
         ad_type_t rhs_type = agraph.m_arg_type[arg_index + 1];
         //
+        // lhs_index, rhs_index
+        size_t lhs_index = agraph.m_arg_value[arg_index];
+        size_t rhs_index = agraph.m_arg_value[arg_index + 1];
+        //
         if( lhs_type != ad_type_t::variable ) {
             assert( rhs_type == ad_type_t::variable );
             //
-            // rhs_tensor
-            at::Tensor rhs_tensor  = tensor_at_arg_index(
-                arg_index + 1, agraph, con_vec, par_vec, var_vec
-            );
-            // drhs_tensor
-            at::Tensor drhs_tensor  = tensor_at_arg_index(
-                arg_index + 1, agraph, con_vec, par_vec, for_der
-            );
-            //
             // for_der
-            for_der[op_index] = - var_vec[op_index] * drhs_tensor / rhs_tensor;
+            for_der[op_index] =
+                - var_vec[op_index] * for_der[lhs_index] / var_vec[rhs_index];
             //
         } else if( rhs_type != ad_type_t::variable ) {
             assert( lhs_type == ad_type_t::variable );
             //
-            // dlhs_tensor
-            at::Tensor dlhs_tensor  = tensor_at_arg_index(
-                arg_index, agraph, con_vec, par_vec, for_der
-            );
-            // rhs_tensor
-            at::Tensor rhs_tensor  = tensor_at_arg_index(
-                arg_index + 1, agraph, con_vec, par_vec, var_vec
-            );
-            //
             // for_der
-            for_der[op_index] = dlhs_tensor / rhs_tensor;
+            for_der[op_index] = for_der[lhs_index] / var_vec[rhs_index];;
             //
         } else {
             //
-            // dlhs_tensor
-            at::Tensor dlhs_tensor  = tensor_at_arg_index(
-                arg_index, agraph, con_vec, par_vec, for_der
-            );
-            // rhs_tensor
-            at::Tensor rhs_tensor  = tensor_at_arg_index(
-                arg_index + 1, agraph, con_vec, par_vec, var_vec
-            );
-            // drhs_tensor
-            at::Tensor drhs_tensor  = tensor_at_arg_index(
-                arg_index + 1, agraph, con_vec, par_vec, for_der
-            );
-            //
             // for_der
-            for_der[op_index] = dlhs_tensor / rhs_tensor
-                - var_vec[op_index] * drhs_tensor / rhs_tensor;
+            for_der[op_index] = for_der[lhs_index] / var_vec[rhs_index]
+                - var_vec[op_index] * for_der[rhs_index] / var_vec[rhs_index];
         };
     }
     // ------------------------------------------------------------------------

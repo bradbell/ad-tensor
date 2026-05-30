@@ -92,41 +92,26 @@ namespace ad_tensor { namespace dev {
         ad_type_t lhs_type = agraph.m_arg_type[arg_index];
         ad_type_t rhs_type = agraph.m_arg_type[arg_index + 1];
         //
+        // lhs_index, rhs_index
+        size_t lhs_index = agraph.m_arg_value[arg_index];
+        size_t rhs_index = agraph.m_arg_value[arg_index + 1];
+        //
         if( lhs_type != ad_type_t::variable ) {
             assert( rhs_type == ad_type_t::variable );
             //
-            // drhs_tensor
-            at::Tensor drhs_tensor  = tensor_at_arg_index(
-                arg_index + 1, agraph, con_vec, par_vec, for_der
-            );
-            //
             // for_der
-            for_der[op_index] = drhs_tensor;
+            for_der[op_index] = for_der[rhs_index];
             //
         } else if( rhs_type != ad_type_t::variable ) {
             assert( lhs_type == ad_type_t::variable );
             //
-            // dlhs_tensor
-            at::Tensor dlhs_tensor  = tensor_at_arg_index(
-                arg_index, agraph, con_vec, par_vec, for_der
-            );
-            //
             // for_der
-            for_der[op_index] = dlhs_tensor;
+            for_der[op_index] = for_der[lhs_index];
             //
         } else {
             //
-            // dlhs_tensor
-            at::Tensor dlhs_tensor  = tensor_at_arg_index(
-                arg_index, agraph, con_vec, par_vec, for_der
-            );
-            // drhs_tensor
-            at::Tensor drhs_tensor  = tensor_at_arg_index(
-                arg_index + 1, agraph, con_vec, par_vec, for_der
-            );
-            //
             // for_der
-            for_der[op_index] = dlhs_tensor + drhs_tensor;
+            for_der[op_index] = for_der[lhs_index] + for_der[rhs_index];
         };
     }
     // ------------------------------------------------------------------------
