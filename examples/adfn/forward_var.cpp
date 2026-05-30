@@ -57,16 +57,16 @@ TEST(examples, adfn_forward_var)  {
     //
     EXPECT_EQ( all_var.size(), 4 );
     //
-    Tensor equal = all_var[0] == torch::tensor( {6.0, 7.0} );
-    EXPECT_TRUE( torch::all(equal).item<bool>() );
+    bool equal = all_var[0].equal( torch::tensor({6.0, 7.0}) );
+    EXPECT_TRUE( equal );
     //
-    equal = all_var[1] == torch::tensor( {8.0, 9.0} );
-    EXPECT_TRUE( torch::all(equal).item<bool>() );
+    equal = all_var[1].equal( torch::tensor({8.0, 9.0}) );
+    EXPECT_TRUE( equal );
     //
-    equal = all_var[2] == torch::tensor( {48.0 , 63.0} );
-    EXPECT_TRUE( torch::all(equal).item<bool>() );
+    equal = all_var[2].equal( torch::tensor({48.0 , 63.0}) );
+    EXPECT_TRUE( equal );
     //
-    equal = all_var[3] == torch::tensor( {47.0 , 62.0} );
-    EXPECT_TRUE( torch::all(equal).item<bool>() );
+    equal = all_var[3].equal( torch::tensor({47.0 , 62.0}) );
+    EXPECT_TRUE( equal );
 }
 // END_CPP

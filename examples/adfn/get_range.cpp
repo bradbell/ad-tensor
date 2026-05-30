@@ -69,13 +69,13 @@ TEST(examples, adfn_range)  {
     //
     EXPECT_EQ( range.size(), 3 );
     //
-    Tensor equal = range[0] == torch::tensor( {6.0} );
-    EXPECT_TRUE( torch::all(equal).item<bool>() );
+    bool equal = range[0].equal( torch::tensor({6.0}) );
+    EXPECT_TRUE( equal );
     //
-    equal = range[1] == torch::tensor( {13.0, 14.0} );
-    EXPECT_TRUE( torch::all(equal).item<bool>() );
+    equal = range[1].equal( torch::tensor({13.0, 14.0}) );
+    EXPECT_TRUE( equal );
     //
-    equal = range[2] == torch::tensor( {54.0 , 60.0} );
-    EXPECT_TRUE( torch::all(equal).item<bool>() );
+    equal = range[2].equal( torch::tensor({54.0 , 60.0}) );
+    EXPECT_TRUE( equal );
 }
 // END_CPP

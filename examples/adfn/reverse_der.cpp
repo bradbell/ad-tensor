@@ -43,8 +43,8 @@ TEST(examples, adfn_reverse_der)  {
     //
     EXPECT_EQ( y.size(), ay.size() );
     //
-    Tensor equal = y[0] == x[0] + x[1];
-    EXPECT_TRUE( torch::all(equal).item<bool>() );
+    bool equal = y[0].equal( x[0] + x[1] );
+    EXPECT_TRUE( equal );
     //
     // dy
     vector<Tensor> dy;
@@ -57,10 +57,10 @@ TEST(examples, adfn_reverse_der)  {
     //
     EXPECT_EQ( dx.size(), x.size() );
     //
-    equal = dx[0] == dy[0];
-    EXPECT_TRUE( torch::all(equal).item<bool>() );
+    equal = dx[0].equal( dy[0] );
+    EXPECT_TRUE( equal );
     //
-    equal = dx[1] == dy[0].sum();
-    EXPECT_TRUE( torch::all(equal).item<bool>() );
+    equal = dx[1].equal( dy[0].sum() );
+    EXPECT_TRUE( equal );
 }
 // END_CPP

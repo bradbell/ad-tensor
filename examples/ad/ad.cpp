@@ -22,11 +22,7 @@ TEST(examples, ad)  {
     ad_t asum     = alhs + arhs;
     ad_t aproduct = alhs * arhs;
     //
-    bool equal;
-    equal = torch::all( sum == asum.tensor() ).item<bool>();
-    EXPECT_TRUE(equal);
-    //
-    equal = torch::all( product == aproduct.tensor() ).item<bool>();
-    EXPECT_TRUE(equal);
+    EXPECT_TRUE( sum.equal( asum.tensor() ) );
+    EXPECT_TRUE( product.equal( aproduct.tensor() ) );
 }
 // END_CPP
