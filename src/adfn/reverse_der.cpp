@@ -133,7 +133,7 @@ ad_tensor::vector<at::Tensor> adfn_t::reverse_der(
             //
             // base_op
             dev::op_enum_t op_enum = m_var.m_op_seq[ op_index ];
-            const dev::base_op_t& base_op = dev::op_enum2base_op( op_enum );
+            const dev::base_op_t& base_op = dev::op_enum2derive_op( op_enum );
             //
             // all_der
             base_op.reverse_der(

@@ -18,7 +18,7 @@ add_library(ad_tensor SHARED
     dev/derive_op/div_op.cpp
     dev/derive_op/dom_op.cpp
     dev/derive_op/mul_op.cpp
-    dev/derive_op/op_enum2base_op.cpp
+    dev/derive_op/op_enum2derive_op.cpp
     dev/derive_op/sub_op.cpp
     dev/get_option.cpp
     dev/tape.cpp

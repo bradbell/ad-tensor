@@ -6,7 +6,7 @@
 //
 namespace ad_tensor { namespace dev {
     //
-    const base_op_t& op_enum2base_op(op_enum_t op_enum) {
+    const base_op_t& op_enum2derive_op(op_enum_t op_enum) {
         switch(op_enum) {
             // BEGIN_SORT_THIS_LINE_PLUS_1
             case op_enum_t::add: return add_op;
@@ -17,7 +17,7 @@ namespace ad_tensor { namespace dev {
             // END_SORT_THIS_LINE_MINUS_1
             //
             default:
-            assert( false && "op_enum2base_op: invalid op_enum value" );
+            assert( false && "op_enum2derive_op: invalid op_enum value" );
         }
         // should not get here
         return add_op;

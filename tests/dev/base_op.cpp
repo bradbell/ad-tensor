@@ -30,7 +30,7 @@ namespace {
 TEST(tests_dev, op_base)  {
     //
     // base_op
-    const base_op_t& base_op = ad_tensor::dev::op_enum2base_op(op_enum_t::add);
+    const base_op_t& base_op = ad_tensor::dev::op_enum2derive_op(op_enum_t::add);
     //
     // op_enum
     EXPECT_EQ( op_enum_t::add, base_op.op_enum() );
