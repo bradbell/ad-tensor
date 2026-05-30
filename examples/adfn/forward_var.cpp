@@ -8,22 +8,22 @@
 //
 #include <ad_tensor/ad.hpp>
 //
-TEST(examples, adfn_forward_var)  {
+TEST(examples, f_forward_var)  {
     using ad_tensor::ad_t;
     using ad_tensor::adfn_t;
     using ad_tensor::options_t;
     using at::Tensor;
     using ad_tensor::vector;
     //
-    // dom_var
-    vector<Tensor> dom_var;
-    dom_var.push_back( torch::tensor( {2.0, 3.0} ) );
-    dom_var.push_back( torch::tensor( {4.0, 5.0} ) );
+    // x
+    vector<Tensor> x;
+    x.push_back( torch::tensor( {2.0, 3.0} ) );
+    x.push_back( torch::tensor( {4.0, 5.0} ) );
     //
-    // adom_var
-    vector<Tensor> dom_par;
-    auto [adom_par, adom_var] = ad_t::start_recording(
-        dom_par, dom_var
+    // ax
+    vector<Tensor> p;
+    auto [ap, ax] = ad_t::start_recording(
+        p, x
     );
     //
     // acon
@@ -31,28 +31,28 @@ TEST(examples, adfn_forward_var)  {
     ad_t acon( torch::tensor( {-1} ) );
     //
     // aprod
-    ad_t aprod = adom_var[0] * adom_var[1];
+    ad_t aprod = ax[0] * ax[1];
     //
-    // arange
-    vector<ad_t> arange;
-    arange.push_back(  acon + aprod);
+    // ay
+    vector<ad_t> ay;
+    ay.push_back(  acon + aprod);
     //
-    // range = adfn(dom_par, dom_var)
-    adfn_t adfn = ad_t::stop_recording(arange);
+    // y = f(p, x)
+    adfn_t f = ad_t::stop_recording(ay);
     //
-    // dom_var
-    // dom_var is valid but unspecified before assignment
-    dom_var = vector<Tensor>();
-    dom_var.push_back( torch::tensor( {6.0, 7.0} ) );
-    dom_var.push_back( torch::tensor( {8.0, 9.0} ) );
+    // x
+    // x is valid but unspecified before assignment
+    x = vector<Tensor>();
+    x.push_back( torch::tensor( {6.0, 7.0} ) );
+    x.push_back( torch::tensor( {8.0, 9.0} ) );
     //
     // options
     options_t options;
     //
     // all_var
     ad_tensor::vector<Tensor> all_par;
-    ad_tensor::vector<Tensor> all_var = adfn.forward_var(
-        all_par, dom_var, options
+    ad_tensor::vector<Tensor> all_var = f.forward_var(
+        all_par, x, options
     );
     //
     EXPECT_EQ( all_var.size(), 4 );

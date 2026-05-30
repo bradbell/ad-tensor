@@ -8,7 +8,7 @@
 #include <torch/torch.h>
 #include <ad_tensor/ad.hpp>
 //
-TEST(examples, adfn_reverse_der)  {
+TEST(examples, f_reverse_der)  {
     using ad_tensor::ad_t;
     using ad_tensor::adfn_t;
     using ad_tensor::options_t;

@@ -8,22 +8,22 @@
 //
 #include <ad_tensor/ad.hpp>
 //
-TEST(examples, adfn_forward_par)  {
+TEST(examples, f_forward_par)  {
     using ad_tensor::ad_t;
     using ad_tensor::adfn_t;
     using ad_tensor::options_t;
     using at::Tensor;
     using ad_tensor::vector;
     //
-    // dom_par
-    vector<Tensor> dom_par;
-    dom_par.push_back( torch::tensor( {2.0, 3.0} ) );
-    dom_par.push_back( torch::tensor( {4.0, 5.0} ) );
+    // p
+    vector<Tensor> p;
+    p.push_back( torch::tensor( {2.0, 3.0} ) );
+    p.push_back( torch::tensor( {4.0, 5.0} ) );
     //
-    // adom_par
-    vector<Tensor> dom_var;
-    auto [adom_par, adom_var] = ad_t::start_recording(
-        dom_par, dom_var
+    // ap
+    vector<Tensor> x;
+    auto [ap, ax] = ad_t::start_recording(
+        p, x
     );
     //
     // acon
@@ -31,27 +31,27 @@ TEST(examples, adfn_forward_par)  {
     ad_t acon( torch::tensor( {-1} ) );
     //
     // aprod
-    ad_t aprod = adom_par[0] * adom_par[1];
+    ad_t aprod = ap[0] * ap[1];
     //
-    // arange
-    vector<ad_t> arange;
-    arange.push_back(  acon + aprod);
+    // ay
+    vector<ad_t> ay;
+    ay.push_back(  acon + aprod);
     //
-    // range = adfn(dom_par, dom_var)
-    adfn_t adfn = ad_t::stop_recording(arange);
+    // y = f(p, x)
+    adfn_t f = ad_t::stop_recording(ay);
     //
-    // dom_par
-    // dom_par is valid but unspecified before assignment
-    dom_par = vector<Tensor>();
-    dom_par.push_back( torch::tensor( {6.0, 7.0} ) );
-    dom_par.push_back( torch::tensor( {8.0, 9.0} ) );
+    // p
+    // p is valid but unspecified before assignment
+    p = vector<Tensor>();
+    p.push_back( torch::tensor( {6.0, 7.0} ) );
+    p.push_back( torch::tensor( {8.0, 9.0} ) );
     //
     // options
     options_t options;
     //
     // all_par
-    ad_tensor::vector<Tensor> all_par = adfn.forward_par(
-        dom_par, options
+    ad_tensor::vector<Tensor> all_par = f.forward_par(
+        p, options
     );
     //
     EXPECT_EQ( all_par.size(), 4 );

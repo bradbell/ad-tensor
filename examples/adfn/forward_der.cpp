@@ -8,71 +8,71 @@
 #include <torch/torch.h>
 #include <ad_tensor/ad.hpp>
 //
-TEST(examples, adfn_forward_der)  {
+TEST(examples, f_forward_der)  {
     using ad_tensor::ad_t;
     using ad_tensor::adfn_t;
     using ad_tensor::options_t;
     using at::Tensor;
     using ad_tensor::vector;
     //
-    // dom_var
-    vector<Tensor> dom_var;
-    dom_var.push_back( torch::tensor( {4.0, 8.0} ) );
-    dom_var.push_back( torch::tensor( {2.0} ) );
+    // x
+    vector<Tensor> x;
+    x.push_back( torch::tensor( {4.0, 8.0} ) );
+    x.push_back( torch::tensor( {2.0} ) );
     //
-    // adom_var
-    vector<Tensor> dom_par;
-    auto [adom_par, adom_var] = ad_t::start_recording(
-        dom_par, dom_var
+    // ax
+    vector<Tensor> p;
+    auto [ap, ax] = ad_t::start_recording(
+        p, x
     );
     //
-    // arange
-    vector<ad_t> arange;
-    arange.push_back(  adom_var[0] + adom_var[1] );
-    arange.push_back(  adom_var[0] - adom_var[1] );
-    arange.push_back(  adom_var[0] * adom_var[1] );
-    arange.push_back(  adom_var[0] / adom_var[1] );
+    // ay
+    vector<ad_t> ay;
+    ay.push_back(  ax[0] + ax[1] );
+    ay.push_back(  ax[0] - ax[1] );
+    ay.push_back(  ax[0] * ax[1] );
+    ay.push_back(  ax[0] / ax[1] );
     //
-    // range = adfn(dom_par, dom_var)
-    adfn_t adfn = ad_t::stop_recording(arange);
+    // y = f(p, x)
+    adfn_t f = ad_t::stop_recording(ay);
     //
     // options
     options_t options;
     //
     // all_var
     vector<Tensor> all_par;
-    vector<Tensor> all_var = adfn.forward_var(all_par, dom_var, options);
+    vector<Tensor> all_var = f.forward_var(all_par, x, options);
     //
-    // range
-    vector<Tensor> range = adfn.get_range(all_par, all_var);
+    // y
+    vector<Tensor> y = f.get_range(all_par, all_var);
     //
-    EXPECT_EQ( range.size(), arange.size() );
+    EXPECT_EQ( y.size(), ay.size() );
     //
-    bool equal = range[0].equal( torch::tensor({6.0, 10.0}) );
+    bool equal = y[0].equal( torch::tensor({6.0, 10.0}) );
     EXPECT_TRUE( equal );
     //
-    // dom_der
-    vector<Tensor> dom_der;
-    dom_der.push_back( torch::tensor( {1.0, 1.0} ) );
-    dom_der.push_back( torch::tensor( {1.0} ) );
+    // dx
+    vector<Tensor> dx;
+    dx.push_back( torch::tensor( {1.0, 1.0} ) );
+    dx.push_back( torch::tensor( {1.0} ) );
     //
-    // rng_der
-    vector<Tensor> rng_der = adfn.forward_der(
-        all_par, all_var, dom_der, options
+    // dy
+    vector<Tensor> dy = f.forward_der(
+        all_par, all_var, dx, options
     );
     //
-    EXPECT_EQ( rng_der.size(), range.size() );
+    EXPECT_EQ( dy.size(), y.size() );
     //
-    equal = rng_der[0].equal( torch::tensor({2.0, 2.0}) );
+    equal = dy[0].equal( torch::tensor({2.0, 2.0}) );
     EXPECT_TRUE( equal );
     //
-    equal = rng_der[1].equal( torch::tensor({0.0, 0.0}) );
+    equal = dy[1].equal( torch::tensor({0.0, 0.0}) );
     EXPECT_TRUE( equal );
     //
-    equal = rng_der[2].equal( torch::tensor({2.0 + 4.0, 2.0 + 8.0}) );
+    equal = dy[2].equal( torch::tensor({2.0 + 4.0, 2.0 + 8.0}) );
     EXPECT_TRUE( equal );
     //
-    equal = rng_der[3].equal( torch::tensor({ (2.0-4.0)/4.0, (2.0-8.0)/4.0 }) );
+    equal = dy[3].equal( torch::tensor({ (2.0-4.0)/4.0, (2.0-8.0)/4.0 }) );
     EXPECT_TRUE( equal );
 }
 // END_CPP
