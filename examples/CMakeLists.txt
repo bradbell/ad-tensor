@@ -5,7 +5,7 @@
 #
 # BEGIN_SORT_THIS_LINE_PLUS_2
 add_executable(examples
-    ad/ad.cpp
+    ad/binary.cpp
     ad/recording.cpp
     adfn/forward_der.cpp
     adfn/forward_par.cpp

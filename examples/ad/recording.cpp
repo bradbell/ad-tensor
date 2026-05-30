@@ -33,13 +33,10 @@ TEST(examples, record)  {
     // stop_recording
     ad_t::stop_recording( arange  );
     //
-    {   Tensor check =  adom_par[0].tensor() == torch::tensor( {2.0, 3.0} );
-        bool equal   = torch::all(check).item<bool>();
-        EXPECT_TRUE(equal);
-    }
-    {   Tensor check =  adom_var[0].tensor() == torch::tensor( {4.0, 5.0} );
-        bool equal   = torch::all(check).item<bool>();
-        EXPECT_TRUE(equal);
-    }
+    bool equal = adom_par[0].tensor().equal( torch::tensor( {2.0, 3.0} ) );
+    EXPECT_TRUE(equal);
+    //
+    equal = adom_var[0].tensor().equal( torch::tensor( {4.0, 5.0} ) );
+    EXPECT_TRUE(equal);
 }
 // END_CPP

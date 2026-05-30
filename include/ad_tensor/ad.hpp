@@ -44,7 +44,7 @@ Other Member Functions
 Example
 *******
 {xrst_literal ,
-    examples/ad/ad.cpp
+    examples/ad/binary.cpp
     // BEGIN_CPP, // END_CPP
 }
 
