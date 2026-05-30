@@ -6,7 +6,7 @@
 #include <torch/torch.h>
 //
 /*
-{xrst_begin rev_plus_equal dev}
+{xrst_begin plus_minus_equal dev}
 {xrst_spell
     res
     numel
@@ -37,7 +37,7 @@ This is the argument. The special case where arg.numel() is zero
 (arg is empty) corresponds to a zero argument value.
 
 
-{xrst_end rev_plus_equal}
+{xrst_end plus_minus_equal}
 */
 // BEGIN_REV_PLUS_EQUAL
 namespace ad_tensor { namespace dev {
@@ -62,9 +62,7 @@ namespace ad_tensor { namespace dev {
             }
         }
     }
-} }
 // BEGIN_REV_MINUS_EQUAL
-namespace ad_tensor { namespace dev {
     void inline rev_minus_equal(
         const c10::ArrayRef<long int>& dim ,
         const at::Tensor&              res ,

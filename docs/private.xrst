@@ -17,7 +17,7 @@ Contents
     include/ad_tensor/dev/tape.hpp
     include/ad_tensor/dev/base_op.hpp
     include/ad_tensor/dev/get_option.hpp
-    include/ad_tensor/dev/rev_plus_equal.hpp
+    include/ad_tensor/dev/plus_minus_equal.hpp
     src/dev/broadcast.cpp
 }
 

@@ -3,7 +3,7 @@
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
 #include <ad_tensor/dev/derive_op.hpp>
-#include <ad_tensor/dev/rev_plus_equal.hpp>
+#include <ad_tensor/dev/plus_minus_equal.hpp>
 #include <ad_tensor/dev/broadcast.hpp>
 //
 namespace ad_tensor { namespace dev {
