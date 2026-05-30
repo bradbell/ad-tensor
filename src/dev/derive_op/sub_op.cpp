@@ -26,7 +26,7 @@ namespace ad_tensor { namespace dev {
         //
 #ifndef NDEBUG
         size_t n_arg = agraph.m_arg_start[op_index+1] - arg_index;
-        assert( n_arg == 2 && "sub_t: n_arg != 2" );
+        assert( n_arg == 2 && "sub: n_arg != 2" );
 # endif
         //
         // lhs_tensor, rhs_tensor
@@ -55,7 +55,7 @@ namespace ad_tensor { namespace dev {
         //
 #ifndef NDEBUG
         size_t n_arg = agraph.m_arg_start[op_index+1] - arg_index;
-        assert( n_arg == 2 && "sub_t: n_arg != 2" );
+        assert( n_arg == 2 && "sub: n_arg != 2" );
 # endif
         //
         // lhs_tensor, rhs_tensor
@@ -85,7 +85,7 @@ namespace ad_tensor { namespace dev {
         //
 #ifndef NDEBUG
         size_t n_arg = agraph.m_arg_start[op_index+1] - arg_index;
-        assert( n_arg == 2 && "sub_t: n_arg != 2" );
+        assert( n_arg == 2 && "sub: n_arg != 2" );
 # endif
         //
         // lhs_type, rhs_type
@@ -129,7 +129,7 @@ namespace ad_tensor { namespace dev {
         //
 #ifndef NDEBUG
         size_t n_arg = agraph.m_arg_start[op_index+1] - arg_index;
-        assert( n_arg == 2 && "sub_t: n_arg != 2" );
+        assert( n_arg == 2 && "sub: n_arg != 2" );
 # endif
         //
         // lhs_type, rhs_type
