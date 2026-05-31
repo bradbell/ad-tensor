@@ -15,6 +15,9 @@ TEST(tests, adfn_reverse_der)  {
     using at::Tensor;
     using ad_tensor::vector;
     //
+    // options
+    options_t options;
+    //
     // x
     vector<Tensor> x;
     x.push_back( torch::tensor( {4.0, 5.0} ) );
@@ -32,9 +35,6 @@ TEST(tests, adfn_reverse_der)  {
     //
     // y = f(x)
     adfn_t f = ad_t::stop_recording(ay);
-    //
-    // options
-    options_t options;
     //
     // all_var
     vector<Tensor> all_par;

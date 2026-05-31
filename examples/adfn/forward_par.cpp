@@ -15,6 +15,9 @@ TEST(examples, f_forward_par)  {
     using at::Tensor;
     using ad_tensor::vector;
     //
+    // options
+    options_t options;
+    //
     // p
     // We use p for the domain parameters
     vector<Tensor> p;
@@ -44,9 +47,6 @@ TEST(examples, f_forward_par)  {
     p.resize(0);
     p.push_back( torch::tensor( {6.0, 7.0} ) );
     p.push_back( torch::tensor( {8.0, 9.0} ) );
-    //
-    // options
-    options_t options;
     //
     // all_par
     ad_tensor::vector<Tensor> all_par = f.forward_par(p, options);

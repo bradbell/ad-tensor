@@ -16,6 +16,9 @@ TEST(tests, sum_op)  {
     using at::Tensor;
     using ad_tensor::vector;
     //
+    // options
+    options_t options;
+    //
     // p
     vector<Tensor> p;
     p.push_back( torch::tensor( {2.0, 3.0} ) );
@@ -38,9 +41,6 @@ TEST(tests, sum_op)  {
     //
     // y = f(p)
     adfn_t f = ad_t::stop_recording(ay);
-    //
-    // options
-    options_t options;
     //
     // all_par, all_var
     vector<Tensor> all_par = f.forward_par(p, options);

@@ -15,6 +15,9 @@ TEST(examples, f_forward_der)  {
     using at::Tensor;
     using ad_tensor::vector;
     //
+    // options
+    options_t options;
+    //
     // x
     // We use x for the domain variables
     vector<Tensor> x;
@@ -36,9 +39,6 @@ TEST(examples, f_forward_der)  {
     // y = f(x)
     // We use f for the adfn_t object.
     adfn_t f = ad_t::stop_recording(ay);
-    //
-    // options
-    options_t options;
     //
     // all_var
     vector<Tensor> all_par;

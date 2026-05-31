@@ -15,6 +15,9 @@ TEST(examples, f_forward_var)  {
     using at::Tensor;
     using ad_tensor::vector;
     //
+    // options
+    options_t options;
+    //
     // x
     // We use x for the domain variables
     vector<Tensor> x;
@@ -44,9 +47,6 @@ TEST(examples, f_forward_var)  {
     x.resize(0);
     x.push_back( torch::tensor( {6.0, 7.0} ) );
     x.push_back( torch::tensor( {8.0, 9.0} ) );
-    //
-    // options
-    options_t options;
     //
     // all_var
     ad_tensor::vector<Tensor> all_par;

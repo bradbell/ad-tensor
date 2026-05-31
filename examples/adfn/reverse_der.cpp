@@ -15,6 +15,9 @@ TEST(examples, f_reverse_der)  {
     using at::Tensor;
     using ad_tensor::vector;
     //
+    // options
+    options_t options;
+    //
     // x
     // We use x for the domain parameters
     vector<Tensor> x;
@@ -32,9 +35,6 @@ TEST(examples, f_reverse_der)  {
     //
     // y = f(x)
     adfn_t f = ad_t::stop_recording(ay);
-    //
-    // options
-    options_t options;
     //
     // all_var
     vector<Tensor> all_par;

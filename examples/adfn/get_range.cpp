@@ -15,6 +15,9 @@ TEST(examples, f_y)  {
     using at::Tensor;
     using ad_tensor::vector;
     //
+    // options
+    options_t options;
+    //
     // p
     vector<Tensor> p;
     p.push_back( torch::tensor( {2.0, 3.0} ) );
@@ -50,9 +53,6 @@ TEST(examples, f_y)  {
     // x
     x.resize(0);
     x.push_back( torch::tensor( {9.0, 10.0} ) );
-    //
-    // options
-    options_t options;
     //
     // y
     ad_tensor::vector<Tensor> all_par = f.forward_par(p, options);
