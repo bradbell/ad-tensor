@@ -20,7 +20,7 @@ Contents
     include/ad_tensor/dev/plus_minus_equal.hpp
     src/dev/broadcast.cpp
     src/dev/size_ptr2array_ref.cpp
-    src/ad/dev/sum.cpp
+    src/ad/sum.cpp
 }
 
 {xrst_end private}

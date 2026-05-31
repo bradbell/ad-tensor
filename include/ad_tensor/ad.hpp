@@ -55,7 +55,7 @@ Example
 The ad_t Class Developer Documentation
 ######################################
 {xrst_toc_table after
-    src/ad/dev/binary.cpp
+    src/ad/binary.cpp
 }
 
 {xrst_end ad_dev}

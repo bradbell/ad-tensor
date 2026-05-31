@@ -4,10 +4,10 @@
 # -----------------------------------------------------------------------------
 add_library(ad_tensor SHARED
     # BEGIN_SORT_THIS_LINE_PLUS_1
+    ad/binary.cpp
     ad/ctor.cpp
-    ad/dev/binary.cpp
-    ad/dev/sum.cpp
     ad/recording.cpp
+    ad/sum.cpp
     adfn/forward_der.cpp
     adfn/forward_par.cpp
     adfn/forward_var.cpp
