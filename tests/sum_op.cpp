@@ -66,11 +66,9 @@ TEST(tests, sum_op)  {
     //
     EXPECT_EQ( dy.size(), y.size() );
     //
-    std::cout << "dy[0] = " << ad_tensor::dev::to_string(dy[0]) << "\n";
     equal = dy[0].equal( torch::tensor( 0.0 ) );
     EXPECT_TRUE( equal );
     //
-    std::cout << "dy[1] = " << ad_tensor::dev::to_string(dy[1]) << "\n";
     equal = dy[1].equal( dx[0].sum(dim) );
     EXPECT_TRUE( equal );
 }

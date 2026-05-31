@@ -19,9 +19,10 @@ TEST(tests, adfn_reverse_der)  {
     options_t options;
     //
     // x
+    // choose so 1.0 / x[1] does not have roundoff
     vector<Tensor> x;
-    x.push_back( torch::tensor( {4.0, 5.0} ) );
-    x.push_back( torch::tensor( {2.0, 3.0} ) );
+    x.push_back( torch::tensor( {5.0, 8.0} ) );
+    x.push_back( torch::tensor( {2.0, 4.0} ) );
     //
     // ax
     vector<Tensor> p;
@@ -32,6 +33,7 @@ TEST(tests, adfn_reverse_der)  {
     ay.push_back(  ax[0] + ax[1] );
     ay.push_back(  ax[0] - ax[1] );
     ay.push_back(  ax[0] * ax[1] );
+    ay.push_back(  ax[0] / ax[1] );
     //
     // y = f(x)
     adfn_t f = ad_t::stop_recording(ay);
@@ -59,16 +61,17 @@ TEST(tests, adfn_reverse_der)  {
     dy.push_back( torch::tensor( {1.0, 2.0} ) );
     dy.push_back( torch::tensor( {3.0, 4.0} ) );
     dy.push_back( torch::tensor( {5.0, 6.0} ) );
+    dy.push_back( torch::tensor( {7.0, 8.0} ) );
     //
     // dx
     vector<Tensor> dx = f.reverse_der(all_par, all_var, dy, options);
     //
     EXPECT_EQ( dx.size(), x.size() );
     //
-    equal = dx[0].equal( dy[0] + dy[1] + dy[2] * x[1] );
+    equal = dx[0].equal( dy[0] + dy[1] + dy[2] * x[1] + dy[3] / x[1] );
     EXPECT_TRUE( equal );
     //
-    equal = dx[1].equal( dy[0] - dy[1] + dy[2] * x[0] );
+    equal = dx[1].equal( dy[0] - dy[1] + dy[2] * x[0] - dy[3] * y[3] / x[1] );
     EXPECT_TRUE( equal );
 }
 // END_CPP
