@@ -126,13 +126,13 @@ namespace ad_tensor { namespace dev { struct base_op_t
 {   //
     // BEGIN_TENSOR_AT_ARG_INDEX
     static const at::Tensor& tensor_at_arg_index(
-        size_t                        arg_index ,
-        const agraph_t&               agraph    ,
+        size_t                              arg_index ,
+        const agraph_t&                     agraph    ,
         const ad_tensor::vector<at::Tensor> con_vec   ,
         const ad_tensor::vector<at::Tensor> par_vec   );
     static const at::Tensor& tensor_at_arg_index(
-        size_t                        arg_index ,
-        const agraph_t&               agraph    ,
+        size_t                              arg_index ,
+        const agraph_t&                     agraph    ,
         const ad_tensor::vector<at::Tensor> con_vec   ,
         const ad_tensor::vector<at::Tensor> par_vec   ,
         const ad_tensor::vector<at::Tensor> var_vec   );
@@ -144,8 +144,8 @@ namespace ad_tensor { namespace dev { struct base_op_t
     //
     // BEGIN_FORWARD_PAR
     virtual void forward_par(
-        size_t                            op_index    ,
-        const agraph_t&                   agraph      ,
+        size_t                                  op_index    ,
+        const agraph_t&                         agraph      ,
         const ad_tensor::vector<at::Tensor>&    con_vec     ,
         ad_tensor::vector<at::Tensor>&          par_vec
     ) const = 0;
@@ -153,8 +153,8 @@ namespace ad_tensor { namespace dev { struct base_op_t
     //
     // BEGIN_FORWARD_VAR
     virtual void forward_var(
-        size_t                            op_index    ,
-        const agraph_t&                   agraph      ,
+        size_t                                  op_index    ,
+        const agraph_t&                         agraph      ,
         const ad_tensor::vector<at::Tensor>&    con_vec     ,
         const ad_tensor::vector<at::Tensor>&    par_vec     ,
         ad_tensor::vector<at::Tensor>&          var_vec
@@ -163,8 +163,8 @@ namespace ad_tensor { namespace dev { struct base_op_t
     //
     // BEGIN_FORWARD_DER
     virtual void forward_der(
-        size_t                            op_index    ,
-        const agraph_t&                   agraph      ,
+        size_t                                  op_index    ,
+        const agraph_t&                         agraph      ,
         const ad_tensor::vector<at::Tensor>&    con_vec     ,
         const ad_tensor::vector<at::Tensor>&    par_vec     ,
         const ad_tensor::vector<at::Tensor>&    var_vec     ,
@@ -174,8 +174,8 @@ namespace ad_tensor { namespace dev { struct base_op_t
     //
     // BEGIN_REVERSE_DER
     virtual void reverse_der(
-        size_t                            op_index    ,
-        const agraph_t&                   agraph      ,
+        size_t                                  op_index    ,
+        const agraph_t&                         agraph      ,
         const ad_tensor::vector<at::Tensor>&    con_vec     ,
         const ad_tensor::vector<at::Tensor>&    par_vec     ,
         const ad_tensor::vector<at::Tensor>&    var_vec     ,

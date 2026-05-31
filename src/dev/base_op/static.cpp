@@ -65,8 +65,8 @@ The return is the tensor corresponding to this argument and operator usage.
 namespace ad_tensor { namespace dev {
     //
     const at::Tensor& base_op_t::tensor_at_arg_index(
-        size_t                        arg_index ,
-        const agraph_t&               agraph    ,
+        size_t                              arg_index ,
+        const agraph_t&                     agraph    ,
         const ad_tensor::vector<at::Tensor> con_vec   ,
         const ad_tensor::vector<at::Tensor> par_vec   )
     {   size_t    index   = agraph.m_arg_value[arg_index];
@@ -91,8 +91,8 @@ namespace ad_tensor { namespace dev {
         return par_vec[0];
     }
     const at::Tensor& base_op_t::tensor_at_arg_index(
-        size_t                        arg_index ,
-        const agraph_t&               agraph    ,
+        size_t                              arg_index ,
+        const agraph_t&                     agraph    ,
         const ad_tensor::vector<at::Tensor> con_vec   ,
         const ad_tensor::vector<at::Tensor> par_vec   ,
         const ad_tensor::vector<at::Tensor> var_vec   )

@@ -15,8 +15,8 @@ namespace ad_tensor { namespace dev {
     // ------------------------------------------------------------------------
     // forward_par
     void mul_op_t::forward_par(
-        size_t                            op_index    ,
-        const agraph_t&                   agraph      ,
+        size_t                                  op_index    ,
+        const agraph_t&                         agraph      ,
         const ad_tensor::vector<at::Tensor>&    con_vec     ,
         ad_tensor::vector<at::Tensor>&          par_vec
     ) const {
@@ -43,8 +43,8 @@ namespace ad_tensor { namespace dev {
     // ------------------------------------------------------------------------
     // forward_var
     void mul_op_t::forward_var(
-        size_t                            op_index    ,
-        const agraph_t&                   agraph      ,
+        size_t                                  op_index    ,
+        const agraph_t&                         agraph      ,
         const ad_tensor::vector<at::Tensor>&    con_vec     ,
         const ad_tensor::vector<at::Tensor>&    par_vec     ,
         ad_tensor::vector<at::Tensor>&          var_vec
@@ -72,8 +72,8 @@ namespace ad_tensor { namespace dev {
     // ------------------------------------------------------------------------
     // forward_der
     void mul_op_t::forward_der(
-        size_t                            op_index    ,
-        const agraph_t&                   agraph      ,
+        size_t                                  op_index    ,
+        const agraph_t&                         agraph      ,
         const ad_tensor::vector<at::Tensor>&    con_vec     ,
         const ad_tensor::vector<at::Tensor>&    par_vec     ,
         const ad_tensor::vector<at::Tensor>&    var_vec     ,
