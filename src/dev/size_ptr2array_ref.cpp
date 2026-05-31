@@ -18,48 +18,74 @@ Converting size_t Pointer to an ArrayRef
 Prototype
 *********
 {xrst_literal ,
+    include/ad_tensor/dev/size_ptr2array_ref.hpp
     BEGIN_SIZE_PTR2ARRAY_REF, END_SIZE_PTR2ARRAY_REF
 }
+
+lock
+****
+Calls to size_ptr2array_ref must be made in pairs.
+The first (second) call should have lock true (lock false).
 
 size_ptr
 ********
 The number of elements in the array is len = ``size_ptr[0]``
 The elements in the array are ``size_ptr[1]`` , ... , ``size_ptr[len]`` .
+This is not used and should not be in call when lock is false.
 
 array_ref
 *********
 This is an array ref for a vector<long> that contains the array values.
 This is only valid for the current thread, and only until the next
 call to size_ptr2array_ref.
+In addition, it only valid until the following call to size_ptr2array_ref
+with lock false.
 
 {xrst_end size_ptr2array_ref}
 */
 //
-// BEGIN_SIZE_PTR2ARRAY_REF
 namespace ad_tensor { namespace dev {
-    c10::ArrayRef<long> size_ptr2array_ref(const size_t* size_ptr )
-//END_SIZE_PTR2ARRAY_REF
-{   //
-    // dim
-    thread_local vector<long> dim;
+    c10::ArrayRef<long> size_ptr2array_ref(
+        bool          lock     ,
+        const size_t* size_ptr ) {
+    //
+    // locked
+    thread_local bool locked = false;
+    //
+    // array
+    thread_local vector<long> array;
+    //
+    // locked
+    if( ! lock )
+    {   assert( locked && "size_ptr2array_ref: "
+            "a call with lock false was not preceded by a call with lock true"
+        );
+        locked = false;
+        return c10::ArrayRef<long>();
+    }
+    assert( ! locked && "size_ptr2array_ref: "
+        "attempt to get a lock while another call is holding its lock"
+    );
+    locked = true;
+    //
 #ifdef NDEBUG
-    dim.resize(0)
+    array.resize(0)
 #else
-    size_t cap = dim.capacity();
-    dim.resize(0);
-    assert( dim.capacity() == cap && "int_array_from_op: "
+    size_t cap = array.capacity();
+    array.resize(0);
+    assert( array.capacity() == cap && "int_array_from_op: "
             "std::vector::resize to zero changed capacity"
     );
 # endif
     //
-    // n_dim
-    size_t n_dim = size_ptr[0];
+    // size
+    size_t size = size_ptr[0];
+    assert( size < 20 && "size_t_ptr2array_ref: size >- 20");
     //
-    // dim
-    assert( n_dim < 20 && "size_t_ptr2array_ref: n_dim >- 20");
-    dim.resize(n_dim);
-    for(size_t i = 0; i < n_dim; ++i) {
-        dim[i] = static_cast<long>( size_ptr[i + 1] );
+    //
+    array.resize(size);
+    for(size_t i = 0; i < size; ++i) {
+        array[i] = static_cast<long>( size_ptr[i + 1] );
     }
-    return c10::ArrayRef<long> (dim);
+    return c10::ArrayRef<long> (array);
 } } }

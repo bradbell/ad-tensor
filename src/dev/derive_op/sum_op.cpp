@@ -21,8 +21,15 @@ namespace ad_tensor { namespace dev {
         ad_tensor::vector<at::Tensor>&          par_vec
     ) const {
         //
+        // lock
+        bool lock;
+        //
         // arg_index
         size_t    arg_index = agraph.m_arg_start[op_index];
+        //
+        // n_dim
+        size_t n_dim = agraph.m_arg_value[arg_index + 1];
+        assert( ad_type_t::none ==  agraph.m_arg_type[arg_index + 1] );
         //
 #ifndef NDEBUG
         //
@@ -30,23 +37,31 @@ namespace ad_tensor { namespace dev {
         ad_type_t ad_type   = agraph.m_arg_type[arg_index];
         assert( ad_type  == ad_type_t::parameter );
         //
-        // n_dim
-        size_t n_dim = agraph.m_arg_value[arg_index + 1];
-        assert( ad_type_t::none ==  agraph.m_arg_type[arg_index + 1] );
-        //
         // n_arg
         size_t n_arg = agraph.m_arg_start[op_index+1] - arg_index;
         assert( n_arg == 2 + n_dim );
 #endif
-        //
-        // dim
-        c10::ArrayRef<long> dim = size_ptr2array_ref(
-            agraph.m_arg_value.data() + arg_index + 1
-        );
-        //
-        // par_vec
+        // par_index
         size_t par_index  = agraph.m_arg_value[arg_index];
-        par_vec[op_index] = par_vec[par_index].sum(dim);
+        //
+        if( n_dim == 0 ) {
+            // par_vec
+            par_vec[op_index] = par_vec[par_index].sum();
+        } else {
+            //
+            // dim
+            lock = true;
+            c10::ArrayRef<long> dim = size_ptr2array_ref(
+                lock, agraph.m_arg_value.data() + arg_index + 1
+            );
+            //
+            // par_vec
+            par_vec[op_index] = par_vec[par_index].sum(dim);
+            //
+            // dim
+            lock = false;
+            size_ptr2array_ref(lock);
+        }
     }
     // ------------------------------------------------------------------------
     // forward_var
@@ -57,6 +72,9 @@ namespace ad_tensor { namespace dev {
         const ad_tensor::vector<at::Tensor>&    par_vec     ,
         ad_tensor::vector<at::Tensor>&          var_vec
     ) const {
+        //
+        // lock
+        bool lock;
         //
         // arg_index
         size_t    arg_index = agraph.m_arg_start[op_index];
@@ -75,20 +93,27 @@ namespace ad_tensor { namespace dev {
         size_t n_arg = agraph.m_arg_start[op_index+1] - arg_index;
         assert( n_arg == 2 + n_dim );
 #endif
-        // par_vec
+        // var_index
         size_t var_index  = agraph.m_arg_value[arg_index];
+        //
         if( n_dim == 0 ) {
+            // var_vec
             var_vec[op_index] = var_vec[var_index].sum();
         } else {
             //
             // dim
+            lock = true;
             c10::ArrayRef<long> dim = size_ptr2array_ref(
-                agraph.m_arg_value.data() + arg_index + 1
+                lock, agraph.m_arg_value.data() + arg_index + 1
             );
             assert( dim.size() == n_dim );
             //
-            // par_vec
+            // var_vec
             var_vec[op_index] = var_vec[var_index].sum(dim);
+            //
+            // dim
+            lock = false;
+            size_ptr2array_ref(lock);
         }
     }
     // ------------------------------------------------------------------------

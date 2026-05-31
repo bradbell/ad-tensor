@@ -43,7 +43,7 @@ The return dim is the dimension indices, in the shape of res,
 where arg was broadcast to match the shape of the other argument
 to the binary operation.
 The return is thread local and not valid for use by other threads.
-In addition, it is not valid until the following call to broadcast
+In addition, it only valid until the following call to broadcast
 with lock false.
 
 arg
@@ -66,7 +66,6 @@ namespace ad_tensor { namespace dev {
     //
     // dim
     thread_local vector<long> dim;
-    //
     //
     // locked
     if( ! lock )
