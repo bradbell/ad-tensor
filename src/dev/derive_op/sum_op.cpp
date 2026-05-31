@@ -41,7 +41,7 @@ namespace ad_tensor { namespace dev {
 #endif
         //
         // dim
-        c10::ArrayRef<long int> dim = size_ptr2array_ref(
+        c10::ArrayRef<long> dim = size_ptr2array_ref(
             agraph.m_arg_value.data() + arg_index + 1
         );
         //
@@ -83,7 +83,7 @@ namespace ad_tensor { namespace dev {
         } else {
             //
             // dim
-            c10::ArrayRef<long int> dim = size_ptr2array_ref(
+            c10::ArrayRef<long> dim = size_ptr2array_ref(
                 agraph.m_arg_value.data() + arg_index + 1
             );
             assert( dim.size() == n_dim );

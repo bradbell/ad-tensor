@@ -6,7 +6,7 @@
 #include <torch/torch.h>
 //
 namespace ad_tensor { namespace dev {
-    c10::ArrayRef<long int> broadcast(
+    c10::ArrayRef<long> broadcast(
         const at::Tensor& res, const at::Tensor& arg
     );
 } }

@@ -48,13 +48,13 @@ so that its shape as the same length as res.
 // BEGIN_BROADCAST
 namespace ad_tensor { namespace dev {
     // dim = broadcast(res, arg)
-    c10::ArrayRef<long int> broadcast(
+    c10::ArrayRef<long> broadcast(
         const at::Tensor& res, const at::Tensor& arg
     )
 // END_BROADCAST
 {   //
     // dim
-    thread_local vector<long int> dim;
+    thread_local vector<long> dim;
 #ifdef NDEBUG
     dim.resize(0)
 #else
@@ -65,10 +65,10 @@ namespace ad_tensor { namespace dev {
     );
 # endif
     //
-    c10::ArrayRef<long int> res_sizes = res.sizes();
-    c10::ArrayRef<long int> arg_sizes = arg.sizes();
+    c10::ArrayRef<long> res_sizes = res.sizes();
+    c10::ArrayRef<long> arg_sizes = arg.sizes();
     if( res_sizes.equals( arg_sizes) ) {
-        return c10::ArrayRef<long int> (dim);
+        return c10::ArrayRef<long> (dim);
     }
     size_t res_len = res_sizes.size();
     size_t arg_len = arg_sizes.size();
@@ -83,11 +83,11 @@ namespace ad_tensor { namespace dev {
             {   assert( arg_sizes == 1 && "binary_broadcast: "
                     "arg size is one one and different from res size"
                 );
-                dim.push_back( static_cast<long int>(res_index) );
+                dim.push_back( static_cast<long>(res_index) );
             }
         } else if( 1 < res_sizes[res_index] ) {
             dim.push_back(res_index);
         }
     }
-    return c10::ArrayRef<long int> (dim);
+    return c10::ArrayRef<long> (dim);
 } } }

@@ -6,5 +6,5 @@
 #include <torch/torch.h>
 //
 namespace ad_tensor { namespace dev {
-    c10::ArrayRef<long int> size_ptr2array_ref(const size_t* size_ptr);
+    c10::ArrayRef<long> size_ptr2array_ref(const size_t* size_ptr);
 } }

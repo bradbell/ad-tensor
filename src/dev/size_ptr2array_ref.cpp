@@ -37,11 +37,11 @@ call to size_ptr2array_ref.
 //
 // BEGIN_SIZE_PTR2ARRAY_REF
 namespace ad_tensor { namespace dev {
-    c10::ArrayRef<long int> size_ptr2array_ref(const size_t* size_ptr )
+    c10::ArrayRef<long> size_ptr2array_ref(const size_t* size_ptr )
 //END_SIZE_PTR2ARRAY_REF
 {   //
     // dim
-    thread_local vector<long int> dim;
+    thread_local vector<long> dim;
 #ifdef NDEBUG
     dim.resize(0)
 #else
@@ -59,7 +59,7 @@ namespace ad_tensor { namespace dev {
     assert( n_dim < 20 && "size_t_ptr2array_ref: n_dim >- 20");
     dim.resize(n_dim);
     for(size_t i = 0; i < n_dim; ++i) {
-        dim[i] = static_cast<long int>( size_ptr[i + 1] );
+        dim[i] = static_cast<long>( size_ptr[i + 1] );
     }
-    return c10::ArrayRef<long int> (dim);
+    return c10::ArrayRef<long> (dim);
 } } }

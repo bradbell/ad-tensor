@@ -144,7 +144,7 @@ namespace ad_tensor { namespace dev {
             size_t lhs_index = agraph.m_arg_value[arg_index];
             //
             // dim
-            c10::ArrayRef<long int> dim = broadcast(
+            c10::ArrayRef<long> dim = broadcast(
                 var_vec[op_index], var_vec[lhs_index]
             );
             //
@@ -159,7 +159,7 @@ namespace ad_tensor { namespace dev {
             size_t rhs_index = agraph.m_arg_value[arg_index + 1];
             //
             // dim
-            c10::ArrayRef<long int> dim = broadcast(
+            c10::ArrayRef<long> dim = broadcast(
                 var_vec[op_index], var_vec[rhs_index]
             );
             //
