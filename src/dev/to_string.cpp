@@ -24,6 +24,7 @@ namespace ad_tensor { namespace dev {
             case op_enum_t::dom: return "dom";
             case op_enum_t::mul: return "mul";
             case op_enum_t::sub: return "sub";
+            case op_enum_t::sum: return "sum";
             // END_SORT_THIS_LINE_MINUS_1
             default:
             assert( false && "to_string(op_enum): unexpected op_enum value");

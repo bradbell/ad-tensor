@@ -15,34 +15,46 @@ TEST(tests, sum_op)  {
     using at::Tensor;
     using ad_tensor::vector;
     //
-    // x
+    // p
     vector<Tensor> p;
     p.push_back( torch::tensor( {2.0, 3.0} ) );
     //
-    // ap
+    // x
     vector<Tensor> x;
+    x.push_back( torch::tensor( {4.0, 5.0, 6.0} ) );
+    //
+    // ap, ax
     auto [ap, ax] = ad_t::start_recording(p, x);
+    //
+    // dim_array
+    vector<long> dim_array( { 0 } );
+    c10::ArrayRef<long> dim(dim_array);
     //
     // ay
     vector<ad_t> ay;
     ay.push_back(  ap[0].sum() );
+    ay.push_back( ax[0].sum(dim) );
     //
     // y = f(p)
     adfn_t f = ad_t::stop_recording(ay);
     //
     // options
     options_t options;
+    options["trace"] = "true";
     //
-    // all_par
+    // all_par, all_var
     vector<Tensor> all_par = f.forward_par(p, options);
+    vector<Tensor> all_var = f.forward_var(all_par, x, options);
     //
     // y
-    vector<Tensor> all_var;
     vector<Tensor> y = f.get_range(all_par, all_var);
     //
     EXPECT_EQ( y.size(), ay.size() );
     //
     bool equal = y[0].equal( p[0].sum() );
+    EXPECT_TRUE( equal );
+    //
+    equal = y[1].equal( x[0].sum(dim) );
     EXPECT_TRUE( equal );
 }
 // END_CPP

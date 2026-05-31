@@ -42,7 +42,7 @@ the following is added to the parameter (variable) acyclic graph:
     ...
     start + 1 + n_dim, index of last dimension being summed, ad_type::none
 
-If n_sum is zero, all the dimensions are summed.
+If n_dim is zero, all the dimensions are summed.
 
 where start be the length of arg_value and arg_type before this call to
 ``ad_t::binary`` .
@@ -104,11 +104,11 @@ ad_t ad_t::sum(c10::ArrayRef<long> dim) const
         agraph->m_arg_value.push_back( m_index );
         agraph->m_arg_type.push_back( m_ad_type );
         //
-        size_t n_sum = dim.size();
-        agraph->m_arg_value.push_back( n_sum );
+        size_t n_dim = dim.size();
+        agraph->m_arg_value.push_back( n_dim );
         agraph->m_arg_type.push_back( ad_type_t::none );
         //
-        for(size_t i = 0; i < n_sum; ++i) {
+        for(size_t i = 0; i < n_dim; ++i) {
             agraph->m_arg_value.push_back( size_t( dim[i] ) );
             agraph->m_arg_type.push_back( ad_type_t::none );
         }

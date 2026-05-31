@@ -8,6 +8,9 @@
 #include <ad_tensor/dev/size_ptr2array_ref.hpp>
 /*
 {xrst_begin size_ptr2array_ref dev}
+{xrst_spell
+    len
+}
 
 Converting size_t Pointer to an ArrayRef
 ########################################
@@ -18,7 +21,16 @@ Prototype
     BEGIN_SIZE_PTR2ARRAY_REF, END_SIZE_PTR2ARRAY_REF
 }
 
+size_ptr
+********
+The number of elements in the array is len = ``size_ptr[0]``
+The elements in the array are ``size_ptr[1]`` , ... , ``size_ptr[len]`` .
 
+array_ref
+*********
+This is an array ref for a vector<long> that contains the array values.
+This is only valid for the current thread, and only until the next
+call to size_ptr2array_ref.
 
 {xrst_end size_ptr2array_ref}
 */
@@ -47,7 +59,7 @@ namespace ad_tensor { namespace dev {
     assert( n_dim < 20 && "size_t_ptr2array_ref: n_dim >- 20");
     dim.resize(n_dim);
     for(size_t i = 0; i < n_dim; ++i) {
-        dim[i] = static_cast<long int>( size_ptr[i] );
+        dim[i] = static_cast<long int>( size_ptr[i + 1] );
     }
     return c10::ArrayRef<long int> (dim);
 } } }
