@@ -137,6 +137,9 @@ namespace ad_tensor { namespace dev {
         ad_tensor::vector<at::Tensor>&          rev_der
     ) const {
         //
+        // lock
+        bool lock;
+        //
         // arg_index
         size_t arg_index = agraph.m_arg_start[op_index];
         //
@@ -157,8 +160,9 @@ namespace ad_tensor { namespace dev {
         if( lhs_type == ad_type_t::variable ) {
             //
             // dim
+            lock = true;
             c10::ArrayRef<long> dim = broadcast(
-                var_vec[op_index], var_vec[lhs_index]
+                lock, var_vec[op_index], var_vec[lhs_index]
             );
             //
             // prod
@@ -166,14 +170,19 @@ namespace ad_tensor { namespace dev {
             //
             // rev_der[lhs_index] += prod
             rev_plus_equal(dim, prod, rev_der[lhs_index]);
+            //
+            // dim
+            lock = false;
+            broadcast(lock);
         }
         //
         // rev_der[rhs_index]
         if( rhs_type == ad_type_t::variable ) {
             //
             // dim
+            lock = true;
             c10::ArrayRef<long> dim = broadcast(
-                var_vec[op_index], var_vec[rhs_index]
+                lock, var_vec[op_index], var_vec[rhs_index]
             );
             //
             // prod
@@ -181,6 +190,10 @@ namespace ad_tensor { namespace dev {
             //
             // rev_der[rhs_index] += prod
             rev_plus_equal(dim, prod, rev_der[rhs_index]);
+            //
+            // dim
+            lock = false;
+            broadcast(lock);
         }
     }
 } }

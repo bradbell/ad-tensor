@@ -5,8 +5,12 @@
 // ----------------------------------------------------------------------------
 #include <torch/torch.h>
 //
+// BEGIN_BROADCAST
 namespace ad_tensor { namespace dev {
     c10::ArrayRef<long> broadcast(
-        const at::Tensor& res, const at::Tensor& arg
+        bool              lock                       ,
+        const at::Tensor& res  = torch::empty( {0} ) ,
+        const at::Tensor& arg  = torch::empty( {0} )
     );
 } }
+// END_BROADCAST

@@ -18,16 +18,24 @@ Determine Broadcast Dimensions for a Result Argument Pair
 Prototype
 *********
 {xrst_literal ,
+    include/ad_tensor/dev/broadcast.hpp
     // BEGIN_BROADCAST, END_BROADCAST
 }
+
+lock
+****
+Calls to broadcast must be made in pairs.
+The first (second) call should have lock true (lock false).
 
 res
 ***
 contains the result of the binary operations.
+This is not used and should not be in call when lock is false.
 
 arg
 ***
 contains one of the left or right argument for the binary operation.
+This is not used and should not be in call when lock is false.
 
 dim
 ***
@@ -35,7 +43,8 @@ The return dim is the dimension indices, in the shape of res,
 where arg was broadcast to match the shape of the other argument
 to the binary operation.
 The return is thread local and not valid for use by other threads.
-In addition, it is not valid after the next call to broadcast.
+In addition, it is not valid until the following call to broadcast
+with lock false.
 
 arg
 ===
@@ -45,31 +54,53 @@ so that its shape as the same length as res.
 
 {xrst_end broadcast}
 */
-// BEGIN_BROADCAST
 namespace ad_tensor { namespace dev {
     // dim = broadcast(res, arg)
     c10::ArrayRef<long> broadcast(
-        const at::Tensor& res, const at::Tensor& arg
-    )
-// END_BROADCAST
-{   //
+        bool lock             ,
+        const at::Tensor& res ,
+        const at::Tensor& arg ) {
+    //
+    // locked
+    thread_local bool locked = false;
+    //
     // dim
     thread_local vector<long> dim;
+    //
+    //
+    // locked
+    if( ! lock )
+    {   assert( locked && "broadcast: "
+            "a call with lock false was not preceded by a call with lock true"
+        );
+        locked = false;
+        return c10::ArrayRef<long>();
+    }
+    assert( ! locked && "broadcast: "
+        "attempt to get a lock while another call is holding its lock"
+    );
+    locked = true;
+    //
+    //
+    // dim
 #ifdef NDEBUG
     dim.resize(0)
 #else
     size_t cap = dim.capacity();
     dim.resize(0);
-    assert( dim.capacity() == cap && "binary_broadcast: "
+    assert( dim.capacity() == cap && "broadcast: "
         "std::vector::resize to zero changed capacity"
     );
 # endif
     //
+    // check for case where tensor shapes are equal
     c10::ArrayRef<long> res_sizes = res.sizes();
     c10::ArrayRef<long> arg_sizes = arg.sizes();
     if( res_sizes.equals( arg_sizes) ) {
-        return c10::ArrayRef<long> (dim);
+        return c10::ArrayRef<long> ();
     }
+    //
+    // dim
     size_t res_len = res_sizes.size();
     size_t arg_len = arg_sizes.size();
     assert( arg_len <= res_len && "binary_broadcast: "
