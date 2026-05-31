@@ -150,10 +150,12 @@ ad_tensor::vector<at::Tensor> adfn_t::forward_der(
     ad_tensor::vector<at::Tensor> rng_der;
     at::Tensor zero = torch::tensor( { 0.0 } );
     for(size_t i = 0; i < m_rng_index.size(); ++i) {
+        size_t var_index = m_rng_index[i];
         if( m_rng_ad_type[i] ==  ad_type_t::variable ) {
-            rng_der.push_back( all_der[ m_rng_index[i] ] );
+            rng_der.push_back( all_der[var_index] );
         } else {
-            rng_der.push_back( zero );
+            c10::ArrayRef<long> shape = all_var[var_index].sizes();
+            rng_der.push_back( torch::zeros( shape ) );
         }
     }
     if( trace ) {

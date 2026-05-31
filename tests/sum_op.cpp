@@ -7,6 +7,7 @@
 #include <gtest/gtest.h>
 #include <torch/torch.h>
 #include <ad_tensor/ad.hpp>
+#include <ad_tensor/dev/to_string.hpp>
 //
 TEST(tests, sum_op)  {
     using ad_tensor::ad_t;
@@ -26,7 +27,7 @@ TEST(tests, sum_op)  {
     // ap, ax
     auto [ap, ax] = ad_t::start_recording(p, x);
     //
-    // dim_array
+    // dim
     vector<long> dim_array( { 0 } );
     c10::ArrayRef<long> dim(dim_array);
     //
@@ -40,7 +41,6 @@ TEST(tests, sum_op)  {
     //
     // options
     options_t options;
-    options["trace"] = "true";
     //
     // all_par, all_var
     vector<Tensor> all_par = f.forward_par(p, options);
@@ -55,6 +55,23 @@ TEST(tests, sum_op)  {
     EXPECT_TRUE( equal );
     //
     equal = y[1].equal( x[0].sum(dim) );
+    EXPECT_TRUE( equal );
+    //
+    // dx
+    vector<Tensor> dx;
+    dx.push_back( torch::tensor( {7.0, 8.0} ) );
+    //
+    // dy
+    vector<Tensor> dy = f.forward_der(all_par, all_var, dx, options);
+    //
+    EXPECT_EQ( dy.size(), y.size() );
+    //
+    std::cout << "dy[0] = " << ad_tensor::dev::to_string(dy[0]) << "\n";
+    equal = dy[0].equal( torch::tensor( 0.0 ) );
+    EXPECT_TRUE( equal );
+    //
+    std::cout << "dy[1] = " << ad_tensor::dev::to_string(dy[1]) << "\n";
+    equal = dy[1].equal( dx[0].sum(dim) );
     EXPECT_TRUE( equal );
 }
 // END_CPP

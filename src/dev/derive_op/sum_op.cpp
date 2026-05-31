@@ -126,7 +126,49 @@ namespace ad_tensor { namespace dev {
         const ad_tensor::vector<at::Tensor>&    var_vec     ,
         ad_tensor::vector<at::Tensor>&          for_der
     ) const {
-        assert(false && "sum: forward_der not implemented");
+        //
+        // lock
+        bool lock;
+        //
+        // arg_index
+        size_t    arg_index = agraph.m_arg_start[op_index];
+        //
+        // n_dim
+        size_t n_dim = agraph.m_arg_value[arg_index + 1];
+        assert( ad_type_t::none ==  agraph.m_arg_type[arg_index + 1] );
+        //
+#ifndef NDEBUG
+        //
+        // ad_type
+        ad_type_t ad_type   = agraph.m_arg_type[arg_index];
+        assert( ad_type  == ad_type_t::variable );
+        //
+        // n_arg
+        size_t n_arg = agraph.m_arg_start[op_index+1] - arg_index;
+        assert( n_arg == 2 + n_dim );
+#endif
+        // var_index
+        size_t var_index  = agraph.m_arg_value[arg_index];
+        //
+        if( n_dim == 0 ) {
+            // for_der
+            for_der[op_index] = for_der[var_index].sum();
+        } else {
+            //
+            // dim
+            lock = true;
+            c10::ArrayRef<long> dim = size_ptr2array_ref(
+                lock, agraph.m_arg_value.data() + arg_index + 1
+            );
+            assert( dim.size() == n_dim );
+            //
+            // for_der
+            for_der[op_index] = for_der[var_index].sum(dim);
+            //
+            // dim
+            lock = false;
+            size_ptr2array_ref(lock);
+        }
     }
     // ------------------------------------------------------------------------
     // reverse_der
