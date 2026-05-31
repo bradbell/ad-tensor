@@ -165,4 +165,7 @@ public:
     BINARY_OP(-, sub)
     BINARY_OP(*, mul)
     BINARY_OP(/, div)
+    //
+    // sum
+    ad_t sum(c10::ArrayRef<long> dim = c10::ArrayRef<long>() ) const;
 }; }

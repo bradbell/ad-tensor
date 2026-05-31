@@ -90,5 +90,6 @@ namespace ad_tensor { namespace dev {
     OP_DERIVE(dom_op)
     OP_DERIVE(mul_op)
     OP_DERIVE(sub_op)
+    OP_DERIVE(sum_op)
     // END_SORT_THIS_LINE_MINUS_1
 } }

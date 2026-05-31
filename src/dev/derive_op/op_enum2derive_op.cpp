@@ -14,12 +14,13 @@ namespace ad_tensor { namespace dev {
             case op_enum_t::dom: return dom_op;
             case op_enum_t::mul: return mul_op;
             case op_enum_t::sub: return sub_op;
+            case op_enum_t::sum: return sum_op;
             // END_SORT_THIS_LINE_MINUS_1
             //
             default:
             assert( false && "op_enum2derive_op: invalid op_enum value" );
         }
         // should not get here
-        return add_op;
+        return dom_op;
     }
 } }

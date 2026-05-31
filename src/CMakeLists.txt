@@ -6,6 +6,7 @@ add_library(ad_tensor SHARED
     # BEGIN_SORT_THIS_LINE_PLUS_1
     ad/ctor.cpp
     ad/dev/binary.cpp
+    ad/dev/sum.cpp
     ad/recording.cpp
     adfn/forward_der.cpp
     adfn/forward_par.cpp
@@ -20,7 +21,9 @@ add_library(ad_tensor SHARED
     dev/derive_op/mul_op.cpp
     dev/derive_op/op_enum2derive_op.cpp
     dev/derive_op/sub_op.cpp
+    dev/derive_op/sum_op.cpp
     dev/get_option.cpp
+    dev/size_ptr2array_ref.cpp
     dev/tape.cpp
     dev/to_string.cpp
     # END_SORT_THIS_LINE_MINUS_1

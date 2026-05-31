@@ -31,24 +31,23 @@ contains one of the left or right argument for the binary operation.
 
 dim
 ***
-this is the dimension indices, in the shape of res,
+The return dim is the dimension indices, in the shape of res,
 where arg was broadcast to match the shape of the other argument
 to the binary operation.
+The return is thread local and not valid for use by other threads.
+In addition, it is not valid after the next call to broadcast.
 
 arg
 ===
 It helps think of arg as reshaped, with ones in the initial dimensions,
 so that its shape as the same length as res.
 
-Thread Local
-============
-The return value is thread local and not valid for use by other threads.
-This avoids reallocating memory for every call to broadcast.
 
 {xrst_end broadcast}
 */
 // BEGIN_BROADCAST
 namespace ad_tensor { namespace dev {
+    // dim = broadcast(res, arg)
     c10::ArrayRef<long int> broadcast(
         const at::Tensor& res, const at::Tensor& arg
     )

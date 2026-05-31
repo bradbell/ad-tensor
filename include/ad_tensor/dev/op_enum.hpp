@@ -25,5 +25,6 @@ namespace ad_tensor { namespace dev { enum struct op_enum_t {
     dom,  // domain tensor
     mul,  // multiplication
     sub,  // subtraction
+    sum,  // summation
 }; } }
 // END_SORT_THIS_LINE_MINUS_2
