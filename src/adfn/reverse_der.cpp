@@ -129,6 +129,9 @@ ad_tensor::vector<at::Tensor> adfn_t::reverse_der(
     size_t op_index = n_op;
     while( m_var.m_n_dom < op_index )
     {   --op_index;
+        //
+        // all_der[op_index]
+        // Only propcess this operator if its result is connected to the range
         if( all_der[op_index].numel() != 0 ) {
             //
             // base_op

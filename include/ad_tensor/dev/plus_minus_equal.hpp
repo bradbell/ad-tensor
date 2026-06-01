@@ -30,6 +30,8 @@ see :ref:`broadcast-name` .
 res
 ***
 this is the result value that was are adding to the argument.
+It is assume that this no non-empty because there is not reason to
+process an empty result during reverse mode.
 
 arg
 ***
@@ -47,6 +49,7 @@ namespace ad_tensor { namespace dev {
         at::Tensor&                    arg )
 // END_REV_PLUS_EQUAL
     {   //
+        assert( res.numel() != 0 );
         if( dim.size() == 0 ) {
             if( arg.numel() == 0 ) {
                 arg = res;
@@ -69,6 +72,7 @@ namespace ad_tensor { namespace dev {
         at::Tensor&                    arg )
 // END_REV_MINUS_EQUAL
     {   //
+        assert( res.numel() != 0 );
         if( dim.size() == 0 ) {
             if( arg.numel() == 0 ) {
                 arg = - res;
