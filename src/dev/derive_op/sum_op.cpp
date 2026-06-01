@@ -5,6 +5,7 @@
 #include <ad_tensor/dev/derive_op.hpp>
 #include <ad_tensor/dev/plus_minus_equal.hpp>
 #include <ad_tensor/dev/size_ptr2array_ref.hpp>
+#include <ad_tensor/dev/rev_sum_reshape.hpp>
 //
 namespace ad_tensor { namespace dev {
     // ------------------------------------------------------------------------
@@ -180,6 +181,63 @@ namespace ad_tensor { namespace dev {
         const ad_tensor::vector<at::Tensor>&    var_vec     ,
         ad_tensor::vector<at::Tensor>&          rev_der
     ) const {
-        assert(false && "sum: reverse_der not implemented");
+        //
+        // check for case where this operation is not connected to the range
+        if( rev_der[op_index].numel() == 0 ) {
+            return;
+        }
+        //
+        // lock
+        bool lock;
+        //
+        // arg_index
+        size_t    arg_index = agraph.m_arg_start[op_index];
+        //
+        // n_dim
+        size_t n_dim = agraph.m_arg_value[arg_index + 1];
+        assert( ad_type_t::none ==  agraph.m_arg_type[arg_index + 1] );
+        //
+#ifndef NDEBUG
+        //
+        // ad_type
+        ad_type_t ad_type   = agraph.m_arg_type[arg_index];
+        assert( ad_type  == ad_type_t::variable );
+        //
+        // n_arg
+        size_t n_arg = agraph.m_arg_start[op_index+1] - arg_index;
+        assert( n_arg == 2 + n_dim );
+#endif
+        // lhs_index, lhs_shape
+        size_t              lhs_index  = agraph.m_arg_value[arg_index];
+        c10::ArrayRef<long> lhs_shape  = var_vec[lhs_index].sizes();
+        //
+        // rev_der
+        if( rev_der[lhs_index].numel() == 0 ) {
+            // Using this operation to broadcast rev_der to lhs_shape.
+            rev_der[lhs_index] = torch::zeros(lhs_shape) + rev_der[op_index];
+        } else if( rev_der[op_index].numel() == 1 ) {
+            rev_der[lhs_index] += rev_der[op_index];
+        } else {
+            assert( n_dim != 0 );
+            //
+            // dim
+            lock = true;
+            c10::ArrayRef<long> dim = size_ptr2array_ref(
+                lock, agraph.m_arg_value.data() + arg_index + 1
+            );
+            assert( dim.size() == n_dim );
+            //
+            // res_shape
+            lock = true;
+            c10::ArrayRef<long> res_shape = rev_sum_reshape(
+                lock, dim, var_vec[op_index], var_vec[lhs_index]
+            );
+            rev_der[lhs_index] += rev_der[op_index].reshape( res_shape );
+            //
+            // dim
+            lock = false;
+            size_ptr2array_ref(lock);
+            rev_sum_reshape(lock);
+        }
     }
 } }
