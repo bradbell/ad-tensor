@@ -19,7 +19,7 @@ Prototype
 *********
 {xrst_literal ,
     include/ad_tensor/dev/broadcast.hpp
-    // BEGIN_BROADCAST, END_BROADCAST
+    BEGIN_BROADCAST, END_BROADCAST
 }
 
 lock

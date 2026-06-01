@@ -18,8 +18,8 @@ Reverse Mode Plus Or Minus Equals For Tensors
 Prototype
 *********
 {xrst_literal ,
-    // BEGIN_REV_PLUS_EQUAL, END_REV_PLUS_EQUAL
-    // BEGIN_REV_MINUS_EQUAL, END_REV_MINUS_EQUAL
+    BEGIN_REV_PLUS_EQUAL, END_REV_PLUS_EQUAL
+    BEGIN_REV_MINUS_EQUAL, END_REV_MINUS_EQUAL
 }
 
 dim

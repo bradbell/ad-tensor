@@ -10,17 +10,20 @@ The AD Tensor Private Documentation
 
 Contents
 ********
+{xrst_comment BEGIN_SORT_THIS_LINE_PLUS_2}
 {xrst_toc_table
     include/ad_tensor/ad.hpp
-    include/ad_tensor/dev/op_enum.hpp
     include/ad_tensor/dev/agraph.hpp
-    include/ad_tensor/dev/tape.hpp
     include/ad_tensor/dev/base_op.hpp
     include/ad_tensor/dev/get_option.hpp
+    include/ad_tensor/dev/op_enum.hpp
     include/ad_tensor/dev/plus_minus_equal.hpp
-    src/dev/broadcast.cpp
-    src/dev/size_ptr2array_ref.cpp
+    include/ad_tensor/dev/tape.hpp
     src/ad/sum.cpp
+    src/dev/broadcast.cpp
+    src/dev/rev_sum_reshape.cpp
+    src/dev/size_ptr2array_ref.cpp
 }
+{xrst_comment END_SORT_THIS_LINE_MINUS_2}
 
 {xrst_end private}

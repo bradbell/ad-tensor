@@ -45,7 +45,7 @@ Example
 *******
 {xrst_literal ,
     examples/ad/binary.cpp
-    // BEGIN_CPP, // END_CPP
+    BEGIN_CPP, // END_CPP
 }
 
 {xrst_end ad}
