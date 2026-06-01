@@ -7,6 +7,7 @@
 {xrst_begin op_base dev}
 {xrst_spell
     der
+    numel
 }
 
 The Operator Base Class
@@ -98,17 +99,21 @@ the domain direction of the variable corresponding to op_index.
 
 reverse_der
 ===========
-On input, for_der contains the derivative of the range direction summation
-w.r.t the variables from index zero to index op_index.
-Hence for_der[index] for index <= op_index are inputs to this routine.
-Upon return, for_der contains the derivative of the range direction summation
-w.r.t the variables from index zero to index op_index - 1.
-Hence for_der[index] for index < op_index are inputs to this routine.
-Actually all the outputs correspond to index values that are
-arguments to the operator at index op_index.
 {xrst_literal ,
     BEGIN_REVERSE_DER, END_REVERSE_DER
 }
+#.  On input, for_der contains the derivative of the range direction summation
+    w.r.t the variables from index zero to index op_index.
+    Hence for_der[index] for index <= op_index are inputs to this routine.
+#.  Upon return, for_der contains the derivative of the range direction
+    summation w.r.t the variables from index zero to index op_index - 1.
+    Hence for_der[index] for index < op_index are outputs to this routine.
+    Actually all the outputs correspond to index values that are
+    arguments to the operator at index op_index.
+#.  The empty matrix, for_der[index].numel() == 0, corresponds to zero
+    derivative for the corresponding variable. There is not reason to process
+    cases where for_der[op_index] is empty; hence for_der[op_index]
+    is never empty when this routine is called.
 
 {xrst_end op_base}
 */

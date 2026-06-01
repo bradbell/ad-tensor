@@ -7,6 +7,7 @@
 //
 // BEGIN_BROADCAST
 namespace ad_tensor { namespace dev {
+    // dim = broadcast(lock, res, arg)
     c10::ArrayRef<long> broadcast(
         bool              lock                       ,
         const at::Tensor& res  = torch::empty( {0} ) ,

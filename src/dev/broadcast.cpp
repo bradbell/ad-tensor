@@ -110,7 +110,7 @@ namespace ad_tensor { namespace dev {
         if( i < arg_len )
         {   size_t arg_index = arg_len - i - 1;
             if( arg_sizes[arg_index] != res_sizes[res_index] )
-            {   assert( arg_sizes == 1 && "binary_broadcast: "
+            {   assert( arg_sizes[arg_index] == 1 && "binary_broadcast: "
                     "arg size is one one and different from res size"
                 );
                 dim.push_back( static_cast<long>(res_index) );
