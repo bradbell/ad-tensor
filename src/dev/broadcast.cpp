@@ -93,29 +93,29 @@ namespace ad_tensor { namespace dev {
 # endif
     //
     // check for case where tensor shapes are equal
-    c10::ArrayRef<long> res_sizes = res.sizes();
-    c10::ArrayRef<long> arg_sizes = arg.sizes();
-    if( res_sizes.equals( arg_sizes) ) {
+    c10::ArrayRef<long> res_shape = res.sizes();
+    c10::ArrayRef<long> arg_shape = arg.sizes();
+    if( res_shape.equals( arg_shape) ) {
         return c10::ArrayRef<long> ();
     }
     //
     // dim
-    size_t res_len = res_sizes.size();
-    size_t arg_len = arg_sizes.size();
+    size_t res_len = res_shape.size();
+    size_t arg_len = arg_shape.size();
     assert( arg_len <= res_len && "binary_broadcast: "
-        "arg.sizes() is longer than res.sizes()"
+        "arg shape is longer than res shape"
     );
     for(size_t i = 0; i < res_len; ++i)
     {   size_t res_index  = res_len - i - 1;
         if( i < arg_len )
         {   size_t arg_index = arg_len - i - 1;
-            if( arg_sizes[arg_index] != res_sizes[res_index] )
-            {   assert( arg_sizes[arg_index] == 1 && "binary_broadcast: "
-                    "arg size is one one and different from res size"
+            if( arg_shape[arg_index] != res_shape[res_index] )
+            {   assert( arg_shape[arg_index] == 1 && "binary_broadcast: "
+                    "an arg size is not one and different from its res size"
                 );
                 dim.push_back( static_cast<long>(res_index) );
             }
-        } else if( 1 < res_sizes[res_index] ) {
+        } else if( 1 < res_shape[res_index] ) {
             dim.push_back(res_index);
         }
     }
