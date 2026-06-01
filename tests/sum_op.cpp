@@ -71,5 +71,15 @@ TEST(tests, sum_op)  {
     //
     equal = dy[1].equal( dx[0].sum(dim) );
     EXPECT_TRUE( equal );
+    //
+    // dy, dx
+    dy[0] = torch::tensor( {2.0} );
+    dy[1] = torch::tensor( {3.0} );
+    dx    = f.reverse_der(all_par, all_var, dy, options);
+    //
+    EXPECT_EQ( x.size(), dx.size() );
+    //
+    equal = dx[0].equal( torch::tensor( {3.0, 3.0, 3.0} ) );
+    EXPECT_TRUE( equal );
 }
 // END_CPP
