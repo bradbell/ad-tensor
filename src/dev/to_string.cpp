@@ -31,11 +31,11 @@ namespace ad_tensor { namespace dev {
         }
     }
     std::string to_string(const at::Tensor& tensor) {
-        at::IntArrayRef sizes  = tensor.sizes();
+        at::IntArrayRef shape  = tensor.sizes();
         std::string res = "(";
-        for(size_t i = 0; i < sizes.size(); ++i) {
-            res += std::to_string( sizes[i] );
-            if( i + 1 < sizes.size() )
+        for(size_t i = 0; i < shape.size(); ++i) {
+            res += std::to_string( shape[i] );
+            if( i + 1 < shape.size() )
                 res += ", ";
         }
         res += ")";
