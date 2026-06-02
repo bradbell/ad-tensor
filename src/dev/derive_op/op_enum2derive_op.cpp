@@ -6,7 +6,8 @@
 //
 namespace ad_tensor { namespace dev {
     //
-    const base_op_t<at::Tensor>& op_enum2derive_op(op_enum_t op_enum) {
+    template <class TensorType>
+    const base_op_t<TensorType>& op_enum2derive_op(op_enum_t op_enum) {
         switch(op_enum) {
             // BEGIN_SORT_THIS_LINE_PLUS_1
             case op_enum_t::add: return add_op;
@@ -23,4 +24,7 @@ namespace ad_tensor { namespace dev {
         // should not get here
         return dom_op;
     }
+    template const base_op_t<at::Tensor>& op_enum2derive_op<at::Tensor>(
+        op_enum_t op_enum
+    );
 } }

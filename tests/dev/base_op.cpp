@@ -31,7 +31,7 @@ TEST(tests_dev, op_base)  {
     //
     // base_op
     const base_op_t<at::Tensor>& base_op =
-        ad_tensor::dev::op_enum2derive_op(op_enum_t::add);
+        ad_tensor::dev::op_enum2derive_op<at::Tensor>(op_enum_t::add);
     //
     // m_arg_start, m_arg_value, m_arg_type, con_vec, par_vec
     op_enum_t              dom         = op_enum_t::dom;

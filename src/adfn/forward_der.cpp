@@ -128,7 +128,7 @@ ad_tensor::vector<at::Tensor> adfn_t::forward_der(
         // base_op
         dev::op_enum_t op_enum = m_var.m_op_seq[ op_index ];
         const dev::base_op_t<at::Tensor>& base_op =
-            dev::op_enum2derive_op( op_enum );
+            dev::op_enum2derive_op<at::Tensor>( op_enum );
         //
         // all_der
         base_op.forward_der(op_index, m_var, m_con, all_par, all_var, all_der);
