@@ -8,7 +8,7 @@
 //
 #include <ad_tensor/ad.hpp>
 //
-TEST(examples, record)  {
+TEST(examples_ad, record)  {
     using ad_tensor::ad_t;
     using at::Tensor;
     using ad_tensor::vector;

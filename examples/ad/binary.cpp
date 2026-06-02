@@ -8,7 +8,7 @@
 //
 #include <ad_tensor/ad.hpp>
 //
-TEST(examples, ad_binary)  {
+TEST(examples_ad, binary)  {
     using ad_tensor::ad_t;
     using at::Tensor;
     //

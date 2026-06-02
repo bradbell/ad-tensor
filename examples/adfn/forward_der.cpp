@@ -8,7 +8,7 @@
 #include <torch/torch.h>
 #include <ad_tensor/ad.hpp>
 //
-TEST(examples, f_forward_der)  {
+TEST(examples_adfn, forward_der)  {
     using ad_tensor::ad_t;
     using ad_tensor::adfn_t;
     using ad_tensor::options_t;
