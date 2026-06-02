@@ -74,7 +74,7 @@ This maps op_enum_t values to the corresponding base_op_t<at::Tensor> value:
             const ad_tensor::vector<at::Tensor>&    var_vec     , \
             ad_tensor::vector<at::Tensor>&          rev_der \
         ) const override; \
-    } const op_name;
+    };
 //
 namespace ad_tensor { namespace dev {
     // BEGIN_OP_ENUM2BASE_OP

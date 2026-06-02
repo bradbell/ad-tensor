@@ -8,6 +8,15 @@ namespace ad_tensor { namespace dev {
     //
     template <class TensorType>
     const base_op_t<TensorType>& op_enum2derive_op(op_enum_t op_enum) {
+        // BEGIN_SORT_THIS_LINE_PLUS_1
+        static const add_op_t add_op;
+        static const div_op_t div_op;
+        static const dom_op_t dom_op;
+        static const mul_op_t mul_op;
+        static const sub_op_t sub_op;
+        static const sum_op_t sum_op;
+        // END_SORT_THIS_LINE_MINUS_1
+        //
         switch(op_enum) {
             // BEGIN_SORT_THIS_LINE_PLUS_1
             case op_enum_t::add: return add_op;
