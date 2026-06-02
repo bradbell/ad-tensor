@@ -10,11 +10,12 @@
 namespace ad_tensor { namespace dev {
     // ------------------------------------------------------------------------
     // forward_par
-    void div_op_t::forward_par(
+    template<class TensorType>
+    void div_op_t<TensorType>::forward_par(
         size_t                                  op_index    ,
         const agraph_t&                         agraph      ,
-        const ad_tensor::vector<at::Tensor>&    con_vec     ,
-        ad_tensor::vector<at::Tensor>&          par_vec
+        const ad_tensor::vector<TensorType>&    con_vec     ,
+        ad_tensor::vector<TensorType>&          par_vec
     ) const {
         //
         // arg_index
@@ -26,24 +27,31 @@ namespace ad_tensor { namespace dev {
 # endif
         //
         // lhs_tensor, rhs_tensor
-        at::Tensor lhs_tensor  = tensor_at_arg_index(
+        TensorType lhs_tensor  = tensor_at_arg_index(
             arg_index, agraph, con_vec, par_vec
         );
-        at::Tensor rhs_tensor  = tensor_at_arg_index(
+        TensorType rhs_tensor  = tensor_at_arg_index(
             arg_index + 1, agraph, con_vec, par_vec
         );
         //
         // par_vec
         par_vec[op_index] = lhs_tensor / rhs_tensor;
     }
-    // ------------------------------------------------------------------------
-    // forward_var
-    void div_op_t::forward_var(
+    template void div_op_t<at::Tensor>::forward_par(
         size_t                                  op_index    ,
         const agraph_t&                         agraph      ,
         const ad_tensor::vector<at::Tensor>&    con_vec     ,
-        const ad_tensor::vector<at::Tensor>&    par_vec     ,
-        ad_tensor::vector<at::Tensor>&          var_vec
+        ad_tensor::vector<at::Tensor>&          par_vec
+    ) const;
+    // ------------------------------------------------------------------------
+    // forward_var
+    template<class TensorType>
+    void div_op_t<TensorType>::forward_var(
+        size_t                                  op_index    ,
+        const agraph_t&                         agraph      ,
+        const ad_tensor::vector<TensorType>&    con_vec     ,
+        const ad_tensor::vector<TensorType>&    par_vec     ,
+        ad_tensor::vector<TensorType>&          var_vec
     ) const {
         //
         // arg_index
@@ -55,25 +63,33 @@ namespace ad_tensor { namespace dev {
 # endif
         //
         // lhs_tensor, rhs_tensor
-        at::Tensor lhs_tensor  = tensor_at_arg_index(
+        TensorType lhs_tensor  = tensor_at_arg_index(
             arg_index, agraph, con_vec, par_vec, var_vec
         );
-        at::Tensor rhs_tensor  = tensor_at_arg_index(
+        TensorType rhs_tensor  = tensor_at_arg_index(
             arg_index + 1, agraph, con_vec, par_vec, var_vec
         );
         //
         // var_vec
         var_vec[op_index] = lhs_tensor / rhs_tensor;
     }
-    // ------------------------------------------------------------------------
-    // forward_der
-    void div_op_t::forward_der(
+    template void div_op_t<at::Tensor>::forward_var(
         size_t                                  op_index    ,
         const agraph_t&                         agraph      ,
         const ad_tensor::vector<at::Tensor>&    con_vec     ,
         const ad_tensor::vector<at::Tensor>&    par_vec     ,
-        const ad_tensor::vector<at::Tensor>&    var_vec     ,
-        ad_tensor::vector<at::Tensor>&          for_der
+        ad_tensor::vector<at::Tensor>&          var_vec
+    ) const;
+    // ------------------------------------------------------------------------
+    // forward_der
+    template<class TensorType>
+    void div_op_t<TensorType>::forward_der(
+        size_t                                  op_index    ,
+        const agraph_t&                         agraph      ,
+        const ad_tensor::vector<TensorType>&    con_vec     ,
+        const ad_tensor::vector<TensorType>&    par_vec     ,
+        const ad_tensor::vector<TensorType>&    var_vec     ,
+        ad_tensor::vector<TensorType>&          for_der
     ) const {
         //
         // arg_index
@@ -112,15 +128,24 @@ namespace ad_tensor { namespace dev {
                 - var_vec[op_index] * for_der[rhs_index] / var_vec[rhs_index];
         };
     }
-    // ------------------------------------------------------------------------
-    // reverse_der
-    void div_op_t::reverse_der(
+    template void div_op_t<at::Tensor>::forward_der(
         size_t                                  op_index    ,
         const agraph_t&                         agraph      ,
         const ad_tensor::vector<at::Tensor>&    con_vec     ,
         const ad_tensor::vector<at::Tensor>&    par_vec     ,
         const ad_tensor::vector<at::Tensor>&    var_vec     ,
-        ad_tensor::vector<at::Tensor>&          rev_der
+        ad_tensor::vector<at::Tensor>&          for_der
+    ) const;
+    // ------------------------------------------------------------------------
+    // reverse_der
+    template<class TensorType>
+    void div_op_t<TensorType>::reverse_der(
+        size_t                                  op_index    ,
+        const agraph_t&                         agraph      ,
+        const ad_tensor::vector<TensorType>&    con_vec     ,
+        const ad_tensor::vector<TensorType>&    par_vec     ,
+        const ad_tensor::vector<TensorType>&    var_vec     ,
+        ad_tensor::vector<TensorType>&          rev_der
     ) const {
         //
         // lock
@@ -143,12 +168,12 @@ namespace ad_tensor { namespace dev {
         size_t rhs_index = agraph.m_arg_value[arg_index + 1];
         //
         // rhs_tensor
-        at::Tensor rhs_tensor = tensor_at_arg_index(
+        TensorType rhs_tensor = tensor_at_arg_index(
             arg_index + 1, agraph, con_vec, par_vec, var_vec
         );
         //
         // quotient
-        at::Tensor quotient = rev_der[op_index] / rhs_tensor;
+        TensorType quotient = rev_der[op_index] / rhs_tensor;
         //
         // rev_der[lhs_index]
         if( lhs_type == ad_type_t::variable ) {
@@ -171,7 +196,7 @@ namespace ad_tensor { namespace dev {
         if( rhs_type == ad_type_t::variable ) {
             //
             // prod
-            at::Tensor prod = quotient * var_vec[op_index];
+            TensorType prod = quotient * var_vec[op_index];
             //
             // dim
             lock = true;
@@ -187,4 +212,12 @@ namespace ad_tensor { namespace dev {
             broadcast(lock);
         }
     }
+    template void div_op_t<at::Tensor>::reverse_der(
+        size_t                                  op_index    ,
+        const agraph_t&                         agraph      ,
+        const ad_tensor::vector<at::Tensor>&    con_vec     ,
+        const ad_tensor::vector<at::Tensor>&    par_vec     ,
+        const ad_tensor::vector<at::Tensor>&    var_vec     ,
+        ad_tensor::vector<at::Tensor>&          rev_der
+    ) const;
 } }

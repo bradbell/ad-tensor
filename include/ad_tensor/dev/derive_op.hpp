@@ -25,7 +25,7 @@ This is done inside the ``ad_tensor::dev`` namespace .
 
 op_enum2derive_op
 *****************
-This maps op_enum_t values to the corresponding base_op_t<at::Tensor> value:
+This maps op_enum_t values to the corresponding base_op_t<TensorType> value:
 {xrst_literal ,
     BEGIN_OP_ENUM2BASE_OP, END_OP_ENUM2BASE_OP
 }
@@ -40,39 +40,40 @@ This maps op_enum_t values to the corresponding base_op_t<at::Tensor> value:
 #include <ad_tensor/dev/user_assert.hpp>
 //
 #define OP_DERIVE(op_name) \
-    struct op_name ## _t : public base_op_t<at::Tensor> { \
+    template<class TensorType> \
+    struct op_name ## _t : public base_op_t<TensorType> { \
         \
         void forward_par( \
             size_t                                  op_index    , \
             const agraph_t&                         agraph      , \
-            const ad_tensor::vector<at::Tensor>&    con_vec     , \
-            ad_tensor::vector<at::Tensor>&          par_vec \
+            const ad_tensor::vector<TensorType>&    con_vec     , \
+            ad_tensor::vector<TensorType>&          par_vec \
         ) const override; \
         \
         void forward_var( \
             size_t                                  op_index    , \
             const agraph_t&                         agraph      , \
-            const ad_tensor::vector<at::Tensor>&    con_vec     , \
-            const ad_tensor::vector<at::Tensor>&    par_vec     , \
-            ad_tensor::vector<at::Tensor>&          var_vec \
+            const ad_tensor::vector<TensorType>&    con_vec     , \
+            const ad_tensor::vector<TensorType>&    par_vec     , \
+            ad_tensor::vector<TensorType>&          var_vec \
         ) const override; \
         \
         void forward_der( \
             size_t                                  op_index    , \
             const agraph_t&                         agraph      , \
-            const ad_tensor::vector<at::Tensor>&    con_vec     , \
-            const ad_tensor::vector<at::Tensor>&    par_vec     , \
-            const ad_tensor::vector<at::Tensor>&    var_vec     , \
-            ad_tensor::vector<at::Tensor>&          for_der \
+            const ad_tensor::vector<TensorType>&    con_vec     , \
+            const ad_tensor::vector<TensorType>&    par_vec     , \
+            const ad_tensor::vector<TensorType>&    var_vec     , \
+            ad_tensor::vector<TensorType>&          for_der \
         ) const override; \
         \
         void reverse_der( \
             size_t                                  op_index    , \
             const agraph_t&                         agraph      , \
-            const ad_tensor::vector<at::Tensor>&    con_vec     , \
-            const ad_tensor::vector<at::Tensor>&    par_vec     , \
-            const ad_tensor::vector<at::Tensor>&    var_vec     , \
-            ad_tensor::vector<at::Tensor>&          rev_der \
+            const ad_tensor::vector<TensorType>&    con_vec     , \
+            const ad_tensor::vector<TensorType>&    par_vec     , \
+            const ad_tensor::vector<TensorType>&    var_vec     , \
+            ad_tensor::vector<TensorType>&          rev_der \
         ) const override; \
     };
 //

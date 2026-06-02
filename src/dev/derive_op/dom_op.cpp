@@ -7,43 +7,76 @@
 namespace ad_tensor { namespace dev {
     // ----------------------------------------------------------------------
     // forward_par
-    void dom_op_t::forward_par(
+    template<class TensorType>
+    void dom_op_t<TensorType>::forward_par(
+        size_t                                  op_index    ,
+        const agraph_t&                         agraph      ,
+        const ad_tensor::vector<TensorType>&    con_vec     ,
+        ad_tensor::vector<TensorType>&          par_vec
+    ) const {
+    }
+    template void dom_op_t<at::Tensor>::forward_par(
         size_t                                  op_index    ,
         const agraph_t&                         agraph      ,
         const ad_tensor::vector<at::Tensor>&    con_vec     ,
         ad_tensor::vector<at::Tensor>&          par_vec
-    ) const {
-    }
+    ) const;
     // ----------------------------------------------------------------------
     // forward_var
-    void dom_op_t::forward_var(
+    template<class TensorType>
+    void dom_op_t<TensorType>::forward_var(
+        size_t                                  op_index    ,
+        const agraph_t&                         agraph      ,
+        const ad_tensor::vector<TensorType>&    con_vec     ,
+        const ad_tensor::vector<TensorType>&    par_vec     ,
+        ad_tensor::vector<TensorType>&          var_vec
+    ) const {
+    }
+    template void dom_op_t<at::Tensor>::forward_var(
         size_t                                  op_index    ,
         const agraph_t&                         agraph      ,
         const ad_tensor::vector<at::Tensor>&    con_vec     ,
         const ad_tensor::vector<at::Tensor>&    par_vec     ,
         ad_tensor::vector<at::Tensor>&          var_vec
-    ) const {
-    }
+    ) const;
     // ----------------------------------------------------------------------
     // forward_der
-    void dom_op_t::forward_der(
+    template<class TensorType>
+    void dom_op_t<TensorType>::forward_der(
+        size_t                                  op_index    ,
+        const agraph_t&                         agraph      ,
+        const ad_tensor::vector<TensorType>&    con_vec     ,
+        const ad_tensor::vector<TensorType>&    par_vec     ,
+        const ad_tensor::vector<TensorType>&    var_vec     ,
+        ad_tensor::vector<TensorType>&          for_der
+    ) const {
+    }
+    template void dom_op_t<at::Tensor>::forward_der(
         size_t                                  op_index    ,
         const agraph_t&                         agraph      ,
         const ad_tensor::vector<at::Tensor>&    con_vec     ,
         const ad_tensor::vector<at::Tensor>&    par_vec     ,
         const ad_tensor::vector<at::Tensor>&    var_vec     ,
         ad_tensor::vector<at::Tensor>&          for_der
-    ) const {
-    }
+    ) const;
     // ----------------------------------------------------------------------
     // reverse_der
-    void dom_op_t::reverse_der(
+    template<class TensorType>
+    void dom_op_t<TensorType>::reverse_der(
+        size_t                                  op_index    ,
+        const agraph_t&                         agraph      ,
+        const ad_tensor::vector<TensorType>&    con_vec     ,
+        const ad_tensor::vector<TensorType>&    par_vec     ,
+        const ad_tensor::vector<TensorType>&    var_vec     ,
+        ad_tensor::vector<TensorType>&          rev_der
+    ) const {
+    }
+    template void dom_op_t<at::Tensor>::reverse_der(
         size_t                                  op_index    ,
         const agraph_t&                         agraph      ,
         const ad_tensor::vector<at::Tensor>&    con_vec     ,
         const ad_tensor::vector<at::Tensor>&    par_vec     ,
         const ad_tensor::vector<at::Tensor>&    var_vec     ,
         ad_tensor::vector<at::Tensor>&          rev_der
-    ) const {
-    }
+    ) const;
 } }

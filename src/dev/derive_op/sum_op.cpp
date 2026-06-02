@@ -10,11 +10,12 @@
 namespace ad_tensor { namespace dev {
     // ------------------------------------------------------------------------
     // forward_par
-    void sum_op_t::forward_par(
+    template<class TensorType>
+    void sum_op_t<TensorType>::forward_par(
         size_t                                  op_index    ,
         const agraph_t&                         agraph      ,
-        const ad_tensor::vector<at::Tensor>&    con_vec     ,
-        ad_tensor::vector<at::Tensor>&          par_vec
+        const ad_tensor::vector<TensorType>&    con_vec     ,
+        ad_tensor::vector<TensorType>&          par_vec
     ) const {
         //
         // lock
@@ -59,14 +60,21 @@ namespace ad_tensor { namespace dev {
             size_ptr2array_ref(lock);
         }
     }
-    // ------------------------------------------------------------------------
-    // forward_var
-    void sum_op_t::forward_var(
+    template void sum_op_t<at::Tensor>::forward_par(
         size_t                                  op_index    ,
         const agraph_t&                         agraph      ,
         const ad_tensor::vector<at::Tensor>&    con_vec     ,
-        const ad_tensor::vector<at::Tensor>&    par_vec     ,
-        ad_tensor::vector<at::Tensor>&          var_vec
+        ad_tensor::vector<at::Tensor>&          par_vec
+    ) const;
+    // ------------------------------------------------------------------------
+    // forward_var
+    template<class TensorType>
+    void sum_op_t<TensorType>::forward_var(
+        size_t                                  op_index    ,
+        const agraph_t&                         agraph      ,
+        const ad_tensor::vector<TensorType>&    con_vec     ,
+        const ad_tensor::vector<TensorType>&    par_vec     ,
+        ad_tensor::vector<TensorType>&          var_vec
     ) const {
         //
         // lock
@@ -112,15 +120,23 @@ namespace ad_tensor { namespace dev {
             size_ptr2array_ref(lock);
         }
     }
-    // ------------------------------------------------------------------------
-    // forward_der
-    void sum_op_t::forward_der(
+    template void sum_op_t<at::Tensor>::forward_var(
         size_t                                  op_index    ,
         const agraph_t&                         agraph      ,
         const ad_tensor::vector<at::Tensor>&    con_vec     ,
         const ad_tensor::vector<at::Tensor>&    par_vec     ,
-        const ad_tensor::vector<at::Tensor>&    var_vec     ,
-        ad_tensor::vector<at::Tensor>&          for_der
+        ad_tensor::vector<at::Tensor>&          var_vec
+    ) const;
+    // ------------------------------------------------------------------------
+    // forward_der
+    template<class TensorType>
+    void sum_op_t<TensorType>::forward_der(
+        size_t                                  op_index    ,
+        const agraph_t&                         agraph      ,
+        const ad_tensor::vector<TensorType>&    con_vec     ,
+        const ad_tensor::vector<TensorType>&    par_vec     ,
+        const ad_tensor::vector<TensorType>&    var_vec     ,
+        ad_tensor::vector<TensorType>&          for_der
     ) const {
         //
         // lock
@@ -166,15 +182,24 @@ namespace ad_tensor { namespace dev {
             size_ptr2array_ref(lock);
         }
     }
-    // ------------------------------------------------------------------------
-    // reverse_der
-    void sum_op_t::reverse_der(
+    template void sum_op_t<at::Tensor>::forward_der(
         size_t                                  op_index    ,
         const agraph_t&                         agraph      ,
         const ad_tensor::vector<at::Tensor>&    con_vec     ,
         const ad_tensor::vector<at::Tensor>&    par_vec     ,
         const ad_tensor::vector<at::Tensor>&    var_vec     ,
-        ad_tensor::vector<at::Tensor>&          rev_der
+        ad_tensor::vector<at::Tensor>&          for_der
+    ) const;
+    // ------------------------------------------------------------------------
+    // reverse_der
+    template<class TensorType>
+    void sum_op_t<TensorType>::reverse_der(
+        size_t                                  op_index    ,
+        const agraph_t&                         agraph      ,
+        const ad_tensor::vector<TensorType>&    con_vec     ,
+        const ad_tensor::vector<TensorType>&    par_vec     ,
+        const ad_tensor::vector<TensorType>&    var_vec     ,
+        ad_tensor::vector<TensorType>&          rev_der
     ) const {
         //
         // check for case where this operation is not connected to the range
@@ -209,7 +234,7 @@ namespace ad_tensor { namespace dev {
         // rev_der[lhs_index]
         if( rev_der[op_index].numel() == 1 ) {
             if( rev_der[lhs_index].numel() == 0 ) {
-                at::Tensor zeros   = torch::zeros(lhs_shape);
+                TensorType zeros   = torch::zeros(lhs_shape);
                 rev_der[lhs_index] = zeros + rev_der[op_index];
             } else {
                 rev_der[lhs_index] += rev_der[op_index];
@@ -230,7 +255,7 @@ namespace ad_tensor { namespace dev {
                 lock, dim, var_vec[op_index], var_vec[lhs_index]
             );
             if( rev_der[lhs_index].numel() == 0 ) {
-                at::Tensor zeros   = torch::zeros(lhs_shape);
+                TensorType zeros   = torch::zeros(lhs_shape);
                 rev_der[lhs_index] = zeros + \
                     rev_der[op_index].reshape(res_shape);
             } else {
@@ -243,4 +268,12 @@ namespace ad_tensor { namespace dev {
             rev_sum_reshape(lock);
         }
     }
+    template void sum_op_t<at::Tensor>::reverse_der(
+        size_t                                  op_index    ,
+        const agraph_t&                         agraph      ,
+        const ad_tensor::vector<at::Tensor>&    con_vec     ,
+        const ad_tensor::vector<at::Tensor>&    par_vec     ,
+        const ad_tensor::vector<at::Tensor>&    var_vec     ,
+        ad_tensor::vector<at::Tensor>&          rev_der
+    ) const;
 } }
