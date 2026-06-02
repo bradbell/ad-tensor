@@ -6,7 +6,7 @@
 //
 namespace ad_tensor { namespace dev {
     //
-    const base_op_t& op_enum2derive_op(op_enum_t op_enum) {
+    const base_op_t<at::Tensor>& op_enum2derive_op(op_enum_t op_enum) {
         switch(op_enum) {
             // BEGIN_SORT_THIS_LINE_PLUS_1
             case op_enum_t::add: return add_op;

@@ -63,12 +63,13 @@ The return is the tensor corresponding to this argument and operator usage.
 #include <ad_tensor/dev/base_op.hpp>
 //
 namespace ad_tensor { namespace dev {
-    //
-    const at::Tensor& base_op_t::tensor_at_arg_index(
+    // ----------------------------------------------------------------------
+    template<class TensorType>
+    const TensorType& base_op_t<TensorType>::tensor_at_arg_index(
         size_t                               arg_index ,
         const agraph_t&                      agraph    ,
-        const ad_tensor::vector<at::Tensor>& con_vec   ,
-        const ad_tensor::vector<at::Tensor>& par_vec   )
+        const ad_tensor::vector<TensorType>& con_vec   ,
+        const ad_tensor::vector<TensorType>& par_vec   )
     {   size_t    index   = agraph.m_arg_value[arg_index];
         ad_type_t ad_type = agraph.m_arg_type[arg_index];
         switch( ad_type ) {
@@ -90,12 +91,20 @@ namespace ad_tensor { namespace dev {
         // should not get here
         return par_vec[0];
     }
-    const at::Tensor& base_op_t::tensor_at_arg_index(
+    template const at::Tensor& base_op_t<at::Tensor>::tensor_at_arg_index(
         size_t                               arg_index ,
         const agraph_t&                      agraph    ,
         const ad_tensor::vector<at::Tensor>& con_vec   ,
-        const ad_tensor::vector<at::Tensor>& par_vec   ,
-        const ad_tensor::vector<at::Tensor>& var_vec   )
+        const ad_tensor::vector<at::Tensor>& par_vec
+    );
+    // ----------------------------------------------------------------------
+    template<class TensorType>
+    const TensorType& base_op_t<TensorType>::tensor_at_arg_index(
+        size_t                               arg_index ,
+        const agraph_t&                      agraph    ,
+        const ad_tensor::vector<TensorType>& con_vec   ,
+        const ad_tensor::vector<TensorType>& par_vec   ,
+        const ad_tensor::vector<TensorType>& var_vec   )
     {   size_t    index   = agraph.m_arg_value[arg_index];
         ad_type_t ad_type = agraph.m_arg_type[arg_index];
         switch( ad_type ) {
@@ -121,4 +130,11 @@ namespace ad_tensor { namespace dev {
         // should not get here
         return var_vec[0];
     }
+    template const at::Tensor& base_op_t<at::Tensor>::tensor_at_arg_index(
+        size_t                               arg_index ,
+        const agraph_t&                      agraph    ,
+        const ad_tensor::vector<at::Tensor>& con_vec   ,
+        const ad_tensor::vector<at::Tensor>& par_vec   ,
+        const ad_tensor::vector<at::Tensor>& var_vec
+    );
 } }
