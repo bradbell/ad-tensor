@@ -25,13 +25,13 @@ TEST(tests, sum_op)  {
     //
     // x
     vector<Tensor> x;
-    x.push_back( torch::tensor( {4.0, 5.0, 6.0} ) );
+    x.push_back( torch::tensor( { {1.0, 2.0, 3.0}, {4.0, 5.0, 6.0} } ) );
     //
     // ap, ax
     auto [ap, ax] = ad_t::start_recording(p, x);
     //
     // dim
-    vector<long> dim_array( { 0 } );
+    vector<long> dim_array( { 1 } );
     c10::ArrayRef<long> dim(dim_array);
     //
     // ay
@@ -59,14 +59,14 @@ TEST(tests, sum_op)  {
     //
     // dx
     vector<Tensor> dx;
-    dx.push_back( torch::tensor( {7.0, 8.0} ) );
+    dx.push_back(torch::tensor( { {7.0, 8.0, 9.0}, {10.0, 11.0, 12.0} } ));
     //
     // dy
     vector<Tensor> dy = f.forward_der(all_par, all_var, dx, options);
     //
     EXPECT_EQ( dy.size(), y.size() );
     //
-    equal = dy[0].equal( torch::tensor( 0.0 ) );
+    equal = dy[0].equal( torch::tensor( { 0.0, 0.0 } ) );
     EXPECT_TRUE( equal );
     //
     equal = dy[1].equal( dx[0].sum(dim) );
@@ -74,12 +74,12 @@ TEST(tests, sum_op)  {
     //
     // dy, dx
     dy[0] = torch::tensor( {2.0} );
-    dy[1] = torch::tensor( {3.0} );
+    dy[1] = torch::tensor( {3.0, 4.0} );
     dx    = f.reverse_der(all_par, all_var, dy, options);
     //
     EXPECT_EQ( x.size(), dx.size() );
     //
-    equal = dx[0].equal( torch::tensor( {3.0, 3.0, 3.0} ) );
+    equal = dx[0].equal(torch::tensor( { {3.0, 3.0, 3.0}, {4.0, 4.0, 4.0} } ));
     EXPECT_TRUE( equal );
 }
 // END_CPP

@@ -90,8 +90,8 @@ c10::ArrayRef<long> rev_sum_reshape(
     if( res_len == arg_len ) {
         return arg_shape;
     }
-    assert( arg_len < res_len && "reverse_sum_reshape: "
-        "arg shape is longer than res shape"
+    assert( res_len < arg_len && "reverse_sum_reshape: "
+        "res shape is longer than arg shape"
     );
     //
     // in_dim

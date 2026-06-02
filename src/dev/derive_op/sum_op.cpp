@@ -211,12 +211,14 @@ namespace ad_tensor { namespace dev {
         size_t              lhs_index  = agraph.m_arg_value[arg_index];
         c10::ArrayRef<long> lhs_shape  = var_vec[lhs_index].sizes();
         //
-        // rev_der
-        if( rev_der[lhs_index].numel() == 0 ) {
-            // Using this operation to broadcast rev_der to lhs_shape.
-            rev_der[lhs_index] = torch::zeros(lhs_shape) + rev_der[op_index];
-        } else if( rev_der[op_index].numel() == 1 ) {
-            rev_der[lhs_index] += rev_der[op_index];
+        // rev_der[lhs_index]
+        if( rev_der[op_index].numel() == 1 ) {
+            if( rev_der[lhs_index].numel() == 0 ) {
+                at::Tensor zeros   = torch::zeros(lhs_shape);
+                rev_der[lhs_index] = zeros + rev_der[op_index];
+            } else {
+                rev_der[lhs_index] += rev_der[op_index];
+            }
         } else {
             assert( n_dim != 0 );
             //
@@ -232,7 +234,13 @@ namespace ad_tensor { namespace dev {
             c10::ArrayRef<long> res_shape = rev_sum_reshape(
                 lock, dim, var_vec[op_index], var_vec[lhs_index]
             );
-            rev_der[lhs_index] += rev_der[op_index].reshape( res_shape );
+            if( rev_der[lhs_index].numel() == 0 ) {
+                at::Tensor zeros   = torch::zeros(lhs_shape);
+                rev_der[lhs_index] = zeros + \
+                    rev_der[op_index].reshape(res_shape);
+            } else {
+                rev_der[lhs_index] += rev_der[op_index].reshape(res_shape);
+            }
             //
             // dim
             lock = false;
