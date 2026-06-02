@@ -51,8 +51,8 @@ namespace ad_tensor { class adfn_t
 {
     friend class ad_t;
 private:
-    dev::agraph_t              m_par;
-    dev::agraph_t              m_var;
+    dev::agraph_t                    m_par;
+    dev::agraph_t                    m_var;
     ad_tensor::vector<at::Tensor>    m_con;
     ad_tensor::vector<size_t>        m_rng_index;
     ad_tensor::vector<ad_type_t>     m_rng_ad_type;
@@ -80,37 +80,42 @@ public:
     }
     //
     // forward_par
-    ad_tensor::vector<at::Tensor> forward_par(
-        const ad_tensor::vector<at::Tensor>& dom_par ,
+    template <class TensorType>
+    ad_tensor::vector<TensorType> forward_par(
+        const ad_tensor::vector<TensorType>& dom_par ,
         const options_t&               options
     ) const;
     //
     // forward_var
-    ad_tensor::vector<at::Tensor> forward_var(
-        const ad_tensor::vector<at::Tensor>& all_par ,
-        const ad_tensor::vector<at::Tensor>& dom_var ,
-        const options_t&               options
+    template <class TensorType>
+    ad_tensor::vector<TensorType> forward_var(
+        const ad_tensor::vector<TensorType>& all_par ,
+        const ad_tensor::vector<TensorType>& dom_var ,
+        const options_t&                     options
     ) const;
     //
     // get_range
-    ad_tensor::vector<at::Tensor> get_range(
-        const ad_tensor::vector<at::Tensor>& all_par ,
-        const ad_tensor::vector<at::Tensor>& all_var
+    template <class TensorType>
+    ad_tensor::vector<TensorType> get_range(
+        const ad_tensor::vector<TensorType>& all_par ,
+        const ad_tensor::vector<TensorType>& all_var
     ) const;
     //
     // forward_der
-    ad_tensor::vector<at::Tensor> forward_der(
-        const ad_tensor::vector<at::Tensor>& all_par ,
-        const ad_tensor::vector<at::Tensor>& all_var ,
-        const ad_tensor::vector<at::Tensor>& dom_der ,
-        const options_t&               options
+    template <class TensorType>
+    ad_tensor::vector<TensorType> forward_der(
+        const ad_tensor::vector<TensorType>& all_par ,
+        const ad_tensor::vector<TensorType>& all_var ,
+        const ad_tensor::vector<TensorType>& dom_der ,
+        const options_t&                     options
     ) const;
     //
     // reverse_der
-    ad_tensor::vector<at::Tensor> reverse_der(
-        const ad_tensor::vector<at::Tensor>& all_par ,
-        const ad_tensor::vector<at::Tensor>& all_var ,
-        const ad_tensor::vector<at::Tensor>& rng_der ,
-        const options_t&               options
+    template <class TensorType>
+    ad_tensor::vector<TensorType> reverse_der(
+        const ad_tensor::vector<TensorType>& all_par ,
+        const ad_tensor::vector<TensorType>& all_var ,
+        const ad_tensor::vector<TensorType>& rng_der ,
+        const options_t&                     options
     ) const;
 }; }

@@ -73,11 +73,12 @@ namespace ad_tensor { // BEGIN_NAMESPACE_AD_TENSOR
 //
 // BEGIN_REVERSE_DER
 // dom_der = adfn.reverse_der(all_par, all_var, rng_der, options)
-ad_tensor::vector<at::Tensor> adfn_t::reverse_der(
-    const ad_tensor::vector<at::Tensor>& all_par ,
-    const ad_tensor::vector<at::Tensor>& all_var ,
-    const ad_tensor::vector<at::Tensor>& rng_der ,
-    const options_t&               options
+template <class TensorType>
+ad_tensor::vector<TensorType> adfn_t::reverse_der(
+    const ad_tensor::vector<TensorType>& all_par ,
+    const ad_tensor::vector<TensorType>& all_var ,
+    const ad_tensor::vector<TensorType>& rng_der ,
+    const options_t&                     options
 ) const
 // END_REVERSE_DER
 {
@@ -115,10 +116,10 @@ ad_tensor::vector<at::Tensor> adfn_t::reverse_der(
     //
     // n_op, n_all, empty
     size_t n_op      = m_var.m_op_seq.size();
-    at::Tensor empty = torch::empty( {0} );
+    TensorType empty = torch::empty( {0} );
     //
     // all_der
-    ad_tensor::vector<at::Tensor> all_der( n_op, empty );
+    ad_tensor::vector<TensorType> all_der( n_op, empty );
     for(size_t i = 0; i < m_rng_index.size(); ++i) {
         if( m_rng_ad_type[i] == ad_type_t::variable )  {
             all_der[ m_rng_index[i] ] = rng_der[i];
@@ -136,8 +137,8 @@ ad_tensor::vector<at::Tensor> adfn_t::reverse_der(
             //
             // base_op
             dev::op_enum_t op_enum = m_var.m_op_seq[ op_index ];
-            const dev::base_op_t<at::Tensor>& base_op =
-            dev::op_enum2derive_op<at::Tensor>( op_enum );
+            const dev::base_op_t<TensorType>& base_op =
+            dev::op_enum2derive_op<TensorType>( op_enum );
             //
             // all_der
             base_op.reverse_der(
@@ -163,7 +164,7 @@ ad_tensor::vector<at::Tensor> adfn_t::reverse_der(
     }
     //
     // dom_der
-    ad_tensor::vector<at::Tensor> dom_der;
+    ad_tensor::vector<TensorType> dom_der;
     for(size_t j = 0; j < m_var.m_n_dom; ++j) {
         if( all_der[j].numel() == 0 ) {
             dom_der.push_back( torch::zeros( all_var[j].sizes() ) );
@@ -180,5 +181,11 @@ ad_tensor::vector<at::Tensor> adfn_t::reverse_der(
     }
     return dom_der;
 }
+template ad_tensor::vector<at::Tensor> adfn_t::reverse_der(
+    const ad_tensor::vector<at::Tensor>& all_par ,
+    const ad_tensor::vector<at::Tensor>& all_var ,
+    const ad_tensor::vector<at::Tensor>& rng_der ,
+    const options_t&                     options
+) const;
 
 } // END_NAMESPACE_AD_TENSOR

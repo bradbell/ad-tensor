@@ -61,10 +61,11 @@ namespace ad_tensor { // BEGIN_NAMESPACE_AD_TENSOR
 //
 // BEGIN_FORWARD_VAR
 // all_var = adfn.forward_var(all_par, dom_var, options)
-ad_tensor::vector<at::Tensor> adfn_t::forward_var(
-    const ad_tensor::vector<at::Tensor>& all_par ,
-    const ad_tensor::vector<at::Tensor>& dom_var ,
-    const options_t&               options
+template <class TensorType>
+ad_tensor::vector<TensorType> adfn_t::forward_var(
+    const ad_tensor::vector<TensorType>& all_par ,
+    const ad_tensor::vector<TensorType>& dom_var ,
+    const options_t&                     options
 ) const
 // END_FORWARD_VAR
 {
@@ -98,10 +99,10 @@ ad_tensor::vector<at::Tensor> adfn_t::forward_var(
     //
     // n_op, n_all, empty
     size_t n_op      = m_var.m_op_seq.size();
-    at::Tensor empty = torch::empty( {0} );
+    TensorType empty = torch::empty( {0} );
     //
     // all_var
-    ad_tensor::vector<at::Tensor> all_var =  dom_var ;
+    ad_tensor::vector<TensorType> all_var =  dom_var ;
     all_var.resize( n_op, empty );
     //
     // all_var
@@ -109,8 +110,8 @@ ad_tensor::vector<at::Tensor> adfn_t::forward_var(
         //
         // base_op
         dev::op_enum_t op_enum = m_var.m_op_seq[ op_index ];
-        const dev::base_op_t<at::Tensor>& base_op =
-            dev::op_enum2derive_op<at::Tensor>( op_enum );
+        const dev::base_op_t<TensorType>& base_op =
+            dev::op_enum2derive_op<TensorType>( op_enum );
         //
         // all_var
         base_op.forward_var(op_index, m_var, m_con, all_par, all_var);
@@ -133,5 +134,10 @@ ad_tensor::vector<at::Tensor> adfn_t::forward_var(
     }
     return all_var;
 }
+template ad_tensor::vector<at::Tensor> adfn_t::forward_var(
+    const ad_tensor::vector<at::Tensor>& all_par ,
+    const ad_tensor::vector<at::Tensor>& dom_var ,
+    const options_t&                     options
+) const;
 
 } // END_NAMESPACE_AD_TENSOR
