@@ -60,14 +60,6 @@ is the vector containing all the variable tensors..
 Pure Virtual Functions
 **********************
 
-op_enum
-=======
-This function returns the :ref:`op_enum-name` value
-for the corresponding operator.
-{xrst_literal ,
-    BEGIN_OP_ENUM, END_OP_ENUM
-}
-
 forward_par
 ===========
 For this function, arg_type[arg_index] is never variable.
@@ -143,10 +135,6 @@ template<class TensorType> struct base_op_t
         const ad_tensor::vector<TensorType>& par_vec   ,
         const ad_tensor::vector<TensorType>& var_vec   );
     // END_TENSOR_AT_ARG_INDEX
-    //
-    // BEGIN_OP_ENUM
-    virtual op_enum_t op_enum(void) const = 0;
-    // END_OP_ENUM
     //
     // BEGIN_FORWARD_PAR
     virtual void forward_par(

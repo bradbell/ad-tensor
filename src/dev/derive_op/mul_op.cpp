@@ -7,11 +7,6 @@
 #include <ad_tensor/dev/plus_minus_equal.hpp>
 //
 namespace ad_tensor { namespace dev {
-    //
-    // op_enum
-    op_enum_t mul_op_t::op_enum(void) const {
-        return op_enum_t::mul;
-    }
     // ------------------------------------------------------------------------
     // forward_par
     void mul_op_t::forward_par(

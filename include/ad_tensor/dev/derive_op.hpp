@@ -42,8 +42,6 @@ This maps op_enum_t values to the corresponding base_op_t<at::Tensor> value:
 #define OP_DERIVE(op_name) \
     struct op_name ## _t : public base_op_t<at::Tensor> { \
         \
-        op_enum_t op_enum(void) const override; \
-        \
         void forward_par( \
             size_t                                  op_index    , \
             const agraph_t&                         agraph      , \

@@ -8,11 +8,6 @@
 //
 namespace ad_tensor { namespace dev {
     // ------------------------------------------------------------------------
-    // op_enum
-    op_enum_t div_op_t::op_enum(void) const {
-        return op_enum_t::div;
-    }
-    // ------------------------------------------------------------------------
     // forward_par
     void div_op_t::forward_par(
         size_t                                  op_index    ,
