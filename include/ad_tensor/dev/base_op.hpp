@@ -26,7 +26,6 @@ and its derived classes, are static or like static functions
 that are grouped by derived class.
 {xrst_toc_table
     include/ad_tensor/dev/derive_op.hpp
-    src/dev/base_op/static.cpp
 }
 
 Common Arguments
@@ -122,20 +121,6 @@ namespace ad_tensor { namespace dev {
 template<class TensorType> struct base_op_t
 // END_BASE_OP
 {   //
-    // BEGIN_TENSOR_AT_ARG_INDEX
-    static const TensorType& tensor_at_arg_index(
-        size_t                               arg_index ,
-        const agraph_t&                      agraph    ,
-        const ad_tensor::vector<TensorType>& con_vec   ,
-        const ad_tensor::vector<TensorType>& par_vec   );
-    static const TensorType& tensor_at_arg_index(
-        size_t                               arg_index ,
-        const agraph_t&                      agraph    ,
-        const ad_tensor::vector<TensorType>& con_vec   ,
-        const ad_tensor::vector<TensorType>& par_vec   ,
-        const ad_tensor::vector<TensorType>& var_vec   );
-    // END_TENSOR_AT_ARG_INDEX
-    //
     // BEGIN_FORWARD_PAR
     virtual void forward_par(
         size_t                                  op_index    ,

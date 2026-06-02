@@ -23,6 +23,7 @@ Contents
     src/dev/broadcast.cpp
     src/dev/rev_sum_reshape.cpp
     src/dev/size_ptr2array_ref.cpp
+    src/dev/tensor_at_index.cpp
 }
 {xrst_comment END_SORT_THIS_LINE_MINUS_2}
 

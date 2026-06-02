@@ -13,7 +13,6 @@ add_library(ad_tensor SHARED
     adfn/forward_var.cpp
     adfn/get_range.cpp
     adfn/reverse_der.cpp
-    dev/base_op/static.cpp
     dev/broadcast.cpp
     dev/derive_op/add_op.cpp
     dev/derive_op/div_op.cpp
@@ -26,6 +25,7 @@ add_library(ad_tensor SHARED
     dev/rev_sum_reshape.cpp
     dev/size_ptr2array_ref.cpp
     dev/tape.cpp
+    dev/tensor_at_index.cpp
     dev/to_string.cpp
     # END_SORT_THIS_LINE_MINUS_1
 )

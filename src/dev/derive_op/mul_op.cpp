@@ -5,6 +5,7 @@
 #include <ad_tensor/dev/derive_op.hpp>
 #include <ad_tensor/dev/broadcast.hpp>
 #include <ad_tensor/dev/plus_minus_equal.hpp>
+#include <ad_tensor/dev/tensor_at_index.hpp>
 //
 namespace ad_tensor { namespace dev {
     // ------------------------------------------------------------------------
