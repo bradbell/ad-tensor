@@ -55,9 +55,9 @@ TEST(examples_adfn, get_range)  {
     x.push_back( torch::tensor( {9.0, 10.0} ) );
     //
     // y
-    ad_tensor::vector<Tensor> all_par = f.forward_par(p, options);
-    ad_tensor::vector<Tensor> all_var = f.forward_var(all_par, x, options);
-    ad_tensor::vector<Tensor> y       = f.get_range(all_par, all_var);
+    ad_tensor::vector<Tensor> par_all = f.forward_par(p, options);
+    ad_tensor::vector<Tensor> var_all = f.forward_var(par_all, x, options);
+    ad_tensor::vector<Tensor> y       = f.get_range(par_all, var_all);
     //
     EXPECT_EQ( y.size(), 3 );
     //

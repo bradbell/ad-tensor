@@ -40,12 +40,12 @@ TEST(examples_adfn, forward_der)  {
     // We use f for the adfn_t object.
     adfn_t f = ad_t::stop_recording(ay);
     //
-    // all_var
-    vector<Tensor> all_par;
-    vector<Tensor> all_var = f.forward_var(all_par, x, options);
+    // var_all
+    vector<Tensor> par_all;
+    vector<Tensor> var_all = f.forward_var(par_all, x, options);
     //
     // y
-    vector<Tensor> y = f.get_range(all_par, all_var);
+    vector<Tensor> y = f.get_range(par_all, var_all);
     //
     EXPECT_EQ( y.size(), ay.size() );
     //
@@ -59,7 +59,7 @@ TEST(examples_adfn, forward_der)  {
     //
     // dy
     vector<Tensor> dy = f.forward_der(
-        all_par, all_var, dx, options
+        par_all, var_all, dx, options
     );
     //
     EXPECT_EQ( dy.size(), y.size() );

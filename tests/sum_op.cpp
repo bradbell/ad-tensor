@@ -42,12 +42,12 @@ TEST(tests, sum_op)  {
     // y = f(p)
     adfn_t f = ad_t::stop_recording(ay);
     //
-    // all_par, all_var
-    vector<Tensor> all_par = f.forward_par(p, options);
-    vector<Tensor> all_var = f.forward_var(all_par, x, options);
+    // par_all, var_all
+    vector<Tensor> par_all = f.forward_par(p, options);
+    vector<Tensor> var_all = f.forward_var(par_all, x, options);
     //
     // y
-    vector<Tensor> y = f.get_range(all_par, all_var);
+    vector<Tensor> y = f.get_range(par_all, var_all);
     //
     EXPECT_EQ( y.size(), ay.size() );
     //
@@ -62,7 +62,7 @@ TEST(tests, sum_op)  {
     dx.push_back(torch::tensor( { {7.0, 8.0, 9.0}, {10.0, 11.0, 12.0} } ));
     //
     // dy
-    vector<Tensor> dy = f.forward_der(all_par, all_var, dx, options);
+    vector<Tensor> dy = f.forward_der(par_all, var_all, dx, options);
     //
     EXPECT_EQ( dy.size(), y.size() );
     //
@@ -75,7 +75,7 @@ TEST(tests, sum_op)  {
     // dy, dx
     dy[0] = torch::tensor( {2.0} );
     dy[1] = torch::tensor( {3.0, 4.0} );
-    dx    = f.reverse_der(all_par, all_var, dy, options);
+    dx    = f.reverse_der(par_all, var_all, dy, options);
     //
     EXPECT_EQ( x.size(), dx.size() );
     //

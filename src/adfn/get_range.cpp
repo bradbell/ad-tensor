@@ -20,11 +20,11 @@ This returns the range tensors for
     range = adfn(dom_par, dom_var)
 
 
-all_par
+par_all
 *******
 is the value of all the parameters as a function of dom_par.
 
-all_var
+var_all
 *******
 is the value of all the variables as a function of dom_par and dom_var.
 
@@ -45,11 +45,11 @@ Example
 namespace ad_tensor { // BEGIN_NAMESPACE_AD_TENSOR
 //
 // BEGIN_RANGE
-// rng_vec = adfn.get_range(all_par, all_var)
+// rng_vec = adfn.get_range(par_all, var_all)
 template <class TensorType>
 ad_tensor::vector<TensorType> adfn_t::get_range(
-    const ad_tensor::vector<TensorType>& all_par ,
-    const ad_tensor::vector<TensorType>& all_var
+    const ad_tensor::vector<TensorType>& par_all ,
+    const ad_tensor::vector<TensorType>& var_all
 ) const
 // END_RANGE
 {   //
@@ -69,11 +69,11 @@ ad_tensor::vector<TensorType> adfn_t::get_range(
             break;
             //
             case ad_type_t::parameter:
-            rng_vec.push_back( all_par[index] );
+            rng_vec.push_back( par_all[index] );
             break;
             //
             case ad_type_t::variable:
-            rng_vec.push_back( all_var[index] );
+            rng_vec.push_back( var_all[index] );
             break;
             //
             default:
@@ -85,8 +85,8 @@ ad_tensor::vector<TensorType> adfn_t::get_range(
     return rng_vec;
 }
 template ad_tensor::vector<at::Tensor> adfn_t::get_range(
-    const ad_tensor::vector<at::Tensor>& all_par ,
-    const ad_tensor::vector<at::Tensor>& all_var
+    const ad_tensor::vector<at::Tensor>& par_all ,
+    const ad_tensor::vector<at::Tensor>& var_all
 ) const;
 
 } // END_NAMESPACE_AD_TENSOR

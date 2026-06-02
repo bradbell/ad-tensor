@@ -48,22 +48,22 @@ TEST(examples_adfn, forward_var)  {
     x.push_back( torch::tensor( {6.0, 7.0} ) );
     x.push_back( torch::tensor( {8.0, 9.0} ) );
     //
-    // all_var
-    ad_tensor::vector<Tensor> all_par;
-    ad_tensor::vector<Tensor> all_var = f.forward_var(all_par, x, options);
+    // var_all
+    ad_tensor::vector<Tensor> par_all;
+    ad_tensor::vector<Tensor> var_all = f.forward_var(par_all, x, options);
     //
-    EXPECT_EQ( all_var.size(), 4 );
+    EXPECT_EQ( var_all.size(), 4 );
     //
-    bool equal = all_var[0].equal( torch::tensor({6.0, 7.0}) );
+    bool equal = var_all[0].equal( torch::tensor({6.0, 7.0}) );
     EXPECT_TRUE( equal );
     //
-    equal = all_var[1].equal( torch::tensor({8.0, 9.0}) );
+    equal = var_all[1].equal( torch::tensor({8.0, 9.0}) );
     EXPECT_TRUE( equal );
     //
-    equal = all_var[2].equal( torch::tensor({48.0 , 63.0}) );
+    equal = var_all[2].equal( torch::tensor({48.0 , 63.0}) );
     EXPECT_TRUE( equal );
     //
-    equal = all_var[3].equal( torch::tensor({47.0 , 62.0}) );
+    equal = var_all[3].equal( torch::tensor({47.0 , 62.0}) );
     EXPECT_TRUE( equal );
 }
 // END_CPP

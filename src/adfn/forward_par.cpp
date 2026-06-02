@@ -36,12 +36,12 @@ The possible key,value pairs ( see :ref:`options-name` ) are
     Key, Default, Possible other values
     "trace", "false", "true"
 
-all_par
+par_all
 *******
 A tensor is a parameter tensor if it depends on the tensors in dom_par
 and does not depend on the tensors in dom_var .
-The vector all_par contains all the parameter tensors that are calculated.
-The vector dom_par is a sub-vector at the beginning of all_par.
+The vector par_all contains all the parameter tensors that are calculated.
+The vector dom_par is a sub-vector at the beginning of par_all.
 
 Example
 *******
@@ -55,7 +55,7 @@ Example
 namespace ad_tensor { // BEGIN_NAMESPACE_AD_TENSOR
 //
 // BEGIN_FORWARD_PAR
-// all_par = adfn.forward_par(dom_par, options)
+// par_all = adfn.forward_par(dom_par, options)
 template <class TensorType>
 ad_tensor::vector<TensorType> adfn_t::forward_par(
     const ad_tensor::vector<TensorType>& dom_par ,
@@ -91,11 +91,11 @@ ad_tensor::vector<TensorType> adfn_t::forward_par(
     size_t n_op      = m_par.m_op_seq.size();
     TensorType empty = torch::empty( {0} );
     //
-    // all_par
-    ad_tensor::vector<TensorType> all_par =  dom_par ;
-    all_par.resize( n_op, empty );
+    // par_all
+    ad_tensor::vector<TensorType> par_all =  dom_par ;
+    par_all.resize( n_op, empty );
     //
-    // all_par
+    // par_all
     for(size_t op_index = 0; op_index < n_op; ++op_index) {
         //
         // base_op
@@ -103,12 +103,12 @@ ad_tensor::vector<TensorType> adfn_t::forward_par(
         const dev::base_op_t<TensorType>& base_op =
             dev::op_enum2derive_op<TensorType>( op_enum );
         //
-        // all_par
-        base_op.forward_par(op_index, m_par, m_con, all_par);
+        // par_all
+        base_op.forward_par(op_index, m_par, m_con, par_all);
         //
         if( trace) {
-            string element = to_string( all_par[op_index] );
-            cout << "all_par[" << op_index << "] = " << element;
+            string element = to_string( par_all[op_index] );
+            cout << "par_all[" << op_index << "] = " << element;
             cout << ", " << to_string(op_enum)  << "(";
             size_t start = m_par.m_arg_start[op_index];
             size_t stop  = m_par.m_arg_start[op_index + 1];
@@ -122,7 +122,7 @@ ad_tensor::vector<TensorType> adfn_t::forward_par(
     if( trace ) {
         cout << "End tracing adfn::forward_par\n";
     }
-    return all_par;
+    return par_all;
 }
 template ad_tensor::vector<at::Tensor> adfn_t::forward_par(
     const ad_tensor::vector<at::Tensor>& dom_par ,

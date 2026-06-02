@@ -36,12 +36,12 @@ TEST(examples_adfn, reverse_der)  {
     // y = f(x)
     adfn_t f = ad_t::stop_recording(ay);
     //
-    // all_var
-    vector<Tensor> all_par;
-    vector<Tensor> all_var = f.forward_var(all_par, x, options);
+    // var_all
+    vector<Tensor> par_all;
+    vector<Tensor> var_all = f.forward_var(par_all, x, options);
     //
     // y
-    vector<Tensor> y = f.get_range(all_par, all_var);
+    vector<Tensor> y = f.get_range(par_all, var_all);
     //
     EXPECT_EQ( y.size(), ay.size() );
     //
@@ -53,7 +53,7 @@ TEST(examples_adfn, reverse_der)  {
     dy.push_back( torch::tensor( {1.0, 2.0} ) );
     //
     // dx
-    vector<Tensor> dx = f.reverse_der(all_par, all_var, dy, options);
+    vector<Tensor> dx = f.reverse_der(par_all, var_all, dy, options);
     //
     EXPECT_EQ( dx.size(), x.size() );
     //

@@ -25,14 +25,14 @@ Prototype
     BEGIN_REVERSE_DER, END_REVERSE_DER
 }
 
-all_par
+par_all
 *******
 is the value of all the parameters for this function.
 This is usually calculated by :ref:`adfn_forward_par-name` .
-In the special case where dom_par is empty, all_par is also empty
+In the special case where dom_par is empty, par_all is also empty
 and need not be computed by adfn::forward_par .
 
-all_var
+var_all
 *******
 is the value of all the variables for this function.
 This is usually calculated by :ref:`adfn_forward_var-name` .
@@ -72,11 +72,11 @@ Example
 namespace ad_tensor { // BEGIN_NAMESPACE_AD_TENSOR
 //
 // BEGIN_REVERSE_DER
-// dom_der = adfn.reverse_der(all_par, all_var, rng_der, options)
+// dom_der = adfn.reverse_der(par_all, var_all, rng_der, options)
 template <class TensorType>
 ad_tensor::vector<TensorType> adfn_t::reverse_der(
-    const ad_tensor::vector<TensorType>& all_par ,
-    const ad_tensor::vector<TensorType>& all_var ,
+    const ad_tensor::vector<TensorType>& par_all ,
+    const ad_tensor::vector<TensorType>& var_all ,
     const ad_tensor::vector<TensorType>& rng_der ,
     const options_t&                     options
 ) const
@@ -104,13 +104,13 @@ ad_tensor::vector<TensorType> adfn_t::reverse_der(
             string element = to_string( m_con[i] );
             cout << "constant[" << i << "] = " << element << "\n";
         }
-        for(size_t i = 0; i < all_par.size(); ++i) {
-            string element = to_string( all_par[i] );
-            cout << "all_par[" << i << "] = " << element << "\n";
+        for(size_t i = 0; i < par_all.size(); ++i) {
+            string element = to_string( par_all[i] );
+            cout << "par_all[" << i << "] = " << element << "\n";
         }
-        for(size_t i = 0; i < all_var.size(); ++i) {
-            string element = to_string( all_var[i] );
-            cout << "all_var[" << i << "] = " << element << "\n";
+        for(size_t i = 0; i < var_all.size(); ++i) {
+            string element = to_string( var_all[i] );
+            cout << "var_all[" << i << "] = " << element << "\n";
         }
     }
     //
@@ -142,7 +142,7 @@ ad_tensor::vector<TensorType> adfn_t::reverse_der(
             //
             // all_der
             base_op.reverse_der(
-                op_index, m_var, m_con, all_par, all_var, all_der
+                op_index, m_var, m_con, par_all, var_all, all_der
             );
             //
             if( trace) {
@@ -167,7 +167,7 @@ ad_tensor::vector<TensorType> adfn_t::reverse_der(
     ad_tensor::vector<TensorType> dom_der;
     for(size_t j = 0; j < m_var.m_n_dom; ++j) {
         if( all_der[j].numel() == 0 ) {
-            dom_der.push_back( torch::zeros( all_var[j].sizes() ) );
+            dom_der.push_back( torch::zeros( var_all[j].sizes() ) );
         } else {
             dom_der.push_back( all_der[j] );
         }
@@ -182,8 +182,8 @@ ad_tensor::vector<TensorType> adfn_t::reverse_der(
     return dom_der;
 }
 template ad_tensor::vector<at::Tensor> adfn_t::reverse_der(
-    const ad_tensor::vector<at::Tensor>& all_par ,
-    const ad_tensor::vector<at::Tensor>& all_var ,
+    const ad_tensor::vector<at::Tensor>& par_all ,
+    const ad_tensor::vector<at::Tensor>& var_all ,
     const ad_tensor::vector<at::Tensor>& rng_der ,
     const options_t&                     options
 ) const;
