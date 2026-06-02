@@ -131,16 +131,16 @@ namespace ad_tensor { namespace dev { struct base_op_t
 {   //
     // BEGIN_TENSOR_AT_ARG_INDEX
     static const at::Tensor& tensor_at_arg_index(
-        size_t                              arg_index ,
-        const agraph_t&                     agraph    ,
-        const ad_tensor::vector<at::Tensor> con_vec   ,
-        const ad_tensor::vector<at::Tensor> par_vec   );
+        size_t                               arg_index ,
+        const agraph_t&                      agraph    ,
+        const ad_tensor::vector<at::Tensor>& con_vec   ,
+        const ad_tensor::vector<at::Tensor>& par_vec   );
     static const at::Tensor& tensor_at_arg_index(
-        size_t                              arg_index ,
-        const agraph_t&                     agraph    ,
-        const ad_tensor::vector<at::Tensor> con_vec   ,
-        const ad_tensor::vector<at::Tensor> par_vec   ,
-        const ad_tensor::vector<at::Tensor> var_vec   );
+        size_t                               arg_index ,
+        const agraph_t&                      agraph    ,
+        const ad_tensor::vector<at::Tensor>& con_vec   ,
+        const ad_tensor::vector<at::Tensor>& par_vec   ,
+        const ad_tensor::vector<at::Tensor>& var_vec   );
     // END_TENSOR_AT_ARG_INDEX
     //
     // BEGIN_OP_ENUM
