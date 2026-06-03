@@ -9,6 +9,7 @@
     op
     lhs
     rhs
+    numel
 }
 
 The AD Tensor Class
@@ -29,12 +30,14 @@ To Tensor
     BEGIN_TO_TENSOR, END_TO_TENSOR
 }
 
-Sizes
-*****
+sizes, numel
+************
+For *fun* equals ``sizes``, ``numel``,
+return the result for the underlying at::Tensor.
 {xrst_literal ,
     BEGIN_SIZES, END_SIZES
+    BEGIN_NUMEL, END_NUMEL
 }
-return the shape of the underlying tensor.
 
 Binary Operators
 ****************
@@ -172,6 +175,11 @@ public:
     c10::ArrayRef<long> sizes(void) const
     // END_SIZES
     {   return m_tensor.sizes(); }
+    //
+    // BEGIN_NUMEL
+    c10::ArrayRef<long> numel(void) const
+    // END_NUMEL
+    {   return m_tensor.numel(); }
     //
     // BEGIN_TO_TENSOR
     const at::Tensor& tensor(void) const
