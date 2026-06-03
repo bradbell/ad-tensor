@@ -152,6 +152,14 @@ namespace ad_tensor { namespace dev {
                 for_der[lhs_index] * var_vec[rhs_index];
         };
     }
+    template void mul_op_t<ad_t>::forward_der(
+        size_t                                  op_index    ,
+        const agraph_t&                         agraph      ,
+        const ad_tensor::vector<ad_t>&          con_vec     ,
+        const ad_tensor::vector<ad_t>&          par_vec     ,
+        const ad_tensor::vector<ad_t>&          var_vec     ,
+        ad_tensor::vector<ad_t>&                for_der
+    ) const;
     template void mul_op_t<at::Tensor>::forward_der(
         size_t                                  op_index    ,
         const agraph_t&                         agraph      ,
