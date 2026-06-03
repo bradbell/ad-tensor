@@ -21,7 +21,7 @@ Contents
     include/ad_tensor/dev/tape.hpp
     src/ad/sum.cpp
     src/dev/broadcast.cpp
-    src/dev/rev_sum_reshape.cpp
+    src/dev/rev_sum_view.cpp
     src/dev/size_ptr2array_ref.cpp
     src/dev/tensor_at_index.cpp
 }

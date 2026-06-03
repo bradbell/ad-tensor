@@ -48,7 +48,7 @@ with lock false.
 
 arg
 ===
-It helps think of arg as reshaped, with ones in the initial dimensions,
+It helps think of arg as viewed, with ones in the initial dimensions,
 so that its shape as the same length as res.
 
 

@@ -24,7 +24,7 @@ add_library(ad_tensor SHARED
     dev/derive_op/sub_op.cpp
     dev/derive_op/sum_op.cpp
     dev/get_option.cpp
-    dev/rev_sum_reshape.cpp
+    dev/rev_sum_view.cpp
     dev/size_ptr2array_ref.cpp
     dev/tape.cpp
     dev/tensor_at_index.cpp

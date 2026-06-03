@@ -6,7 +6,7 @@
 #include <ad_tensor/ad.hpp>
 #include <ad_tensor/dev/plus_minus_equal.hpp>
 #include <ad_tensor/dev/size_ptr2array_ref.hpp>
-#include <ad_tensor/dev/rev_sum_reshape.hpp>
+#include <ad_tensor/dev/rev_sum_view.hpp>
 //
 namespace ad_tensor { namespace dev {
     // ------------------------------------------------------------------------
@@ -273,21 +273,21 @@ namespace ad_tensor { namespace dev {
             //
             // res_shape
             lock = true;
-            c10::ArrayRef<long> res_shape = rev_sum_reshape(
+            c10::ArrayRef<long> res_shape = rev_sum_view(
                 lock, dim, var_vec[op_index].sizes(), var_vec[lhs_index].sizes()
             );
             if( rev_der[lhs_index].numel() == 0 ) {
                 TensorType zeros   = torch::zeros(lhs_shape);
                 rev_der[lhs_index] = zeros + \
-                    rev_der[op_index].reshape(res_shape);
+                    rev_der[op_index].view(res_shape);
             } else {
-                rev_der[lhs_index] += rev_der[op_index].reshape(res_shape);
+                rev_der[lhs_index] += rev_der[op_index].view(res_shape);
             }
             //
             // dim
             lock = false;
             size_ptr2array_ref(lock);
-            rev_sum_reshape(lock);
+            rev_sum_view(lock);
         }
     }
     template void sum_op_t<at::Tensor>::reverse_der(

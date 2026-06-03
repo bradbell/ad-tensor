@@ -4,10 +4,10 @@
 // ----------------------------------------------------------------------------
 #include <torch/torch.h>
 #include <cassert>
-#include <ad_tensor/dev/rev_sum_reshape.hpp>
+#include <ad_tensor/dev/rev_sum_view.hpp>
 #include <ad_tensor/vector.hpp>
 /*
-{xrst_begin rev_sum_reshape dev}
+{xrst_begin rev_sum_view dev}
 {xrst_spell
     res
 }
@@ -18,13 +18,13 @@ Determine Reshape for a Sum Result it Broadcast to Argument Sizes
 Prototype
 *********
 {xrst_literal ,
-    include/ad_tensor/dev/rev_sum_reshape.hpp
-    BEGIN_REV_SUM_RESHAPE, END_REV_SUM_RESHAPE
+    include/ad_tensor/dev/rev_sum_view.hpp
+    BEGIN_REV_SUM_VIEW, END_REV_SUM_VIEW
 }
 
 lock
 ****
-Calls to rev_sum_reshape must be made in pairs.
+Calls to rev_sum_view must be made in pairs.
 The first (second) call should have lock true (lock false).
 
 dim
@@ -47,14 +47,14 @@ shape
 The return value, shape, is the new shape for the result res
 so the it will properly broadcast to the argument shape.
 The return is thread local and not valid for use by other threads.
-In addition, it only valid until the following call to rev_sum_reshape
+In addition, it only valid until the following call to rev_sum_view
 with lock false.
 
 
-{xrst_end rev_sum_reshape}
+{xrst_end rev_sum_view}
 */
 namespace ad_tensor { namespace dev { // BEGIN_NAMESPACE_AD_TENSOR_DEV
-c10::ArrayRef<long> rev_sum_reshape(
+c10::ArrayRef<long> rev_sum_view(
     bool                       lock      ,
     const c10::ArrayRef<long>& dim       ,
     const c10::ArrayRef<long>& res_shape ,
@@ -70,13 +70,13 @@ c10::ArrayRef<long> rev_sum_reshape(
     //
     // locked
     if( ! lock )
-    {   assert( locked && "reverse_sum_reshape: "
+    {   assert( locked && "reverse_sum_view: "
             "a call with lock false was not preceded by a call with lock true"
         );
         locked = false;
         return c10::ArrayRef<long>();
     }
-    assert( ! locked && "reverse_sum_reshape: "
+    assert( ! locked && "reverse_sum_view: "
         "attempt to get a lock while another call is holding its lock"
     );
     locked = true;
@@ -87,7 +87,7 @@ c10::ArrayRef<long> rev_sum_reshape(
     if( res_len == arg_len ) {
         return arg_shape;
     }
-    assert( res_len < arg_len && "reverse_sum_reshape: "
+    assert( res_len < arg_len && "reverse_sum_view: "
         "res shape is longer than arg shape"
     );
     //
