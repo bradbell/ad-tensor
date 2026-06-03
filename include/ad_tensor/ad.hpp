@@ -7,6 +7,7 @@
 {xrst_begin ad usr}
 {xrst_spell
     op
+    lhs
     rhs
 }
 
@@ -32,8 +33,17 @@ Binary Operators
 ****************
 For *op* equal ``+``, ``-``, ``*``, ``/`` :
 {xrst_code cpp}
-    ad_t operator op (const ad_t& rhs) const
+    lhs op rhs
 {xrst_code}
+where lhs and rhs are const ad_t reference
+
+Compound Assignment Operators
+*****************************
+For *op* equal ``+=``, ``-=``, ``*=``, ``/=`` :
+{xrst_code cpp}
+    lhs op rhs
+{xrst_code}
+where lhs and rhs are ad_t references and rhs is.
 
 Other Member Functions
 **********************
@@ -110,8 +120,14 @@ The ad_t Private Constructor
 //
 // BINARY_OP
 # define BINARY_OP(op, op_enum) \
+    \
     ad_t operator op (const ad_t& rhs) const \
-{ return binary( dev::op_enum_t:: op_enum, *this, rhs ); }
+    { return binary( dev::op_enum_t:: op_enum, *this, rhs ); } \
+    \
+    ad_t& operator op ## = (const ad_t& rhs) { \
+        *this = *this op rhs; \
+        return *this; \
+    }
 //
 // BEGIN_AD_CLASS
 namespace ad_tensor { class ad_t
