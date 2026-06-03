@@ -39,12 +39,12 @@ namespace ad_tensor { namespace dev {
         size_t n_arg = agraph.m_arg_start[op_index+1] - arg_index;
         assert( n_arg == 2 + n_dim );
 #endif
-        // par_index
-        size_t par_index  = agraph.m_arg_value[arg_index];
+        // operand_index
+        size_t operand_index  = agraph.m_arg_value[arg_index];
         //
         if( n_dim == 0 ) {
             // par_vec
-            par_vec[op_index] = par_vec[par_index].sum();
+            par_vec[op_index] = par_vec[operand_index].sum();
         } else {
             //
             // dim
@@ -54,7 +54,7 @@ namespace ad_tensor { namespace dev {
             );
             //
             // par_vec
-            par_vec[op_index] = par_vec[par_index].sum(dim);
+            par_vec[op_index] = par_vec[operand_index].sum(dim);
             //
             // dim
             lock = false;
@@ -104,12 +104,12 @@ namespace ad_tensor { namespace dev {
         size_t n_arg = agraph.m_arg_start[op_index+1] - arg_index;
         assert( n_arg == 2 + n_dim );
 #endif
-        // var_index
-        size_t var_index  = agraph.m_arg_value[arg_index];
+        // operand_index
+        size_t operand_index  = agraph.m_arg_value[arg_index];
         //
         if( n_dim == 0 ) {
             // var_vec
-            var_vec[op_index] = var_vec[var_index].sum();
+            var_vec[op_index] = var_vec[operand_index].sum();
         } else {
             //
             // dim
@@ -120,7 +120,7 @@ namespace ad_tensor { namespace dev {
             assert( dim.size() == n_dim );
             //
             // var_vec
-            var_vec[op_index] = var_vec[var_index].sum(dim);
+            var_vec[op_index] = var_vec[operand_index].sum(dim);
             //
             // dim
             lock = false;
@@ -173,12 +173,12 @@ namespace ad_tensor { namespace dev {
         size_t n_arg = agraph.m_arg_start[op_index+1] - arg_index;
         assert( n_arg == 2 + n_dim );
 #endif
-        // var_index
-        size_t var_index  = agraph.m_arg_value[arg_index];
+        // operand_index
+        size_t operand_index  = agraph.m_arg_value[arg_index];
         //
         if( n_dim == 0 ) {
             // for_der
-            for_der[op_index] = for_der[var_index].sum();
+            for_der[op_index] = for_der[operand_index].sum();
         } else {
             //
             // dim
@@ -189,7 +189,7 @@ namespace ad_tensor { namespace dev {
             assert( dim.size() == n_dim );
             //
             // for_der
-            for_der[op_index] = for_der[var_index].sum(dim);
+            for_der[op_index] = for_der[operand_index].sum(dim);
             //
             // dim
             lock = false;
@@ -249,17 +249,17 @@ namespace ad_tensor { namespace dev {
         size_t n_arg = agraph.m_arg_start[op_index+1] - arg_index;
         assert( n_arg == 2 + n_dim );
 #endif
-        // lhs_index, lhs_shape
-        size_t              lhs_index  = agraph.m_arg_value[arg_index];
-        c10::ArrayRef<long> lhs_shape  = var_vec[lhs_index].sizes();
+        // operand_index, operand_shape
+        size_t              operand_index  = agraph.m_arg_value[arg_index];
+        c10::ArrayRef<long> operand_shape  = var_vec[operand_index].sizes();
         //
-        // rev_der[lhs_index]
+        // rev_der[operand_index]
         if( rev_der[op_index].numel() == 1 ) {
-            if( rev_der[lhs_index].numel() == 0 ) {
-                TensorType zeros   = torch::zeros(lhs_shape);
-                rev_der[lhs_index] = zeros + rev_der[op_index];
+            if( rev_der[operand_index].numel() == 0 ) {
+                TensorType zeros   = torch::zeros(operand_shape);
+                rev_der[operand_index] = zeros + rev_der[op_index];
             } else {
-                rev_der[lhs_index] += rev_der[op_index];
+                rev_der[operand_index] += rev_der[op_index];
             }
         } else {
             assert( n_dim != 0 );
@@ -274,14 +274,17 @@ namespace ad_tensor { namespace dev {
             // res_shape
             lock = true;
             c10::ArrayRef<long> res_shape = rev_sum_view(
-                lock, dim, var_vec[op_index].sizes(), var_vec[lhs_index].sizes()
+                lock,
+                dim,
+                var_vec[op_index].sizes(),
+                var_vec[operand_index].sizes()
             );
-            if( rev_der[lhs_index].numel() == 0 ) {
-                TensorType zeros   = torch::zeros(lhs_shape);
-                rev_der[lhs_index] = zeros + \
+            if( rev_der[operand_index].numel() == 0 ) {
+                TensorType zeros   = torch::zeros(operand_shape);
+                rev_der[operand_index] = zeros + \
                     rev_der[op_index].view(res_shape);
             } else {
-                rev_der[lhs_index] += rev_der[op_index].view(res_shape);
+                rev_der[operand_index] += rev_der[op_index].view(res_shape);
             }
             //
             // dim
