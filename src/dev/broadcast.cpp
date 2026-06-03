@@ -27,14 +27,14 @@ lock
 Calls to broadcast must be made in pairs.
 The first (second) call should have lock true (lock false).
 
-res
-***
-contains the result of the binary operations.
+res_shape
+*********
+contains the shape of the result of the binary operations.
 This is not used and should not be in call when lock is false.
 
 arg
 ***
-contains one of the left or right argument for the binary operation.
+contains the shape of the left or right argument for the binary operation.
 This is not used and should not be in call when lock is false.
 
 dim
@@ -57,9 +57,9 @@ so that its shape as the same length as res.
 namespace ad_tensor { namespace dev {
     // dim = broadcast(res, arg)
     c10::ArrayRef<long> broadcast(
-        bool lock             ,
-        const at::Tensor& res ,
-        const at::Tensor& arg
+        bool                       lock      ,
+        const c10::ArrayRef<long>& res_shape ,
+        const c10::ArrayRef<long>& arg_shape
     ) {
         //
         // locked
@@ -94,8 +94,6 @@ namespace ad_tensor { namespace dev {
 # endif
         //
         // check for case where tensor shapes are equal
-        c10::ArrayRef<long> res_shape = res.sizes();
-        c10::ArrayRef<long> arg_shape = arg.sizes();
         if( res_shape.equals( arg_shape) ) {
             return c10::ArrayRef<long> ();
         }

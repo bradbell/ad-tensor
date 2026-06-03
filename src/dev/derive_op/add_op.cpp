@@ -170,7 +170,7 @@ namespace ad_tensor { namespace dev {
             // dim
             lock = true;
             c10::ArrayRef<long> dim = broadcast(
-                lock, var_vec[op_index], var_vec[lhs_index]
+                lock, var_vec[op_index].sizes(), var_vec[lhs_index].sizes()
             );
             //
             // rev_der[lhs_index] += rev_der[op_index]
@@ -190,7 +190,7 @@ namespace ad_tensor { namespace dev {
             // dim
             lock = true;
             c10::ArrayRef<long> dim = broadcast(
-                lock, var_vec[op_index], var_vec[rhs_index]
+                lock, var_vec[op_index].sizes(), var_vec[rhs_index].sizes()
             );
             //
             // rev_der[rhs_index] += rev_der[op_index]

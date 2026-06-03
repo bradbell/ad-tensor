@@ -9,9 +9,9 @@
 namespace ad_tensor { namespace dev {
     // dim = broadcast(lock, res, arg)
     c10::ArrayRef<long> broadcast(
-        bool              lock                       ,
-        const at::Tensor& res  = torch::empty( {0} ) ,
-        const at::Tensor& arg  = torch::empty( {0} )
+        bool                       lock                               ,
+        const c10::ArrayRef<long>& res_shape  = c10::ArrayRef<long>() ,
+        const c10::ArrayRef<long>& arg_shape  = c10::ArrayRef<long>()
     );
 } }
 // END_BROADCAST
