@@ -127,6 +127,13 @@ namespace ad_tensor { namespace dev {
             size_ptr2array_ref(lock);
         }
     }
+    template void sum_op_t<ad_t>::forward_var(
+        size_t                                  op_index    ,
+        const agraph_t&                         agraph      ,
+        const ad_tensor::vector<ad_t>&          con_vec     ,
+        const ad_tensor::vector<ad_t>&          par_vec     ,
+        ad_tensor::vector<ad_t>&                var_vec
+    ) const;
     template void sum_op_t<at::Tensor>::forward_var(
         size_t                                  op_index    ,
         const agraph_t&                         agraph      ,

@@ -80,6 +80,13 @@ namespace ad_tensor { namespace dev {
         // var_vec
         var_vec[op_index] = lhs_tensor + rhs_tensor;
     }
+    template void add_op_t<ad_t>::forward_var(
+        size_t                                  op_index    ,
+        const agraph_t&                         agraph      ,
+        const ad_tensor::vector<ad_t>&          con_vec     ,
+        const ad_tensor::vector<ad_t>&          par_vec     ,
+        ad_tensor::vector<ad_t>&                var_vec
+    ) const;
     template void add_op_t<at::Tensor>::forward_var(
         size_t                                  op_index    ,
         const agraph_t&                         agraph      ,
