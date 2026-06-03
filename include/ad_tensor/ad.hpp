@@ -29,6 +29,13 @@ To Tensor
     BEGIN_TO_TENSOR, END_TO_TENSOR
 }
 
+Sizes
+*****
+{xrst_literal ,
+    BEGIN_SIZES, END_SIZES
+}
+return the shape of the underlying tensor.
+
 Binary Operators
 ****************
 For *op* equal ``+``, ``-``, ``*``, ``/`` :
@@ -160,6 +167,11 @@ public:
     // BEGIN_PUBLIC_CTOR
     ad_t( const at::Tensor& tensor );
     // END_PUBLIC_CTOR
+    //
+    // BEGIN_SIZES
+    c10::ArrayRef<long> sizes(void) const
+    // END_SIZES
+    {   return m_tensor.sizes(); }
     //
     // BEGIN_TO_TENSOR
     const at::Tensor& tensor(void) const
