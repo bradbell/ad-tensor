@@ -44,24 +44,24 @@ where start be the length of arg_value and arg_type before this call to
 {xrst_end ad_minus}
 */
 // BEGIN_UNARY_MINUS
-ad_t ad_t::minus(const ad_t& operand )
+ad_t ad_t::operator-(void) const
 // END_UNARY_MINUS
 {
     //
     // res_tensor
-    at::Tensor res_tensor = - operand.tensor();
+    at::Tensor res_tensor = - m_tensor;
     //
     // tape
     dev::tape_t& tape = dev::this_threads_tape();
     if( ! tape.m_recording ) {
         return ad_t( res_tensor );
     }
-    dev::user_assert( operand.m_tape_id == tape.m_tape_id ,
+    dev::user_assert( m_tape_id == tape.m_tape_id ,
         "minus operand does not match tape that is recording"
     );
     //
     // res_ad_type
-    ad_type_t res_ad_type = operand.m_ad_type;
+    ad_type_t res_ad_type = m_ad_type;
     //
     // res_tape_id
     size_t res_tape_id = tape.m_tape_id;
@@ -91,8 +91,8 @@ ad_t ad_t::minus(const ad_t& operand )
         agraph->m_op_seq.push_back( dev::op_enum_t::minus );
         agraph->m_arg_start.push_back( agraph->m_arg_value.size() );
         //
-        agraph->m_arg_value.push_back( operand.m_index );
-        agraph->m_arg_type.push_back( operand.m_ad_type );
+        agraph->m_arg_value.push_back( m_index );
+        agraph->m_arg_type.push_back( m_ad_type );
     }
     return ad_t(res_tape_id, res_index, res_tensor, res_ad_type);
 }

@@ -165,7 +165,6 @@ private:
     static ad_t binary(
         dev::op_enum_t op_enum, const ad_t& lhs, const ad_t& rhs
     );
-    static ad_t minus(const ad_t& operand);
 public:
     // BEGIN_PUBLIC_CTOR
     ad_t( const at::Tensor& tensor );
@@ -206,7 +205,7 @@ public:
     BINARY_OP(/, div)
     //
     // minus
-    ad_t operator -(void) const { return minus( *this ); }
+    ad_t operator -(void) const;
     //
     // sum
     ad_t sum(c10::ArrayRef<long> dim = c10::ArrayRef<long>() ) const;
