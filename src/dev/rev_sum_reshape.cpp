@@ -32,14 +32,14 @@ dim
 is the dimension argument to the sum operation.
 This is not used and should not be in call when lock is false.
 
-res
-***
-contains the result of the sum operation.
+res_shape
+*********
+contains the shape of the result of the sum operation.
 This is not used and should not be in call when lock is false.
 
-arg
-***
-contains one of the tensor argument to the sum operation.
+arg_shape
+*********
+contains the shape of the tensor argument to the sum operation.
 This is not used and should not be in call when lock is false.
 
 shape
@@ -55,10 +55,11 @@ with lock false.
 */
 namespace ad_tensor { namespace dev { // BEGIN_NAMESPACE_AD_TENSOR_DEV
 c10::ArrayRef<long> rev_sum_reshape(
-    bool                       lock,
-    const c10::ArrayRef<long>& dim ,
-    const at::Tensor&          res  ,
-    const at::Tensor&          arg  ) {
+    bool                       lock      ,
+    const c10::ArrayRef<long>& dim       ,
+    const c10::ArrayRef<long>& res_shape ,
+    const c10::ArrayRef<long>& arg_shape
+) {
     //
     // locked
     thread_local bool locked = false;
@@ -79,10 +80,6 @@ c10::ArrayRef<long> rev_sum_reshape(
         "attempt to get a lock while another call is holding its lock"
     );
     locked = true;
-    //
-    // res_shape, arg_shape
-    c10::ArrayRef<long> res_shape = res.sizes();
-    c10::ArrayRef<long> arg_shape = arg.sizes();
     //
     // res_len, arg_len
     size_t res_len = res_shape.size();

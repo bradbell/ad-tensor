@@ -10,9 +10,9 @@ namespace ad_tensor { namespace dev {
     // shape = rev_sum_reshape(lock, dim, res, arg)
     c10::ArrayRef<long> rev_sum_reshape(
         bool                        lock                        ,
-        const c10::ArrayRef<long>&  dim = c10::ArrayRef<long>() ,
-        const at::Tensor&           res  = torch::empty( {0} )  ,
-        const at::Tensor&           arg  = torch::empty( {0} )
+        const c10::ArrayRef<long>&  dim       = c10::ArrayRef<long>() ,
+        const c10::ArrayRef<long>&  res_shape = c10::ArrayRef<long>() ,
+        const c10::ArrayRef<long>&  arg_shape = c10::ArrayRef<long>()
     );
 } }
 // END_REV_SUM_RESHAPE

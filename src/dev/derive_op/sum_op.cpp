@@ -252,7 +252,7 @@ namespace ad_tensor { namespace dev {
             // res_shape
             lock = true;
             c10::ArrayRef<long> res_shape = rev_sum_reshape(
-                lock, dim, var_vec[op_index], var_vec[lhs_index]
+                lock, dim, var_vec[op_index].sizes(), var_vec[lhs_index].sizes()
             );
             if( rev_der[lhs_index].numel() == 0 ) {
                 TensorType zeros   = torch::zeros(lhs_shape);
