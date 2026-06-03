@@ -56,6 +56,7 @@ The ad_t Class Developer Documentation
 ######################################
 {xrst_toc_table after
     src/ad/binary.cpp
+    src/ad/minus.cpp
 }
 
 {xrst_end ad_dev}
@@ -126,17 +127,19 @@ private:
     // END_MEMBER_DATA
     //
     // BEGIN_PRIVATE_CTOR
-    ad_t( size_t tape_id, size_t index, const at::Tensor& tensor, ad_type_t ad_type)
+    ad_t(
+        size_t tape_id,
+        size_t index,
+        const at::Tensor& tensor,
+        ad_type_t ad_type )
     : m_tape_id(tape_id), m_index(index), m_tensor(tensor), m_ad_type(ad_type)
     { }
     // END_PRIVATE_CTOR
     //
-    // BEGIN_BINARY
-    // ares = binary( op_enum, lhs, rhs)
     static ad_t binary(
         dev::op_enum_t op_enum, const ad_t& lhs, const ad_t& rhs
     );
-    // END_BINARY
+    static ad_t minus(const ad_t& operand);
 public:
     // BEGIN_PUBLIC_CTOR
     ad_t( const at::Tensor& tensor );
@@ -165,6 +168,9 @@ public:
     BINARY_OP(-, sub)
     BINARY_OP(*, mul)
     BINARY_OP(/, div)
+    //
+    // minus
+    ad_t operator -(void) const { return minus( *this ); }
     //
     // sum
     ad_t sum(c10::ArrayRef<long> dim = c10::ArrayRef<long>() ) const;

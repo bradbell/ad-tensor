@@ -19,12 +19,13 @@ namespace ad_tensor { namespace dev {
     std::string to_string( op_enum_t op_enum) {
         switch(op_enum) {
             // BEGIN_SORT_THIS_LINE_PLUS_1
-            case op_enum_t::add: return "add";
-            case op_enum_t::div: return "div";
-            case op_enum_t::dom: return "dom";
-            case op_enum_t::mul: return "mul";
-            case op_enum_t::sub: return "sub";
-            case op_enum_t::sum: return "sum";
+            case op_enum_t::add:    return "add";
+            case op_enum_t::div:    return "div";
+            case op_enum_t::dom:    return "dom";
+            case op_enum_t::minus:  return "minus";
+            case op_enum_t::mul:    return "mul";
+            case op_enum_t::sub:    return "sub";
+            case op_enum_t::sum:    return "sum";
             // END_SORT_THIS_LINE_MINUS_1
             default:
             assert( false && "to_string(op_enum): unexpected op_enum value");

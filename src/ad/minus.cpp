@@ -3,27 +3,23 @@
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
 #include <ad_tensor/ad.hpp>
-#include <ad_tensor/dev/tape.hpp>
 #include <ad_tensor/dev/op_enum.hpp>
+#include <ad_tensor/dev/tape.hpp>
 #include <ad_tensor/dev/agraph.hpp>
 #include <ad_tensor/dev/user_assert.hpp>
 //
 namespace ad_tensor { // BEGIN_NAMESPACE_AD_TENSOR
 /*
 -------------------------------------------------------------------------------
-{xrst_begin ad_binary dev}
-{xrst_spell
-    lhs
-    rhs
-}
+{xrst_begin ad_minus dev}
 
-Compute and Record Binary Operators
-###################################
+Compute and Record Unary Minus Operations
+#########################################
 
 Prototype
 *********
 {xrst_literal ,
-    BEGIN_BINARY, END_BINARY
+    BEGIN_UNARY_MINUS, END_UNARY_MINUS
 }
 
 Recording
@@ -40,62 +36,32 @@ the following is added to the parameter (variable) acyclic graph:
     :header-rows: 1
 
     arg_index, arg_value, arg_type
-    start + 0, index for lhs, type for lhs
-    start + 1, index for rhs, type for rhs
+    start + 0, index for operand, type for operand
 
 where start be the length of arg_value and arg_type before this call to
-``ad_t::binary`` .
+``ad_t::minus`` .
 
-{xrst_end ad_binary}
+{xrst_end ad_minus}
 */
-// BEGIN_BINARY
-ad_t ad_t::binary(
-    dev::op_enum_t op_enum, const ad_t& lhs, const ad_t& rhs
-)
-// END_BINARY
+// BEGIN_UNARY_MINUS
+ad_t ad_t::minus(const ad_t& operand )
+// END_UNARY_MINUS
 {
     //
     // res_tensor
-    at::Tensor res_tensor;
-    switch(op_enum) {
-        //
-        // add
-        case dev::op_enum_t::add:
-        res_tensor = lhs.tensor() + rhs.tensor();
-        break;
-        //
-        // sub
-        case dev::op_enum_t::sub:
-        res_tensor = lhs.tensor() - rhs.tensor();
-        break;
-        //
-        // mul
-        case dev::op_enum_t::mul:
-        res_tensor = lhs.tensor() * rhs.tensor();
-        break;
-        //
-        // div
-        case dev::op_enum_t::div:
-        res_tensor = lhs.tensor() / rhs.tensor();
-        break;
-        //
-        default:
-        assert( false && "ad_t::binary: invalid value for op_enum");
-    }
+    at::Tensor res_tensor = - operand.tensor();
     //
     // tape
     dev::tape_t& tape = dev::this_threads_tape();
-    if( ! tape.m_recording )
+    if( ! tape.m_recording ) {
         return ad_t( res_tensor );
-    dev::user_assert( lhs.m_tape_id == tape.m_tape_id ,
-        "binary left operand does not match tape that is recording"
-    );
-    dev::user_assert( rhs.m_tape_id == tape.m_tape_id ,
-        "binary right operand does not match tape that is recording"
+    }
+    dev::user_assert( operand.m_tape_id == tape.m_tape_id ,
+        "minus operand does not match tape that is recording"
     );
     //
     // res_ad_type
-    ad_type_t res_ad_type = std::max( lhs.m_ad_type, rhs.m_ad_type );
+    ad_type_t res_ad_type = operand.m_ad_type;
     //
     // res_tape_id
     size_t res_tape_id = tape.m_tape_id;
@@ -115,21 +81,18 @@ ad_t ad_t::binary(
             agraph = &tape.m_par;
         else {
             assert( res_ad_type == ad_type_t::variable  &&
-                "binary opereand is not constant, parameter, or variable"
+                "minus opereand is not constant, parameter, or variable"
             );
             agraph = &tape.m_var;
         }
         //
         // res_index, agraph
         res_index       = agraph->m_op_seq.size();
-        agraph->m_op_seq.push_back( op_enum);
+        agraph->m_op_seq.push_back( dev::op_enum_t::minus );
         agraph->m_arg_start.push_back( agraph->m_arg_value.size() );
         //
-        agraph->m_arg_value.push_back( lhs.m_index );
-        agraph->m_arg_type.push_back( lhs.m_ad_type );
-        //
-        agraph->m_arg_value.push_back( rhs.m_index );
-        agraph->m_arg_type.push_back( rhs.m_ad_type );
+        agraph->m_arg_value.push_back( operand.m_index );
+        agraph->m_arg_type.push_back( operand.m_ad_type );
     }
     return ad_t(res_tape_id, res_index, res_tensor, res_ad_type);
 }

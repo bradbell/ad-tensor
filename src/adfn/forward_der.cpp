@@ -152,12 +152,30 @@ ad_tensor::vector<TensorType> adfn_t::forward_der(
     ad_tensor::vector<TensorType> rng_der;
     TensorType zero = torch::tensor( { 0.0 } );
     for(size_t i = 0; i < m_rng_index.size(); ++i) {
-        size_t var_index = m_rng_index[i];
-        if( m_rng_ad_type[i] ==  ad_type_t::variable ) {
-            rng_der.push_back( all_der[var_index] );
-        } else {
-            c10::ArrayRef<long> shape = var_all[var_index].sizes();
-            rng_der.push_back( torch::zeros( shape ) );
+        size_t index = m_rng_index[i];
+        ad_type_t ad_type  = m_rng_ad_type[i];
+        switch(ad_type) {
+            //
+            case ad_type_t::constant: {
+                c10::ArrayRef<long> shape = m_con[index].sizes();
+                rng_der.push_back( torch::zeros( shape ) );
+            }
+            break;
+            //
+            case ad_type_t::parameter: {
+                c10::ArrayRef<long> shape = par_all[index].sizes();
+                rng_der.push_back( torch::zeros( shape ) );
+            }
+            break;
+            //
+            case ad_type_t::variable:
+            rng_der.push_back( all_der[index] );
+            break;
+            //
+            default:
+            assert( false && "adfn.forward_der: "
+                "a range type is not constant, parameter or variable"
+            );
         }
     }
     if( trace ) {

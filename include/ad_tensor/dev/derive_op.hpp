@@ -88,6 +88,7 @@ namespace ad_tensor { namespace dev {
     OP_DERIVE(add_op)
     OP_DERIVE(div_op)
     OP_DERIVE(dom_op)
+    OP_DERIVE(minus_op)
     OP_DERIVE(mul_op)
     OP_DERIVE(sub_op)
     OP_DERIVE(sum_op)

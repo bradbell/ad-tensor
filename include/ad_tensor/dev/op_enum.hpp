@@ -20,11 +20,12 @@ Enum Values
 // op_enum
 // BEGIN_SORT_THIS_LINE_PLUS_2
 namespace ad_tensor { namespace dev { enum struct op_enum_t {
-    add,  // addition
-    div,  // division
-    dom,  // domain tensor
-    mul,  // multiplication
-    sub,  // subtraction
-    sum,  // summation
+    add,     // binary addition
+    div,     // binary division
+    dom,     // domain tensor
+    minus,   // unary minus
+    mul,     // binary multiplication
+    sub,     // binary subtraction
+    sum,     // summation
 }; } }
 // END_SORT_THIS_LINE_MINUS_2
