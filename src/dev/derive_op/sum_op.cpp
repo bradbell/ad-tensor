@@ -3,6 +3,7 @@
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
 #include <ad_tensor/dev/derive_op.hpp>
+#include <ad_tensor/ad.hpp>
 #include <ad_tensor/dev/plus_minus_equal.hpp>
 #include <ad_tensor/dev/size_ptr2array_ref.hpp>
 #include <ad_tensor/dev/rev_sum_reshape.hpp>
@@ -60,6 +61,12 @@ namespace ad_tensor { namespace dev {
             size_ptr2array_ref(lock);
         }
     }
+    template void sum_op_t<ad_t>::forward_par(
+        size_t                                  op_index    ,
+        const agraph_t&                         agraph      ,
+        const ad_tensor::vector<ad_t>&          con_vec     ,
+        ad_tensor::vector<ad_t>&                par_vec
+    ) const;
     template void sum_op_t<at::Tensor>::forward_par(
         size_t                                  op_index    ,
         const agraph_t&                         agraph      ,

@@ -3,6 +3,7 @@
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
 #include <ad_tensor/dev/derive_op.hpp>
+#include <ad_tensor/ad.hpp>
 #include <ad_tensor/dev/broadcast.hpp>
 #include <ad_tensor/dev/plus_minus_equal.hpp>
 #include <ad_tensor/dev/tensor_at_index.hpp>
@@ -37,6 +38,12 @@ namespace ad_tensor { namespace dev {
         // par_vec
         par_vec[op_index] = lhs_tensor + rhs_tensor;
     }
+    template void add_op_t<ad_t>::forward_par(
+        size_t                                  op_index    ,
+        const agraph_t&                         agraph      ,
+        const ad_tensor::vector<ad_t>&          con_vec     ,
+        ad_tensor::vector<ad_t>&                par_vec
+    ) const;
     template void add_op_t<at::Tensor>::forward_par(
         size_t                                  op_index    ,
         const agraph_t&                         agraph      ,
