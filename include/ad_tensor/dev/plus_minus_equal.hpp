@@ -43,10 +43,10 @@ This is the argument. The special case where arg.numel() is zero
 */
 // BEGIN_REV_PLUS_EQUAL
 namespace ad_tensor { namespace dev {
-    void inline rev_plus_equal(
-        const c10::ArrayRef<long>& dim ,
-        const at::Tensor&              res ,
-        at::Tensor&                    arg )
+    template <class TensorType> void inline rev_plus_equal(
+        const c10::ArrayRef<long>&     dim ,
+        const TensorType&              res ,
+        TensorType&                    arg )
 // END_REV_PLUS_EQUAL
     {   //
         assert( res.numel() != 0 );
@@ -57,7 +57,7 @@ namespace ad_tensor { namespace dev {
                 arg += res;
             }
         } else {
-            at::Tensor compress = res.sum(dim);
+            TensorType compress = res.sum(dim);
             if( arg.numel() == 0 ) {
                 arg = compress;
             } else {
@@ -66,10 +66,10 @@ namespace ad_tensor { namespace dev {
         }
     }
 // BEGIN_REV_MINUS_EQUAL
-    void inline rev_minus_equal(
-        const c10::ArrayRef<long>& dim ,
-        const at::Tensor&              res ,
-        at::Tensor&                    arg )
+    template <class TensorType> void inline rev_minus_equal(
+        const c10::ArrayRef<long>&     dim ,
+        const TensorType&              res ,
+        TensorType&                    arg )
 // END_REV_MINUS_EQUAL
     {   //
         assert( res.numel() != 0 );
@@ -80,7 +80,7 @@ namespace ad_tensor { namespace dev {
                 arg -= res;
             }
         } else {
-            at::Tensor compress = res.sum(dim);
+            TensorType compress = res.sum(dim);
             if( arg.numel() == 0 ) {
                 arg = - compress;
             } else {
