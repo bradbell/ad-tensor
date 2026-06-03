@@ -10,6 +10,7 @@ add_executable(tests
     dev/tape.cpp
     minus_op.cpp
     sum_op.cpp
+    view_op.cpp
 )
 # END_SORT_THIS_LINE_MINUS_2
 #

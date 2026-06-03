@@ -16,6 +16,7 @@ namespace ad_tensor { namespace dev {
         static const mul_op_t<TensorType>    mul_op;
         static const sub_op_t<TensorType>    sub_op;
         static const sum_op_t<TensorType>    sum_op;
+        static const view_op_t<TensorType>   view_op;
         // END_SORT_THIS_LINE_MINUS_1
         //
         switch(op_enum) {
@@ -27,6 +28,7 @@ namespace ad_tensor { namespace dev {
             case op_enum_t::mul:    return mul_op;
             case op_enum_t::sub:    return sub_op;
             case op_enum_t::sum:    return sum_op;
+            case op_enum_t::view:   return view_op;
             // END_SORT_THIS_LINE_MINUS_1
             //
             default:
