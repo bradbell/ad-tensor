@@ -26,6 +26,7 @@ namespace ad_tensor { namespace dev { enum struct op_enum_t {
     minus,   // unary minus
     mul,     // binary multiplication
     sub,     // binary subtraction
-    sum,     // summation
+    sum,     // unary summation
+    view,    // unary view
 }; } }
 // END_SORT_THIS_LINE_MINUS_2

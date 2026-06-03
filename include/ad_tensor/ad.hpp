@@ -77,6 +77,8 @@ The ad_t Class Developer Documentation
 {xrst_toc_table after
     src/ad/binary.cpp
     src/ad/minus.cpp
+    src/ad/sum.cpp
+    src/ad/view.cpp
 }
 
 {xrst_end ad_dev}
@@ -208,5 +210,9 @@ public:
     ad_t operator -(void) const;
     //
     // sum
-    ad_t sum(c10::ArrayRef<long> dim = c10::ArrayRef<long>() ) const;
+    ad_t sum(const c10::ArrayRef<long>& dim = c10::ArrayRef<long>() ) const;
+    //
+    // view
+    ad_t view(const c10::ArrayRef<long>& shape) const;
+    //
 }; }

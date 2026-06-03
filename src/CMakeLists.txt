@@ -9,6 +9,7 @@ add_library(ad_tensor SHARED
     ad/minus.cpp
     ad/recording.cpp
     ad/sum.cpp
+    ad/view.cpp
     adfn/forward_der.cpp
     adfn/forward_par.cpp
     adfn/forward_var.cpp
@@ -23,6 +24,7 @@ add_library(ad_tensor SHARED
     dev/derive_op/op_enum2derive_op.cpp
     dev/derive_op/sub_op.cpp
     dev/derive_op/sum_op.cpp
+    dev/derive_op/view_op.cpp
     dev/get_option.cpp
     dev/rev_sum_view.cpp
     dev/size_ptr2array_ref.cpp

@@ -11,21 +11,16 @@
 namespace ad_tensor { // BEGIN_NAMESPACE_AD_TENSOR
 /*
 -------------------------------------------------------------------------------
-{xrst_begin ad_sum dev}
+{xrst_begin ad_view dev}
 
-Compute and Record Sum Function
-###############################
+Create a View of an AD Tensor
+#############################
 
 Prototype
 *********
 {xrst_literal ,
-    BEGIN_SUM, END_SUM
+    BEGIN_VIEW, END_VIEW
 }
-
-Recording
-*********
-If this thread's tape is recording, and the result is (is not) a constant,
-the constant is added to the tape (the operation is added to the tape).
 
 Operation
 *********
@@ -36,38 +31,32 @@ the following is added to the parameter (variable) acyclic graph:
     :header-rows: 1
 
     arg_index, arg_value, arg_type
-    start + 0, index for operand, type for operand
-    start + 1, number of dimensions being summed (n_dim), ad_type_t::none
-    start + 2, index of first dimension being summed, ad_type::none
+    start + 0, index for operand,                           type of the operand
+    start + 1, dim number of dimensions in the new shape,    ad_type::none
+    start + 2, size of the first dimension in new shape,     ad_type::none
     ...
-    start + 1 + n_dim, index of last dimension being summed, ad_type::none
+    start + 1 + n_dim, size of last dimension in new shape,  ad_type::none
 
-If n_dim is zero, all the dimensions are summed.
 
 where start be the length of arg_value and arg_type before this call to
-``ad_t::binary`` .
+``ad_t::binary`` and n_dim is the number of dimensions in the new shape
 
-{xrst_end ad_sum}
+{xrst_end ad_view}
 */
-// BEGIN_SUM
-ad_t ad_t::sum(const c10::ArrayRef<long>& dim) const
-// END_SUM
+// BEGIN_VIEW
+ad_t ad_t::view(const c10::ArrayRef<long>& shape) const
+// END_VIEW
 {
     //
     // res_tensor
-    at::Tensor res_tensor = torch::empty( {0} );
-    if( dim.size() == 0 ) {
-        res_tensor = m_tensor.sum();
-    } else {
-        res_tensor = m_tensor.sum(dim);
-    }
+    at::Tensor res_tensor = m_tensor.view(shape);
     //
     // tape
     dev::tape_t& tape = dev::this_threads_tape();
     if( ! tape.m_recording )
         return ad_t( res_tensor );
     dev::user_assert( m_tape_id == tape.m_tape_id ,
-        "AD tensor being summed does not match tape that is recording"
+        "AD tensor being viewed does not match tape that is recording"
     );
     //
     // res_ad_type
@@ -91,25 +80,25 @@ ad_t ad_t::sum(const c10::ArrayRef<long>& dim) const
             agraph = &tape.m_par;
         else {
             assert( res_ad_type == ad_type_t::variable  && "AD tensor being "
-                "summed is not constant, parameter, or variable"
+                "viewed is not constant, parameter, or variable"
             );
             agraph = &tape.m_var;
         }
         //
         // res_index, agraph
         res_index       = agraph->m_op_seq.size();
-        agraph->m_op_seq.push_back( dev::op_enum_t::sum );
+        agraph->m_op_seq.push_back( dev::op_enum_t::view );
         agraph->m_arg_start.push_back( agraph->m_arg_value.size() );
         //
         agraph->m_arg_value.push_back( m_index );
         agraph->m_arg_type.push_back( m_ad_type );
         //
-        size_t n_dim = dim.size();
+        size_t n_dim = shape.size();
         agraph->m_arg_value.push_back( n_dim );
         agraph->m_arg_type.push_back( ad_type_t::none );
         //
         for(size_t i = 0; i < n_dim; ++i) {
-            agraph->m_arg_value.push_back( size_t( dim[i] ) );
+            agraph->m_arg_value.push_back( size_t( shape[i] ) );
             agraph->m_arg_type.push_back( ad_type_t::none );
         }
     }
