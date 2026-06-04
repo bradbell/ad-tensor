@@ -116,7 +116,7 @@ ad_tensor::vector<TensorType> adfn_t::reverse_der(
     //
     // n_op, n_all, empty
     size_t n_op      = m_var.m_op_seq.size();
-    TensorType empty = torch::empty( {0} );
+    TensorType empty = TensorType( torch::empty( {0} ) );
     //
     // all_der
     ad_tensor::vector<TensorType> all_der( n_op, empty );
@@ -159,7 +159,7 @@ ad_tensor::vector<TensorType> adfn_t::reverse_der(
             }
         } else {
             // no longer need this memory so free it.
-            all_der[op_index] = torch::empty( {0} );
+            all_der[op_index] = TensorType( torch::empty( {0} ) );
         }
     }
     //
@@ -167,7 +167,8 @@ ad_tensor::vector<TensorType> adfn_t::reverse_der(
     ad_tensor::vector<TensorType> dom_der;
     for(size_t j = 0; j < m_var.m_n_dom; ++j) {
         if( all_der[j].numel() == 0 ) {
-            dom_der.push_back( torch::zeros( var_all[j].sizes() ) );
+            c10::ArrayRef<long> shape = var_all[j].sizes();
+            dom_der.push_back( TensorType( torch::zeros( shape ) ) );
         } else {
             dom_der.push_back( all_der[j] );
         }
@@ -181,6 +182,12 @@ ad_tensor::vector<TensorType> adfn_t::reverse_der(
     }
     return dom_der;
 }
+template ad_tensor::vector<ad_t> adfn_t::reverse_der(
+    const ad_tensor::vector<ad_t>&       par_all ,
+    const ad_tensor::vector<ad_t>&       var_all ,
+    const ad_tensor::vector<ad_t>&       rng_der ,
+    const options_t&                     options
+) const;
 template ad_tensor::vector<at::Tensor> adfn_t::reverse_der(
     const ad_tensor::vector<at::Tensor>& par_all ,
     const ad_tensor::vector<at::Tensor>& var_all ,

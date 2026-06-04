@@ -117,7 +117,7 @@ ad_tensor::vector<TensorType> adfn_t::forward_der(
     //
     // n_op, n_all, empty
     size_t n_op      = m_var.m_op_seq.size();
-    TensorType empty = torch::empty( {0} );
+    TensorType empty = TensorType( torch::empty( {0} ) );
     //
     // all_der
     ad_tensor::vector<TensorType> all_der =  dom_der ;

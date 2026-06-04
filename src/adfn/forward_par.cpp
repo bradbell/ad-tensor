@@ -89,7 +89,7 @@ ad_tensor::vector<TensorType> adfn_t::forward_par(
     //
     // n_op, n_all, empty
     size_t n_op      = m_par.m_op_seq.size();
-    TensorType empty = torch::empty( {0} );
+    TensorType empty = TensorType( torch::empty( {0} ) );
     //
     // par_all
     ad_tensor::vector<TensorType> par_all =  dom_par ;
@@ -124,6 +124,10 @@ ad_tensor::vector<TensorType> adfn_t::forward_par(
     }
     return par_all;
 }
+template ad_tensor::vector<ad_t> adfn_t::forward_par(
+    const ad_tensor::vector<ad_t>&       dom_par ,
+    const options_t&                     options
+) const;
 template ad_tensor::vector<at::Tensor> adfn_t::forward_par(
     const ad_tensor::vector<at::Tensor>& dom_par ,
     const options_t&                     options

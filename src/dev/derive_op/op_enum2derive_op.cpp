@@ -2,6 +2,7 @@
 // SPDX-FileCopyrightText: Bradley M. Bell <bradbell@seanet.com>
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
+#include <ad_tensor/ad.hpp>
 #include <ad_tensor/dev/derive_op.hpp>
 //
 namespace ad_tensor { namespace dev {
@@ -37,6 +38,9 @@ namespace ad_tensor { namespace dev {
         // should not get here
         return dom_op;
     }
+    template const base_op_t<ad_t>& op_enum2derive_op<ad_t>(
+        op_enum_t op_enum
+    );
     template const base_op_t<at::Tensor>& op_enum2derive_op<at::Tensor>(
         op_enum_t op_enum
     );
