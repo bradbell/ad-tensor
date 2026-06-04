@@ -256,7 +256,7 @@ namespace ad_tensor { namespace dev {
         // rev_der[operand_index]
         if( rev_der[op_index].numel() == 1 ) {
             if( rev_der[operand_index].numel() == 0 ) {
-                TensorType zeros   = torch::zeros(operand_shape);
+                TensorType zeros   = TensorType( torch::zeros(operand_shape) );
                 rev_der[operand_index] = zeros + rev_der[op_index];
             } else {
                 rev_der[operand_index] += rev_der[op_index];
@@ -280,7 +280,7 @@ namespace ad_tensor { namespace dev {
                 var_vec[operand_index].sizes()
             );
             if( rev_der[operand_index].numel() == 0 ) {
-                TensorType zeros   = torch::zeros(operand_shape);
+                TensorType zeros   = TensorType( torch::zeros(operand_shape) );
                 rev_der[operand_index] = zeros + \
                     rev_der[op_index].view(res_shape);
             } else {

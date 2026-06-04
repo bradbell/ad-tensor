@@ -169,7 +169,7 @@ private:
     );
 public:
     // BEGIN_PUBLIC_CTOR
-    ad_t( const at::Tensor& tensor );
+    explicit ad_t( const at::Tensor& tensor );
     // END_PUBLIC_CTOR
     //
     // BEGIN_SIZES
