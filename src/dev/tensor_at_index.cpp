@@ -64,7 +64,7 @@ namespace ad_tensor { namespace dev {
     // ----------------------------------------------------------------------
     // BEGIN_TENSOR_AT_ARG_INDEX_PAR
     template<class TensorType>
-    const TensorType& tensor_at_arg_index(
+    TensorType tensor_at_arg_index(
         size_t                               arg_index ,
         const agraph_t&                      agraph    ,
         const ad_tensor::vector<TensorType>& con_vec   ,
@@ -91,13 +91,13 @@ namespace ad_tensor { namespace dev {
         // should not get here
         return par_vec[0];
     }
-    template const ad_t& tensor_at_arg_index<ad_t>(
+    template ad_t tensor_at_arg_index<ad_t>(
         size_t                               arg_index ,
         const agraph_t&                      agraph    ,
         const ad_tensor::vector<ad_t>&       con_vec   ,
         const ad_tensor::vector<ad_t>&       par_vec
     );
-    template const at::Tensor& tensor_at_arg_index<at::Tensor>(
+    template at::Tensor tensor_at_arg_index<at::Tensor>(
         size_t                               arg_index ,
         const agraph_t&                      agraph    ,
         const ad_tensor::vector<at::Tensor>& con_vec   ,
@@ -106,7 +106,7 @@ namespace ad_tensor { namespace dev {
     // ----------------------------------------------------------------------
     // BEGIN_TENSOR_AT_ARG_INDEX_VAR
     template<class TensorType>
-    const TensorType& tensor_at_arg_index(
+    TensorType tensor_at_arg_index(
         size_t                               arg_index ,
         const agraph_t&                      agraph    ,
         const ad_tensor::vector<TensorType>& con_vec   ,
@@ -138,14 +138,14 @@ namespace ad_tensor { namespace dev {
         // should not get here
         return var_vec[0];
     }
-    template const ad_t& tensor_at_arg_index<ad_t>(
+    template ad_t tensor_at_arg_index<ad_t>(
         size_t                               arg_index ,
         const agraph_t&                      agraph    ,
         const ad_tensor::vector<ad_t>&       con_vec   ,
         const ad_tensor::vector<ad_t>&       par_vec   ,
         const ad_tensor::vector<ad_t>&       var_vec
     );
-    template const at::Tensor& tensor_at_arg_index<at::Tensor>(
+    template at::Tensor tensor_at_arg_index<at::Tensor>(
         size_t                               arg_index ,
         const agraph_t&                      agraph    ,
         const ad_tensor::vector<at::Tensor>& con_vec   ,

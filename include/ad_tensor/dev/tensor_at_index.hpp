@@ -5,14 +5,14 @@
 // ----------------------------------------------------------------------------
 namespace ad_tensor { namespace dev {
     template <class TensorType>
-    const TensorType& tensor_at_arg_index(
+    TensorType tensor_at_arg_index(
         size_t                               arg_index ,
         const agraph_t&                      agraph    ,
         const ad_tensor::vector<TensorType>& con_vec   ,
         const ad_tensor::vector<TensorType>& par_vec   );
     //
     template <class TensorType>
-    const TensorType& tensor_at_arg_index(
+    TensorType tensor_at_arg_index(
         size_t                               arg_index ,
         const agraph_t&                      agraph    ,
         const ad_tensor::vector<TensorType>& con_vec   ,
