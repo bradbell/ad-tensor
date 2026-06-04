@@ -6,9 +6,11 @@
 #include <string>
 #include <torch/torch.h>
 #include <ad_tensor/ad_type.hpp>
+#include <ad_tensor/ad.hpp>
 #include <ad_tensor/dev/op_enum.hpp>
 namespace ad_tensor { namespace dev {
     std::string to_string(ad_type_t ad_type);
     std::string to_string(const at::Tensor& tensor);
+    std::string to_string(const ad_t& atensor);
     std::string to_string(op_enum_t op_enum);
 } }

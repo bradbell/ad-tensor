@@ -52,4 +52,7 @@ namespace ad_tensor { namespace dev {
         res += "]";
         return res;
     }
+    std::string to_string(const ad_t& atensor) {
+        return to_string( atensor.tensor() );
+    }
 } }
