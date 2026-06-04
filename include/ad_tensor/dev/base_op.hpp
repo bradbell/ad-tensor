@@ -125,7 +125,7 @@ template<class TensorType> struct base_op_t
     virtual void forward_par(
         size_t                                  op_index    ,
         const agraph_t&                         agraph      ,
-        const ad_tensor::vector<TensorType>&    con_vec     ,
+        const ad_tensor::vector<at::Tensor>&    con_vec     ,
         ad_tensor::vector<TensorType>&          par_vec
     ) const = 0;
     // END_FORWARD_PAR
@@ -134,7 +134,7 @@ template<class TensorType> struct base_op_t
     virtual void forward_var(
         size_t                                  op_index    ,
         const agraph_t&                         agraph      ,
-        const ad_tensor::vector<TensorType>&    con_vec     ,
+        const ad_tensor::vector<at::Tensor>&    con_vec     ,
         const ad_tensor::vector<TensorType>&    par_vec     ,
         ad_tensor::vector<TensorType>&          var_vec
     ) const = 0;
@@ -144,7 +144,7 @@ template<class TensorType> struct base_op_t
     virtual void forward_der(
         size_t                                  op_index    ,
         const agraph_t&                         agraph      ,
-        const ad_tensor::vector<TensorType>&    con_vec     ,
+        const ad_tensor::vector<at::Tensor>&    con_vec     ,
         const ad_tensor::vector<TensorType>&    par_vec     ,
         const ad_tensor::vector<TensorType>&    var_vec     ,
         ad_tensor::vector<TensorType>&          for_der
@@ -155,7 +155,7 @@ template<class TensorType> struct base_op_t
     virtual void reverse_der(
         size_t                                  op_index    ,
         const agraph_t&                         agraph      ,
-        const ad_tensor::vector<TensorType>&    con_vec     ,
+        const ad_tensor::vector<at::Tensor>&    con_vec     ,
         const ad_tensor::vector<TensorType>&    par_vec     ,
         const ad_tensor::vector<TensorType>&    var_vec     ,
         ad_tensor::vector<TensorType>&          rev_der

@@ -46,14 +46,14 @@ This maps op_enum_t values to the corresponding base_op_t<TensorType> value:
         void forward_par( \
             size_t                                  op_index    , \
             const agraph_t&                         agraph      , \
-            const ad_tensor::vector<TensorType>&    con_vec     , \
+            const ad_tensor::vector<at::Tensor>&    con_vec     , \
             ad_tensor::vector<TensorType>&          par_vec \
         ) const override; \
         \
         void forward_var( \
             size_t                                  op_index    , \
             const agraph_t&                         agraph      , \
-            const ad_tensor::vector<TensorType>&    con_vec     , \
+            const ad_tensor::vector<at::Tensor>&    con_vec     , \
             const ad_tensor::vector<TensorType>&    par_vec     , \
             ad_tensor::vector<TensorType>&          var_vec \
         ) const override; \
@@ -61,7 +61,7 @@ This maps op_enum_t values to the corresponding base_op_t<TensorType> value:
         void forward_der( \
             size_t                                  op_index    , \
             const agraph_t&                         agraph      , \
-            const ad_tensor::vector<TensorType>&    con_vec     , \
+            const ad_tensor::vector<at::Tensor>&    con_vec     , \
             const ad_tensor::vector<TensorType>&    par_vec     , \
             const ad_tensor::vector<TensorType>&    var_vec     , \
             ad_tensor::vector<TensorType>&          for_der \
@@ -70,7 +70,7 @@ This maps op_enum_t values to the corresponding base_op_t<TensorType> value:
         void reverse_der( \
             size_t                                  op_index    , \
             const agraph_t&                         agraph      , \
-            const ad_tensor::vector<TensorType>&    con_vec     , \
+            const ad_tensor::vector<at::Tensor>&    con_vec     , \
             const ad_tensor::vector<TensorType>&    par_vec     , \
             const ad_tensor::vector<TensorType>&    var_vec     , \
             ad_tensor::vector<TensorType>&          rev_der \

@@ -15,7 +15,7 @@ namespace ad_tensor { namespace dev {
     void minus_op_t<TensorType>::forward_par(
         size_t                                  op_index    ,
         const agraph_t&                         agraph      ,
-        const ad_tensor::vector<TensorType>&    con_vec     ,
+        const ad_tensor::vector<at::Tensor>&    con_vec     ,
         ad_tensor::vector<TensorType>&          par_vec
     ) const {
         //
@@ -38,7 +38,7 @@ namespace ad_tensor { namespace dev {
     template void minus_op_t<ad_t>::forward_par(
         size_t                                  op_index    ,
         const agraph_t&                         agraph      ,
-        const ad_tensor::vector<ad_t>&          con_vec     ,
+        const ad_tensor::vector<at::Tensor>&    con_vec     ,
         ad_tensor::vector<ad_t>&                par_vec
     ) const;
     template void minus_op_t<at::Tensor>::forward_par(
@@ -53,7 +53,7 @@ namespace ad_tensor { namespace dev {
     void minus_op_t<TensorType>::forward_var(
         size_t                                  op_index    ,
         const agraph_t&                         agraph      ,
-        const ad_tensor::vector<TensorType>&    con_vec     ,
+        const ad_tensor::vector<at::Tensor>&    con_vec     ,
         const ad_tensor::vector<TensorType>&    par_vec     ,
         ad_tensor::vector<TensorType>&          var_vec
     ) const {
@@ -77,7 +77,7 @@ namespace ad_tensor { namespace dev {
     template void minus_op_t<ad_t>::forward_var(
         size_t                                  op_index    ,
         const agraph_t&                         agraph      ,
-        const ad_tensor::vector<ad_t>&          con_vec     ,
+        const ad_tensor::vector<at::Tensor>&    con_vec     ,
         const ad_tensor::vector<ad_t>&          par_vec     ,
         ad_tensor::vector<ad_t>&                var_vec
     ) const;
@@ -94,7 +94,7 @@ namespace ad_tensor { namespace dev {
     void minus_op_t<TensorType>::forward_der(
         size_t                                  op_index    ,
         const agraph_t&                         agraph      ,
-        const ad_tensor::vector<TensorType>&    con_vec     ,
+        const ad_tensor::vector<at::Tensor>&    con_vec     ,
         const ad_tensor::vector<TensorType>&    par_vec     ,
         const ad_tensor::vector<TensorType>&    var_vec     ,
         ad_tensor::vector<TensorType>&          for_der
@@ -121,7 +121,7 @@ namespace ad_tensor { namespace dev {
     template void minus_op_t<ad_t>::forward_der(
         size_t                                  op_index    ,
         const agraph_t&                         agraph      ,
-        const ad_tensor::vector<ad_t>&          con_vec     ,
+        const ad_tensor::vector<at::Tensor>&    con_vec     ,
         const ad_tensor::vector<ad_t>&          par_vec     ,
         const ad_tensor::vector<ad_t>&          var_vec     ,
         ad_tensor::vector<ad_t>&                for_der
@@ -140,7 +140,7 @@ namespace ad_tensor { namespace dev {
     void minus_op_t<TensorType>::reverse_der(
         size_t                                  op_index    ,
         const agraph_t&                         agraph      ,
-        const ad_tensor::vector<TensorType>&    con_vec     ,
+        const ad_tensor::vector<at::Tensor>&    con_vec     ,
         const ad_tensor::vector<TensorType>&    par_vec     ,
         const ad_tensor::vector<TensorType>&    var_vec     ,
         ad_tensor::vector<TensorType>&          rev_der
@@ -171,7 +171,7 @@ namespace ad_tensor { namespace dev {
     template void minus_op_t<ad_t>::reverse_der(
         size_t                                  op_index    ,
         const agraph_t&                         agraph      ,
-        const ad_tensor::vector<ad_t>&          con_vec     ,
+        const ad_tensor::vector<at::Tensor>&    con_vec     ,
         const ad_tensor::vector<ad_t>&          par_vec     ,
         const ad_tensor::vector<ad_t>&          var_vec     ,
         ad_tensor::vector<ad_t>&                rev_der

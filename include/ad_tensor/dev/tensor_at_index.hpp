@@ -8,14 +8,14 @@ namespace ad_tensor { namespace dev {
     TensorType tensor_at_arg_index(
         size_t                               arg_index ,
         const agraph_t&                      agraph    ,
-        const ad_tensor::vector<TensorType>& con_vec   ,
+        const ad_tensor::vector<at::Tensor>& con_vec   ,
         const ad_tensor::vector<TensorType>& par_vec   );
     //
     template <class TensorType>
     TensorType tensor_at_arg_index(
         size_t                               arg_index ,
         const agraph_t&                      agraph    ,
-        const ad_tensor::vector<TensorType>& con_vec   ,
+        const ad_tensor::vector<at::Tensor>& con_vec   ,
         const ad_tensor::vector<TensorType>& par_vec   ,
         const ad_tensor::vector<TensorType>& var_vec   );
 } }
