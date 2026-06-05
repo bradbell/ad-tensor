@@ -178,7 +178,7 @@ public:
     {   return m_tensor.sizes(); }
     //
     // BEGIN_NUMEL
-    c10::ArrayRef<long> numel(void) const
+    long numel(void) const
     // END_NUMEL
     {   return m_tensor.numel(); }
     //

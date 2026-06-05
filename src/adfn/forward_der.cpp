@@ -181,7 +181,7 @@ ad_tensor::vector<TensorType> adfn_t::forward_der(
     if( trace ) {
         for(size_t i = 0; i < m_rng_index.size(); ++i) {
             string element = to_string( rng_der[i] );
-            cout << "rmg_der[" << i << "] = " << element << "\n";
+            cout << "rng_der[" << i << "] = " << element << "\n";
         }
         cout << "End tracing adfn::forward_der\n";
     }
