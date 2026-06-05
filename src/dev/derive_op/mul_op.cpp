@@ -202,6 +202,11 @@ namespace ad_tensor { namespace dev {
         // rev_der[lhs_index]
         if( lhs_type == ad_type_t::variable ) {
             //
+            // rhs_tensor
+            TensorType rhs_tensor  = tensor_at_arg_index(
+                arg_index + 1, agraph, con_vec, par_vec, var_vec
+            );
+            //
             // dim
             lock = true;
             c10::ArrayRef<long> dim = broadcast(
@@ -209,7 +214,7 @@ namespace ad_tensor { namespace dev {
             );
             //
             // prod
-            TensorType prod = rev_der[op_index] * var_vec[rhs_index];
+            TensorType prod = rev_der[op_index] * rhs_tensor;
             //
             // rev_der[lhs_index] += prod
             rev_plus_equal(dim, prod, rev_der[lhs_index]);
@@ -222,6 +227,11 @@ namespace ad_tensor { namespace dev {
         // rev_der[rhs_index]
         if( rhs_type == ad_type_t::variable ) {
             //
+            // lhs_tensor
+            TensorType lhs_tensor  = tensor_at_arg_index(
+                arg_index, agraph, con_vec, par_vec, var_vec
+            );
+            //
             // dim
             lock = true;
             c10::ArrayRef<long> dim = broadcast(
@@ -229,7 +239,7 @@ namespace ad_tensor { namespace dev {
             );
             //
             // prod
-            TensorType prod = rev_der[op_index] * var_vec[lhs_index];
+            TensorType prod = rev_der[op_index] * lhs_tensor;
             //
             // rev_der[rhs_index] += prod
             rev_plus_equal(dim, prod, rev_der[rhs_index]);
