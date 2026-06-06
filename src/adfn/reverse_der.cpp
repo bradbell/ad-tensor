@@ -126,9 +126,12 @@ ad_tensor::vector<TensorType> adfn_t::reverse_der(
         }
     }
     //
+    // n_dom_var
+    size_t n_dom_var = m_var.m_dom_shapes.size();
+    //
     // all_der
     size_t op_index = n_op;
-    while( m_var.m_n_dom < op_index )
+    while( n_dom_var < op_index )
     {   --op_index;
         //
         // all_der[op_index]
@@ -165,7 +168,7 @@ ad_tensor::vector<TensorType> adfn_t::reverse_der(
     //
     // dom_der
     ad_tensor::vector<TensorType> dom_der;
-    for(size_t j = 0; j < m_var.m_n_dom; ++j) {
+    for(size_t j = 0; j < n_dom_var; ++j) {
         if( all_der[j].numel() == 0 ) {
             c10::IntArrayRef shape = var_all[j].sizes();
             dom_der.push_back( TensorType( torch::zeros( shape ) ) );
@@ -174,7 +177,7 @@ ad_tensor::vector<TensorType> adfn_t::reverse_der(
         }
     }
     if( trace ) {
-        for(size_t j = 0; j < m_var.m_n_dom; ++j) {
+        for(size_t j = 0; j < n_dom_var; ++j) {
             string element = to_string( dom_der[j] );
             cout << "dom_der[" << j << "] = " << element << "\n";
         }

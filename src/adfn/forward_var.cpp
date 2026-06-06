@@ -75,9 +75,26 @@ ad_tensor::vector<TensorType> adfn_t::forward_var(
     using ad_tensor::dev::to_string;
     //
     // dom_var
-    dev::user_assert( dom_var.size() == m_var.m_n_dom ,
-        "forward_var: dom_var does not have the expected number of tensors"
-    );
+# ifndef NDEBUg
+    const vector< vector<int64_t> >&  shapes = m_var.m_dom_shapes;
+    string msg = "forward_var: ";
+    if( dom_var.size() != shapes.size() ) {
+        msg += "dom_var.size() = " + std::to_string( dom_var.size() );
+        msg += " and its size for this adfn is ";
+        msg += std::to_string( shapes.size() );
+        dev::user_assert( false , msg );
+    }
+    for(size_t i = 0; i < shapes.size(); ++i) {
+        c10::IntArrayRef shape = shapes[i];
+        if( ! dom_var[i].sizes().equals( shape ) ) {
+            msg += "dom_var[" + std::to_string(i) + "] shape is ";
+            msg += dev::to_string( dom_var[i].sizes() );
+            msg += " and its shape for this adfn is ";
+            msg += dev::to_string( shape );
+            dev::user_assert( false , msg );
+        }
+    }
+# endif
     //
     // trace
     string           key           = "trace";

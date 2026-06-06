@@ -70,8 +70,8 @@ TEST(examples_adfn, get_started_first_derivative)  {
     vector<Tensor> dom_par = {x, y};
     //
     // dom_var
-    Tensor slope           = torch::tensor( 1.0 );
-    Tensor intercept       = torch::tensor( 1.0 );
+    Tensor slope           = torch::tensor( {1.0} );
+    Tensor intercept       = torch::tensor( {1.0} );
     vector<Tensor> dom_var = {slope, intercept};
     //
     // par_all, var_all
@@ -111,7 +111,6 @@ TEST(examples_adfn, get_started_second_derivative)  {
     //
     // options
     options_t options;
-    options["trace"] = "true";
     //
     // n_data
     size_t n_data = 3;
@@ -148,8 +147,8 @@ TEST(examples_adfn, get_started_second_derivative)  {
     dom_par = {x, y};
     //
     // dom_var
-    slope     = torch::tensor( 1.0 );
-    intercept = torch::tensor( 1.0 );
+    slope     = torch::tensor( {1.0} );
+    intercept = torch::tensor( {1.0} );
     dom_var   = {slope, intercept};
     //
     // par_all, var_all

@@ -63,7 +63,8 @@ Example
 
 {xrst_end start_recording}
 */
-std::tuple< ad_tensor::vector<adten_t>, ad_tensor::vector<adten_t> > adten_t::start_recording(
+std::tuple< ad_tensor::vector<adten_t>, ad_tensor::vector<adten_t> >
+adten_t::start_recording(
         const ad_tensor::vector<at::Tensor>& dom_par ,
         const ad_tensor::vector<at::Tensor>& dom_var
 )
@@ -96,30 +97,54 @@ std::tuple< ad_tensor::vector<adten_t>, ad_tensor::vector<adten_t> > adten_t::st
     tape.m_tape_id   = tape_id;
     tape.m_recording = true;
     //
+    // tape.m_par.m_dom_shapes
+    tape.m_par.m_dom_shapes.resize( dom_par.size() );
+    for(size_t index = 0; index < dom_par.size(); ++index) {
+        vector<int64_t>& shape = tape.m_par.m_dom_shapes[index];
+        c10::IntArrayRef sizes = dom_par[index].sizes();
+        shape.resize( sizes.size() );
+        for(size_t i = 0; i < sizes.size(); ++i) {
+            shape[i] = sizes[i];
+        }
+    }
+    //
+    // tape.m_var.m_dom_shapes
+    tape.m_var.m_dom_shapes.resize( dom_var.size() );
+    for(size_t index = 0; index < dom_var.size(); ++index) {
+        vector<int64_t>& shape = tape.m_var.m_dom_shapes[index];
+        c10::IntArrayRef sizes = dom_var[index].sizes();
+        shape.resize( sizes.size() );
+        for(size_t i = 0; i < sizes.size(); ++i) {
+            shape[i] = sizes[i];
+        }
+    }
+    //
     // adom_par
-    // tape.m_par: m_n_dom, m_op_seq, m_arg_strt
+    // tape.m_par: m_op_seq, m_arg_strt
     ad_type_t parameter = ad_type_t::parameter;
-    tape.m_par.m_n_dom    = dom_par.size();
     ad_tensor::vector<adten_t> adom_par;
     for(size_t index = 0; index < dom_par.size(); ++index) {
         tape.m_par.m_op_seq.push_back( dev::op_enum_t::dom );
         tape.m_par.m_arg_start.push_back( 0 );
-        adom_par.push_back( adten_t( tape_id, index, dom_par[index], parameter) );
+        adom_par.push_back(
+            adten_t( tape_id, index, dom_par[index], parameter)
+        );
     }
     //
     // adom_var
-    // tape.m_var: m_n_dom, m_op_seq, m_arg_strt
+    // tape.m_var: m_op_seq, m_arg_strt
     ad_type_t variable = ad_type_t::variable;
-    tape.m_var.m_n_dom    = dom_var.size();
     ad_tensor::vector<adten_t> adom_var;
     for(size_t index = 0; index < dom_var.size(); ++index) {
         tape.m_var.m_op_seq.push_back( dev::op_enum_t::dom );
         tape.m_var.m_arg_start.push_back( 0 );
-        adom_var.push_back( adten_t( tape_id, index, dom_var[index], variable) );
+        adom_var.push_back(
+            adten_t( tape_id, index, dom_var[index], variable)
+        );
     }
-    return std::tuple< ad_tensor::vector<adten_t>, ad_tensor::vector<adten_t> > (
-        adom_par, adom_var
-    );
+    return std::tuple<
+        ad_tensor::vector<adten_t>, ad_tensor::vector<adten_t>
+    > ( adom_par, adom_var);
 }
 /*
 ------------------------------------------------------------------------------

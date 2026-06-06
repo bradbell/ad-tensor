@@ -70,7 +70,7 @@ Example
 
 {xrst_end adten}
 ------------------------------------------------------------------------------
-{xrst_begin_parent ad_dev dev}
+{xrst_begin_parent adten_dev dev}
 
 The adten_t Class Developer Documentation
 #########################################

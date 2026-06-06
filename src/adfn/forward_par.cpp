@@ -65,13 +65,29 @@ ad_tensor::vector<TensorType> adfn_t::forward_par(
 {
     // cout
     using std::cout;
-    using ad_tensor::dev::to_string;
     using std::string;
     //
     // dom_par
-    dev::user_assert( dom_par.size() == m_par.m_n_dom ,
-        "forward_par: dom_par does not have the expected number of tensors"
-    );
+# ifndef NDEBUg
+    const vector< vector<int64_t> >&  shapes = m_par.m_dom_shapes;
+    string msg = "forward_par: ";
+    if( dom_par.size() != shapes.size() ) {
+        msg += "dom_par.size() = " + std::to_string( dom_par.size() );
+        msg += " and its size for this adfn is ";
+        msg += std::to_string( shapes.size() );
+        dev::user_assert( false , msg );
+    }
+    for(size_t i = 0; i < shapes.size(); ++i) {
+        c10::IntArrayRef shape = shapes[i];
+        if( ! dom_par[i].sizes().equals( shape ) ) {
+            msg += "dom_par[" + std::to_string(i) + "] shape is ";
+            msg += dev::to_string( dom_par[i].sizes() );
+            msg += " and its shape for this adfn is ";
+            msg += dev::to_string( shape );
+            dev::user_assert( false , msg );
+        }
+    }
+# endif
     //
     // trace
     string           key           = "trace";
@@ -82,7 +98,7 @@ ad_tensor::vector<TensorType> adfn_t::forward_par(
     if( trace ) {
         cout << "Begin tracing adfn::forward_par\n";
         for(size_t i = 0; i < m_con.size(); ++i) {
-            string element = to_string( m_con[i] );
+            string element = dev::to_string( m_con[i] );
             cout << "constant[" << i << "] = " << element << "\n";
         }
     }
@@ -107,14 +123,14 @@ ad_tensor::vector<TensorType> adfn_t::forward_par(
         base_op.forward_par(op_index, m_par, m_con, par_all);
         //
         if( trace) {
-            string element = to_string( par_all[op_index] );
+            string element = dev::to_string( par_all[op_index] );
             cout << "par_all[" << op_index << "] = " << element;
-            cout << ", " << to_string(op_enum)  << "(";
+            cout << ", " << dev::to_string(op_enum)  << "(";
             size_t start = m_par.m_arg_start[op_index];
             size_t stop  = m_par.m_arg_start[op_index + 1];
             for(size_t i = start; i < stop; ++i) {
                 cout << "[" << m_par.m_arg_value[i] << ",";
-                cout << to_string( m_par.m_arg_type[i] ) << "]";
+                cout << dev::to_string( m_par.m_arg_type[i] ) << "]";
             }
             cout << ")\n";
         }

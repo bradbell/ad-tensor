@@ -62,10 +62,10 @@ namespace ad_tensor { namespace dev { class tape_t {
     friend class ad_tensor::adten_t;
 private:
     ad_tensor::vector<at::Tensor>    m_con;
-    agraph_t                   m_par;
-    agraph_t                   m_var;
-    size_t                     m_tape_id;
-    bool                       m_recording;
+    agraph_t                         m_par;
+    agraph_t                         m_var;
+    size_t                           m_tape_id;
+    bool                             m_recording;
 public:
     //
     // default constructor

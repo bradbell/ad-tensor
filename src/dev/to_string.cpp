@@ -32,8 +32,7 @@ namespace ad_tensor { namespace dev {
             assert( false && "to_string(op_enum): unexpected op_enum value");
         }
     }
-    std::string to_string(const at::Tensor& tensor) {
-        at::IntArrayRef shape  = tensor.sizes();
+    std::string to_string(const c10::IntArrayRef& shape) {
         std::string res = "(";
         for(size_t i = 0; i < shape.size(); ++i) {
             res += std::to_string( shape[i] );
@@ -41,6 +40,11 @@ namespace ad_tensor { namespace dev {
                 res += ", ";
         }
         res += ")";
+        return res;
+    }
+    std::string to_string(const at::Tensor& tensor) {
+        at::IntArrayRef shape  = tensor.sizes();
+        std::string res = to_string(shape);
         //
         size_t length = tensor.numel();
         res += "[";
