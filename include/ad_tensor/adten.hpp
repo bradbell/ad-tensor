@@ -59,6 +59,9 @@ Other Member Functions
 **********************
 {xrst_toc_table
     src/adten/recording.cpp
+    src/adten/view.cpp
+    src/adten/minus.cpp
+    src/adten/sum.cpp
 }
 
 Example

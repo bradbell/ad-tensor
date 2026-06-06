@@ -11,7 +11,31 @@
 namespace ad_tensor { // BEGIN_NAMESPACE_AD_TENSOR
 /*
 -------------------------------------------------------------------------------
-{xrst_begin adten_minus dev}
+{xrst_begin adten_minus usr}
+{xrst_spell
+    aminus
+}
+
+The Unary Minus Operator
+########################
+
+Prototype
+*********
+{xrst_literal ,
+    BEGIN_UNARY_MINUS, END_UNARY_MINUS
+}
+
+adten
+*****
+is the tensor we are negating.
+
+aminus
+******
+is the negative of the aten.
+
+{xrst_end adten_minus}
+-------------------------------------------------------------------------------
+{xrst_begin adten_minus_dev dev}
 
 Compute and Record Unary Minus Operations
 #########################################
@@ -19,7 +43,7 @@ Compute and Record Unary Minus Operations
 Prototype
 *********
 {xrst_literal ,
-    BEGIN_UNARY_MINUS, END_UNARY_MINUS
+    BEGIN_DEV_UNARY_MINUS, END_DEV_UNARY_MINUS
 }
 
 Recording
@@ -41,11 +65,12 @@ the following is added to the parameter (variable) acyclic graph:
 where start be the length of arg_value and arg_type before this call to
 ``adten_t::minus`` .
 
-{xrst_end adten_minus}
+{xrst_end adten_minus_dev}
 */
-// BEGIN_UNARY_MINUS
+// BEGIN_UNARY_MINUS BEGIN_DEV_UNARY_MINUS
+// aminus = - adten
 adten_t adten_t::operator-(void) const
-// END_UNARY_MINUS
+// END_UNARY_MINUS END_DEV_UNARY_MINUS
 {
     //
     // res_tensor

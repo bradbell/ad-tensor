@@ -11,7 +11,10 @@
 namespace ad_tensor { // BEGIN_NAMESPACE_AD_TENSOR
 /*
 -------------------------------------------------------------------------------
-{xrst_begin adten_view dev}
+{xrst_begin adten_view usr}
+{xrst_spell
+    aview
+}
 
 Create a View of an AD Tensor
 #############################
@@ -20,6 +23,31 @@ Prototype
 *********
 {xrst_literal ,
     BEGIN_VIEW, END_VIEW
+}
+
+adten
+*****
+is the AD tensor that we are creating a new view for.
+
+shape
+*****
+is the shape for the new view.
+
+aview
+*****
+is the AD tensor corresponding the new view.
+
+{xrst_end adten_view}
+-------------------------------------------------------------------------------
+{xrst_begin adten_view_dev dev}
+
+Create a View of an AD Tensor Developer Documentation
+#####################################################
+
+Prototype
+*********
+{xrst_literal ,
+    BEGIN_DEV_VIEW, END_DEV_VIEW
 }
 
 Operation
@@ -41,11 +69,12 @@ the following is added to the parameter (variable) acyclic graph:
 where start be the length of arg_value and arg_type before this call to
 ``adten_t::binary`` and n_dim is the number of dimensions in the new shape
 
-{xrst_end adten_view}
+{xrst_end adten_view_dev}
 */
-// BEGIN_VIEW
+// BEGIN_VIEW BEGIN_DEV_VIEW
+// aview = adten.view(shape)
 adten_t adten_t::view(const c10::IntArrayRef&    shape) const
-// END_VIEW
+// END_VIEW END_DEV_VIEW
 {
     //
     // res_tensor

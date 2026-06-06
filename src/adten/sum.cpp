@@ -11,7 +11,37 @@
 namespace ad_tensor { // BEGIN_NAMESPACE_AD_TENSOR
 /*
 -------------------------------------------------------------------------------
-{xrst_begin adten_sum dev}
+{xrst_begin adten_sum usr}
+{xrst_spell
+    asum
+}
+
+The Sum Function
+################
+
+Prototype
+*********
+{xrst_literal ,
+    BEGIN_SUM, END_SUM
+}
+
+adten
+*****
+is the tensor that we are summing.
+
+dim
+***
+is a vector containing the dimensions we are summing with respect to.
+Currently there is no option to keep dimension
+so the summed dimensions are removed from the result.
+
+asum
+****
+is the result of the summation.
+
+{xrst_end adten_sum}
+-------------------------------------------------------------------------------
+{xrst_begin adten_sum_dev dev}
 
 Compute and Record Sum Function
 ###############################
@@ -19,7 +49,7 @@ Compute and Record Sum Function
 Prototype
 *********
 {xrst_literal ,
-    BEGIN_SUM, END_SUM
+    BEGIN_DEV_SUM, END_DEV_SUM
 }
 
 Recording
@@ -47,11 +77,12 @@ If n_dim is zero, all the dimensions are summed.
 where start be the length of arg_value and arg_type before this call to
 ``adten_t::binary`` .
 
-{xrst_end adten_sum}
+{xrst_end adten_sum_dev}
 */
-// BEGIN_SUM
+// BEGIN_SUM  BEGIN_DEV_SUM
+// asum = adten.sum(dim)
 adten_t adten_t::sum(const c10::IntArrayRef&    dim) const
-// END_SUM
+// END_SUM END_DEV_SUM
 {
     //
     // res_tensor
