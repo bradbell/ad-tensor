@@ -6,10 +6,10 @@
 #include <ad_tensor/adfn.hpp>
 #include <gtest/gtest.h>
 #include <torch/torch.h>
-#include <ad_tensor/ad.hpp>
+#include <ad_tensor/adten.hpp>
 //
 TEST(examples_adfn, reverse_der)  {
-    using ad_tensor::ad_t;
+    using ad_tensor::adten_t;
     using ad_tensor::adfn_t;
     using ad_tensor::options_t;
     using at::Tensor;
@@ -26,15 +26,15 @@ TEST(examples_adfn, reverse_der)  {
     //
     // ax
     vector<Tensor> p;
-    auto [ap, ax] = ad_t::start_recording(p, x);
+    auto [ap, ax] = adten_t::start_recording(p, x);
     //
     // ay
     // we use y for the range space
-    vector<ad_t> ay;
+    vector<adten_t> ay;
     ay.push_back(  ax[0] + ax[1] );
     //
     // y = f(x)
-    adfn_t f = ad_t::stop_recording(ay);
+    adfn_t f = adten_t::stop_recording(ay);
     //
     // var_all
     vector<Tensor> par_all;

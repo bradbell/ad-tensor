@@ -124,8 +124,8 @@ ad_tensor::vector<TensorType> adfn_t::forward_par(
     }
     return par_all;
 }
-template ad_tensor::vector<ad_t> adfn_t::forward_par(
-    const ad_tensor::vector<ad_t>&       dom_par ,
+template ad_tensor::vector<adten_t> adfn_t::forward_par(
+    const ad_tensor::vector<adten_t>&    dom_par ,
     const options_t&                     options
 ) const;
 template ad_tensor::vector<at::Tensor> adfn_t::forward_par(

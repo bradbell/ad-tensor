@@ -5,8 +5,8 @@
 #
 # BEGIN_SORT_THIS_LINE_PLUS_2
 add_executable(examples
-    ad/binary.cpp
-    ad/recording.cpp
+    adten/binary.cpp
+    adten/recording.cpp
     adfn/forward_der.cpp
     adfn/forward_par.cpp
     adfn/forward_var.cpp

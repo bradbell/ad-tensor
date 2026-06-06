@@ -55,11 +55,11 @@ is the thread local tape used to record AD operations (on this thread).
 #include <torch/torch.h>
 //
 #include <ad_tensor/dev/agraph.hpp>
-#include <ad_tensor/ad.hpp>
+#include <ad_tensor/adten.hpp>
 //
 // BEGIN_TAPE_T
 namespace ad_tensor { namespace dev { class tape_t {
-    friend class ad_tensor::ad_t;
+    friend class ad_tensor::adten_t;
 private:
     ad_tensor::vector<at::Tensor>    m_con;
     agraph_t                   m_par;

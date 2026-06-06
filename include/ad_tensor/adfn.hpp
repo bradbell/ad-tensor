@@ -43,13 +43,13 @@ Other Public Members
 #include <ad_tensor/ad_type.hpp>
 #include <ad_tensor/dev/agraph.hpp>
 //
-namespace ad_tensor { class ad_t; }
+namespace ad_tensor { class adten_t; }
 //
 // BEGIN_ADFN_T
 namespace ad_tensor { class adfn_t
 // END_ADFN_T
 {
-    friend class ad_t;
+    friend class adten_t;
 private:
     dev::agraph_t                    m_par;
     dev::agraph_t                    m_var;

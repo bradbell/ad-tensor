@@ -182,10 +182,10 @@ ad_tensor::vector<TensorType> adfn_t::reverse_der(
     }
     return dom_der;
 }
-template ad_tensor::vector<ad_t> adfn_t::reverse_der(
-    const ad_tensor::vector<ad_t>&       par_all ,
-    const ad_tensor::vector<ad_t>&       var_all ,
-    const ad_tensor::vector<ad_t>&       rng_der ,
+template ad_tensor::vector<adten_t> adfn_t::reverse_der(
+    const ad_tensor::vector<adten_t>&    par_all ,
+    const ad_tensor::vector<adten_t>&    var_all ,
+    const ad_tensor::vector<adten_t>&    rng_der ,
     const options_t&                     options
 ) const;
 template ad_tensor::vector<at::Tensor> adfn_t::reverse_der(

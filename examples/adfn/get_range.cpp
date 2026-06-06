@@ -6,10 +6,10 @@
 #include <gtest/gtest.h>
 #include <torch/torch.h>
 //
-#include <ad_tensor/ad.hpp>
+#include <ad_tensor/adten.hpp>
 //
 TEST(examples_adfn, get_range)  {
-    using ad_tensor::ad_t;
+    using ad_tensor::adten_t;
     using ad_tensor::adfn_t;
     using ad_tensor::options_t;
     using at::Tensor;
@@ -27,24 +27,24 @@ TEST(examples_adfn, get_range)  {
     x.push_back( torch::tensor( {4.0, 5.0} ) );
     //
     // ap, ax
-    auto [ap, ax] = ad_t::start_recording(p, x);
+    auto [ap, ax] = adten_t::start_recording(p, x);
     //
     // acon
     // create a constant after start_recording so can use it in the recording
-    ad_t acon( torch::tensor( {6} ) );
+    adten_t acon( torch::tensor( {6} ) );
     //
     // create a parameter and variable that are not used
     ap[0] - acon;
     ax[0] / acon;
     //
     // ay
-    vector<ad_t> ay;
+    vector<adten_t> ay;
     ay.push_back( acon );            // a constant
     ay.push_back( ap[0] + acon );    // a parameter
     ay.push_back( ax[0] * acon );    // a variable
     //
     // y = f(p, x)
-    adfn_t f = ad_t::stop_recording(ay);
+    adfn_t f = adten_t::stop_recording(ay);
     //
     // p
     p.resize(0);

@@ -6,10 +6,10 @@
 #include <gtest/gtest.h>
 #include <torch/torch.h>
 //
-#include <ad_tensor/ad.hpp>
+#include <ad_tensor/adten.hpp>
 //
 TEST(examples_ad, binary)  {
-    using ad_tensor::ad_t;
+    using ad_tensor::adten_t;
     using at::Tensor;
     //
     // lhs, rhs
@@ -17,27 +17,27 @@ TEST(examples_ad, binary)  {
     Tensor rhs     = torch::tensor( 4.0 );
     //
     // alhs, arhs
-    ad_t alhs = ad_t( lhs );
-    ad_t arhs = ad_t( rhs );
+    adten_t alhs = adten_t( lhs );
+    adten_t arhs = adten_t( rhs );
     //
     // plus
     Tensor  plus = lhs + rhs;
-    ad_t   aplus = alhs + arhs;
+    adten_t   aplus = alhs + arhs;
     EXPECT_TRUE( plus.equal( aplus.tensor() ) );
     //
     // minus
     Tensor  minus = lhs + rhs;
-    ad_t   aminus = alhs + arhs;
+    adten_t   aminus = alhs + arhs;
     EXPECT_TRUE( minus.equal( aminus.tensor() ) );
     //
     // times
     Tensor  times = lhs + rhs;
-    ad_t   atimes = alhs + arhs;
+    adten_t   atimes = alhs + arhs;
     EXPECT_TRUE( times.equal( atimes.tensor() ) );
     //
     // divide
     Tensor  divide = lhs + rhs;
-    ad_t   adivide = alhs + arhs;
+    adten_t   adivide = alhs + arhs;
     EXPECT_TRUE( divide.equal( adivide.tensor() ) );
 }
 // END_CPP

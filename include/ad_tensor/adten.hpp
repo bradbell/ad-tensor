@@ -4,7 +4,7 @@
 // SPDX-FileContributor: 2026 Bradley M. Bell
 /*
 ------------------------------------------------------------------------------
-{xrst_begin ad usr}
+{xrst_begin adten usr}
 {xrst_spell
     op
     lhs
@@ -45,7 +45,7 @@ For *op* equal ``+``, ``-``, ``*``, ``/`` :
 {xrst_code cpp}
     lhs op rhs
 {xrst_code}
-where lhs and rhs are const ad_t reference
+where lhs and rhs are const adten_t reference
 
 Compound Assignment Operators
 *****************************
@@ -53,40 +53,40 @@ For *op* equal ``+=``, ``-=``, ``*=``, ``/=`` :
 {xrst_code cpp}
     lhs op rhs
 {xrst_code}
-where lhs and rhs are ad_t references and rhs is.
+where lhs and rhs are adten_t references and rhs is.
 
 Other Member Functions
 **********************
 {xrst_toc_table
-    src/ad/recording.cpp
+    src/adten/recording.cpp
 }
 
 Example
 *******
 {xrst_literal ,
-    examples/ad/binary.cpp
+    examples/adten/binary.cpp
     BEGIN_CPP, // END_CPP
 }
 
-{xrst_end ad}
+{xrst_end adten}
 ------------------------------------------------------------------------------
 {xrst_begin_parent ad_dev dev}
 
-The ad_t Class Developer Documentation
-######################################
+The adten_t Class Developer Documentation
+#########################################
 {xrst_toc_table after
-    src/ad/binary.cpp
-    src/ad/minus.cpp
-    src/ad/sum.cpp
-    src/ad/view.cpp
+    src/adten/binary.cpp
+    src/adten/minus.cpp
+    src/adten/sum.cpp
+    src/adten/view.cpp
 }
 
-{xrst_end ad_dev}
+{xrst_end adten_dev}
 ------------------------------------------------------------------------------
-{xrst_begin ad_member dev}
+{xrst_begin adten_member dev}
 
-The ad_t Member Data
-####################
+The adten_t Member Data
+#######################
 {xrst_literal ,
     BEGIN_MEMBER_DATA, END_MEMBER_DATA
 }
@@ -111,17 +111,17 @@ m_tensor
 ********
 is the tensor corresponding to this AD tensor.
 
-{xrst_end ad_member}
+{xrst_end adten_member}
 ------------------------------------------------------------------------------
-{xrst_begin ad_ctor_dev dev}
+{xrst_begin adten_ctor_dev dev}
 
-The ad_t Private Constructor
-############################
+The adten_t Private Constructor
+###############################
 {xrst_literal ,
     BEGIN_PRIVATE_CTOR, END_PRIVATE_CTOR
 }
 
-{xrst_end ad_ctor_dev}
+{xrst_end adten_ctor_dev}
 ------------------------------------------------------------------------------
 */
 #include <torch/torch.h>
@@ -133,16 +133,16 @@ The ad_t Private Constructor
 // BINARY_OP
 # define BINARY_OP(op, op_enum) \
     \
-    ad_t operator op (const ad_t& rhs) const \
+    adten_t operator op (const adten_t& rhs) const \
     { return binary( dev::op_enum_t:: op_enum, *this, rhs ); } \
     \
-    ad_t& operator op ## = (const ad_t& rhs) { \
+    adten_t& operator op ## = (const adten_t& rhs) { \
         *this = *this op rhs; \
         return *this; \
     }
 //
 // BEGIN_AD_CLASS
-namespace ad_tensor { class ad_t
+namespace ad_tensor { class adten_t
 // END_AD_CLASS
 {
 private:
@@ -155,7 +155,7 @@ private:
     // END_MEMBER_DATA
     //
     // BEGIN_PRIVATE_CTOR
-    ad_t(
+    adten_t(
         size_t tape_id,
         size_t index,
         const at::Tensor& tensor,
@@ -164,12 +164,12 @@ private:
     { }
     // END_PRIVATE_CTOR
     //
-    static ad_t binary(
-        dev::op_enum_t op_enum, const ad_t& lhs, const ad_t& rhs
+    static adten_t binary(
+        dev::op_enum_t op_enum, const adten_t& lhs, const adten_t& rhs
     );
 public:
     // BEGIN_PUBLIC_CTOR
-    explicit ad_t( const at::Tensor& tensor );
+    explicit adten_t( const at::Tensor& tensor );
     // END_PUBLIC_CTOR
     //
     // BEGIN_SIZES
@@ -188,16 +188,16 @@ public:
     {   return m_tensor; }
     //
     // BEGIN_START_RECORDING
-    // auto [adom_par, adom_var] = ad_t::start_recording(dom_par, dom_var)
-    static std::tuple< ad_tensor::vector<ad_t>, ad_tensor::vector<ad_t> > start_recording(
+    // auto [adom_par, adom_var] = adten_t::start_recording(dom_par, dom_var)
+    static std::tuple< ad_tensor::vector<adten_t>, ad_tensor::vector<adten_t> > start_recording(
         const ad_tensor::vector<at::Tensor>& dom_par,
         const ad_tensor::vector<at::Tensor>& dom_var
     );
     // END_START_RECORDING
     //
     // BEGIN_STOP_RECORDING
-    // adfn = ad_t::stop_recording(arnage)
-    static adfn_t stop_recording(const ad_tensor::vector<ad_t>& arange);
+    // adfn = adten_t::stop_recording(arnage)
+    static adfn_t stop_recording(const ad_tensor::vector<adten_t>& arange);
     // END_STOP_RECORDING
     //
     // Binary operators
@@ -207,12 +207,12 @@ public:
     BINARY_OP(/, div)
     //
     // minus
-    ad_t operator -(void) const;
+    adten_t operator -(void) const;
     //
     // sum
-    ad_t sum(const c10::IntArrayRef&    dim = c10::IntArrayRef() ) const;
+    adten_t sum(const c10::IntArrayRef&    dim = c10::IntArrayRef() ) const;
     //
     // view
-    ad_t view(const c10::IntArrayRef&    shape) const;
+    adten_t view(const c10::IntArrayRef&    shape) const;
     //
 }; }

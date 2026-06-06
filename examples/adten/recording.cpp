@@ -6,10 +6,10 @@
 #include <gtest/gtest.h>
 #include <torch/torch.h>
 //
-#include <ad_tensor/ad.hpp>
+#include <ad_tensor/adten.hpp>
 //
 TEST(examples_ad, record)  {
-    using ad_tensor::ad_t;
+    using ad_tensor::adten_t;
     using at::Tensor;
     using ad_tensor::vector;
     //
@@ -18,7 +18,7 @@ TEST(examples_ad, record)  {
     vector<Tensor> dom_var = { torch::tensor( {4.0, 5.0} ) };
     //
     // adom_par, adom_var
-    auto [ adom_par, adom_var ] = ad_t::start_recording(
+    auto [ adom_par, adom_var ] = adten_t::start_recording(
         dom_par, dom_var
     );
     //
@@ -28,10 +28,10 @@ TEST(examples_ad, record)  {
     dom_var = vector<Tensor>();
     //
     // arange
-    ad_tensor::vector<ad_t> arange = { adom_par[0], adom_var[0] };
+    ad_tensor::vector<adten_t> arange = { adom_par[0], adom_var[0] };
     //
     // stop_recording
-    ad_t::stop_recording( arange  );
+    adten_t::stop_recording( arange  );
     //
     bool equal = adom_par[0].tensor().equal( torch::tensor( {2.0, 3.0} ) );
     EXPECT_TRUE(equal);

@@ -2,7 +2,7 @@
 // SPDX-FileCopyrightText: Bradley M. Bell <bradbell@seanet.com>
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
-#include <ad_tensor/ad.hpp>
+#include <ad_tensor/adten.hpp>
 #include <ad_tensor/dev/tape.hpp>
 #include <ad_tensor/dev/op_enum.hpp>
 #include <ad_tensor/dev/agraph.hpp>
@@ -13,14 +13,15 @@ namespace ad_tensor { // BEGIN_NAMESPACE_AD_TENSOR
 ------------------------------------------------------------------------------
 {xrst_begin start_recording usr}
 {xrst_spell
+    adten
     adfn
     adom
 }
 
-Start Recording ad_t Operations
-###############################
+Start Recording adten_t Operations
+##################################
 {xrst_literal ,
-    include/ad_tensor/ad.hpp
+    include/ad_tensor/adten.hpp
     BEGIN_START_RECORDING, END_START_RECORDING
 }
 
@@ -56,13 +57,13 @@ The recording can be used to compute derivatives with respect to these tensors.
 Example
 *******
 {xrst_literal ,
-    examples/ad/recording.cpp
+    examples/adten/recording.cpp
     BEGIN_CPP, END_CPP
 }
 
 {xrst_end start_recording}
 */
-std::tuple< ad_tensor::vector<ad_t>, ad_tensor::vector<ad_t> > ad_t::start_recording(
+std::tuple< ad_tensor::vector<adten_t>, ad_tensor::vector<adten_t> > adten_t::start_recording(
         const ad_tensor::vector<at::Tensor>& dom_par ,
         const ad_tensor::vector<at::Tensor>& dom_var
 )
@@ -99,24 +100,24 @@ std::tuple< ad_tensor::vector<ad_t>, ad_tensor::vector<ad_t> > ad_t::start_recor
     // tape.m_par: m_n_dom, m_op_seq, m_arg_strt
     ad_type_t parameter = ad_type_t::parameter;
     tape.m_par.m_n_dom    = dom_par.size();
-    ad_tensor::vector<ad_t> adom_par;
+    ad_tensor::vector<adten_t> adom_par;
     for(size_t index = 0; index < dom_par.size(); ++index) {
         tape.m_par.m_op_seq.push_back( dev::op_enum_t::dom );
         tape.m_par.m_arg_start.push_back( 0 );
-        adom_par.push_back( ad_t( tape_id, index, dom_par[index], parameter) );
+        adom_par.push_back( adten_t( tape_id, index, dom_par[index], parameter) );
     }
     //
     // adom_var
     // tape.m_var: m_n_dom, m_op_seq, m_arg_strt
     ad_type_t variable = ad_type_t::variable;
     tape.m_var.m_n_dom    = dom_var.size();
-    ad_tensor::vector<ad_t> adom_var;
+    ad_tensor::vector<adten_t> adom_var;
     for(size_t index = 0; index < dom_var.size(); ++index) {
         tape.m_var.m_op_seq.push_back( dev::op_enum_t::dom );
         tape.m_var.m_arg_start.push_back( 0 );
-        adom_var.push_back( ad_t( tape_id, index, dom_var[index], variable) );
+        adom_var.push_back( adten_t( tape_id, index, dom_var[index], variable) );
     }
-    return std::tuple< ad_tensor::vector<ad_t>, ad_tensor::vector<ad_t> > (
+    return std::tuple< ad_tensor::vector<adten_t>, ad_tensor::vector<adten_t> > (
         adom_par, adom_var
     );
 }
@@ -124,14 +125,15 @@ std::tuple< ad_tensor::vector<ad_t>, ad_tensor::vector<ad_t> > ad_t::start_recor
 ------------------------------------------------------------------------------
 {xrst_begin stop_recording usr}
 {xrst_spell
+    adten
     adfn
     arange
 }
 
-Stop Recording ad_t Operations
-##############################
+Stop Recording adten_t Operations
+#################################
 {xrst_literal,
-    include/ad_tensor/ad.hpp
+    include/ad_tensor/adten.hpp
     BEGIN_STOP_RECORDING, END_STOP_RECORDING
 }
 
@@ -159,13 +161,13 @@ in the corresponding :ref:`start_recording-name` .
 Example
 *******
 {xrst_literal ,
-    examples/ad/recording.cpp
+    examples/adten/recording.cpp
     BEGIN_CPP, END_CPP
 }
 
 {xrst_end stop_recording}
 */
-adfn_t ad_t::stop_recording(const ad_tensor::vector<ad_t>& arange)
+adfn_t adten_t::stop_recording(const ad_tensor::vector<adten_t>& arange)
 {   //
     // tape
     dev::tape_t& tape = dev::this_threads_tape();

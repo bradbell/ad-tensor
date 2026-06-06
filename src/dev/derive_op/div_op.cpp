@@ -3,7 +3,7 @@
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
 #include <ad_tensor/dev/derive_op.hpp>
-#include <ad_tensor/ad.hpp>
+#include <ad_tensor/adten.hpp>
 #include <ad_tensor/dev/broadcast.hpp>
 #include <ad_tensor/dev/plus_minus_equal.hpp>
 #include <ad_tensor/dev/tensor_at_index.hpp>
@@ -38,11 +38,11 @@ namespace ad_tensor { namespace dev {
         // par_vec
         par_vec[op_index] = lhs_tensor / rhs_tensor;
     }
-    template void div_op_t<ad_t>::forward_par(
+    template void div_op_t<adten_t>::forward_par(
         size_t                                  op_index    ,
         const agraph_t&                         agraph      ,
         const ad_tensor::vector<at::Tensor>&    con_vec     ,
-        ad_tensor::vector<ad_t>&                par_vec
+        ad_tensor::vector<adten_t>&             par_vec
     ) const;
     template void div_op_t<at::Tensor>::forward_par(
         size_t                                  op_index    ,
@@ -80,12 +80,12 @@ namespace ad_tensor { namespace dev {
         // var_vec
         var_vec[op_index] = lhs_tensor / rhs_tensor;
     }
-    template void div_op_t<ad_t>::forward_var(
+    template void div_op_t<adten_t>::forward_var(
         size_t                                  op_index    ,
         const agraph_t&                         agraph      ,
         const ad_tensor::vector<at::Tensor>&    con_vec     ,
-        const ad_tensor::vector<ad_t>&          par_vec     ,
-        ad_tensor::vector<ad_t>&                var_vec
+        const ad_tensor::vector<adten_t>&       par_vec     ,
+        ad_tensor::vector<adten_t>&             var_vec
     ) const;
     template void div_op_t<at::Tensor>::forward_var(
         size_t                                  op_index    ,
@@ -142,13 +142,13 @@ namespace ad_tensor { namespace dev {
                 - var_vec[op_index] * for_der[rhs_index] / var_vec[rhs_index];
         };
     }
-    template void div_op_t<ad_t>::forward_der(
+    template void div_op_t<adten_t>::forward_der(
         size_t                                  op_index    ,
         const agraph_t&                         agraph      ,
         const ad_tensor::vector<at::Tensor>&    con_vec     ,
-        const ad_tensor::vector<ad_t>&          par_vec     ,
-        const ad_tensor::vector<ad_t>&          var_vec     ,
-        ad_tensor::vector<ad_t>&                for_der
+        const ad_tensor::vector<adten_t>&       par_vec     ,
+        const ad_tensor::vector<adten_t>&       var_vec     ,
+        ad_tensor::vector<adten_t>&             for_der
     ) const;
     template void div_op_t<at::Tensor>::forward_der(
         size_t                                  op_index    ,
@@ -234,13 +234,13 @@ namespace ad_tensor { namespace dev {
             broadcast(lock);
         }
     }
-    template void div_op_t<ad_t>::reverse_der(
+    template void div_op_t<adten_t>::reverse_der(
         size_t                                  op_index    ,
         const agraph_t&                         agraph      ,
         const ad_tensor::vector<at::Tensor>&    con_vec     ,
-        const ad_tensor::vector<ad_t>&          par_vec     ,
-        const ad_tensor::vector<ad_t>&          var_vec     ,
-        ad_tensor::vector<ad_t>&                rev_der
+        const ad_tensor::vector<adten_t>&       par_vec     ,
+        const ad_tensor::vector<adten_t>&       var_vec     ,
+        ad_tensor::vector<adten_t>&             rev_der
     ) const;
     template void div_op_t<at::Tensor>::reverse_der(
         size_t                                  op_index    ,

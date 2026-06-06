@@ -56,7 +56,7 @@ The return is the tensor corresponding to this argument and operator usage.
 #include <cassert>
 #include <torch/torch.h>
 //
-#include <ad_tensor/ad.hpp>
+#include <ad_tensor/adten.hpp>
 #include <ad_tensor/vector.hpp>
 #include <ad_tensor/dev/base_op.hpp>
 //
@@ -91,11 +91,11 @@ namespace ad_tensor { namespace dev {
         // should not get here
         return par_vec[0];
     }
-    template ad_t tensor_at_arg_index<ad_t>(
+    template adten_t tensor_at_arg_index<adten_t>(
         size_t                               arg_index ,
         const agraph_t&                      agraph    ,
         const ad_tensor::vector<at::Tensor>& con_vec   ,
-        const ad_tensor::vector<ad_t>&       par_vec
+        const ad_tensor::vector<adten_t>&    par_vec
     );
     template at::Tensor tensor_at_arg_index<at::Tensor>(
         size_t                               arg_index ,
@@ -138,12 +138,12 @@ namespace ad_tensor { namespace dev {
         // should not get here
         return var_vec[0];
     }
-    template ad_t tensor_at_arg_index<ad_t>(
+    template adten_t tensor_at_arg_index<adten_t>(
         size_t                               arg_index ,
         const agraph_t&                      agraph    ,
         const ad_tensor::vector<at::Tensor>& con_vec   ,
-        const ad_tensor::vector<ad_t>&       par_vec   ,
-        const ad_tensor::vector<ad_t>&       var_vec
+        const ad_tensor::vector<adten_t>&    par_vec   ,
+        const ad_tensor::vector<adten_t>&    var_vec
     );
     template at::Tensor tensor_at_arg_index<at::Tensor>(
         size_t                               arg_index ,

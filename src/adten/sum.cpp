@@ -2,7 +2,7 @@
 // SPDX-FileCopyrightText: Bradley M. Bell <bradbell@seanet.com>
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
-#include <ad_tensor/ad.hpp>
+#include <ad_tensor/adten.hpp>
 #include <ad_tensor/dev/tape.hpp>
 #include <ad_tensor/dev/op_enum.hpp>
 #include <ad_tensor/dev/agraph.hpp>
@@ -11,7 +11,7 @@
 namespace ad_tensor { // BEGIN_NAMESPACE_AD_TENSOR
 /*
 -------------------------------------------------------------------------------
-{xrst_begin ad_sum dev}
+{xrst_begin adten_sum dev}
 
 Compute and Record Sum Function
 ###############################
@@ -45,12 +45,12 @@ the following is added to the parameter (variable) acyclic graph:
 If n_dim is zero, all the dimensions are summed.
 
 where start be the length of arg_value and arg_type before this call to
-``ad_t::binary`` .
+``adten_t::binary`` .
 
-{xrst_end ad_sum}
+{xrst_end adten_sum}
 */
 // BEGIN_SUM
-ad_t ad_t::sum(const c10::IntArrayRef&    dim) const
+adten_t adten_t::sum(const c10::IntArrayRef&    dim) const
 // END_SUM
 {
     //
@@ -65,7 +65,7 @@ ad_t ad_t::sum(const c10::IntArrayRef&    dim) const
     // tape
     dev::tape_t& tape = dev::this_threads_tape();
     if( ! tape.m_recording )
-        return ad_t( res_tensor );
+        return adten_t( res_tensor );
     dev::user_assert( m_tape_id == tape.m_tape_id ,
         "AD tensor being summed does not match tape that is recording"
     );
@@ -113,7 +113,7 @@ ad_t ad_t::sum(const c10::IntArrayRef&    dim) const
             agraph->m_arg_type.push_back( ad_type_t::none );
         }
     }
-    return ad_t(res_tape_id, res_index, res_tensor, res_ad_type);
+    return adten_t(res_tape_id, res_index, res_tensor, res_ad_type);
 }
 // ---------------------------------------------------------------------------
 } // END_NAMESPACE_AD_TENSOR

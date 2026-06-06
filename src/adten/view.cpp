@@ -2,7 +2,7 @@
 // SPDX-FileCopyrightText: Bradley M. Bell <bradbell@seanet.com>
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
-#include <ad_tensor/ad.hpp>
+#include <ad_tensor/adten.hpp>
 #include <ad_tensor/dev/tape.hpp>
 #include <ad_tensor/dev/op_enum.hpp>
 #include <ad_tensor/dev/agraph.hpp>
@@ -11,7 +11,7 @@
 namespace ad_tensor { // BEGIN_NAMESPACE_AD_TENSOR
 /*
 -------------------------------------------------------------------------------
-{xrst_begin ad_view dev}
+{xrst_begin adten_view dev}
 
 Create a View of an AD Tensor
 #############################
@@ -39,12 +39,12 @@ the following is added to the parameter (variable) acyclic graph:
 
 
 where start be the length of arg_value and arg_type before this call to
-``ad_t::binary`` and n_dim is the number of dimensions in the new shape
+``adten_t::binary`` and n_dim is the number of dimensions in the new shape
 
-{xrst_end ad_view}
+{xrst_end adten_view}
 */
 // BEGIN_VIEW
-ad_t ad_t::view(const c10::IntArrayRef&    shape) const
+adten_t adten_t::view(const c10::IntArrayRef&    shape) const
 // END_VIEW
 {
     //
@@ -54,7 +54,7 @@ ad_t ad_t::view(const c10::IntArrayRef&    shape) const
     // tape
     dev::tape_t& tape = dev::this_threads_tape();
     if( ! tape.m_recording )
-        return ad_t( res_tensor );
+        return adten_t( res_tensor );
     dev::user_assert( m_tape_id == tape.m_tape_id ,
         "AD tensor being viewed does not match tape that is recording"
     );
@@ -102,7 +102,7 @@ ad_t ad_t::view(const c10::IntArrayRef&    shape) const
             agraph->m_arg_type.push_back( ad_type_t::none );
         }
     }
-    return ad_t(res_tape_id, res_index, res_tensor, res_ad_type);
+    return adten_t(res_tape_id, res_index, res_tensor, res_ad_type);
 }
 // ---------------------------------------------------------------------------
 } // END_NAMESPACE_AD_TENSOR

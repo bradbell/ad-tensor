@@ -5,10 +5,10 @@
 #include <gtest/gtest.h>
 #include <torch/torch.h>
 //
-#include <ad_tensor/ad.hpp>
+#include <ad_tensor/adten.hpp>
 //
 namespace {
-    using ad_tensor::ad_t;
+    using ad_tensor::adten_t;
     using ad_tensor::adfn_t;
     using ad_tensor::options_t;
     using ad_tensor::vector;
@@ -30,23 +30,23 @@ namespace {
         vector<Tensor> dom_var = {slope, intercept};
         //
         // adom_par, adom_var
-        auto [adom_par, adom_var] = ad_t::start_recording(dom_par, dom_var);
+        auto [adom_par, adom_var] = adten_t::start_recording(dom_par, dom_var);
         //
         // ax, ay, aslope, aintercept
-        ad_t ax         = adom_par[0];
-        ad_t ay         = adom_par[1];
-        ad_t aslope     = adom_var[0];
-        ad_t aintercept = adom_var[1];
+        adten_t ax         = adom_par[0];
+        adten_t ay         = adom_par[1];
+        adten_t aslope     = adom_var[0];
+        adten_t aintercept = adom_var[1];
         //
         // asumsq
-        ad_t amodel     = aslope * ax  + aintercept;
-        ad_t aresidual  = ay - amodel;
-        ad_t ares_sq    = aresidual * aresidual;
-        ad_t asumsq     = ares_sq.sum();
+        adten_t amodel     = aslope * ax  + aintercept;
+        adten_t aresidual  = ay - amodel;
+        adten_t ares_sq    = aresidual * aresidual;
+        adten_t asumsq     = ares_sq.sum();
         //
         // ares_sq = objective( (x,y), (slope,intercept) )
-        vector<ad_t> arange = {asumsq};
-        adfn_t f = ad_t::stop_recording(arange);
+        vector<adten_t> arange = {asumsq};
+        adfn_t f = adten_t::stop_recording(arange);
         //
         return f;
     }
@@ -130,17 +130,17 @@ TEST(examples_adfn, get_started_second_derivative)  {
     vector<Tensor> dom_var = {slope, intercept};
     //
     // adom_par, adom_var
-    auto [adom_par, adom_var] = ad_t::start_recording(dom_par, dom_var);
+    auto [adom_par, adom_var] = adten_t::start_recording(dom_par, dom_var);
     //
     // g_0  = f_slope ( (x, y), (slope, intercept) )
     // g_1  = f_interceopt ( (x, y), (slope, intercept) )
-    vector<ad_t>   apar_all = f.forward_par(adom_par, options);
-    vector<ad_t>   avar_all = f.forward_var(apar_all, adom_var, options);
-    vector<ad_t> arng_der   = { ad_t( torch::ones(1) ) };
-    vector<ad_t> adom_der   = f.reverse_der(
+    vector<adten_t>   apar_all = f.forward_par(adom_par, options);
+    vector<adten_t>   avar_all = f.forward_var(apar_all, adom_var, options);
+    vector<adten_t> arng_der   = { adten_t( torch::ones(1) ) };
+    vector<adten_t> adom_der   = f.reverse_der(
         apar_all, avar_all, arng_der, options
     );
-    adfn_t g = ad_t::stop_recording(adom_der);
+    adfn_t g = adten_t::stop_recording(adom_der);
     //
     // x, y, dom_par
     x       = torch::tensor( {0.0, 1.0, 2.0}  );

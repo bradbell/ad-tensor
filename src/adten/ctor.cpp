@@ -2,7 +2,7 @@
 // SPDX-FileCopyrightText: Bradley M. Bell <bradbell@seanet.com>
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
-#include <ad_tensor/ad.hpp>
+#include <ad_tensor/adten.hpp>
 #include <ad_tensor/dev/tape.hpp>
 #include <ad_tensor/dev/op_enum.hpp>
 #include <ad_tensor/dev/agraph.hpp>
@@ -10,7 +10,7 @@
 //
 namespace ad_tensor { // BEGIN_NAMESPACE_AD_TENSOR
 // ----------------------------------------------------------------------------
-ad_t::ad_t( const at::Tensor& tensor )
+adten_t::adten_t( const at::Tensor& tensor )
 : m_tape_id(0)
 , m_index(0)
 , m_tensor(tensor)

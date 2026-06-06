@@ -6,11 +6,11 @@
 #include <ad_tensor/adfn.hpp>
 #include <gtest/gtest.h>
 #include <torch/torch.h>
-#include <ad_tensor/ad.hpp>
+#include <ad_tensor/adten.hpp>
 #include <ad_tensor/dev/to_string.hpp>
 //
 TEST(tests, minus_op)  {
-    using ad_tensor::ad_t;
+    using ad_tensor::adten_t;
     using ad_tensor::adfn_t;
     using ad_tensor::options_t;
     using at::Tensor;
@@ -28,15 +28,15 @@ TEST(tests, minus_op)  {
     x.push_back( torch::tensor( { {1.0, 2.0, 3.0}, {4.0, 5.0, 6.0} } ) );
     //
     // ap, ax
-    auto [ap, ax] = ad_t::start_recording(p, x);
+    auto [ap, ax] = adten_t::start_recording(p, x);
     //
     // ay
-    vector<ad_t> ay;
+    vector<adten_t> ay;
     ay.push_back( - ap[0] );
     ay.push_back( - ax[0] );
     //
     // y = f(p)
-    adfn_t f = ad_t::stop_recording(ay);
+    adfn_t f = adten_t::stop_recording(ay);
     //
     // par_all, var_all
     vector<Tensor> par_all = f.forward_par(p, options);
