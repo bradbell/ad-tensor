@@ -88,9 +88,26 @@ ad_tensor::vector<TensorType> adfn_t::reverse_der(
     using ad_tensor::dev::to_string;
     //
     // rng_der
-    dev::user_assert( rng_der.size() == m_rng_index.size(),
-        "reverse_der: rng_der does not have the expected number of tensors"
-    );
+# ifndef NDEBUg
+    const vector< vector<int64_t> >&  shapes = m_rng_shapes;
+    string msg = "reverse_der: ";
+    if( rng_der.size() != shapes.size() ) {
+        msg += "rng_der.size() = " + std::to_string( rng_der.size() );
+        msg += " and the range size for this adfn is ";
+        msg += std::to_string( shapes.size() );
+        dev::user_assert( false , msg );
+    }
+    for(size_t i = 0; i < shapes.size(); ++i) {
+        c10::IntArrayRef shape = shapes[i];
+        if( ! rng_der[i].sizes().equals( shape ) ) {
+            msg += "rng_der[" + std::to_string(i) + "] shape is ";
+            msg += dev::to_string( rng_der[i].sizes() );
+            msg += " and the range shape for this index and adfn is ";
+            msg += dev::to_string( shape );
+            dev::user_assert( false , msg );
+        }
+    }
+# endif
     //
     // trace
     string           key           = "trace";

@@ -73,10 +73,10 @@ This member function returns true if all the vectors in the graph are empty.
 namespace ad_tensor { namespace dev { class agraph_t {
 public:
     vector< vector<int64_t> >    m_dom_shapes;
-    ad_tensor::vector<op_enum_t> m_op_seq;
-    ad_tensor::vector<size_t>    m_arg_start;
-    ad_tensor::vector<size_t>    m_arg_value;
-    ad_tensor::vector<ad_type_t> m_arg_type;
+    vector<op_enum_t>            m_op_seq;
+    vector<size_t>               m_arg_start;
+    vector<size_t>               m_arg_value;
+    vector<ad_type_t>            m_arg_type;
     //
     // default constructor
     agraph_t()

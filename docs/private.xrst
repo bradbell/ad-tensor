@@ -12,6 +12,7 @@ Contents
 ********
 {xrst_comment BEGIN_SORT_THIS_LINE_PLUS_2}
 {xrst_toc_table
+    include/ad_tensor/adfn.hpp
     include/ad_tensor/adten.hpp
     include/ad_tensor/dev/agraph.hpp
     include/ad_tensor/dev/base_op.hpp

@@ -36,6 +36,44 @@ Other Public Members
 
 
 {xrst_end adfn}
+------------------------------------------------------------------------------
+{xrst_begin adfn_dev dev}
+{xrst_spell
+    rng
+}
+
+The AD Function Class Private Members
+#####################################
+{xrst_literal ,
+    // BEGIN_PRIVATE, // END_PRIVATE
+}
+
+m_par
+*****
+is the acyclic graph for the dependent parameters.
+
+m_var
+*****
+is the acyclic graph for the dependent variables.
+
+m_con
+*****
+is the vector of constant tensors.
+
+m_rng_index
+***********
+is the constant, parameter, or variable index for each of the range tensors.
+
+m_rng_ad_type
+*************
+is the ad_type for each of the range tensors.
+
+m_rng_shapes
+************
+is the shape for each of the range tensors.
+
+{xrst_end adfn_dev}
+------------------------------------------------------------------------------
 */
 #include <ad_tensor/vector.hpp>
 #include <torch/torch.h>
@@ -51,11 +89,14 @@ namespace ad_tensor { class adfn_t
 {
     friend class adten_t;
 private:
-    dev::agraph_t                    m_par;
-    dev::agraph_t                    m_var;
-    ad_tensor::vector<at::Tensor>    m_con;
-    ad_tensor::vector<size_t>        m_rng_index;
-    ad_tensor::vector<ad_type_t>     m_rng_ad_type;
+// BEGIN_PRIVATE
+    dev::agraph_t             m_par;
+    dev::agraph_t             m_var;
+    vector<at::Tensor>        m_con;
+    vector<size_t>            m_rng_index;
+    vector<ad_type_t>         m_rng_ad_type;
+    vector< vector<int64_t> > m_rng_shapes;
+// END_PRIVATE
 public:
     //
     // BEGIN_DEFAULT_CTOR
@@ -66,6 +107,7 @@ public:
     , m_con()
     , m_rng_index()
     , m_rng_ad_type()
+    , m_rng_shapes()
     { }
     //
     // BEGIN_IS_EMPTY
@@ -76,7 +118,9 @@ public:
         m_var.is_empty() &&
         m_con.empty() &&
         m_rng_index.empty() &&
-        m_rng_ad_type.empty();
+        m_rng_ad_type.empty() &&
+        m_rng_shapes.empty()
+        ;
     }
     //
     // forward_par

@@ -218,15 +218,26 @@ adfn_t adten_t::stop_recording(const ad_tensor::vector<adten_t>& arange)
     // adfn
     adfn_t adfn;
     //
-    // adfn, tape
+    // adfn, tape: m_con, m_par, m_var
     adfn.m_con.swap( tape.m_con );
     adfn.m_par.swap( tape.m_par );
     adfn.m_var.swap( tape.m_var );
     //
-    // adfn
+    // adfn: m_rng_index, m_rng_adtype
     for(size_t i = 0; i < arange.size(); ++i)
     {   adfn.m_rng_index.push_back( arange[i].m_index );
         adfn.m_rng_ad_type.push_back( arange[i].m_ad_type );
+    }
+    //
+    // adfn: m_rng_shapes
+    adfn.m_rng_shapes.resize( arange.size() );
+    for(size_t index = 0; index < arange.size(); ++index) {
+        vector<int64_t>& shape = adfn.m_rng_shapes[index];
+        c10::IntArrayRef sizes = arange[index].sizes();
+        shape.resize( sizes.size() );
+        for(size_t i = 0; i < sizes.size(); ++i) {
+            shape[i] = sizes[i];
+        }
     }
     //
     return adfn;

@@ -69,7 +69,7 @@ TEST(tests, minus_op)  {
     EXPECT_TRUE( equal );
     //
     // dy, dx
-    dy[0] = torch::tensor( {2.0} );
+    dy[0] = torch::tensor( {2.0, 3.0} );
     dy[1] = torch::tensor( { {11.0, 12.0, 13.0}, {14.0, 15.0, 16.0} } );
     dx    = f.reverse_der(par_all, var_all, dy, options);
     //
