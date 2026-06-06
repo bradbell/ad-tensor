@@ -9,6 +9,7 @@
 /*
 {xrst_begin size_ptr2array_ref dev}
 {xrst_spell
+    int
     len
 }
 
@@ -35,7 +36,7 @@ This is not used and should not be in call when lock is false.
 
 array_ref
 *********
-This is an array ref for a vector<long> that contains the array values.
+This is an array ref for a vector<int64_t> that contains the array values.
 This is only valid for the current thread, and only until the next
 call to size_ptr2array_ref.
 In addition, it only valid until the following call to size_ptr2array_ref
@@ -45,7 +46,7 @@ with lock false.
 */
 //
 namespace ad_tensor { namespace dev {
-    c10::ArrayRef<long> size_ptr2array_ref(
+    c10::IntArrayRef size_ptr2array_ref(
         bool          lock     ,
         const size_t* size_ptr ) {
     //
@@ -53,7 +54,7 @@ namespace ad_tensor { namespace dev {
     thread_local bool locked = false;
     //
     // array
-    thread_local vector<long> array;
+    thread_local vector<int64_t> array;
     //
     // locked
     if( ! lock )
@@ -61,7 +62,7 @@ namespace ad_tensor { namespace dev {
             "a call with lock false was not preceded by a call with lock true"
         );
         locked = false;
-        return c10::ArrayRef<long>();
+        return c10::IntArrayRef();
     }
     assert( ! locked && "size_ptr2array_ref: "
         "attempt to get a lock while another call is holding its lock"
@@ -85,7 +86,7 @@ namespace ad_tensor { namespace dev {
     //
     array.resize(size);
     for(size_t i = 0; i < size; ++i) {
-        array[i] = static_cast<long>( size_ptr[i + 1] );
+        array[i] = static_cast<int64_t>( size_ptr[i + 1] );
     }
-    return c10::ArrayRef<long> (array);
+    return c10::IntArrayRef (array);
 } } }

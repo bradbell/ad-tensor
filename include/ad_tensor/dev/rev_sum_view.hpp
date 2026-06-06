@@ -8,11 +8,11 @@
 // BEGIN_REV_SUM_VIEW
 namespace ad_tensor { namespace dev {
     // shape = rev_sum_view(lock, dim, res, arg)
-    c10::ArrayRef<long> rev_sum_view(
+    c10::IntArrayRef rev_sum_view(
         bool                        lock                        ,
-        const c10::ArrayRef<long>&  dim       = c10::ArrayRef<long>() ,
-        const c10::ArrayRef<long>&  res_shape = c10::ArrayRef<long>() ,
-        const c10::ArrayRef<long>&  arg_shape = c10::ArrayRef<long>()
+        const c10::IntArrayRef&     dim       = c10::IntArrayRef() ,
+        const c10::IntArrayRef&     res_shape = c10::IntArrayRef() ,
+        const c10::IntArrayRef&     arg_shape = c10::IntArrayRef()
     );
 } }
 // END_REV_SUM_VIEW

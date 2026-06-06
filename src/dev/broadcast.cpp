@@ -56,17 +56,17 @@ so that its shape as the same length as res.
 */
 namespace ad_tensor { namespace dev {
     // dim = broadcast(res, arg)
-    c10::ArrayRef<long> broadcast(
+    c10::IntArrayRef broadcast(
         bool                       lock      ,
-        const c10::ArrayRef<long>& res_shape ,
-        const c10::ArrayRef<long>& arg_shape
+        const c10::IntArrayRef&    res_shape ,
+        const c10::IntArrayRef&    arg_shape
     ) {
         //
         // locked
         thread_local bool locked = false;
         //
         // dim
-        thread_local vector<long> dim;
+        thread_local vector<int64_t> dim;
         //
         // locked
         if( ! lock )
@@ -74,7 +74,7 @@ namespace ad_tensor { namespace dev {
                 "was not preceded by a call with lock true"
             );
             locked = false;
-            return c10::ArrayRef<long>();
+            return c10::IntArrayRef();
         }
         assert( ! locked && "broadcast: "
             "attempt to get a lock while another call is holding its lock"
@@ -95,7 +95,7 @@ namespace ad_tensor { namespace dev {
         //
         // check for case where tensor shapes are equal
         if( res_shape.equals( arg_shape) ) {
-            return c10::ArrayRef<long> ();
+            return c10::IntArrayRef ();
         }
         //
         // dim
@@ -112,12 +112,12 @@ namespace ad_tensor { namespace dev {
                 {   assert( arg_shape[arg_index] == 1 && "binary_broadcast: "
                         "an arg size is different from its res size and not 1"
                     );
-                    dim.push_back( static_cast<long>(res_index) );
+                    dim.push_back( static_cast<int64_t>(res_index) );
                 }
             } else if( 1 < res_shape[res_index] ) {
                 dim.push_back(res_index);
             }
         }
-        return c10::ArrayRef<long> (dim);
+        return c10::IntArrayRef (dim);
     }
 }  }

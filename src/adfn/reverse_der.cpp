@@ -167,7 +167,7 @@ ad_tensor::vector<TensorType> adfn_t::reverse_der(
     ad_tensor::vector<TensorType> dom_der;
     for(size_t j = 0; j < m_var.m_n_dom; ++j) {
         if( all_der[j].numel() == 0 ) {
-            c10::ArrayRef<long> shape = var_all[j].sizes();
+            c10::IntArrayRef shape = var_all[j].sizes();
             dom_der.push_back( TensorType( torch::zeros( shape ) ) );
         } else {
             dom_der.push_back( all_der[j] );

@@ -50,7 +50,7 @@ where start be the length of arg_value and arg_type before this call to
 {xrst_end ad_sum}
 */
 // BEGIN_SUM
-ad_t ad_t::sum(const c10::ArrayRef<long>& dim) const
+ad_t ad_t::sum(const c10::IntArrayRef&    dim) const
 // END_SUM
 {
     //

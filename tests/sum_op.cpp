@@ -31,8 +31,8 @@ TEST(tests, sum_op)  {
     auto [ap, ax] = ad_t::start_recording(p, x);
     //
     // dim
-    vector<long> dim_array( { 1 } );
-    c10::ArrayRef<long> dim(dim_array);
+    vector<int64_t> dim_array( { 1 } );
+    c10::IntArrayRef dim(dim_array);
     //
     // ay
     vector<ad_t> ay;

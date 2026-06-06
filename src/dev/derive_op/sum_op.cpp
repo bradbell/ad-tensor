@@ -49,7 +49,7 @@ namespace ad_tensor { namespace dev {
             //
             // dim
             lock = true;
-            c10::ArrayRef<long> dim = size_ptr2array_ref(
+            c10::IntArrayRef dim = size_ptr2array_ref(
                 lock, agraph.m_arg_value.data() + arg_index + 1
             );
             //
@@ -114,7 +114,7 @@ namespace ad_tensor { namespace dev {
             //
             // dim
             lock = true;
-            c10::ArrayRef<long> dim = size_ptr2array_ref(
+            c10::IntArrayRef dim = size_ptr2array_ref(
                 lock, agraph.m_arg_value.data() + arg_index + 1
             );
             assert( dim.size() == n_dim );
@@ -183,7 +183,7 @@ namespace ad_tensor { namespace dev {
             //
             // dim
             lock = true;
-            c10::ArrayRef<long> dim = size_ptr2array_ref(
+            c10::IntArrayRef dim = size_ptr2array_ref(
                 lock, agraph.m_arg_value.data() + arg_index + 1
             );
             assert( dim.size() == n_dim );
@@ -250,8 +250,8 @@ namespace ad_tensor { namespace dev {
         assert( n_arg == 2 + n_dim );
 #endif
         // operand_index, operand_shape
-        size_t              operand_index  = agraph.m_arg_value[arg_index];
-        c10::ArrayRef<long> operand_shape  = var_vec[operand_index].sizes();
+        size_t           operand_index  = agraph.m_arg_value[arg_index];
+        c10::IntArrayRef operand_shape  = var_vec[operand_index].sizes();
         //
         // rev_der[operand_index]
         if( rev_der[op_index].numel() == 1 ) {
@@ -266,14 +266,14 @@ namespace ad_tensor { namespace dev {
             //
             // dim
             lock = true;
-            c10::ArrayRef<long> dim = size_ptr2array_ref(
+            c10::IntArrayRef dim = size_ptr2array_ref(
                 lock, agraph.m_arg_value.data() + arg_index + 1
             );
             assert( dim.size() == n_dim );
             //
             // res_shape
             lock = true;
-            c10::ArrayRef<long> res_shape = rev_sum_view(
+            c10::IntArrayRef res_shape = rev_sum_view(
                 lock,
                 dim,
                 var_vec[op_index].sizes(),

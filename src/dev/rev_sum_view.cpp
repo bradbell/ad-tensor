@@ -54,11 +54,11 @@ with lock false.
 {xrst_end rev_sum_view}
 */
 namespace ad_tensor { namespace dev { // BEGIN_NAMESPACE_AD_TENSOR_DEV
-c10::ArrayRef<long> rev_sum_view(
+c10::IntArrayRef rev_sum_view(
     bool                       lock      ,
-    const c10::ArrayRef<long>& dim       ,
-    const c10::ArrayRef<long>& res_shape ,
-    const c10::ArrayRef<long>& arg_shape
+    const c10::IntArrayRef&    dim       ,
+    const c10::IntArrayRef&    res_shape ,
+    const c10::IntArrayRef&    arg_shape
 ) {
     //
     // locked
@@ -66,7 +66,7 @@ c10::ArrayRef<long> rev_sum_view(
     //
     // in_dim, shape
     thread_local vector<bool> in_dim;
-    thread_local vector<long> shape;
+    thread_local vector<int64_t> shape;
     //
     // locked
     if( ! lock )
@@ -74,7 +74,7 @@ c10::ArrayRef<long> rev_sum_view(
             "a call with lock false was not preceded by a call with lock true"
         );
         locked = false;
-        return c10::ArrayRef<long>();
+        return c10::IntArrayRef();
     }
     assert( ! locked && "reverse_sum_view: "
         "attempt to get a lock while another call is holding its lock"
@@ -113,6 +113,6 @@ c10::ArrayRef<long> rev_sum_view(
     }
     assert( res_index == 0 );
     //
-    return c10::ArrayRef<long> (shape);
+    return c10::IntArrayRef (shape);
 }
 } } // END_NAMESPACE_AD_TENSOR_DEV

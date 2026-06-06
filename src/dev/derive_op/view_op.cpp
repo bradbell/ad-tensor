@@ -43,7 +43,7 @@ namespace ad_tensor { namespace dev {
         //
         // shape
         lock = true;
-        c10::ArrayRef<long> shape = size_ptr2array_ref(
+        c10::IntArrayRef shape = size_ptr2array_ref(
                 lock, agraph.m_arg_value.data() + arg_index + 1
         );
         assert( shape.size() == n_dim );
@@ -103,7 +103,7 @@ namespace ad_tensor { namespace dev {
         //
         // shape
         lock = true;
-        c10::ArrayRef<long> shape = size_ptr2array_ref(
+        c10::IntArrayRef shape = size_ptr2array_ref(
                 lock, agraph.m_arg_value.data() + arg_index + 1
         );
         assert( shape.size() == n_dim );
@@ -148,7 +148,7 @@ namespace ad_tensor { namespace dev {
         size_t operand_index  = agraph.m_arg_value[arg_index];
         //
         // for_der
-        c10::ArrayRef<long> shape = var_vec[op_index].sizes();
+        c10::IntArrayRef shape = var_vec[op_index].sizes();
         //
         // var_vec
         for_der[op_index] = for_der[operand_index].view(shape);
@@ -188,7 +188,7 @@ namespace ad_tensor { namespace dev {
         size_t operand_index  = agraph.m_arg_value[arg_index];
         //
         // shape
-        c10::ArrayRef<long> shape = var_vec[operand_index].sizes();
+        c10::IntArrayRef shape = var_vec[operand_index].sizes();
         //
         // rev_der
         if( rev_der[operand_index].numel() == 0 ) {

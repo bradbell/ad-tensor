@@ -44,7 +44,7 @@ where start be the length of arg_value and arg_type before this call to
 {xrst_end ad_view}
 */
 // BEGIN_VIEW
-ad_t ad_t::view(const c10::ArrayRef<long>& shape) const
+ad_t ad_t::view(const c10::IntArrayRef&    shape) const
 // END_VIEW
 {
     //

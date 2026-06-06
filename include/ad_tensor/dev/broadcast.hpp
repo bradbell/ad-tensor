@@ -8,10 +8,10 @@
 // BEGIN_BROADCAST
 namespace ad_tensor { namespace dev {
     // dim = broadcast(lock, res, arg)
-    c10::ArrayRef<long> broadcast(
+    c10::IntArrayRef broadcast(
         bool                       lock                               ,
-        const c10::ArrayRef<long>& res_shape  = c10::ArrayRef<long>() ,
-        const c10::ArrayRef<long>& arg_shape  = c10::ArrayRef<long>()
+        const c10::IntArrayRef&    res_shape  = c10::IntArrayRef() ,
+        const c10::IntArrayRef&    arg_shape  = c10::IntArrayRef()
     );
 } }
 // END_BROADCAST

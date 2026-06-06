@@ -173,12 +173,12 @@ public:
     // END_PUBLIC_CTOR
     //
     // BEGIN_SIZES
-    c10::ArrayRef<long> sizes(void) const
+    c10::IntArrayRef sizes(void) const
     // END_SIZES
     {   return m_tensor.sizes(); }
     //
     // BEGIN_NUMEL
-    long numel(void) const
+    int64_t numel(void) const
     // END_NUMEL
     {   return m_tensor.numel(); }
     //
@@ -210,9 +210,9 @@ public:
     ad_t operator -(void) const;
     //
     // sum
-    ad_t sum(const c10::ArrayRef<long>& dim = c10::ArrayRef<long>() ) const;
+    ad_t sum(const c10::IntArrayRef&    dim = c10::IntArrayRef() ) const;
     //
     // view
-    ad_t view(const c10::ArrayRef<long>& shape) const;
+    ad_t view(const c10::IntArrayRef&    shape) const;
     //
 }; }

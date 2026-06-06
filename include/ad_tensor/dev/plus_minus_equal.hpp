@@ -44,7 +44,7 @@ This is the argument. The special case where arg.numel() is zero
 // BEGIN_REV_PLUS_EQUAL
 namespace ad_tensor { namespace dev {
     template <class TensorType> void inline rev_plus_equal(
-        const c10::ArrayRef<long>&     dim ,
+        const c10::IntArrayRef&        dim ,
         const TensorType&              res ,
         TensorType&                    arg )
 // END_REV_PLUS_EQUAL
@@ -67,7 +67,7 @@ namespace ad_tensor { namespace dev {
     }
 // BEGIN_REV_MINUS_EQUAL
     template <class TensorType> void inline rev_minus_equal(
-        const c10::ArrayRef<long>&     dim ,
+        const c10::IntArrayRef&        dim ,
         const TensorType&              res ,
         TensorType&                    arg )
 // END_REV_MINUS_EQUAL

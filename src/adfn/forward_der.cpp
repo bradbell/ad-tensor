@@ -157,13 +157,13 @@ ad_tensor::vector<TensorType> adfn_t::forward_der(
         switch(ad_type) {
             //
             case ad_type_t::constant: {
-                c10::ArrayRef<long> shape = m_con[index].sizes();
+                c10::IntArrayRef shape = m_con[index].sizes();
                 rng_der.push_back( torch::zeros( shape ) );
             }
             break;
             //
             case ad_type_t::parameter: {
-                c10::ArrayRef<long> shape = par_all[index].sizes();
+                c10::IntArrayRef shape = par_all[index].sizes();
                 rng_der.push_back( torch::zeros( shape ) );
             }
             break;

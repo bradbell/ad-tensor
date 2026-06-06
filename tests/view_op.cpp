@@ -30,7 +30,7 @@ TEST(tests, view_op)  {
     auto [ap, ax] = ad_t::start_recording(p, x);
     //
     // shape
-    vector<long> shape = {2, 2};
+    vector<int64_t> shape = {2, 2};
     //
     // ay
     vector<ad_t> ay;
