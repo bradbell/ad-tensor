@@ -133,8 +133,8 @@ The adten_t Private Constructor
 #include <ad_tensor/ad_type.hpp>
 #include <ad_tensor/dev/op_enum.hpp>
 //
-// BINARY_OP
-# define BINARY_OP(op, op_enum) \
+// AD_TENSOR_BINARY_OP
+# define AD_TENSOR_BINARY_OP(op, op_enum) \
     \
     adten_t operator op (const adten_t& rhs) const \
     { return binary( dev::op_enum_t:: op_enum, *this, rhs ); } \
@@ -204,10 +204,10 @@ public:
     // END_STOP_RECORDING
     //
     // Binary operators
-    BINARY_OP(+, add)
-    BINARY_OP(-, sub)
-    BINARY_OP(*, mul)
-    BINARY_OP(/, div)
+    AD_TENSOR_BINARY_OP(+, add)
+    AD_TENSOR_BINARY_OP(-, sub)
+    AD_TENSOR_BINARY_OP(*, mul)
+    AD_TENSOR_BINARY_OP(/, div)
     //
     // minus
     adten_t operator -(void) const;

@@ -14,8 +14,8 @@
 The Derived Operators Classes
 #############################
 
-OP_DERIVE(op_name)
-******************
+AD_TENSOR_DERIVE_OP(op_name)
+****************************
 This macro call creates the class op_name_t,
 and corresponding object op_name .
 This is done inside the ``ad_tensor::dev`` namespace .
@@ -39,7 +39,7 @@ This maps op_enum_t values to the corresponding base_op_t<TensorType> value:
 // routine can report the routine and operator this to the user.
 #include <ad_tensor/dev/user_assert.hpp>
 //
-#define OP_DERIVE(op_name) \
+#define AD_TENSOR_DERIVE_OP(op_name) \
     template<class TensorType> \
     struct op_name ## _t : public base_op_t<TensorType> { \
         \
@@ -85,13 +85,13 @@ namespace ad_tensor { namespace dev {
     // END_OP_ENUM2BASE_OP
     //
     // BEGIN_SORT_THIS_LINE_PLUS_1
-    OP_DERIVE(add_op)
-    OP_DERIVE(div_op)
-    OP_DERIVE(dom_op)
-    OP_DERIVE(minus_op)
-    OP_DERIVE(mul_op)
-    OP_DERIVE(sub_op)
-    OP_DERIVE(sum_op)
-    OP_DERIVE(view_op)
+    AD_TENSOR_DERIVE_OP(add_op)
+    AD_TENSOR_DERIVE_OP(div_op)
+    AD_TENSOR_DERIVE_OP(dom_op)
+    AD_TENSOR_DERIVE_OP(minus_op)
+    AD_TENSOR_DERIVE_OP(mul_op)
+    AD_TENSOR_DERIVE_OP(sub_op)
+    AD_TENSOR_DERIVE_OP(sum_op)
+    AD_TENSOR_DERIVE_OP(view_op)
     // END_SORT_THIS_LINE_MINUS_1
 } }
