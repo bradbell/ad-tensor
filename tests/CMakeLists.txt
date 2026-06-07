@@ -8,6 +8,7 @@ add_executable(tests
     dev/base_op.cpp
     dev/op_enum.cpp
     dev/tape.cpp
+    matmul_op.cpp
     minus_op.cpp
     sum_op.cpp
     view_op.cpp

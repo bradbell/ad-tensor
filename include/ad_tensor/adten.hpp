@@ -57,13 +57,15 @@ where lhs and rhs are adten_t references and rhs is.
 
 Other Member Functions
 **********************
+{xrst_comment BEGIN_SORT_THIS_LINE_PLUS_2}
 {xrst_toc_table
-    src/adten/recording.cpp
-    src/adten/view.cpp
-    src/adten/minus.cpp
-    src/adten/sum.cpp
     src/adten/matmul.cpp
+    src/adten/minus.cpp
+    src/adten/recording.cpp
+    src/adten/sum.cpp
+    src/adten/view.cpp
 }
+{xrst_comment END_SORT_THIS_LINE_MINUS_2}
 
 Example
 *******
@@ -78,13 +80,15 @@ Example
 
 The adten_t Class Developer Documentation
 #########################################
+{xrst_comment BEGIN_SORT_THIS_LINE_PLUS_2}
 {xrst_toc_table after
     src/adten/binary.cpp
+    src/adten/matmul.cpp
     src/adten/minus.cpp
     src/adten/sum.cpp
     src/adten/view.cpp
-    src/adten/matmul.cpp
 }
+{xrst_comment END_SORT_THIS_LINE_MINUS_2}
 
 {xrst_end adten_dev}
 ------------------------------------------------------------------------------
