@@ -15,6 +15,7 @@ add_library(ad_tensor SHARED
     adten/minus.cpp
     adten/recording.cpp
     adten/sum.cpp
+    adten/transpose.cpp
     adten/view.cpp
     dev/broadcast.cpp
     dev/derive_op/add_op.cpp

@@ -63,6 +63,7 @@ Other Member Functions
     src/adten/minus.cpp
     src/adten/recording.cpp
     src/adten/sum.cpp
+    src/adten/transpose.cpp
     src/adten/view.cpp
 }
 {xrst_comment END_SORT_THIS_LINE_MINUS_2}
@@ -86,6 +87,7 @@ The adten_t Class Developer Documentation
     src/adten/matmul.cpp
     src/adten/minus.cpp
     src/adten/sum.cpp
+    src/adten/transpose.cpp
     src/adten/view.cpp
 }
 {xrst_comment END_SORT_THIS_LINE_MINUS_2}
@@ -226,5 +228,8 @@ public:
     //
     // matmul
     adten_t matmul(const adten_t& rhs) const;
+    //
+    // transpose
+    adten_t transpose(int64_t dim1, int64_t dim2) const;
     //
 }; }
