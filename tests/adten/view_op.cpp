@@ -9,7 +9,7 @@
 #include <ad_tensor/adten.hpp>
 #include <ad_tensor/dev/to_string.hpp>
 //
-TEST(tests, view_op)  {
+TEST(tests, adten_view_op)  {
     using ad_tensor::adten_t;
     using ad_tensor::adfn_t;
     using ad_tensor::options_t;

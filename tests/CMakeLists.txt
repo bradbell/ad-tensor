@@ -5,13 +5,13 @@
 # BEGIN_SORT_THIS_LINE_PLUS_2
 add_executable(tests
     adfn/reverse_der.cpp
+    adten/matmul_op.cpp
+    adten/minus_op.cpp
+    adten/sum_op.cpp
+    adten/view_op.cpp
     dev/base_op.cpp
     dev/op_enum.cpp
     dev/tape.cpp
-    matmul_op.cpp
-    minus_op.cpp
-    sum_op.cpp
-    view_op.cpp
 )
 # END_SORT_THIS_LINE_MINUS_2
 #

@@ -9,7 +9,7 @@
 #include <ad_tensor/adten.hpp>
 #include <ad_tensor/dev/to_string.hpp>
 //
-TEST(tests, minus_op)  {
+TEST(tests, adten_sum_op)  {
     using ad_tensor::adten_t;
     using ad_tensor::adfn_t;
     using ad_tensor::options_t;
@@ -30,10 +30,14 @@ TEST(tests, minus_op)  {
     // ap, ax
     auto [ap, ax] = adten_t::start_recording(p, x);
     //
+    // dim
+    vector<int64_t> dim_array( { 1 } );
+    c10::IntArrayRef dim(dim_array);
+    //
     // ay
     vector<adten_t> ay;
-    ay.push_back( - ap[0] );
-    ay.push_back( - ax[0] );
+    ay.push_back(  ap[0].sum() );
+    ay.push_back( ax[0].sum(dim) );
     //
     // y = f(p)
     adfn_t f = adten_t::stop_recording(ay);
@@ -47,10 +51,10 @@ TEST(tests, minus_op)  {
     //
     EXPECT_EQ( y.size(), ay.size() );
     //
-    bool equal = y[0].equal( - p[0] );
+    bool equal = y[0].equal( p[0].sum() );
     EXPECT_TRUE( equal );
     //
-    equal = y[1].equal( - x[0] );
+    equal = y[1].equal( x[0].sum(dim) );
     EXPECT_TRUE( equal );
     //
     // dx
@@ -62,20 +66,20 @@ TEST(tests, minus_op)  {
     //
     EXPECT_EQ( dy.size(), y.size() );
     //
-    equal = dy[0].equal( torch::tensor( { 0.0, 0.0 } ) );
+    equal = dy[0].equal( torch::tensor( 0.0 ) );
     EXPECT_TRUE( equal );
     //
-    equal = dy[1].equal( - dx[0] );
+    equal = dy[1].equal( dx[0].sum(dim) );
     EXPECT_TRUE( equal );
     //
     // dy, dx
-    dy[0] = torch::tensor( {2.0, 3.0} );
-    dy[1] = torch::tensor( { {11.0, 12.0, 13.0}, {14.0, 15.0, 16.0} } );
+    dy[0] = torch::tensor( 2.0 );
+    dy[1] = torch::tensor( {3.0, 4.0} );
     dx    = f.reverse_der(par_all, var_all, dy, options);
     //
     EXPECT_EQ( x.size(), dx.size() );
     //
-    equal = dx[0].equal( -dy[1] );
+    equal = dx[0].equal(torch::tensor( { {3.0, 3.0, 3.0}, {4.0, 4.0, 4.0} } ));
     EXPECT_TRUE( equal );
 }
 // END_CPP
