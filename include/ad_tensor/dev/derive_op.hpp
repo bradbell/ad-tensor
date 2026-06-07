@@ -93,5 +93,6 @@ namespace ad_tensor { namespace dev {
     AD_TENSOR_DERIVE_OP(sub_op)
     AD_TENSOR_DERIVE_OP(sum_op)
     AD_TENSOR_DERIVE_OP(view_op)
+    AD_TENSOR_DERIVE_OP(matmul_op)
     // END_SORT_THIS_LINE_MINUS_1
 } }

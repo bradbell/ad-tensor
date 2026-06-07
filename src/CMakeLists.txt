@@ -20,6 +20,7 @@ add_library(ad_tensor SHARED
     dev/derive_op/add_op.cpp
     dev/derive_op/div_op.cpp
     dev/derive_op/dom_op.cpp
+    dev/derive_op/matmul_op.cpp
     dev/derive_op/minus_op.cpp
     dev/derive_op/mul_op.cpp
     dev/derive_op/op_enum2derive_op.cpp
