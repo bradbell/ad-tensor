@@ -14,6 +14,7 @@ AD Tensor User Documentation
     include/ad_tensor/adten.hpp
     include/ad_tensor/ad_type.hpp
     include/ad_tensor/adfn.hpp
+    docs/bib.xrst
 }
 
 {xrst_end public}

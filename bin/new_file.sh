@@ -77,7 +77,21 @@ ext=$(echo $path_to_file | sed -e 's|^.*[.]\([^.]*\)$|.\1|')
 # path_to_file
 case $ext in
 
-    .sh|.txt|.py)
+    .txt)
+    if ! echo $path_to_file | grep 'CMakeLists.txt$' > /dev/null
+    then
+        echo 'The .txt extension is only supported for CMakeLists.txt files'
+        exit 1
+    fi
+    cat << EOF >> $path_to_file
+# SPDX-License-Identifier: $spdx_license_id
+# SPDX-FileCopyrightText: $spdx_copyright_text
+# SPDX-FileContributor: $year $fullname
+# -----------------------------------------------------------------------------
+EOF
+    ;;
+
+    .sh|.py|.xrst)
     if [ "$ext" == '.sh' ]
     then
         echo '#! /usr/bin/env bash' >> $path_to_file
@@ -94,7 +108,6 @@ EOF
         chmod +x $path_to_file
     fi
     ;;
-
 
     .hpp|.cpp)
     if [ "$ext" == '.hpp' ]

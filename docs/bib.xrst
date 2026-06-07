@@ -1,0 +1,31 @@
+# SPDX-License-Identifier: EPL-2.0 OR GPL-2.0-or-later
+# SPDX-FileCopyrightText: Bradley M. Bell <bradbell@seanet.com>
+# SPDX-FileContributor: 2026 Bradley M. Bell
+# -----------------------------------------------------------------------------
+{xrst_begin bibliography usr}
+{xrst_spell
+    techreport
+    guiles
+}
+
+Bibliography
+############
+
+Guiles-2008
+***********
+-   Title:
+    An extended collection of matrix derivative results for
+    forward and reverse mode automatic differentiation
+-   Author: Mike Giles
+-   Techreport: NA-08/01
+-   Institution: Oxford University Computing Laboratory
+-   Year: 2008
+-   Month: January,
+-   Note:
+    This is an extended version of a paper which will appear in the
+    proceedings of AD2008, the 5th International Conference
+    on Automatic Differentiation.",
+-   Download:
+    https://www.cs.ox.ac.uk/publications/publication13-abstract.html
+
+{xrst_end bibliography}
