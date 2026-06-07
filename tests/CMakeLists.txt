@@ -9,6 +9,7 @@ add_executable(tests
     adten/minus_op.cpp
     adten/sum_op.cpp
     adten/view_op.cpp
+    adten/transpose_op.cpp
     dev/base_op.cpp
     dev/op_enum.cpp
     dev/tape.cpp
