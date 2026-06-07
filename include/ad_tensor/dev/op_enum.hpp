@@ -23,6 +23,7 @@ namespace ad_tensor { namespace dev { enum struct op_enum_t {
     add,     // binary addition
     div,     // binary division
     dom,     // domain tensor
+    matmul,  // binaryu matrix multiplication
     minus,   // unary minus
     mul,     // binary multiplication
     sub,     // binary subtraction

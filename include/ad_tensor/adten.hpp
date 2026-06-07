@@ -62,6 +62,7 @@ Other Member Functions
     src/adten/view.cpp
     src/adten/minus.cpp
     src/adten/sum.cpp
+    src/adten/matmul.cpp
 }
 
 Example
@@ -82,6 +83,7 @@ The adten_t Class Developer Documentation
     src/adten/minus.cpp
     src/adten/sum.cpp
     src/adten/view.cpp
+    src/adten/matmul.cpp
 }
 
 {xrst_end adten_dev}
@@ -213,9 +215,12 @@ public:
     adten_t operator -(void) const;
     //
     // sum
-    adten_t sum(const c10::IntArrayRef&    dim = c10::IntArrayRef() ) const;
+    adten_t sum(const c10::IntArrayRef& dim = c10::IntArrayRef() ) const;
     //
     // view
-    adten_t view(const c10::IntArrayRef&    shape) const;
+    adten_t view(const c10::IntArrayRef& shape) const;
+    //
+    // matmul
+    adten_t matmul(const adten_t& rhs) const;
     //
 }; }

@@ -4,17 +4,18 @@
 # -----------------------------------------------------------------------------
 add_library(ad_tensor SHARED
     # BEGIN_SORT_THIS_LINE_PLUS_1
-    adten/binary.cpp
-    adten/ctor.cpp
-    adten/minus.cpp
-    adten/recording.cpp
-    adten/sum.cpp
-    adten/view.cpp
     adfn/forward_der.cpp
     adfn/forward_par.cpp
     adfn/forward_var.cpp
     adfn/get_range.cpp
     adfn/reverse_der.cpp
+    adten/binary.cpp
+    adten/ctor.cpp
+    adten/matmul.cpp
+    adten/minus.cpp
+    adten/recording.cpp
+    adten/sum.cpp
+    adten/view.cpp
     dev/broadcast.cpp
     dev/derive_op/add_op.cpp
     dev/derive_op/div_op.cpp
