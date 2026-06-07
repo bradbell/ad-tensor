@@ -231,5 +231,4 @@ public:
     //
     // transpose
     adten_t transpose(int64_t dim1, int64_t dim2) const;
-    //
 }; }
