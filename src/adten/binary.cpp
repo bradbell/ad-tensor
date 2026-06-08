@@ -43,7 +43,7 @@ the following is added to the parameter (variable) acyclic graph:
     start + 0, index for lhs, type for lhs
     start + 1, index for rhs, type for rhs
 
-where start be the length of arg_value and arg_type before this call to
+where start is the length of arg_value and arg_type before this call to
 ``adten_t::binary`` .
 
 {xrst_end adten_binary}

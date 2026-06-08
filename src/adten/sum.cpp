@@ -74,7 +74,7 @@ the following is added to the parameter (variable) acyclic graph:
 
 If n_dim is zero, all the dimensions are summed.
 
-where start be the length of arg_value and arg_type before this call to
+where start is the length of arg_value and arg_type before this call to
 ``adten_t::binary`` .
 
 {xrst_end adten_sum_dev}

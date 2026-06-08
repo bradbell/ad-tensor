@@ -62,7 +62,7 @@ the following is added to the parameter (variable) acyclic graph:
     arg_index, arg_value, arg_type
     start + 0, index for operand, type for operand
 
-where start be the length of arg_value and arg_type before this call to
+where start is the length of arg_value and arg_type before this call to
 ``adten_t::minus`` .
 
 {xrst_end adten_minus_dev}

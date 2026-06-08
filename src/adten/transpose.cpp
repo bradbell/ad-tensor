@@ -68,7 +68,7 @@ the following is added to the parameter (variable) acyclic graph:
     start + 1, first dimension that we are switching,     ad_type::none
     start + 2, second dimension that we are switching,    ad_type::none
 
-where start be the length of arg_value and arg_type before this call to
+where start is the length of arg_value and arg_type before this call to
 ``adten_t::binary`` and n_dim is the number of dimensions in the new shape
 
 {xrst_end adten_transpose_dev}
