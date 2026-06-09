@@ -146,7 +146,7 @@ adten_t adten_t::matmul(const adten_t& rhs) const
             agraph = &tape.m_par;
         else {
             assert( res_ad_type == ad_type_t::variable  && "AD tensor being "
-                "summed is not constant, parameter, or variable"
+                "multiplied is not constant, parameter, or variable"
             );
             agraph = &tape.m_var;
         }

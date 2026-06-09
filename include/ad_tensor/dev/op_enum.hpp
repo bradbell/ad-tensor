@@ -26,6 +26,7 @@ namespace ad_tensor { namespace dev { enum struct op_enum_t {
     matmul,      // binary matrix multiplication
     minus,       // unary minus
     mul,         // binary multiplication
+    solve,       // solve binary matrix equation
     sub,         // binary subtraction
     sum,         // unary summation
     transpose,   // unary transpose

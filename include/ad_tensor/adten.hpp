@@ -62,6 +62,7 @@ Other Member Functions
     src/adten/matmul.cpp
     src/adten/minus.cpp
     src/adten/recording.cpp
+    src/adten/solve.cpp
     src/adten/sum.cpp
     src/adten/transpose.cpp
     src/adten/view.cpp
@@ -86,6 +87,7 @@ The adten_t Class Developer Documentation
     src/adten/binary.cpp
     src/adten/matmul.cpp
     src/adten/minus.cpp
+    src/adten/solve.cpp
     src/adten/sum.cpp
     src/adten/transpose.cpp
     src/adten/view.cpp
@@ -231,4 +233,16 @@ public:
     //
     // transpose
     adten_t transpose(int64_t dim1, int64_t dim2) const;
+    //
+    // solve
+    adten_t solve(const adten_t& rhs, bool left) const;
+    //
 }; }
+
+namespace ad_tensor {
+    //
+    // linalg_solve
+    adten_t linalg_solve(
+        const adten_t& square, const adten_t& rhs, bool left = true
+    );
+}

@@ -14,6 +14,7 @@ add_library(ad_tensor SHARED
     adten/matmul.cpp
     adten/minus.cpp
     adten/recording.cpp
+    adten/solve.cpp
     adten/sum.cpp
     adten/transpose.cpp
     adten/view.cpp
@@ -25,6 +26,7 @@ add_library(ad_tensor SHARED
     dev/derive_op/minus_op.cpp
     dev/derive_op/mul_op.cpp
     dev/derive_op/op_enum2derive_op.cpp
+    dev/derive_op/solve.cpp
     dev/derive_op/sub_op.cpp
     dev/derive_op/sum_op.cpp
     dev/derive_op/transpose_op.cpp
