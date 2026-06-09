@@ -35,16 +35,16 @@ namespace ad_tensor { namespace dev {
         assert( agraph.m_arg_type[arg_index+2] == ad_type_t::none );
 # endif
         //
-        // square_tensor, rhs_tensor
-        TensorType square_tensor  = tensor_at_arg_index(
+        // square_ten, rhs_ten
+        TensorType square_ten  = tensor_at_arg_index(
             arg_index, agraph, con_vec, par_vec
         );
-        TensorType rhs_tensor  = tensor_at_arg_index(
+        TensorType rhs_ten  = tensor_at_arg_index(
             arg_index + 1, agraph, con_vec, par_vec
         );
         //
         // par_vec
-        par_vec[op_index] = linalg_solve(square_tensor, rhs_tensor, left);
+        par_vec[op_index] = linalg_solve(square_ten, rhs_ten, left);
     }
     template void solve_op_t<adten_t>::forward_par(
         size_t                                  op_index    ,
@@ -81,16 +81,16 @@ namespace ad_tensor { namespace dev {
         assert( agraph.m_arg_type[arg_index+2] == ad_type_t::none );
 # endif
         //
-        // square_tensor, rhs_tensor
-        TensorType square_tensor  = tensor_at_arg_index(
+        // square_ten, rhs_ten
+        TensorType square_ten  = tensor_at_arg_index(
             arg_index, agraph, con_vec, par_vec, var_vec
         );
-        TensorType rhs_tensor  = tensor_at_arg_index(
+        TensorType rhs_ten  = tensor_at_arg_index(
             arg_index + 1, agraph, con_vec, par_vec, var_vec
         );
         //
         // var_vec
-        var_vec[op_index] = linalg_solve(square_tensor, rhs_tensor, left);
+        var_vec[op_index] = linalg_solve(square_ten, rhs_ten, left);
     }
     template void solve_op_t<adten_t>::forward_var(
         size_t                                  op_index    ,
@@ -139,52 +139,52 @@ namespace ad_tensor { namespace dev {
         size_t square_index = agraph.m_arg_value[arg_index];
         size_t rhs_index = agraph.m_arg_value[arg_index + 1];
         //
-        // square_tensor, rhs_tensor
-        TensorType square_tensor  = tensor_at_arg_index(
-            arg_index, agraph, con_vec, par_vec
+        // square_ten, rhs_ten
+        TensorType square_ten  = tensor_at_arg_index(
+            arg_index, agraph, con_vec, par_vec, var_vec
         );
         //
         if( square_type != ad_type_t::variable ) {
             assert( rhs_type == ad_type_t::variable );
             //
             if( left ) {
-                // square * solution_dot =  rsh_dot
+                // square_ten * solution_dot =  rsh_dot
                 for_der[op_index] =
-                    linalg_solve(square_tensor, for_der[rhs_index], left);
+                    linalg_solve(square_ten, for_der[rhs_index], left);
             } else {
-                // solution_dot * square = rsh_dot
+                // solution_dot * square_ten = rsh_dot
                 for_der[op_index] =
-                    linalg_solve(square_tensor, for_der[rhs_index], ! left);
+                    linalg_solve(square_ten, for_der[rhs_index], ! left);
             }
             //
         } else if( rhs_type != ad_type_t::variable ) {
             assert( square_type == ad_type_t::variable );
             //
             if( left ) {
-                // square * solution_dot = - square_dot * solution
+                // square_ten * solution_dot = - square_dot * solution
                 TensorType prod =
                     for_der[square_index].matmul( var_vec[op_index] );
-                for_der[op_index] = - linalg_solve(square_tensor, prod, left);
+                for_der[op_index] = - linalg_solve(square_ten, prod, left);
             } else {
-                // solution_dot * square = - solution * square_dot
+                // solution_dot * square_ten = - solution * square_dot
                 TensorType prod =
                     var_vec[op_index].matmul( for_der[square_index] );
-                for_der[op_index] = - linalg_solve(square_tensor, prod, ! left);
+                for_der[op_index] = - linalg_solve(square_ten, prod, ! left);
             }
         } else {
             //
             if( left ) {
-                // square * solution_dot = rsh_dot - square_dot * solution
+                // square_ten * solution_dot = rsh_dot - square_dot * solution
                 TensorType prod =
                     for_der[square_index].matmul( var_vec[op_index] );
                 TensorType diff   = for_der[rhs_index] - prod;
-                for_der[op_index] = linalg_solve(square_tensor, diff, left );
+                for_der[op_index] = linalg_solve(square_ten, diff, left );
             } else {
-                // solution_dot * square = rsh_dot - solution * square_dot
+                // solution_dot * square_ten = rsh_dot - solution * square_dot
                 TensorType prod =
                     var_vec[op_index].matmul( for_der[square_index] );
                 TensorType diff   = for_der[rhs_index] - prod;
-                for_der[op_index] = linalg_solve(square_tensor, diff, ! left );
+                for_der[op_index] = linalg_solve(square_ten, diff, ! left );
             }
         };
     }
@@ -237,16 +237,16 @@ namespace ad_tensor { namespace dev {
         size_t square_index = agraph.m_arg_value[arg_index];
         size_t rhs_index = agraph.m_arg_value[arg_index + 1];
         //
-        // square_tensor
-        TensorType square_tensor  = tensor_at_arg_index(
-            arg_index, agraph, con_vec, par_vec
+        // square_ten
+        TensorType square_ten  = tensor_at_arg_index(
+            arg_index, agraph, con_vec, par_vec, var_vec
         );
         //
         //
         if( left ) {
             //
             // square_tra
-            TensorType square_tra = square_tensor.transpose(0, 1);
+            TensorType square_tra = square_ten.transpose(0, 1);
             //
             // square_tra * rhs_bar = solution_bar
             TensorType rhs_bar =
@@ -262,9 +262,9 @@ namespace ad_tensor { namespace dev {
             // solution_bar_tra
             TensorType solution_bar_tra = rev_der[op_index].transpose(0, 1);
             //
-            // square * rhs_bar = solution_bar_tra
+            // square_ten * rhs_bar = solution_bar_tra
             TensorType rhs_bar =
-                linalg_solve(square_tensor, solution_bar_tra, left);
+                linalg_solve(square_ten, solution_bar_tra, left);
             if( rhs_type == ad_type_t::variable ) {
                 rev_der[rhs_index] = rhs_bar;
             }

@@ -4,9 +4,28 @@
 # SPDX-FileContributor: 2026 Bradley M. Bell
 # ---------------------------------------------------------------------------
 {xrst_begin public usr}
+{xrst_spell
+    adten
+    lhs
+    rhs
+    std
+    getters
+}
 
 AD Tensor User Documentation
 ############################
+
+TODO
+****
+#.  Use a special routine that ensures a value is in current recording:
+    void adten::current_recording(adten_t& adten)
+
+#.  Create a routine that just implement += and -= where left side may be an
+    empty tensor:
+    void plus_equal(adten& lhs, const adten& rhs)
+
+#.  Change options from a std::map to an class with default values
+    for all fields, setters and getters.
 
 {xrst_toc_table
     include/ad_tensor/vector.hpp

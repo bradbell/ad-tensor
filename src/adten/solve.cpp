@@ -109,7 +109,7 @@ adten_t adten_t::solve(const adten_t& rhs, bool left) const
     );
     int64_t square_n_row = square.sizes()[0];
     int64_t square_n_col = square.sizes()[1];
-    dev::user_assert( square_n_row != square_n_col ,
+    dev::user_assert( square_n_row == square_n_col ,
         "solve: square: number of rows is not equal number of columns"
     );
     int64_t rhs_n_row = rhs.sizes()[0];
@@ -117,10 +117,10 @@ adten_t adten_t::solve(const adten_t& rhs, bool left) const
     if( rhs_n_dim == 2 ) {
         rhs_n_col = rhs.sizes()[1];
     }
-    dev::user_assert( square_n_row != rhs_n_row || ! left , "solve: "
+    dev::user_assert( square_n_row == rhs_n_row || ! left , "solve: "
         "left true and number of rows in square and rhs are not equal"
     );
-    dev::user_assert( square_n_col != rhs_n_col || left , "solve: "
+    dev::user_assert( square_n_col == rhs_n_col || left , "solve: "
         "left false and number of columns in square and rhs are not equal"
     );
 # endif
