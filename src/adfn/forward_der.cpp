@@ -47,13 +47,7 @@ This is the domain direction that the derivative is computed with respect to.
 
 options
 *******
-The possible key,value pairs ( see :ref:`options-name` ) are
-
-.. csv-table::
-    :header-rows: 1
-
-    Key, Default, Possible other Values
-    "trace", "false", "true"
+Trace the forward derivative calculations when options.get_trace() is true.
 
 rng_der
 *******
@@ -111,26 +105,7 @@ ad_tensor::vector<TensorType> adfn_t::forward_der(
 # endif
     //
     // trace
-    string           key           = "trace";
-    string           default_value = "false";
-    std::set<string> other_values  = { "true" };
-    string value = dev::get_option(options, key, default_value, other_values);
-    bool trace = value == "true";
-    if( trace ) {
-        cout << "Begin tracing adfn::forward_der\n";
-        for(size_t i = 0; i < m_con.size(); ++i) {
-            string element = to_string( m_con[i] );
-            cout << "constant[" << i << "] = " << element << "\n";
-        }
-        for(size_t i = 0; i < par_all.size(); ++i) {
-            string element = to_string( par_all[i] );
-            cout << "par_all[" << i << "] = " << element << "\n";
-        }
-        for(size_t i = 0; i < var_all.size(); ++i) {
-            string element = to_string( var_all[i] );
-            cout << "var_all[" << i << "] = " << element << "\n";
-        }
-    }
+    bool trace = options.get_trace();
     //
     // n_op, n_all, empty
     size_t n_op      = m_var.m_op_seq.size();

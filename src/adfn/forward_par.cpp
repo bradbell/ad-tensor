@@ -28,13 +28,7 @@ Is the value of the domain parameters for this calculation.
 
 options
 *******
-The possible key,value pairs ( see :ref:`options-name` ) are
-
-.. csv-table::
-    :header-rows: 1
-
-    Key, Default, Possible other values
-    "trace", "false", "true"
+Trace the parameter calculations when options.get_trace() is true.
 
 par_all
 *******
@@ -90,18 +84,7 @@ ad_tensor::vector<TensorType> adfn_t::forward_par(
 # endif
     //
     // trace
-    string           key           = "trace";
-    string           default_value = "false";
-    std::set<string> other_values  = { "true" };
-    string value = dev::get_option(options, key, default_value, other_values);
-    bool trace = value == "true";
-    if( trace ) {
-        cout << "Begin tracing adfn::forward_par\n";
-        for(size_t i = 0; i < m_con.size(); ++i) {
-            string element = dev::to_string( m_con[i] );
-            cout << "constant[" << i << "] = " << element << "\n";
-        }
-    }
+    bool trace = options.get_trace();
     //
     // n_op, n_all, empty
     size_t n_op      = m_par.m_op_seq.size();

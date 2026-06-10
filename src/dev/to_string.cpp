@@ -7,9 +7,9 @@
 namespace ad_tensor { namespace dev {
     std::string to_string( ad_type_t ad_type)
     {   switch(ad_type) {
-            case ad_type_t::constant:  return "constant";
-            case ad_type_t::parameter: return "parameter";
-            case ad_type_t::variable:  return "variable";
+            case ad_type_t::constant:  return "con";
+            case ad_type_t::parameter: return "par";
+            case ad_type_t::variable:  return "var";
             case ad_type_t::none:      return "none";
             default:
             assert( false && "to_string(ad_type): unexpected ad_type" );

@@ -8,17 +8,31 @@
 
 The Options Key Value Map
 #########################
+
+trace
+*****
 {xrst_literal ,
-    BEGIN_HPP, END_HPP
+    BEGIN_TRACE, END_TRACE
 }
+The default value for trace is false.
 
 {xrst_end options}
 */
 #include<map>
 #include<string>
 
-// BEGIN_HPP
 namespace ad_tensor {
-    typedef std::map< std::string, std::string> options_t;
+    class options_t {
+    private:
+        bool m_trace;
+    public:
+        options_t(void)
+        : m_trace(false)
+        { }
+        //
+        // BEGIN_TRACE
+        void set_trace(bool trace);
+        bool get_trace(void) const;
+        // END_TRACE
+    };
 }
-// END_HPP
