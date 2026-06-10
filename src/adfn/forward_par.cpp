@@ -9,7 +9,6 @@
 #include <ad_tensor/dev/derive_op.hpp>
 #include <ad_tensor/dev/to_string.hpp>
 #include <ad_tensor/dev/user_assert.hpp>
-#include <ad_tensor/dev/get_option.hpp>
 /*
 {xrst_begin adfn_forward_par usr}
 

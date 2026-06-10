@@ -2,7 +2,6 @@
 // SPDX-FileCopyrightText: Bradley M. Bell <bradbell@seanet.com>
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
-#include <ad_tensor/dev/get_option.hpp>
 #include <ad_tensor/adfn.hpp>
 #include <ad_tensor/options.hpp>
 #include <ad_tensor/ad_type.hpp>
