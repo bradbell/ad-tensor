@@ -100,9 +100,26 @@ TEST(tests, adten_solve_op)  {
     // check dy[1]
     check  = torch::tensor( { {0.0, p1}, {0.0,  p3} } ) / det;
     check -= y1_times_det * x3 / (det * det);
-    std::cout << "dy[1] = " << dy[1] << "\n";
-    std::cout << "check = " << check << "\n";
     close  = dy[1].allclose( check );
+    EXPECT_TRUE( close );
+    //
+    // dy
+    // select (0,0) element of y[0] which is:
+    // g(x0, x1, x2, x3) = (x3 * p0 - x1 * p2) / (x0 * x3 - x1 * x2)
+    dy[0]  = torch::tensor( { {1.0, 0.0}, {0.0, 0.0} } );
+    dy[1]  = torch::tensor( { {0.0, 0.0}, {0.0, 0.0} } );
+    //
+    // partials of g
+    double times_det = x3 * p0 - x1 * p2;
+    double g_x0 =            - times_det * x3 / (det * det);
+    double g_x1 = - p2 / det + times_det * x2 / (det * det);
+    double g_x2 =            + times_det * x1 / (det * det);
+    double g_x3 =   p0 / det - times_det * x0 / (det * det);
+    //
+    // dx
+    dx     = f.reverse_der(par_all, var_all, dy, options);
+    check  = torch::tensor( { {g_x0, g_x1}, {g_x2, g_x3} } );
+    close  = dx[0].allclose( check );
     EXPECT_TRUE( close );
 }
 // END_CPP

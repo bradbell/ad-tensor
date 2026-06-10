@@ -180,9 +180,16 @@ namespace ad_tensor { namespace dev {
         const ad_tensor::vector<at::Tensor>&    var_vec     ,
         ad_tensor::vector<at::Tensor>&          for_der
     ) const;
-    // ------------------------------------------------------------------------
-    // reverse_der
-    // see Guiles-2008 Section 2.3.1
+    /* ------------------------------------------------------------------------
+    reverse_der
+    see Guiles-2008 Section 2.3.1
+    left:
+        rhs_bar    = square^-T * solution_bar
+        square_bar = - rhs_bar * solution^T
+    ! left:
+        rhs_bar     = solution_bar * square^-T
+        square_bar  = - solution^T * rhs_bar
+    */
     template<class TensorType>
     void solve_op_t<TensorType>::reverse_der(
         size_t                                  op_index    ,
@@ -213,40 +220,28 @@ namespace ad_tensor { namespace dev {
         size_t square_index = agraph.m_arg_value[arg_index];
         size_t rhs_index = agraph.m_arg_value[arg_index + 1];
         //
-        // square_ten
-        TensorType square_ten  = tensor_at_arg_index(
+        // square
+        TensorType square = tensor_at_arg_index(
             arg_index, agraph, con_vec, par_vec, var_vec
         );
+        // square_tra, solution_tra
+        TensorType square_tra   = square.transpose(0, 1);
+        TensorType solution_tra = var_vec[op_index].transpose(0, 1);
         //
+        // rhs_bar
+        TensorType rhs_bar = linalg_solve(square_tra, rev_der[op_index], left);
+        if( rhs_type == ad_type_t::variable ) {
+            plus_equal(rev_der[rhs_index], rhs_bar);
+        }
         //
-        if( left ) {
-            //
-            // square_tra
-            TensorType square_tra = square_ten.transpose(0, 1);
-            //
-            // square_tra * rhs_bar = solution_bar
-            TensorType rhs_bar =
-                linalg_solve(square_tra, rev_der[op_index], left);
-            if( rhs_type == ad_type_t::variable ) {
-                rev_der[rhs_index] = rhs_bar;
-            }
-            //  square_bar = - rhs_bar * solution
-            if( square_type == ad_type_t::variable ) {
-                rev_der[square_index] = - rhs_bar.matmul( var_vec[op_index] );
-            }
-        } else {
-            // solution_bar_tra
-            TensorType solution_bar_tra = rev_der[op_index].transpose(0, 1);
-            //
-            // square_ten * rhs_bar = solution_bar_tra
-            TensorType rhs_bar =
-                linalg_solve(square_ten, solution_bar_tra, left);
-            if( rhs_type == ad_type_t::variable ) {
-                rev_der[rhs_index] = rhs_bar;
-            }
-            // square_bar = - rhs_bar * solution
-            if( square_type == ad_type_t::variable ) {
-                rev_der[square_index] = - rhs_bar.matmul( var_vec[op_index] );
+        // square_bar
+        if( square_type == ad_type_t::variable ) {
+            if( left ) {
+                TensorType prod = rhs_bar.matmul(solution_tra);
+                minus_equal(rev_der[square_index], prod);
+            } else {
+                TensorType prod = solution_tra.matmul( rhs_bar );
+                minus_equal(rev_der[square_index], prod);
             }
         }
     }
