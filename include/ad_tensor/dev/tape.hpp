@@ -61,7 +61,7 @@ is the thread local tape used to record AD operations (on this thread).
 namespace ad_tensor { namespace dev { class tape_t {
     friend class ad_tensor::adten_t;
 private:
-    ad_tensor::vector<at::Tensor>    m_con;
+    vector<at::Tensor>    m_con;
     agraph_t                         m_par;
     agraph_t                         m_var;
     size_t                           m_tape_id;

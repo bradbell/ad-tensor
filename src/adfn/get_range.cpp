@@ -47,9 +47,9 @@ namespace ad_tensor { // BEGIN_NAMESPACE_AD_TENSOR
 // BEGIN_RANGE
 // rng_vec = adfn.get_range(par_all, var_all)
 template <class TensorType>
-ad_tensor::vector<TensorType> adfn_t::get_range(
-    const ad_tensor::vector<TensorType>& par_all ,
-    const ad_tensor::vector<TensorType>& var_all
+vector<TensorType> adfn_t::get_range(
+    const vector<TensorType>& par_all ,
+    const vector<TensorType>& var_all
 ) const
 // END_RANGE
 {   //
@@ -58,7 +58,7 @@ ad_tensor::vector<TensorType> adfn_t::get_range(
     );
     //
     // rng_vec
-    ad_tensor::vector<TensorType> rng_vec;
+    vector<TensorType> rng_vec;
     for(size_t i = 0; i < m_rng_index.size(); ++i)
     {   size_t    index    = m_rng_index[i];
         ad_type_t ad_type  = m_rng_ad_type[i];
@@ -84,9 +84,9 @@ ad_tensor::vector<TensorType> adfn_t::get_range(
     }
     return rng_vec;
 }
-template ad_tensor::vector<at::Tensor> adfn_t::get_range(
-    const ad_tensor::vector<at::Tensor>& par_all ,
-    const ad_tensor::vector<at::Tensor>& var_all
+template vector<at::Tensor> adfn_t::get_range(
+    const vector<at::Tensor>& par_all ,
+    const vector<at::Tensor>& var_all
 ) const;
 
 } // END_NAMESPACE_AD_TENSOR

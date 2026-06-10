@@ -125,41 +125,41 @@ public:
     //
     // forward_par
     template <class TensorType>
-    ad_tensor::vector<TensorType> forward_par(
-        const ad_tensor::vector<TensorType>& dom_par ,
-        const options_t&               options
+    vector<TensorType> forward_par(
+        const vector<TensorType>& dom_par ,
+        const options_t&    options
     ) const;
     //
     // forward_var
     template <class TensorType>
-    ad_tensor::vector<TensorType> forward_var(
-        const ad_tensor::vector<TensorType>& all_par ,
-        const ad_tensor::vector<TensorType>& dom_var ,
-        const options_t&                     options
+    vector<TensorType> forward_var(
+        const vector<TensorType>& all_par ,
+        const vector<TensorType>& dom_var ,
+        const options_t&          options
     ) const;
     //
     // get_range
     template <class TensorType>
-    ad_tensor::vector<TensorType> get_range(
-        const ad_tensor::vector<TensorType>& all_par ,
-        const ad_tensor::vector<TensorType>& all_var
+    vector<TensorType> get_range(
+        const vector<TensorType>& all_par ,
+        const vector<TensorType>& all_var
     ) const;
     //
     // forward_der
     template <class TensorType>
-    ad_tensor::vector<TensorType> forward_der(
-        const ad_tensor::vector<TensorType>& all_par ,
-        const ad_tensor::vector<TensorType>& all_var ,
-        const ad_tensor::vector<TensorType>& dom_der ,
-        const options_t&                     options
+    vector<TensorType> forward_der(
+        const vector<TensorType>& all_par ,
+        const vector<TensorType>& all_var ,
+        const vector<TensorType>& dom_der ,
+        const options_t&          options
     ) const;
     //
     // reverse_der
     template <class TensorType>
-    ad_tensor::vector<TensorType> reverse_der(
-        const ad_tensor::vector<TensorType>& all_par ,
-        const ad_tensor::vector<TensorType>& all_var ,
-        const ad_tensor::vector<TensorType>& rng_der ,
-        const options_t&                     options
+    vector<TensorType> reverse_der(
+        const vector<TensorType>& all_par ,
+        const vector<TensorType>& all_var ,
+        const vector<TensorType>& rng_der ,
+        const options_t&          options
     ) const;
 }; }

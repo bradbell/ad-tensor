@@ -47,7 +47,7 @@ namespace ad_tensor { namespace dev {
     // value = ad_tensor::get_option(options, key, default_value)
     // value = ad_tensor::get_option(options, key, default_value, other_values)
     std::string get_option(
-        const options_t&             options        ,
+        const options_t&  options        ,
         const std::string&           key            ,
         const std::string&           default_value  ,
         const std::set<std::string>& other_values   = std::set<std::string>()

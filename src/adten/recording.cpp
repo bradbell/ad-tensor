@@ -63,10 +63,10 @@ Example
 
 {xrst_end start_recording}
 */
-std::tuple< ad_tensor::vector<adten_t>, ad_tensor::vector<adten_t> >
+std::tuple< vector<adten_t>, vector<adten_t> >
 adten_t::start_recording(
-        const ad_tensor::vector<at::Tensor>& dom_par ,
-        const ad_tensor::vector<at::Tensor>& dom_var
+        const vector<at::Tensor>& dom_par ,
+        const vector<at::Tensor>& dom_var
 )
 {   //
     // tape
@@ -122,7 +122,7 @@ adten_t::start_recording(
     // adom_par
     // tape.m_par: m_op_seq, m_arg_strt
     ad_type_t parameter = ad_type_t::parameter;
-    ad_tensor::vector<adten_t> adom_par;
+    vector<adten_t> adom_par;
     for(size_t index = 0; index < dom_par.size(); ++index) {
         tape.m_par.m_op_seq.push_back( dev::op_enum_t::dom );
         tape.m_par.m_arg_start.push_back( 0 );
@@ -134,7 +134,7 @@ adten_t::start_recording(
     // adom_var
     // tape.m_var: m_op_seq, m_arg_strt
     ad_type_t variable = ad_type_t::variable;
-    ad_tensor::vector<adten_t> adom_var;
+    vector<adten_t> adom_var;
     for(size_t index = 0; index < dom_var.size(); ++index) {
         tape.m_var.m_op_seq.push_back( dev::op_enum_t::dom );
         tape.m_var.m_arg_start.push_back( 0 );
@@ -143,7 +143,7 @@ adten_t::start_recording(
         );
     }
     return std::tuple<
-        ad_tensor::vector<adten_t>, ad_tensor::vector<adten_t>
+        vector<adten_t>, vector<adten_t>
     > ( adom_par, adom_var);
 }
 /*
@@ -192,7 +192,7 @@ Example
 
 {xrst_end stop_recording}
 */
-adfn_t adten_t::stop_recording(const ad_tensor::vector<adten_t>& arange)
+adfn_t adten_t::stop_recording(const vector<adten_t>& arange)
 {   //
     // tape
     dev::tape_t& tape = dev::this_threads_tape();

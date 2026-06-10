@@ -68,11 +68,11 @@ namespace ad_tensor { // BEGIN_NAMESPACE_AD_TENSOR
 // BEGIN_REVERSE_DER
 // dom_der = adfn.reverse_der(par_all, var_all, rng_der, options)
 template <class TensorType>
-ad_tensor::vector<TensorType> adfn_t::reverse_der(
-    const ad_tensor::vector<TensorType>& par_all ,
-    const ad_tensor::vector<TensorType>& var_all ,
-    const ad_tensor::vector<TensorType>& rng_der ,
-    const options_t&                     options
+vector<TensorType> adfn_t::reverse_der(
+    const vector<TensorType>& par_all ,
+    const vector<TensorType>& var_all ,
+    const vector<TensorType>& rng_der ,
+    const options_t&          options
 ) const
 // END_REVERSE_DER
 {
@@ -111,7 +111,7 @@ ad_tensor::vector<TensorType> adfn_t::reverse_der(
     TensorType empty = TensorType( torch::empty( {0} ) );
     //
     // all_der
-    ad_tensor::vector<TensorType> all_der( n_op, empty );
+    vector<TensorType> all_der( n_op, empty );
     for(size_t i = 0; i < m_rng_index.size(); ++i) {
         if( m_rng_ad_type[i] == ad_type_t::variable )  {
             all_der[ m_rng_index[i] ] = rng_der[i];
@@ -159,7 +159,7 @@ ad_tensor::vector<TensorType> adfn_t::reverse_der(
     }
     //
     // dom_der
-    ad_tensor::vector<TensorType> dom_der;
+    vector<TensorType> dom_der;
     for(size_t j = 0; j < n_dom_var; ++j) {
         if( all_der[j].numel() == 0 ) {
             c10::IntArrayRef shape = var_all[j].sizes();
@@ -177,17 +177,17 @@ ad_tensor::vector<TensorType> adfn_t::reverse_der(
     }
     return dom_der;
 }
-template ad_tensor::vector<adten_t> adfn_t::reverse_der(
-    const ad_tensor::vector<adten_t>&    par_all ,
-    const ad_tensor::vector<adten_t>&    var_all ,
-    const ad_tensor::vector<adten_t>&    rng_der ,
-    const options_t&                     options
+template vector<adten_t> adfn_t::reverse_der(
+    const vector<adten_t>&    par_all ,
+    const vector<adten_t>&    var_all ,
+    const vector<adten_t>&    rng_der ,
+    const options_t&          options
 ) const;
-template ad_tensor::vector<at::Tensor> adfn_t::reverse_der(
-    const ad_tensor::vector<at::Tensor>& par_all ,
-    const ad_tensor::vector<at::Tensor>& var_all ,
-    const ad_tensor::vector<at::Tensor>& rng_der ,
-    const options_t&                     options
+template vector<at::Tensor> adfn_t::reverse_der(
+    const vector<at::Tensor>& par_all ,
+    const vector<at::Tensor>& var_all ,
+    const vector<at::Tensor>& rng_der ,
+    const options_t&          options
 ) const;
 
 } // END_NAMESPACE_AD_TENSOR

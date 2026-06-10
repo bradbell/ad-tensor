@@ -65,10 +65,10 @@ namespace ad_tensor { namespace dev {
     // BEGIN_TENSOR_AT_ARG_INDEX_PAR
     template<class TensorType>
     TensorType tensor_at_arg_index(
-        size_t                               arg_index ,
-        const agraph_t&                      agraph    ,
-        const ad_tensor::vector<at::Tensor>& con_vec   ,
-        const ad_tensor::vector<TensorType>& par_vec   )
+        size_t                    arg_index ,
+        const agraph_t&           agraph    ,
+        const vector<at::Tensor>& con_vec   ,
+        const vector<TensorType>& par_vec   )
     // END_TENSOR_AT_ARG_INDEX_PAR
     {   size_t    index   = agraph.m_arg_value[arg_index];
         ad_type_t ad_type = agraph.m_arg_type[arg_index];
@@ -92,26 +92,26 @@ namespace ad_tensor { namespace dev {
         return par_vec[0];
     }
     template adten_t tensor_at_arg_index<adten_t>(
-        size_t                               arg_index ,
-        const agraph_t&                      agraph    ,
-        const ad_tensor::vector<at::Tensor>& con_vec   ,
-        const ad_tensor::vector<adten_t>&    par_vec
+        size_t                    arg_index ,
+        const agraph_t&           agraph    ,
+        const vector<at::Tensor>& con_vec   ,
+        const vector<adten_t>&    par_vec
     );
     template at::Tensor tensor_at_arg_index<at::Tensor>(
-        size_t                               arg_index ,
-        const agraph_t&                      agraph    ,
-        const ad_tensor::vector<at::Tensor>& con_vec   ,
-        const ad_tensor::vector<at::Tensor>& par_vec
+        size_t                    arg_index ,
+        const agraph_t&           agraph    ,
+        const vector<at::Tensor>& con_vec   ,
+        const vector<at::Tensor>& par_vec
     );
     // ----------------------------------------------------------------------
     // BEGIN_TENSOR_AT_ARG_INDEX_VAR
     template<class TensorType>
     TensorType tensor_at_arg_index(
-        size_t                               arg_index ,
-        const agraph_t&                      agraph    ,
-        const ad_tensor::vector<at::Tensor>& con_vec   ,
-        const ad_tensor::vector<TensorType>& par_vec   ,
-        const ad_tensor::vector<TensorType>& var_vec   )
+        size_t                    arg_index ,
+        const agraph_t&           agraph    ,
+        const vector<at::Tensor>& con_vec   ,
+        const vector<TensorType>& par_vec   ,
+        const vector<TensorType>& var_vec   )
     // END_TENSOR_AT_ARG_INDEX_VAR
     {   size_t    index   = agraph.m_arg_value[arg_index];
         ad_type_t ad_type = agraph.m_arg_type[arg_index];
@@ -139,17 +139,17 @@ namespace ad_tensor { namespace dev {
         return var_vec[0];
     }
     template adten_t tensor_at_arg_index<adten_t>(
-        size_t                               arg_index ,
-        const agraph_t&                      agraph    ,
-        const ad_tensor::vector<at::Tensor>& con_vec   ,
-        const ad_tensor::vector<adten_t>&    par_vec   ,
-        const ad_tensor::vector<adten_t>&    var_vec
+        size_t                    arg_index ,
+        const agraph_t&           agraph    ,
+        const vector<at::Tensor>& con_vec   ,
+        const vector<adten_t>&    par_vec   ,
+        const vector<adten_t>&    var_vec
     );
     template at::Tensor tensor_at_arg_index<at::Tensor>(
-        size_t                               arg_index ,
-        const agraph_t&                      agraph    ,
-        const ad_tensor::vector<at::Tensor>& con_vec   ,
-        const ad_tensor::vector<at::Tensor>& par_vec   ,
-        const ad_tensor::vector<at::Tensor>& var_vec
+        size_t                    arg_index ,
+        const agraph_t&           agraph    ,
+        const vector<at::Tensor>& con_vec   ,
+        const vector<at::Tensor>& par_vec   ,
+        const vector<at::Tensor>& var_vec
     );
 } }

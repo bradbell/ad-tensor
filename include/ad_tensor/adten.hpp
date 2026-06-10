@@ -202,15 +202,15 @@ public:
     //
     // BEGIN_START_RECORDING
     // auto [adom_par, adom_var] = adten_t::start_recording(dom_par, dom_var)
-    static std::tuple< ad_tensor::vector<adten_t>, ad_tensor::vector<adten_t> > start_recording(
-        const ad_tensor::vector<at::Tensor>& dom_par,
-        const ad_tensor::vector<at::Tensor>& dom_var
+    static std::tuple< vector<adten_t>, vector<adten_t> > start_recording(
+        const vector<at::Tensor>& dom_par,
+        const vector<at::Tensor>& dom_var
     );
     // END_START_RECORDING
     //
     // BEGIN_STOP_RECORDING
     // adfn = adten_t::stop_recording(arnage)
-    static adfn_t stop_recording(const ad_tensor::vector<adten_t>& arange);
+    static adfn_t stop_recording(const vector<adten_t>& arange);
     // END_STOP_RECORDING
     //
     // Binary operators

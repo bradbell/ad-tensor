@@ -17,10 +17,10 @@ namespace ad_tensor { namespace dev {
     // forward_par
     template<class TensorType>
     void solve_op_t<TensorType>::forward_par(
-        size_t                                  op_index    ,
-        const agraph_t&                         agraph      ,
-        const ad_tensor::vector<at::Tensor>&    con_vec     ,
-        ad_tensor::vector<TensorType>&          par_vec
+        size_t                       op_index    ,
+        const agraph_t&              agraph      ,
+        const vector<at::Tensor>&    con_vec     ,
+        vector<TensorType>&          par_vec
     ) const {
         //
         // arg_index
@@ -47,26 +47,26 @@ namespace ad_tensor { namespace dev {
         par_vec[op_index] = linalg_solve(square_ten, rhs_ten, left);
     }
     template void solve_op_t<adten_t>::forward_par(
-        size_t                                  op_index    ,
-        const agraph_t&                         agraph      ,
-        const ad_tensor::vector<at::Tensor>&    con_vec     ,
-        ad_tensor::vector<adten_t>&             par_vec
+        size_t                       op_index    ,
+        const agraph_t&              agraph      ,
+        const vector<at::Tensor>&    con_vec     ,
+        vector<adten_t>&             par_vec
     ) const;
     template void solve_op_t<at::Tensor>::forward_par(
-        size_t                                  op_index    ,
-        const agraph_t&                         agraph      ,
-        const ad_tensor::vector<at::Tensor>&    con_vec     ,
-        ad_tensor::vector<at::Tensor>&          par_vec
+        size_t                       op_index    ,
+        const agraph_t&              agraph      ,
+        const vector<at::Tensor>&    con_vec     ,
+        vector<at::Tensor>&          par_vec
     ) const;
     // ------------------------------------------------------------------------
     // forward_var
     template<class TensorType>
     void solve_op_t<TensorType>::forward_var(
-        size_t                                  op_index    ,
-        const agraph_t&                         agraph      ,
-        const ad_tensor::vector<at::Tensor>&    con_vec     ,
-        const ad_tensor::vector<TensorType>&    par_vec     ,
-        ad_tensor::vector<TensorType>&          var_vec
+        size_t                       op_index    ,
+        const agraph_t&              agraph      ,
+        const vector<at::Tensor>&    con_vec     ,
+        const vector<TensorType>&    par_vec     ,
+        vector<TensorType>&          var_vec
     ) const {
         //
         // arg_index
@@ -93,18 +93,18 @@ namespace ad_tensor { namespace dev {
         var_vec[op_index] = linalg_solve(square_ten, rhs_ten, left);
     }
     template void solve_op_t<adten_t>::forward_var(
-        size_t                                  op_index    ,
-        const agraph_t&                         agraph      ,
-        const ad_tensor::vector<at::Tensor>&    con_vec     ,
-        const ad_tensor::vector<adten_t>&       par_vec     ,
-        ad_tensor::vector<adten_t>&             var_vec
+        size_t                       op_index    ,
+        const agraph_t&              agraph      ,
+        const vector<at::Tensor>&    con_vec     ,
+        const vector<adten_t>&       par_vec     ,
+        vector<adten_t>&             var_vec
     ) const;
     template void solve_op_t<at::Tensor>::forward_var(
-        size_t                                  op_index    ,
-        const agraph_t&                         agraph      ,
-        const ad_tensor::vector<at::Tensor>&    con_vec     ,
-        const ad_tensor::vector<at::Tensor>&    par_vec     ,
-        ad_tensor::vector<at::Tensor>&          var_vec
+        size_t                       op_index    ,
+        const agraph_t&              agraph      ,
+        const vector<at::Tensor>&    con_vec     ,
+        const vector<at::Tensor>&    par_vec     ,
+        vector<at::Tensor>&          var_vec
     ) const;
     // ------------------------------------------------------------------------
     // forward_der
@@ -113,12 +113,12 @@ namespace ad_tensor { namespace dev {
     // solution_dot * square = rsh_dot - solution * square_dot   (! left)
     template<class TensorType>
     void solve_op_t<TensorType>::forward_der(
-        size_t                                  op_index    ,
-        const agraph_t&                         agraph      ,
-        const ad_tensor::vector<at::Tensor>&    con_vec     ,
-        const ad_tensor::vector<TensorType>&    par_vec     ,
-        const ad_tensor::vector<TensorType>&    var_vec     ,
-        ad_tensor::vector<TensorType>&          for_der
+        size_t                       op_index    ,
+        const agraph_t&              agraph      ,
+        const vector<at::Tensor>&    con_vec     ,
+        const vector<TensorType>&    par_vec     ,
+        const vector<TensorType>&    var_vec     ,
+        vector<TensorType>&          for_der
     ) const {
         //
         // arg_index
@@ -165,20 +165,20 @@ namespace ad_tensor { namespace dev {
         for_der[op_index] = linalg_solve(square, diff, left);
     }
     template void solve_op_t<adten_t>::forward_der(
-        size_t                                  op_index    ,
-        const agraph_t&                         agraph      ,
-        const ad_tensor::vector<at::Tensor>&    con_vec     ,
-        const ad_tensor::vector<adten_t>&       par_vec     ,
-        const ad_tensor::vector<adten_t>&       var_vec     ,
-        ad_tensor::vector<adten_t>&             for_der
+        size_t                       op_index    ,
+        const agraph_t&              agraph      ,
+        const vector<at::Tensor>&    con_vec     ,
+        const vector<adten_t>&       par_vec     ,
+        const vector<adten_t>&       var_vec     ,
+        vector<adten_t>&             for_der
     ) const;
     template void solve_op_t<at::Tensor>::forward_der(
-        size_t                                  op_index    ,
-        const agraph_t&                         agraph      ,
-        const ad_tensor::vector<at::Tensor>&    con_vec     ,
-        const ad_tensor::vector<at::Tensor>&    par_vec     ,
-        const ad_tensor::vector<at::Tensor>&    var_vec     ,
-        ad_tensor::vector<at::Tensor>&          for_der
+        size_t                       op_index    ,
+        const agraph_t&              agraph      ,
+        const vector<at::Tensor>&    con_vec     ,
+        const vector<at::Tensor>&    par_vec     ,
+        const vector<at::Tensor>&    var_vec     ,
+        vector<at::Tensor>&          for_der
     ) const;
     /* ------------------------------------------------------------------------
     reverse_der
@@ -192,12 +192,12 @@ namespace ad_tensor { namespace dev {
     */
     template<class TensorType>
     void solve_op_t<TensorType>::reverse_der(
-        size_t                                  op_index    ,
-        const agraph_t&                         agraph      ,
-        const ad_tensor::vector<at::Tensor>&    con_vec     ,
-        const ad_tensor::vector<TensorType>&    par_vec     ,
-        const ad_tensor::vector<TensorType>&    var_vec     ,
-        ad_tensor::vector<TensorType>&          rev_der
+        size_t                       op_index    ,
+        const agraph_t&              agraph      ,
+        const vector<at::Tensor>&    con_vec     ,
+        const vector<TensorType>&    par_vec     ,
+        const vector<TensorType>&    var_vec     ,
+        vector<TensorType>&          rev_der
     ) const {
         //
         // arg_index
@@ -246,19 +246,19 @@ namespace ad_tensor { namespace dev {
         }
     }
     template void solve_op_t<adten_t>::reverse_der(
-        size_t                                  op_index    ,
-        const agraph_t&                         agraph      ,
-        const ad_tensor::vector<at::Tensor>&    con_vec     ,
-        const ad_tensor::vector<adten_t>&       par_vec     ,
-        const ad_tensor::vector<adten_t>&       var_vec     ,
-        ad_tensor::vector<adten_t>&             rev_der
+        size_t                       op_index    ,
+        const agraph_t&              agraph      ,
+        const vector<at::Tensor>&    con_vec     ,
+        const vector<adten_t>&       par_vec     ,
+        const vector<adten_t>&       var_vec     ,
+        vector<adten_t>&             rev_der
     ) const;
     template void solve_op_t<at::Tensor>::reverse_der(
-        size_t                                  op_index    ,
-        const agraph_t&                         agraph      ,
-        const ad_tensor::vector<at::Tensor>&    con_vec     ,
-        const ad_tensor::vector<at::Tensor>&    par_vec     ,
-        const ad_tensor::vector<at::Tensor>&    var_vec     ,
-        ad_tensor::vector<at::Tensor>&          rev_der
+        size_t                       op_index    ,
+        const agraph_t&              agraph      ,
+        const vector<at::Tensor>&    con_vec     ,
+        const vector<at::Tensor>&    par_vec     ,
+        const vector<at::Tensor>&    var_vec     ,
+        vector<at::Tensor>&          rev_der
     ) const;
 } }

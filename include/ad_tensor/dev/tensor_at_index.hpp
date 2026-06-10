@@ -6,16 +6,16 @@
 namespace ad_tensor { namespace dev {
     template <class TensorType>
     TensorType tensor_at_arg_index(
-        size_t                               arg_index ,
-        const agraph_t&                      agraph    ,
-        const ad_tensor::vector<at::Tensor>& con_vec   ,
-        const ad_tensor::vector<TensorType>& par_vec   );
+        size_t                    arg_index ,
+        const agraph_t&           agraph    ,
+        const vector<at::Tensor>& con_vec   ,
+        const vector<TensorType>& par_vec   );
     //
     template <class TensorType>
     TensorType tensor_at_arg_index(
-        size_t                               arg_index ,
-        const agraph_t&                      agraph    ,
-        const ad_tensor::vector<at::Tensor>& con_vec   ,
-        const ad_tensor::vector<TensorType>& par_vec   ,
-        const ad_tensor::vector<TensorType>& var_vec   );
+        size_t                    arg_index ,
+        const agraph_t&           agraph    ,
+        const vector<at::Tensor>& con_vec   ,
+        const vector<TensorType>& par_vec   ,
+        const vector<TensorType>& var_vec   );
 } }

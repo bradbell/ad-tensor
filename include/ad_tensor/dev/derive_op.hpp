@@ -44,36 +44,36 @@ This maps op_enum_t values to the corresponding base_op_t<TensorType> value:
     struct op_name ## _t : public base_op_t<TensorType> { \
         \
         void forward_par( \
-            size_t                                  op_index    , \
-            const agraph_t&                         agraph      , \
-            const ad_tensor::vector<at::Tensor>&    con_vec     , \
-            ad_tensor::vector<TensorType>&          par_vec \
+            size_t                       op_index    , \
+            const agraph_t&              agraph      , \
+            const vector<at::Tensor>&    con_vec     , \
+            vector<TensorType>&          par_vec \
         ) const override; \
         \
         void forward_var( \
-            size_t                                  op_index    , \
-            const agraph_t&                         agraph      , \
-            const ad_tensor::vector<at::Tensor>&    con_vec     , \
-            const ad_tensor::vector<TensorType>&    par_vec     , \
-            ad_tensor::vector<TensorType>&          var_vec \
+            size_t                       op_index    , \
+            const agraph_t&              agraph      , \
+            const vector<at::Tensor>&    con_vec     , \
+            const vector<TensorType>&    par_vec     , \
+            vector<TensorType>&          var_vec \
         ) const override; \
         \
         void forward_der( \
-            size_t                                  op_index    , \
-            const agraph_t&                         agraph      , \
-            const ad_tensor::vector<at::Tensor>&    con_vec     , \
-            const ad_tensor::vector<TensorType>&    par_vec     , \
-            const ad_tensor::vector<TensorType>&    var_vec     , \
-            ad_tensor::vector<TensorType>&          for_der \
+            size_t                       op_index    , \
+            const agraph_t&              agraph      , \
+            const vector<at::Tensor>&    con_vec     , \
+            const vector<TensorType>&    par_vec     , \
+            const vector<TensorType>&    var_vec     , \
+            vector<TensorType>&          for_der \
         ) const override; \
         \
         void reverse_der( \
-            size_t                                  op_index    , \
-            const agraph_t&                         agraph      , \
-            const ad_tensor::vector<at::Tensor>&    con_vec     , \
-            const ad_tensor::vector<TensorType>&    par_vec     , \
-            const ad_tensor::vector<TensorType>&    var_vec     , \
-            ad_tensor::vector<TensorType>&          rev_der \
+            size_t                       op_index    , \
+            const agraph_t&              agraph      , \
+            const vector<at::Tensor>&    con_vec     , \
+            const vector<TensorType>&    par_vec     , \
+            const vector<TensorType>&    var_vec     , \
+            vector<TensorType>&          rev_der \
         ) const override; \
     };
 //

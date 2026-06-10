@@ -69,11 +69,11 @@ namespace ad_tensor { // BEGIN_NAMESPACE_AD_TENSOR
 // BEGIN_FORWARD_DER
 // rng_der = adfn.forward_der(par_all, var_all, dom_der, options)
 template <class TensorType>
-ad_tensor::vector<TensorType> adfn_t::forward_der(
-    const ad_tensor::vector<TensorType>& par_all ,
-    const ad_tensor::vector<TensorType>& var_all ,
-    const ad_tensor::vector<TensorType>& dom_der ,
-    const options_t&                     options
+vector<TensorType> adfn_t::forward_der(
+    const vector<TensorType>& par_all ,
+    const vector<TensorType>& var_all ,
+    const vector<TensorType>& dom_der ,
+    const options_t&          options
 ) const
 // END_FORWARD_DER
 {
@@ -112,7 +112,7 @@ ad_tensor::vector<TensorType> adfn_t::forward_der(
     TensorType empty = TensorType( torch::empty( {0} ) );
     //
     // all_der
-    ad_tensor::vector<TensorType> all_der =  dom_der ;
+    vector<TensorType> all_der =  dom_der ;
     all_der.resize( n_op, empty );
     //
     // all_der
@@ -141,7 +141,7 @@ ad_tensor::vector<TensorType> adfn_t::forward_der(
     }
     //
     // rng_der
-    ad_tensor::vector<TensorType> rng_der;
+    vector<TensorType> rng_der;
     TensorType zero = torch::tensor( { 0.0 } );
     for(size_t i = 0; i < m_rng_index.size(); ++i) {
         size_t index = m_rng_index[i];
@@ -179,11 +179,11 @@ ad_tensor::vector<TensorType> adfn_t::forward_der(
     }
     return rng_der;
 }
-template ad_tensor::vector<at::Tensor> adfn_t::forward_der(
-    const ad_tensor::vector<at::Tensor>& par_all ,
-    const ad_tensor::vector<at::Tensor>& var_all ,
-    const ad_tensor::vector<at::Tensor>& dom_der ,
-    const options_t&                     options
+template vector<at::Tensor> adfn_t::forward_der(
+    const vector<at::Tensor>& par_all ,
+    const vector<at::Tensor>& var_all ,
+    const vector<at::Tensor>& dom_der ,
+    const options_t&          options
 ) const;
 
 } // END_NAMESPACE_AD_TENSOR

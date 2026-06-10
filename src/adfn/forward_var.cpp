@@ -56,10 +56,10 @@ namespace ad_tensor { // BEGIN_NAMESPACE_AD_TENSOR
 // BEGIN_FORWARD_VAR
 // var_all = adfn.forward_var(par_all, dom_var, options)
 template <class TensorType>
-ad_tensor::vector<TensorType> adfn_t::forward_var(
-    const ad_tensor::vector<TensorType>& par_all ,
-    const ad_tensor::vector<TensorType>& dom_var ,
-    const options_t&                     options
+vector<TensorType> adfn_t::forward_var(
+    const vector<TensorType>& par_all ,
+    const vector<TensorType>& dom_var ,
+    const options_t&          options
 ) const
 // END_FORWARD_VAR
 {
@@ -98,7 +98,7 @@ ad_tensor::vector<TensorType> adfn_t::forward_var(
     TensorType empty = TensorType( torch::empty( {0} ) );
     //
     // var_all
-    ad_tensor::vector<TensorType> var_all =  dom_var ;
+    vector<TensorType> var_all =  dom_var ;
     var_all.resize( n_op, empty );
     //
     // var_all
@@ -130,15 +130,15 @@ ad_tensor::vector<TensorType> adfn_t::forward_var(
     }
     return var_all;
 }
-template ad_tensor::vector<adten_t> adfn_t::forward_var(
-    const ad_tensor::vector<adten_t>&    par_all ,
-    const ad_tensor::vector<adten_t>&    dom_var ,
-    const options_t&                     options
+template vector<adten_t> adfn_t::forward_var(
+    const vector<adten_t>&    par_all ,
+    const vector<adten_t>&    dom_var ,
+    const options_t&          options
 ) const;
-template ad_tensor::vector<at::Tensor> adfn_t::forward_var(
-    const ad_tensor::vector<at::Tensor>& par_all ,
-    const ad_tensor::vector<at::Tensor>& dom_var ,
-    const options_t&                     options
+template vector<at::Tensor> adfn_t::forward_var(
+    const vector<at::Tensor>& par_all ,
+    const vector<at::Tensor>& dom_var ,
+    const options_t&          options
 ) const;
 
 } // END_NAMESPACE_AD_TENSOR
