@@ -23,16 +23,18 @@ Prototype
 }
 
 
-rhs
-***
-this is the right hand side that was are adding to (or subtracting from).
-It is assumed that this is non-empty.
-
 target
 ******
 This is the target we are adding to (or subtracting from).
 The special case where on input target.numel() is zero
 (target is empty) corresponds to a zero target value.
+
+rhs
+***
+this is the right hand side that was are adding to (or subtracting from).
+The special case where rhs.numel() is zero
+(rhs is empty) corresponds to a zero right hand side.
+In this case, target does not change.
 
 dim
 ***
@@ -50,7 +52,9 @@ namespace ad_tensor { namespace dev {
         const c10::IntArrayRef&        dim  = c10::IntArrayRef() )
 // END_PLUS_EQUAL
     {   //
-        assert( rhs.numel() != 0 );
+        if( rhs.numel() == 0 ) {
+            return;
+        }
         if( dim.size() == 0 ) {
             if( target.numel() == 0 ) {
                 target = rhs;
@@ -73,7 +77,9 @@ namespace ad_tensor { namespace dev {
         const c10::IntArrayRef&        dim  = c10::IntArrayRef() )
 // END_MINUS_EQUAL
     {   //
-        assert( rhs.numel() != 0 );
+        if( rhs.numel() == 0 ) {
+            return;
+        }
         if( dim.size() == 0 ) {
             if( target.numel() == 0 ) {
                 target = - rhs;

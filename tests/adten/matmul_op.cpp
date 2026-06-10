@@ -26,9 +26,9 @@ TEST(tests, adten_matmul_op)  {
     //
     // x
     vector<Tensor> x;
-    x.push_back( torch::tensor( { 
-        {x00, x01}, 
-        {x10, x11} 
+    x.push_back( torch::tensor( {
+        {x00, x01},
+        {x10, x11}
     } ) );
     //
     // ap, ax
@@ -81,8 +81,6 @@ TEST(tests, adten_matmul_op)  {
         {2.0 * x00, x10},
         {x01,       0.0}
     } );
-    std::cout << "dx[0] = " << dx[0] << "\n";
-    std::cout << "check = " << check << "\n";
     equal = dx[0].equal( check );
     EXPECT_TRUE( equal );
 }

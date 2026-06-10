@@ -44,7 +44,10 @@ TEST(tests, adten_solve_op)  {
     //
     // ay
     vector<adten_t> ay;
-    ay.push_back( ad_tensor::linalg_solve(ax[0], ap[0]) );
+    bool left = true;
+    ay.push_back( ad_tensor::linalg_solve(ax[0], ap[0], left) );
+    left = false;
+    ay.push_back( ad_tensor::linalg_solve(ax[0], ap[0], left) );
     //
     // y = f(p)
     adfn_t f = adten_t::stop_recording(ay);
@@ -65,8 +68,20 @@ TEST(tests, adten_solve_op)  {
         {- x2 * p0 + x0 * p2, - x2 * p1 + x0 * p3}
     } );
     //
+    // y1_times_det
+    Tensor y1_times_det = torch::tensor( {
+        { p0 * x3 - p1 * x2, - p0 * x1 + p1 * x0 },
+        { p2 * x3 - p3 * x2, - p2 * x1 + p3 * x0 }
+    } );
+    //
+    bool equal, close;
+    //
     // inv(x) * p
-    bool equal = y[0].equal( y0_times_det / det);
+    equal = y[0].equal( y0_times_det / det);
+    EXPECT_TRUE( equal );
+    //
+    // p * inv(x)
+    equal = y[1].equal( y1_times_det / det);
     EXPECT_TRUE( equal );
     //
     Tensor check;
@@ -75,9 +90,19 @@ TEST(tests, adten_solve_op)  {
     vector<Tensor> dx(1), dy(1);
     dx[0]  = torch::tensor( { {1.0, 0.0}, {0.0, 0.0} } );
     dy     = f.forward_der(par_all, var_all, dx, options);
+    //
+    // check dy[0]
     check  = torch::tensor( { {0.0, 0.0}, {p2,  p3} } ) / det;
     check -= y0_times_det * x3 / (det * det);
-    bool close = dy[0].allclose( check );
+    close  = dy[0].allclose( check );
+    EXPECT_TRUE( close );
+    //
+    // check dy[1]
+    check  = torch::tensor( { {0.0, p1}, {0.0,  p3} } ) / det;
+    check -= y1_times_det * x3 / (det * det);
+    std::cout << "dy[1] = " << dy[1] << "\n";
+    std::cout << "check = " << check << "\n";
+    close  = dy[1].allclose( check );
     EXPECT_TRUE( close );
 }
 // END_CPP
