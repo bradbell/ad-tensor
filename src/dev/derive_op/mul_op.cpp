@@ -217,7 +217,7 @@ namespace ad_tensor { namespace dev {
             TensorType prod = rev_der[op_index] * rhs_tensor;
             //
             // rev_der[lhs_index] += prod
-            rev_plus_equal(dim, prod, rev_der[lhs_index]);
+            plus_equal(rev_der[lhs_index], prod, dim);
             //
             // dim
             lock = false;
@@ -242,7 +242,7 @@ namespace ad_tensor { namespace dev {
             TensorType prod = rev_der[op_index] * lhs_tensor;
             //
             // rev_der[rhs_index] += prod
-            rev_plus_equal(dim, prod, rev_der[rhs_index]);
+            plus_equal(rev_der[rhs_index], prod, dim);
             //
             // dim
             lock = false;

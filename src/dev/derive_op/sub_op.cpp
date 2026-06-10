@@ -195,7 +195,7 @@ namespace ad_tensor { namespace dev {
             );
             //
             // rev_der[lhs_index] += rev_der[op_index]
-            rev_plus_equal(dim, rev_der[op_index], rev_der[lhs_index]);
+            plus_equal(rev_der[lhs_index], rev_der[op_index], dim);
             //
             // dim
             lock = false;
@@ -215,7 +215,7 @@ namespace ad_tensor { namespace dev {
             );
             //
             // rev_der[rhs_index] += rev_der[op_index]
-            rev_minus_equal(dim, rev_der[op_index], rev_der[rhs_index]);
+            minus_equal(rev_der[rhs_index], rev_der[op_index], dim);
             //
             // dim
             lock = false;

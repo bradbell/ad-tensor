@@ -207,7 +207,7 @@ namespace ad_tensor { namespace dev {
             );
             //
             // rev_der[lhs_index] += quotient
-            rev_plus_equal(dim, quotient, rev_der[lhs_index]);
+            plus_equal(rev_der[lhs_index], quotient, dim);
             //
             // dim
             lock = false;
@@ -227,7 +227,7 @@ namespace ad_tensor { namespace dev {
             );
             //
             // rev_der[rhs_index] -= prod
-            rev_minus_equal(dim, prod, rev_der[rhs_index]);
+            minus_equal(rev_der[rhs_index], prod, dim);
             //
             // dim
             lock = false;

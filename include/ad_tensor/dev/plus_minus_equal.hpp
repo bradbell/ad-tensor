@@ -8,83 +8,84 @@
 /*
 {xrst_begin plus_minus_equal dev}
 {xrst_spell
-    res
+    rhs
     numel
 }
 
-Reverse Mode Plus Or Minus Equals For Tensors
-#############################################
+Mode Plus Or Minus Equals For Tensors
+#####################################
 
 Prototype
 *********
 {xrst_literal ,
-    BEGIN_REV_PLUS_EQUAL, END_REV_PLUS_EQUAL
-    BEGIN_REV_MINUS_EQUAL, END_REV_MINUS_EQUAL
+    BEGIN_PLUS_EQUAL, END_PLUS_EQUAL
+    BEGIN_MINUS_EQUAL, END_MINUS_EQUAL
 }
+
+
+rhs
+***
+this is the right hand side that was are adding to (or subtracting from).
+It is assumed that this is non-empty.
+
+target
+******
+This is the target we are adding to (or subtracting from).
+The special case where on input target.numel() is zero
+(target is empty) corresponds to a zero target value.
 
 dim
 ***
-this is the dimensions that arg was broadcast over to get the result shape;
-see :ref:`broadcast-name` .
-
-res
-***
-this is the result value that was are adding to the argument.
-It is assume that this no non-empty because there is not reason to
-process an empty result during reverse mode.
-
-arg
-***
-This is the argument. The special case where arg.numel() is zero
-(arg is empty) corresponds to a zero argument value.
-
+this is the dimensions rhs that are summed before adding to
+(or subtracting from) target.
+if this has size zero (its default value), no such summing is done.
 
 {xrst_end plus_minus_equal}
 */
-// BEGIN_REV_PLUS_EQUAL
 namespace ad_tensor { namespace dev {
-    template <class TensorType> void inline rev_plus_equal(
-        const c10::IntArrayRef&        dim ,
-        const TensorType&              res ,
-        TensorType&                    arg )
-// END_REV_PLUS_EQUAL
+// BEGIN_PLUS_EQUAL
+    template <class TensorType> void inline plus_equal(
+        TensorType&                    target ,
+        const TensorType&              rhs ,
+        const c10::IntArrayRef&        dim  = c10::IntArrayRef() )
+// END_PLUS_EQUAL
     {   //
-        assert( res.numel() != 0 );
+        assert( rhs.numel() != 0 );
         if( dim.size() == 0 ) {
-            if( arg.numel() == 0 ) {
-                arg = res;
+            if( target.numel() == 0 ) {
+                target = rhs;
             } else {
-                arg += res;
-            }
-        } else {
-            TensorType compress = res.sum(dim);
-            if( arg.numel() == 0 ) {
-                arg = compress;
+                target += rhs;
+                }
+                } else {
+            TensorType compress = rhs.sum(dim);
+            if( target.numel() == 0 ) {
+                target = compress;
             } else {
-                arg += compress;
+                target += compress;
             }
         }
     }
-// BEGIN_REV_MINUS_EQUAL
-    template <class TensorType> void inline rev_minus_equal(
-        const c10::IntArrayRef&        dim ,
-        const TensorType&              res ,
-        TensorType&                    arg )
-// END_REV_MINUS_EQUAL
+// BEGIN_MINUS_EQUAL
+    template <class TensorType> void inline minus_equal(
+        TensorType&                    target ,
+        const TensorType&              rhs ,
+        const c10::IntArrayRef&        dim  = c10::IntArrayRef() )
+// END_MINUS_EQUAL
     {   //
-        assert( res.numel() != 0 );
+        assert( rhs.numel() != 0 );
         if( dim.size() == 0 ) {
-            if( arg.numel() == 0 ) {
-                arg = - res;
+            if( target.numel() == 0 ) {
+                target = - rhs;
             } else {
-                arg -= res;
+                target -= rhs;
             }
         } else {
-            TensorType compress = res.sum(dim);
-            if( arg.numel() == 0 ) {
-                arg = - compress;
+            TensorType compress = rhs.sum(dim);
+            if( target.numel() == 0 ) {
+                target = - compress;
             } else {
-                arg -= compress;
+                target -= compress;
             }
         }
     }
