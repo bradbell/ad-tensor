@@ -18,6 +18,7 @@ add_library(ad_tensor SHARED
     adten/sum.cpp
     adten/transpose.cpp
     adten/view.cpp
+    atom.cpp
     dev/broadcast.cpp
     dev/derive_op/add_op.cpp
     dev/derive_op/div_op.cpp
