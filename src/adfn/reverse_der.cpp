@@ -24,6 +24,10 @@ Prototype
     BEGIN_REVERSE_DER, END_REVERSE_DER
 }
 
+TensorType
+**********
+This is either at::Tensor or :ref:`adten-name` .
+
 par_all
 *******
 is the value of all the parameters for this function.

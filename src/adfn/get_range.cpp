@@ -14,11 +14,13 @@ Prototype
 {xrst_literal ,
     BEGIN_RANGE, END_RANGE
 }
-
 This returns the range tensors for
 
     range = adfn(dom_par, dom_var)
 
+TensorType
+**********
+This is either at::Tensor or :ref:`adten-name` .
 
 par_all
 *******

@@ -21,6 +21,10 @@ Prototype
     BEGIN_FORWARD_PAR, END_FORWARD_PAR
 }
 
+TensorType
+**********
+This is either at::Tensor or :ref:`adten-name` .
+
 dom_par
 *******
 Is the value of the domain parameters for this calculation.

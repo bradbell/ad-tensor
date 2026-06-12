@@ -21,6 +21,10 @@ Prototype
     BEGIN_FORWARD_VAR, END_FORWARD_VAR
 }
 
+TensorType
+**********
+This is either at::Tensor or :ref:`adten-name` .
+
 par_all
 *******
 is the value of all the parameters for this function.
