@@ -4,15 +4,6 @@
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
 /*
-{xrst_begin atom dev}
-
-Atomic Functions
-################
-{xrst_literal ,
-    BEGIN_ATOM_T, END_ATOM_T
-}
-
-{xrst_end atom}
 */
 #include <torch/torch.h>
 #include <ad_tensor/vector.hpp>
@@ -23,6 +14,9 @@ namespace ad_tensor {  // BEGIN_AD_TENSOR_NAMESPACE
 // atom_t
 class atom_t {
 public:
+    //
+    // pattern
+    typedef std::tuple< vector<size_t>, vector<size_t> > (*pattern_t) (void);
     //
     // forward_var_t, ad_forward_var_t
     typedef vector<at::Tensor> (*forward_var_t) (
@@ -61,6 +55,9 @@ private:
     // m_name
     std::string m_name;
     //
+    // m_pattern
+    pattern_t   m_pattern;
+    //
     // m_forward_var, m_forward_der, m_reverse_der
     forward_var_t     m_forward_var;
     forward_der_t     m_forward_der;
@@ -75,34 +72,34 @@ public:
     // BEGIN_CTOR
     atom_t(void)
     : m_name()
+    , m_pattern(nullptr)
     , m_forward_var(nullptr)
     , m_forward_der(nullptr)
     , m_reverse_der(nullptr)
     , m_ad_forward_var(nullptr)
     , m_ad_forward_der(nullptr)
-    , m_ad_reverse_der(nullptr)
     // END_CTOR
     { }
     //
     // Setters
-    void set_name(const std::string& name);
-    void set_forward_var(const forward_var_t& forward_var);
-    void set_forward_der(const forward_der_t& forward_der);
-    void set_reverse_der(const reverse_der_t& reverse_der);
-    void set_ad_forward_var(const ad_forward_var_t& ad_forward_var);
-    void set_ad_forward_der(const ad_forward_der_t& ad_forward_der);
-    void set_ad_reverse_der(const ad_reverse_der_t& ad_reverse_der);
+    void set_name(const std::string&                   name);
+    void set_pattern(const pattern_t&                  pattern);
+    void set_forward_var(const forward_var_t&          forward_var);
+    void set_forward_der(const forward_der_t&          forward_der);
+    void set_reverse_der(const reverse_der_t&          reverse_der);
+    void set_ad_forward_var(const ad_forward_var_t&    ad_forward_var);
+    void set_ad_forward_der(const ad_forward_der_t&    ad_forward_der);
+    void set_ad_reverse_der(const ad_reverse_der_t&    ad_reverse_der);
     //
     // Getters
-    const std::string& get_name(void) const;
-    const forward_var_t& get_forward_var(void) const;
-    const forward_der_t& get_forward_der(void) const;
-    const reverse_der_t& get_reverse_der(void) const;
+    const std::string&      get_name(void) const;
+    const pattern_t&        get_pattern(void) const;
+    const forward_var_t&    get_forward_var(void) const;
+    const forward_der_t&    get_forward_der(void) const;
+    const reverse_der_t&    get_reverse_der(void) const;
     const ad_forward_var_t& get_ad_forward_var(void) const;
     const ad_forward_der_t& get_ad_forward_der(void) const;
     const ad_reverse_der_t& get_ad_reverse_der(void) const;
-
-
 };
 // atom_info_t
 class atom_info_t {

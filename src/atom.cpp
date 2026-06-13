@@ -7,14 +7,13 @@
 #include <ad_tensor/atom.hpp>
 #include <ad_tensor/dev/user_assert.hpp>
 //
-#define SETTER(name) \
+#define SETTER_AND_GETTER(name) \
     void atom_t::set_ ## name(const name ## _t& name) { \
         dev::user_assert( name != nullptr, \
             "atom " #name " is the nullptr in set_" #name  \
         ); \
         m_ ## name = name; \
-    }
-#define GETTER(name) \
+    } \
     const atom_t::name ## _t& atom_t::get_ ## name(void) const { \
         if( m_ ## name == nullptr ) { \
             std::string msg = m_name + " atom: " #name " has not been set"; \
@@ -71,24 +70,22 @@ namespace ad_tensor {
         );
         m_name = name;
     }
-    // atom_t:: set_forward_var, set_forward_der, set_reverse_der
-    SETTER(forward_var)
-    SETTER(forward_der)
-    SETTER(reverse_der)
     //
-    // atom_t:: set_ad_forward_var, set_ad_forward_der, set_ad_reverse_der
-    SETTER(ad_forward_var)
-    SETTER(ad_forward_der)
-    SETTER(ad_reverse_der)
+    // atom_t:: set_pattern, get_pattern
+    SETTER_AND_GETTER(pattern)
     //
-    // atom_t:: get_forward_var, get_forward_der, get_reverse_der
-    GETTER(forward_var)
-    GETTER(forward_der)
-    GETTER(reverse_der)
+    // atom_t::
+    // set_forward_var, get_forward_var, set_ad_forward_var, get_ad_forward_var
+    SETTER_AND_GETTER(forward_var)
+    SETTER_AND_GETTER(ad_forward_var)
     //
-    // atom_t:: get_ad_forward_var, get_ad_forward_der, get_ad_reverse_der
-    GETTER(ad_forward_var)
-    GETTER(ad_forward_der)
-    GETTER(ad_reverse_der)
-
+    // atom_t::
+    // set_forward_der, get_forward_der, set_ad_forward_der, get_ad_forward_der
+    SETTER_AND_GETTER(forward_der)
+    SETTER_AND_GETTER(ad_forward_der)
+    //
+    // atom_t::
+    // set_reverse_der, get_reverse_der, set_ad_reverse_der, get_ad_reverse_der
+    SETTER_AND_GETTER(reverse_der)
+    SETTER_AND_GETTER(ad_reverse_der)
 }
