@@ -5,7 +5,6 @@
 #include <ad_tensor/dev/derive_op.hpp>
 #include <ad_tensor/adten.hpp>
 #include <ad_tensor/dev/plus_minus_equal.hpp>
-#include <ad_tensor/dev/size_ptr2array_ref.hpp>
 //
 namespace ad_tensor { namespace dev {
     // ------------------------------------------------------------------------
