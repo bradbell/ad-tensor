@@ -47,8 +47,8 @@ with lock false.
 //
 namespace ad_tensor { namespace dev {
     c10::IntArrayRef size_ptr2array_ref(
-        bool          lock     ,
-        const size_t* size_ptr ) {
+        bool           lock ,
+        const int64_t* size_ptr ) {
     //
     // locked
     thread_local bool locked = false;

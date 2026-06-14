@@ -18,9 +18,6 @@ namespace ad_tensor { namespace dev {
         vector<TensorType>&          par_vec
     ) const {
         //
-        // lock
-        bool lock;
-        //
         // arg_index
         size_t    arg_index = agraph.m_arg_start[op_index];
         //
@@ -42,18 +39,13 @@ namespace ad_tensor { namespace dev {
         size_t operand_index  = agraph.m_arg_value[arg_index];
         //
         // shape
-        lock = true;
-        c10::IntArrayRef shape = size_ptr2array_ref(
-                lock, agraph.m_arg_value.data() + arg_index + 1
-        );
+        const int64_t* begin = agraph.m_arg_value.data() + arg_index + 2;
+        const int64_t* end   = begin + n_dim;
+        c10::IntArrayRef shape(begin, end);
         assert( shape.size() == n_dim );
         //
         // par_vec
         par_vec[op_index] = par_vec[operand_index].view(shape);
-        //
-        // shape
-        lock = false;
-        size_ptr2array_ref(lock);
     }
     template void view_op_t<adten_t>::forward_par(
         size_t                       op_index    ,
@@ -78,9 +70,6 @@ namespace ad_tensor { namespace dev {
         vector<TensorType>&          var_vec
     ) const {
         //
-        // lock
-        bool lock;
-        //
         // arg_index
         size_t    arg_index = agraph.m_arg_start[op_index];
         //
@@ -102,18 +91,13 @@ namespace ad_tensor { namespace dev {
         size_t operand_index  = agraph.m_arg_value[arg_index];
         //
         // shape
-        lock = true;
-        c10::IntArrayRef shape = size_ptr2array_ref(
-                lock, agraph.m_arg_value.data() + arg_index + 1
-        );
+        const int64_t* begin = agraph.m_arg_value.data() + arg_index + 2;
+        const int64_t* end   = begin + n_dim;
+        c10::IntArrayRef shape(begin, end);
         assert( shape.size() == n_dim );
         //
         // var_vec
         var_vec[op_index] = var_vec[operand_index].view(shape);
-        //
-        // shape
-        lock = false;
-        size_ptr2array_ref(lock);
     }
     template void view_op_t<adten_t>::forward_var(
         size_t                       op_index    ,

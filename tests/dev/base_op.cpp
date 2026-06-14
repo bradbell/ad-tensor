@@ -45,7 +45,7 @@ TEST(tests_dev, op_base)  {
     agraph_t               agraph;
     agraph.m_op_seq     = ad_tensor::vector<op_enum_t>( {dom, add} );
     agraph.m_arg_start  = ad_tensor::vector<size_t>( {0, 0, 2} );
-    agraph.m_arg_value  = ad_tensor::vector<size_t>( {0, 0} );
+    agraph.m_arg_value  = ad_tensor::vector<int64_t>( {0, 0} );
     agraph.m_arg_type   = ad_tensor::vector<ad_type_t>( {par, par} );
     //
     // par_vec[op_index]

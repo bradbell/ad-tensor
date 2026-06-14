@@ -19,9 +19,6 @@ namespace ad_tensor { namespace dev {
         vector<TensorType>&          par_vec
     ) const {
         //
-        // lock
-        bool lock;
-        //
         // arg_index
         size_t    arg_index = agraph.m_arg_start[op_index];
         //
@@ -48,17 +45,12 @@ namespace ad_tensor { namespace dev {
         } else {
             //
             // dim
-            lock = true;
-            c10::IntArrayRef dim = size_ptr2array_ref(
-                lock, agraph.m_arg_value.data() + arg_index + 1
-            );
+            const int64_t* begin = agraph.m_arg_value.data() + arg_index + 2;
+            const int64_t* end   = begin + n_dim;
+            c10::IntArrayRef dim(begin, end);
             //
             // par_vec
             par_vec[op_index] = par_vec[operand_index].sum(dim);
-            //
-            // dim
-            lock = false;
-            size_ptr2array_ref(lock);
         }
     }
     template void sum_op_t<adten_t>::forward_par(
@@ -83,9 +75,6 @@ namespace ad_tensor { namespace dev {
         const vector<TensorType>&    par_vec     ,
         vector<TensorType>&          var_vec
     ) const {
-        //
-        // lock
-        bool lock;
         //
         // arg_index
         size_t    arg_index = agraph.m_arg_start[op_index];
@@ -113,18 +102,13 @@ namespace ad_tensor { namespace dev {
         } else {
             //
             // dim
-            lock = true;
-            c10::IntArrayRef dim = size_ptr2array_ref(
-                lock, agraph.m_arg_value.data() + arg_index + 1
-            );
+            const int64_t* begin = agraph.m_arg_value.data() + arg_index + 2;
+            const int64_t* end   = begin + n_dim;
+            c10::IntArrayRef dim(begin, end);
             assert( dim.size() == n_dim );
             //
             // var_vec
             var_vec[op_index] = var_vec[operand_index].sum(dim);
-            //
-            // dim
-            lock = false;
-            size_ptr2array_ref(lock);
         }
     }
     template void sum_op_t<adten_t>::forward_var(
@@ -153,9 +137,6 @@ namespace ad_tensor { namespace dev {
         vector<TensorType>&          for_der
     ) const {
         //
-        // lock
-        bool lock;
-        //
         // arg_index
         size_t    arg_index = agraph.m_arg_start[op_index];
         //
@@ -182,18 +163,13 @@ namespace ad_tensor { namespace dev {
         } else {
             //
             // dim
-            lock = true;
-            c10::IntArrayRef dim = size_ptr2array_ref(
-                lock, agraph.m_arg_value.data() + arg_index + 1
-            );
+            const int64_t* begin = agraph.m_arg_value.data() + arg_index + 2;
+            const int64_t* end   = begin + n_dim;
+            c10::IntArrayRef dim(begin, end);
             assert( dim.size() == n_dim );
             //
             // for_der
             for_der[op_index] = for_der[operand_index].sum(dim);
-            //
-            // dim
-            lock = false;
-            size_ptr2array_ref(lock);
         }
     }
     template void sum_op_t<adten_t>::forward_der(
@@ -265,10 +241,9 @@ namespace ad_tensor { namespace dev {
             assert( n_dim != 0 );
             //
             // dim
-            lock = true;
-            c10::IntArrayRef dim = size_ptr2array_ref(
-                lock, agraph.m_arg_value.data() + arg_index + 1
-            );
+            const int64_t* begin = agraph.m_arg_value.data() + arg_index + 2;
+            const int64_t* end   = begin + n_dim;
+            c10::IntArrayRef dim(begin, end);
             assert( dim.size() == n_dim );
             //
             // res_shape
@@ -289,7 +264,6 @@ namespace ad_tensor { namespace dev {
             //
             // dim
             lock = false;
-            size_ptr2array_ref(lock);
             rev_sum_view(lock);
         }
     }

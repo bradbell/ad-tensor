@@ -9,8 +9,8 @@
 namespace ad_tensor { namespace dev {
     // array_ref = size_ptr2array_ref(lock, size_ptr)
     c10::IntArrayRef size_ptr2array_ref(
-        bool                     lock    ,
-        const size_t* size_ptr = nullptr
+        bool           lock ,
+        const int64_t* size_ptr = nullptr
     );
 } }
 // END_SIZE_PTR2ARRAY_REF
