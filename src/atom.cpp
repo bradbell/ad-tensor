@@ -71,8 +71,8 @@ namespace ad_tensor {
         m_name = name;
     }
     //
-    // atom_t:: set_pattern, get_pattern
-    SETTER_AND_GETTER(pattern)
+    // atom_t:: set_depend, get_depend
+    SETTER_AND_GETTER(depend)
     //
     // atom_t::
     // set_forward_var, get_forward_var, set_ad_forward_var, get_ad_forward_var

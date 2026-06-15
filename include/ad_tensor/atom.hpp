@@ -7,6 +7,7 @@
 */
 #include <torch/torch.h>
 #include <ad_tensor/vector.hpp>
+#include <ad_tensor/sparsity.hpp>
 #include <ad_tensor/adfn.hpp>
 //
 namespace ad_tensor {  // BEGIN_AD_TENSOR_NAMESPACE
@@ -15,8 +16,8 @@ namespace ad_tensor {  // BEGIN_AD_TENSOR_NAMESPACE
 class atom_t {
 public:
     //
-    // pattern
-    typedef std::tuple< vector<size_t>, vector<size_t> > (*pattern_t) (void);
+    // depend_t
+    typedef sparsity_t (*depend_t)(size_t call_info);
     //
     // forward_var_t, ad_forward_var_t
     typedef vector<at::Tensor> (*forward_var_t) (
@@ -55,8 +56,8 @@ private:
     // m_name
     std::string m_name;
     //
-    // m_pattern
-    pattern_t   m_pattern;
+    // m_depend
+    depend_t   m_depend;
     //
     // m_forward_var, m_forward_der, m_reverse_der
     forward_var_t     m_forward_var;
@@ -72,7 +73,7 @@ public:
     // BEGIN_CTOR
     atom_t(void)
     : m_name()
-    , m_pattern(nullptr)
+    , m_depend(nullptr)
     , m_forward_var(nullptr)
     , m_forward_der(nullptr)
     , m_reverse_der(nullptr)
@@ -83,7 +84,7 @@ public:
     //
     // Setters
     void set_name(const std::string&                   name);
-    void set_pattern(const pattern_t&                  pattern);
+    void set_depend(const depend_t&                    depend);
     void set_forward_var(const forward_var_t&          forward_var);
     void set_forward_der(const forward_der_t&          forward_der);
     void set_reverse_der(const reverse_der_t&          reverse_der);
@@ -93,7 +94,7 @@ public:
     //
     // Getters
     const std::string&      get_name(void) const;
-    const pattern_t&        get_pattern(void) const;
+    const depend_t&         get_depend(void) const;
     const forward_var_t&    get_forward_var(void) const;
     const forward_der_t&    get_forward_der(void) const;
     const reverse_der_t&    get_reverse_der(void) const;
