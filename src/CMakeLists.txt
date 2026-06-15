@@ -37,5 +37,6 @@ add_library(ad_tensor SHARED
     dev/tensor_at_index.cpp
     dev/to_string.cpp
     options.cpp
+    sparsity.cpp
     # END_SORT_THIS_LINE_MINUS_1
 )
