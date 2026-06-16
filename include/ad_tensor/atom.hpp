@@ -4,6 +4,61 @@
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
 /*
+{xrst_begin_parent atom usr}
+
+Atomic Functions
+################
+
+{xrst_end atom}
+-------------------------------------------------------------------------------
+{xrst_begin atom_callback usr}
+
+The Atomic Callback Class atom_callback_t
+#########################################
+
+atom_callback
+*************
+we use atom_callback below for an atom_callback_t
+object created using its default constructor.
+
+call_info
+*********
+the meaning of this is special for the original call
+to this atomic function.
+
+domain
+******
+is the value of the domain variables for this atomic function call.
+
+set
+***
+After the atom_callback_t constructor, all the callback functions are null.
+Each of the callback functions can be set by a call of the form
+{xrst_code cpp}
+    atom_callback.set_name(const name_t& name)
+{xrst_code}
+where name is the callback name; e.g., depend.
+
+depend
+******
+{xrst_literal ,
+    BEGIN_DEPEND, END_DEPEND
+}
+This callback is required for all atomic functions.
+It returns a dependency :ref:`sparsity-name` pattern
+for this atomic function.
+If the atomic function range index i depends on the domain index j,
+then (i,j) is in the sparsity pattern for this atomic function.
+
+forward
+*******
+{xrst_literal ,
+    BEGIN_FORWARD, END_FORWARD
+}
+This callback is required for all atomic functions.
+It computes the range values for the atomic function.
+
+{xrst_end atom_callback}
 */
 #include <torch/torch.h>
 #include <ad_tensor/vector.hpp>
@@ -16,14 +71,18 @@ namespace ad_tensor {  // BEGIN_AD_TENSOR_NAMESPACE
 class atom_callback_t {
 public:
     //
-    // depend_t
+    // BEGIN_DEPEND
     typedef sparsity_t (*depend_t)(int64_t call_info);
+    // END_DEPEND
     //
-    // forward_t, ad_forward_t
+    // BEGIN_FORWARD
     typedef vector<at::Tensor> (*forward_t) (
         int64_t            call_info ,
         vector<at::Tensor> domain
     );
+    // END_FORWARD
+    //
+    // ad_forward_t
     typedef vector<adten_t> (*ad_forward_t) (
         int64_t            call_info ,
         vector<adten_t>    domain
