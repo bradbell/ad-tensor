@@ -10,6 +10,7 @@ add_library(ad_tensor SHARED
     adfn/get_range.cpp
     adfn/reverse_der.cpp
     adten/binary.cpp
+    adten/call_atom.cpp
     adten/ctor.cpp
     adten/matmul.cpp
     adten/minus.cpp

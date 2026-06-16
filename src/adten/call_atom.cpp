@@ -1,0 +1,140 @@
+// SPDX-License-Identifier: EPL-2.0 OR GPL-2.0-or-later
+// SPDX-FileCopyrightText: Bradley M. Bell <bradbell@seanet.com>
+// SPDX-FileContributor: 2026 Bradley M. Bell
+// ----------------------------------------------------------------------------
+#include<ad_tensor/vector.hpp>
+#include<ad_tensor/adten.hpp>
+#include<ad_tensor/atom.hpp>
+#include<ad_tensor/dev/tape.hpp>
+#include<ad_tensor/dev/agraph.hpp>
+
+namespace ad_tensor { // BEGIN_AD_TENSOR_NAMESPACE
+
+// arange = call_atom(atom_id, call_info, adomain)
+vector<adten_t> adten_t::call_atom(
+    size_t atom_id, int64_t call_info, const vector<adten_t>& adomain
+) {
+    //
+    // atom
+    atom_info_t&  atom_info = atom_info_t::singleton();
+    const atom_t& atom      = atom_info.get(atom_id);
+    //
+    // n_domain, domain
+    size_t n_domain = adomain.size();
+    vector<at::Tensor> domain;
+    for(size_t j = 0; j < n_domain; ++j) {
+        domain.push_back( adomain[j].m_tensor );
+    }
+    //
+    // range, n_range
+    atom_t::forward_t  forward = atom.get_forward();
+    vector<at::Tensor> range   = forward(call_info, domain);
+    size_t n_range  = range.size();
+    //
+    // arange
+    vector<adten_t> arange;
+    for(size_t i = 0; i < n_range; ++i) {
+        arange.push_back( adten_t(range[i]) );
+    }
+    //
+    // tape
+    dev::tape_t& tape = dev::this_threads_tape();
+    if( ! tape.m_recording ) {
+        return arange;
+    }
+    //
+    // depend
+    atom_t::depend_t   depend   = atom.get_depend();
+    sparsity_t         sparsity = depend(call_info);
+    //
+    // arange[i].m_ad_type
+    for(size_t i = 0; i < n_range; ++i) {
+        arange[i].m_ad_type = ad_type_t::constant;
+    }
+    for(size_t k = 0; k < sparsity.size(); ++k) {
+        size_t row            = sparsity[k][0];
+        size_t col            = sparsity[k][1];
+        ad_type_t ad_type     = arange[row].m_ad_type;
+        arange[row].m_ad_type = std::max( ad_type, adomain[col].m_ad_type );
+    }
+    //
+    // tape.m_con, arange[i]: m_index, par_rng_index, var_rng_index
+    vector<size_t> par_rng_index, var_rng_index;
+    size_t par_index = tape.m_par.m_op_seq.size();
+    size_t var_index = tape.m_var.m_op_seq.size();
+    for(size_t i = 0; i < n_range; ++i) switch( arange[i].m_ad_type ) {
+        //
+        // ad_type_t::constant
+        case ad_type_t::constant:
+        arange[i].m_index = tape.m_con.size();
+        tape.m_con.push_back( range[i] );
+        break;
+        //
+        // ad_type_t::parameter
+        case ad_type_t::parameter:
+        arange[i].m_index = par_index;
+        ++par_index;
+        par_rng_index.push_back(i);
+        break;
+        //
+        // ad_type_t::variable
+        case ad_type_t::variable:
+        arange[i].m_index = var_index;
+        ++var_index;
+        var_rng_index.push_back(i);
+        break;
+        //
+        default:
+        assert( false && "call_atom: a domain type is ad_type_t::none");
+        break;
+    }
+    // n_result
+    std::array<size_t, 2> n_result = {
+        par_index - tape.m_par.m_op_seq.size(),
+        var_index - tape.m_var.m_op_seq.size()
+    };
+    //
+    dev::agraph_t*  agraph;
+    vector<size_t>* rng_index;
+    for(size_t ig = 0; ig < 2; ++ig) if( 0 < n_result[ig] ) {
+        //
+        if( ig == 0 ) {
+            agraph    = &tape.m_par;
+            rng_index = &par_rng_index;
+        } else {
+            agraph    = &tape.m_var;
+            rng_index = &var_rng_index;
+        }
+        assert( n_result[1] == rng_index->size() );
+        //
+        // agraph: m_op_seq, m_arg_start
+        agraph->m_op_seq.push_back( dev::op_enum_t::call );
+        agraph->m_arg_start.push_back( agraph->m_arg_value.size() );
+        //
+        // agraph: m_arg_value, m_arg_type
+        agraph->m_arg_value.push_back( int64_t(atom_id) );
+        agraph->m_arg_value.push_back( call_info );
+        agraph->m_arg_value.push_back( int64_t(n_domain) );
+        agraph->m_arg_value.push_back( int64_t(n_range) );
+        agraph->m_arg_value.push_back( int64_t(n_result[ig]) );
+        for(size_t k = 0; k < n_result[ig]; ++k) {
+            agraph->m_arg_value.push_back( int64_t( (*rng_index)[k] ) );
+        }
+        for(size_t k = 0; k < 5 + n_result[ig]; ++k) {
+            agraph->m_arg_type.push_back( ad_type_t::none );
+        }
+        for(size_t j = 0; j < n_domain; ++j) {
+            agraph->m_arg_value.push_back( int64_t( adomain[j].m_index ) );
+            agraph->m_arg_type.push_back( adomain[j].m_ad_type );
+        }
+        //
+        // agraph: m_op_seq, m_arg_start
+        for(size_t k = 1; k < n_result[ig]; ++k) {
+            agraph->m_op_seq.push_back( dev::op_enum_t::call_result );
+            agraph->m_arg_start.push_back( agraph->m_arg_value.size() );
+        }
+    }
+    return arange;
+}
+
+} // END_AD_TENSOR_NAMESPACE

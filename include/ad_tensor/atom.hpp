@@ -17,38 +17,38 @@ class atom_t {
 public:
     //
     // depend_t
-    typedef sparsity_t (*depend_t)(size_t call_info);
+    typedef sparsity_t (*depend_t)(int64_t call_info);
     //
     // forward_t, ad_forward_t
     typedef vector<at::Tensor> (*forward_t) (
-        size_t             call_info ,
+        int64_t            call_info ,
         vector<at::Tensor> domain
     );
     typedef vector<adten_t> (*ad_forward_t) (
-        size_t             call_info ,
+        int64_t            call_info ,
         vector<adten_t>    domain
     );
     //
     // forward_der_t, ad_forward_der_t
     typedef vector<at::Tensor> (*forward_der_t) (
-        size_t             call_info ,
+        int64_t            call_info ,
         vector<at::Tensor> domain ,
         vector<at::Tensor> domain_der
     );
     typedef vector<adten_t> (*ad_forward_der_t) (
-        size_t             call_info ,
+        int64_t            call_info ,
         vector<adten_t>    domain ,
         vector<adten_t>    domain_der
     );
     //
     // reverse_der_t, ad_reverse_der_t
     typedef vector<at::Tensor> (*reverse_der_t) (
-        size_t             call_info ,
+        int64_t            call_info ,
         vector<at::Tensor> domain    ,
         vector<at::Tensor> range_der
         );
     typedef vector<adten_t> (*ad_reverse_der_t) (
-        size_t             call_info ,
+        int64_t            call_info ,
         vector<adten_t>    domain    ,
         vector<adten_t>    range_der
     );
@@ -79,6 +79,7 @@ public:
     , m_reverse_der(nullptr)
     , m_ad_forward(nullptr)
     , m_ad_forward_der(nullptr)
+    , m_ad_reverse_der(nullptr)
     // END_CTOR
     { }
     //
@@ -129,7 +130,7 @@ public:
     size_t store(const atom_t& adfn);
     //
     // get
-    const atom_t& get(size_t index);
+    const atom_t& get(size_t atom_id);
 };
 
 } // END_AD_TENSOR_NAMESPACE

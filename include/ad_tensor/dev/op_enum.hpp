@@ -21,6 +21,8 @@ Enum Values
 // BEGIN_SORT_THIS_LINE_PLUS_2
 namespace ad_tensor { namespace dev { enum struct op_enum_t {
     add,         // binary addition
+    call,        // call atomic function
+    call_result, // place holder when more than one result for a call
     div,         // binary division
     dom,         // domain tensor
     matmul,      // binary matrix multiplication
