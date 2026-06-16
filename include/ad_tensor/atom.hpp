@@ -12,8 +12,8 @@
 //
 namespace ad_tensor {  // BEGIN_AD_TENSOR_NAMESPACE
 // --------------------------------------------------------------------------
-// atom_t
-class atom_t {
+// atom_callback_t
+class atom_callback_t {
 public:
     //
     // depend_t
@@ -71,7 +71,7 @@ private:
 public:
     //
     // BEGIN_CTOR
-    atom_t(void)
+    atom_callback_t(void)
     : m_name()
     , m_depend(nullptr)
     , m_forward(nullptr)
@@ -106,8 +106,8 @@ public:
 // atom_info_t
 class atom_info_t {
 private:
-    std::shared_mutex m_rw_mutex;
-    vector<atom_t>    m_atom_vec;
+    std::shared_mutex          m_rw_mutex;
+    vector<atom_callback_t>    m_atom_callback_vec;
     //
     // default constructor
     atom_info_t(void)
@@ -127,10 +127,10 @@ public:
     }
     //
     // store
-    size_t store(const atom_t& adfn);
+    size_t store(const atom_callback_t& atom_callback);
     //
     // get
-    const atom_t& get(size_t atom_id);
+    const atom_callback_t& get(size_t atom_id);
 };
 
 } // END_AD_TENSOR_NAMESPACE

@@ -17,7 +17,7 @@ vector<adten_t> adten_t::call_atom(
     //
     // atom
     atom_info_t&  atom_info = atom_info_t::singleton();
-    const atom_t& atom      = atom_info.get(atom_id);
+    const atom_callback_t& atom      = atom_info.get(atom_id);
     //
     // n_domain, domain
     size_t n_domain = adomain.size();
@@ -27,8 +27,8 @@ vector<adten_t> adten_t::call_atom(
     }
     //
     // range, n_range
-    atom_t::forward_t  forward = atom.get_forward();
-    vector<at::Tensor> range   = forward(call_info, domain);
+    atom_callback_t::forward_t  forward = atom.get_forward();
+    vector<at::Tensor>          range   = forward(call_info, domain);
     size_t n_range  = range.size();
     //
     // arange
@@ -43,17 +43,17 @@ vector<adten_t> adten_t::call_atom(
         return arange;
     }
     //
-    // depend
-    atom_t::depend_t   depend   = atom.get_depend();
-    sparsity_t         sparsity = depend(call_info);
+    // pattern
+    atom_callback_t::depend_t   depend  = atom.get_depend();
+    sparsity_t                  pattern = depend(call_info);
     //
     // arange[i].m_ad_type
     for(size_t i = 0; i < n_range; ++i) {
         arange[i].m_ad_type = ad_type_t::constant;
     }
-    for(size_t k = 0; k < sparsity.size(); ++k) {
-        size_t row            = sparsity[k][0];
-        size_t col            = sparsity[k][1];
+    for(size_t k = 0; k < pattern.size(); ++k) {
+        size_t row            = pattern[k][0];
+        size_t col            = pattern[k][1];
         ad_type_t ad_type     = arange[row].m_ad_type;
         arange[row].m_ad_type = std::max( ad_type, adomain[col].m_ad_type );
     }
