@@ -75,9 +75,9 @@ namespace ad_tensor {
     SETTER_AND_GETTER(depend)
     //
     // atom_t::
-    // set_forward_var, get_forward_var, set_ad_forward_var, get_ad_forward_var
-    SETTER_AND_GETTER(forward_var)
-    SETTER_AND_GETTER(ad_forward_var)
+    // set_forward, get_forward, set_ad_forward, get_ad_forward
+    SETTER_AND_GETTER(forward)
+    SETTER_AND_GETTER(ad_forward)
     //
     // atom_t::
     // set_forward_der, get_forward_der, set_ad_forward_der, get_ad_forward_der

@@ -8,20 +8,23 @@
 
 Sparsity Patterns
 #################
+{xrst_literal ,
+    BEGIN_SPARSITY, END_SPARSITY
+}
 
 {xrst_end sparsity}
 */
 #include<array>
 #include<ad_tensor/vector.hpp>
 
-namespace ad_tensor {
-    class sparsity_t {
-    private:
-        vector< std::array<size_t, 2> > m_sparsity;
-    public:
-        size_t size(void);
-        void sort(void);
-        void push_back(const std::array<size_t, 2>& pair );
-        const std::array<size_t, 2>& operator[](size_t index) const;
-    };
-}
+// BEGIN_SPARSITY
+namespace ad_tensor { class sparsity_t {
+private:
+    vector< std::array<size_t, 2> > m_sparsity;
+public:
+    size_t size(void);
+    void sort(void);
+    void push_back(const std::array<size_t, 2>& pair );
+    const std::array<size_t, 2>& operator[](size_t index) const;
+}; }
+// END_SPARSITY

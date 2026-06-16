@@ -19,6 +19,7 @@ TODO
 {xrst_toc_table
     include/ad_tensor/vector.hpp
     include/ad_tensor/options.hpp
+    include/ad_tensor/sparsity.hpp
     include/ad_tensor/adten.hpp
     include/ad_tensor/ad_type.hpp
     include/ad_tensor/adfn.hpp

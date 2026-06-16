@@ -19,12 +19,12 @@ public:
     // depend_t
     typedef sparsity_t (*depend_t)(size_t call_info);
     //
-    // forward_var_t, ad_forward_var_t
-    typedef vector<at::Tensor> (*forward_var_t) (
+    // forward_t, ad_forward_t
+    typedef vector<at::Tensor> (*forward_t) (
         size_t             call_info ,
         vector<at::Tensor> domain
     );
-    typedef vector<adten_t> (*ad_forward_var_t) (
+    typedef vector<adten_t> (*ad_forward_t) (
         size_t             call_info ,
         vector<adten_t>    domain
     );
@@ -59,13 +59,13 @@ private:
     // m_depend
     depend_t   m_depend;
     //
-    // m_forward_var, m_forward_der, m_reverse_der
-    forward_var_t     m_forward_var;
+    // m_forward, m_forward_der, m_reverse_der
+    forward_t         m_forward;
     forward_der_t     m_forward_der;
     reverse_der_t     m_reverse_der;
     //
-    // m_ad_forward_var, m_ad_forward_der, m_ad_reverse_der
-    ad_forward_var_t     m_ad_forward_var;
+    // m_ad_forward, m_ad_forward_der, m_ad_reverse_der
+    ad_forward_t         m_ad_forward;
     ad_forward_der_t     m_ad_forward_der;
     ad_reverse_der_t     m_ad_reverse_der;
 public:
@@ -74,10 +74,10 @@ public:
     atom_t(void)
     : m_name()
     , m_depend(nullptr)
-    , m_forward_var(nullptr)
+    , m_forward(nullptr)
     , m_forward_der(nullptr)
     , m_reverse_der(nullptr)
-    , m_ad_forward_var(nullptr)
+    , m_ad_forward(nullptr)
     , m_ad_forward_der(nullptr)
     // END_CTOR
     { }
@@ -85,20 +85,20 @@ public:
     // Setters
     void set_name(const std::string&                   name);
     void set_depend(const depend_t&                    depend);
-    void set_forward_var(const forward_var_t&          forward_var);
+    void set_forward(const forward_t&                  forward);
     void set_forward_der(const forward_der_t&          forward_der);
     void set_reverse_der(const reverse_der_t&          reverse_der);
-    void set_ad_forward_var(const ad_forward_var_t&    ad_forward_var);
+    void set_ad_forward(const ad_forward_t&            ad_forward);
     void set_ad_forward_der(const ad_forward_der_t&    ad_forward_der);
     void set_ad_reverse_der(const ad_reverse_der_t&    ad_reverse_der);
     //
     // Getters
     const std::string&      get_name(void) const;
     const depend_t&         get_depend(void) const;
-    const forward_var_t&    get_forward_var(void) const;
+    const forward_t&        get_forward(void) const;
     const forward_der_t&    get_forward_der(void) const;
     const reverse_der_t&    get_reverse_der(void) const;
-    const ad_forward_var_t& get_ad_forward_var(void) const;
+    const ad_forward_t&     get_ad_forward(void) const;
     const ad_forward_der_t& get_ad_forward_der(void) const;
     const ad_reverse_der_t& get_ad_reverse_der(void) const;
 };
