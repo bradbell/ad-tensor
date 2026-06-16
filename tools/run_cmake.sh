@@ -1,6 +1,6 @@
 #! /usr/bin/env bash
 set -e -u
-# !! EDITS TO THIS FILE ARE LOST DURING UPDATES BY xrst.git/bin/dev_tools.sh !!
+# !! EDITS TO THIS FILE ARE LOST DURING UPDATES BY xrst.git/tools/dev_tools.sh !!
 # SPDX-License-Identifier: EPL-2.0 OR GPL-2.0-or-later
 # SPDX-FileCopyrightText: Bradley M. Bell <bradbell@seanet.com>
 # SPDX-FileContributor: 2026 Bradley M. Bell
@@ -11,9 +11,9 @@ echo_eval() {
    eval $*
 }
 # -----------------------------------------------------------------------------
-if [ "$0" != "bin/run_cmake.sh" ]
+if [ "$0" != "tools/run_cmake.sh" ]
 then
-   echo "bin/run_cmake.sh: must be executed from its parent directory"
+   echo "tools/run_cmake.sh: must be executed from its parent directory"
    exit 1
 fi
 # -----------------------------------------------------------------------------
@@ -27,7 +27,7 @@ do
         ;;
 
         *)
-        echo 'usage: bin/run_cmake.sh [flag1 [flag2 .. ] ]'
+        echo 'usage: tools/run_cmake.sh [flag1 [flag2 .. ] ]'
         echo 'list of possible flags: --release'
         ;;
 
@@ -36,7 +36,7 @@ do
 done
 # -----------------------------------------------------------------------------
 # toch_dir
-torch_dir=$(bin/torch_dir.py)
+torch_dir=$(tools/torch_dir.py)
 #
 # build
 if [ ! -e build ]

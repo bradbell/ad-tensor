@@ -1,6 +1,6 @@
 #! /usr/bin/env bash
 set -e -u
-# !! EDITS TO THIS FILE ARE LOST DURING UPDATES BY xrst.git/bin/dev_tools.sh !!
+# !! EDITS TO THIS FILE ARE LOST DURING UPDATES BY xrst.git/tools/dev_tools.sh !!
 # SPDX-License-Identifier: EPL-2.0 OR GPL-2.0-or-later
 # SPDX-FileCopyrightText: Bradley M. Bell <bradbell@seanet.com>
 # SPDX-FileContributor: 2026 Bradley M. Bell
@@ -11,15 +11,15 @@ echo_eval() {
    eval $*
 }
 # -----------------------------------------------------------------------------
-if [ "$0" != "bin/check_gtest.sh" ]
+if [ "$0" != "tools/check_gtest.sh" ]
 then
-   echo "bin/check_gtest.sh: must be executed from its parent directory"
+   echo "tools/check_gtest.sh: must be executed from its parent directory"
    exit 1
 fi
 # -----------------------------------------------------------------------------
 #
 # run_cmake.sh
-bin/run_cmake.sh
+tools/run_cmake.sh
 #
 # build
 cd build

@@ -4,7 +4,7 @@ set -e -u
 # SPDX-FileCopyrightText: Bradley M. Bell <bradbell@seanet.com>
 # SPDX-FileContributor: 2026 Bradley M. Bell
 # -----------------------------------------------------------------------------
-# bin/new_file.sh path_to_file
+# tools/new_file.sh path_to_file
 # Creates a new file with the copyright message at the top.
 #
 # If the file name ends with .sh, a bash shebang and sed -e -u are included.
@@ -13,14 +13,14 @@ set -e -u
 # If the file name ends with .hpp, #pragma once is included.
 # ----------------------------------------------------------------------------
 # path_to_file
-if [ "$0" != 'bin/new_file.sh' ]
+if [ "$0" != 'tools/new_file.sh' ]
 then
     echo 'new_file.sh must be executed from its parent directory'
     exit 1
 fi
 if [ $# != 1 ]
 then
-    echo 'usage: bin/new_file.sh path_to_file'
+    echo 'usage: tools/new_file.sh path_to_file'
     exit 1
 fi
 path_to_file="$1"
@@ -47,7 +47,7 @@ then
 fi
 # -----------------------------------------------------------------------------
 # spdx_license_id, spdx_copyright_text, contributor_list
-source bin/dev_settings.sh
+source tools/dev_settings.sh
 #
 # year
 year=$(date +%Y)
@@ -65,7 +65,7 @@ then
     done
     if [ "$fullname" == '' ] && [ "${USER+x}" != '' ]
     then
-        echo "Cannot user name = $USER in bin/dev_settings.sh contributor_list"
+        echo "Cannot user name = $USER in tools/dev_settings.sh contributor_list"
         exit 1
     fi
 fi

@@ -1,6 +1,6 @@
 #! /usr/bin/env bash
 set -e -u
-# !! EDITS TO THIS FILE ARE LOST DURING UPDATES BY xrst.git/bin/dev_tools.sh !!
+# !! EDITS TO THIS FILE ARE LOST DURING UPDATES BY xrst.git/tools/dev_tools.sh !!
 # SPDX-License-Identifier: EPL-2.0 OR GPL-2.0-or-later
 # SPDX-FileCopyrightText: Bradley M. Bell <bradbell@seanet.com>
 # SPDX-FileContributor: 2026 Bradley M. Bell
@@ -11,19 +11,19 @@ echo_eval() {
     eval $*
 }
 # -----------------------------------------------------------------------------
-if [ "$0" != "bin/check_all.sh" ]
+if [ "$0" != "tools/check_all.sh" ]
 then
-    echo "bin/check_all.sh: must be executed from its parent directory"
+    echo "tools/check_all.sh: must be executed from its parent directory"
     exit 1
 fi
 if [ "$#" -ge 3 ]
 then
-    echo 'usage: bin/check_all.sh [--skip_check_copy] [--external_links]'
+    echo 'usage: tools/check_all.sh [--skip_check_copy] [--external_links]'
     exit 1
 fi
 #
 # sed
-source bin/grep_and_sed.sh
+source tools/grep_and_sed.sh
 #
 # skip_check_copy, external_links
 external_links='no'
@@ -37,7 +37,7 @@ do
     then
         external_links='yes'
     else
-        echo 'usage: bin/check_all.sh [-skip_check_copy]'
+        echo 'usage: tools/check_all.sh [-skip_check_copy]'
         exit 1
     fi
     shift
@@ -53,21 +53,21 @@ fi
 # run_xrsth.sh
 if [ "$external_links" == 'no' ]
 then
-    echo_eval bin/run_xrst.sh
+    echo_eval tools/run_xrst.sh
 else
-    echo_eval bin/run_xrst.sh --external_links
+    echo_eval tools/run_xrst.sh --external_links
 fi
 #
 # check_copy.sh
 if [ "$skip_check_copy" == 'no' ]
 then
-    bin/check_copy.sh
+    tools/check_copy.sh
 fi
 #
 # check_list
-check_list=$(ls bin/check_* | $sed \
-    -e '/^bin[/]check_all.sh/d' \
-    -e '/^bin[/]check_copy.sh/d' \
+check_list=$(ls tools/check_* | $sed \
+    -e '/^tools[/]check_all.sh/d' \
+    -e '/^tools[/]check_copy.sh/d' \
 )
 for check in $check_list
 do
