@@ -38,8 +38,8 @@ build:
       - xrst
          --page_source
          --html_theme furo
-         --group_list 
-         --index_page_name ad_tensor
+         --group_list usr
+         --index_page_name public
          --suppress_spell_warnings
       #
       # _readthedocs/html
