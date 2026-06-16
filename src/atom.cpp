@@ -26,8 +26,8 @@
 //
 namespace ad_tensor {
     //
-    // atom_info_t::store
-    size_t atom_info_t::store(const atom_callback_t& atom_callback) {
+    // atom_global_t::store
+    size_t atom_global_t::store(const atom_callback_t& atom_callback) {
         //
         // lock, m_rw_mutex
         size_t count = 0;
@@ -40,7 +40,8 @@ namespace ad_tensor {
             }
         }
         if( ! lock ) {
-            std::cerr << "atom_info::store: tried for 1 second to get a lock\n";
+            std::cerr << "atom_global::store: "
+                " tried for 1 second to get a lock\n";
 #ifndef NDEBUG
             std::exit(1);
 #else
@@ -59,8 +60,8 @@ namespace ad_tensor {
         return m_atom_callback_vec.size() - 1;
     }
     //
-    // atom_info_t::get
-    const atom_callback_t& atom_info_t::get(size_t atom_id) {
+    // atom_global_t::get
+    const atom_callback_t& atom_global_t::get(size_t atom_id) {
         std::shared_lock<std::shared_mutex> lock(m_rw_mutex);
         return m_atom_callback_vec[atom_id];
     }

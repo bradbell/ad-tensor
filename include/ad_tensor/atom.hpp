@@ -9,6 +9,10 @@
 Atomic Functions
 ################
 
+{xrst_toc_table
+    src/adten/call_atom.cpp
+}
+
 {xrst_end atom}
 -------------------------------------------------------------------------------
 {xrst_begin atom_callback usr}
@@ -59,6 +63,25 @@ This callback is required for all atomic functions.
 It computes the range values for the atomic function.
 
 {xrst_end atom_callback}
+-------------------------------------------------------------------------------
+{xrst_begin atom_global usr}
+
+Global Object That holds All Atomic Callbacks
+#############################################
+
+atom_global
+***********
+{xrst_literal ,
+    BEGIN_SINGLETON, END_SINGLETON
+}
+
+atom_id
+*******
+{xrst_literal ,
+    BEGIN_STORE, END_STORE
+}
+
+{xrst_end atom_global}
 */
 #include <torch/torch.h>
 #include <ad_tensor/vector.hpp>
@@ -162,31 +185,35 @@ public:
     const ad_forward_der_t& get_ad_forward_der(void) const;
     const ad_reverse_der_t& get_ad_reverse_der(void) const;
 };
-// atom_info_t
-class atom_info_t {
+// atom_global_t
+class atom_global_t {
 private:
     std::shared_mutex          m_rw_mutex;
     vector<atom_callback_t>    m_atom_callback_vec;
     //
     // default constructor
-    atom_info_t(void)
+    atom_global_t(void)
     { }
 public:
     //
     // automatic copy constructor
-    atom_info_t(const atom_info_t&) = delete;
+    atom_global_t(const atom_global_t&) = delete;
     //
     //  automatic assignment operator
-    void operator=(const atom_info_t&) = delete;
+    void operator=(const atom_global_t&) = delete;
     //
-    // singleton
-    static atom_info_t& singleton(void)
-    {   static atom_info_t m_atom_info;
-        return m_atom_info;
+    // BEGIN_SINGLETON
+    // atom_global = atom_global_t::singleton()
+    static atom_global_t& singleton(void)
+    {   // END_SINGLETON
+        static atom_global_t m_atom_global;
+        return m_atom_global;
     }
     //
-    // store
+    // BEGIN_STORE
+    // atom_id = atom_global.store(atom_callback)
     size_t store(const atom_callback_t& atom_callback);
+    // END_STORE
     //
     // get
     const atom_callback_t& get(size_t atom_id);

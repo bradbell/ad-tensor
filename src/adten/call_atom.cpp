@@ -2,6 +2,41 @@
 // SPDX-FileCopyrightText: Bradley M. Bell <bradbell@seanet.com>
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
+/*
+{xrst_begin call_atom usr}
+
+Calling An Atomic Function
+##########################
+{xrst_spell
+    adomain
+    arange
+}
+
+Prototype
+*********
+{xrst_literal ,
+    // BEGIN_CALL_ATOM, END_CALL_ATOM
+}
+
+atom_id
+*******
+is the atomic function identifier; see :ref:`atom_global@atom_id` .
+
+call_info
+*********
+is the call information passed to the callback functions;
+see :ref:`atom_callback@call_info` .
+
+adomain
+*******
+is the AD tensor version of the domain for this atomic function call.
+
+arange
+******
+is the AD tensor version of the range for this atomic function call.
+
+{xrst_end call_atom}
+*/
 #include<ad_tensor/vector.hpp>
 #include<ad_tensor/adten.hpp>
 #include<ad_tensor/atom.hpp>
@@ -10,14 +45,16 @@
 
 namespace ad_tensor { // BEGIN_AD_TENSOR_NAMESPACE
 
+// BEGIN_CALL_ATOM
 // arange = call_atom(atom_id, call_info, adomain)
 vector<adten_t> adten_t::call_atom(
     size_t atom_id, int64_t call_info, const vector<adten_t>& adomain
-) {
+)
+{   // END_CALL_ATOM
     //
-    // atom
-    atom_info_t&  atom_info = atom_info_t::singleton();
-    const atom_callback_t& atom      = atom_info.get(atom_id);
+    // callback
+    atom_global_t&      atom_global = atom_global_t::singleton();
+    const atom_callback_t& callback = atom_global.get(atom_id);
     //
     // n_domain, domain
     size_t n_domain = adomain.size();
@@ -27,7 +64,7 @@ vector<adten_t> adten_t::call_atom(
     }
     //
     // range, n_range
-    atom_callback_t::forward_t  forward = atom.get_forward();
+    atom_callback_t::forward_t  forward = callback.get_forward();
     vector<at::Tensor>          range   = forward(call_info, domain);
     size_t n_range  = range.size();
     //
@@ -44,7 +81,7 @@ vector<adten_t> adten_t::call_atom(
     }
     //
     // pattern
-    atom_callback_t::depend_t   depend  = atom.get_depend();
+    atom_callback_t::depend_t   depend  = callback.get_depend();
     sparsity_t                  pattern = depend(call_info);
     //
     // arange[i].m_ad_type
