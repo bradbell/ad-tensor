@@ -33,16 +33,16 @@ arg_shape
 *********
 contains the shape of the tensor argument to the sum operation.
 
-shape
-*****
-The return value, shape, is the new shape for the result res
+new_shape
+*********
+The return value, new_shape, is the new shape for the result res
 so the it will properly broadcast to the argument shape.
 
 {xrst_end rev_sum_view}
 */
 namespace ad_tensor { namespace dev { // BEGIN_NAMESPACE_AD_TENSOR_DEV
 // BEGIN_REV_SUM_VIEW
-// shape = rev_sum_view(dim, res_shape, arg_shape)
+// new_shape = rev_sum_view(dim, res_shape, arg_shape)
 vector<int64_t> rev_sum_view(
     const c10::IntArrayRef&    dim       ,
     const c10::IntArrayRef&    res_shape ,
@@ -50,9 +50,9 @@ vector<int64_t> rev_sum_view(
 )
 {   // END_REV_SUM_VIEW
     //
-    // in_dim, shape
+    // in_dim, new_shape
     vector<bool> in_dim;
-    vector<int64_t> shape;
+    vector<int64_t> new_shape;
     //
     // res_len, arg_len
     size_t res_len = res_shape.size();
@@ -67,22 +67,22 @@ vector<int64_t> rev_sum_view(
         in_dim[ dim[i] ] = true;
     }
     //
-    // shape
-    shape.resize(arg_len);
+    // new_shape
+    new_shape.resize(arg_len);
     size_t res_index = res_len;
     for(size_t i = 0; i < arg_len; ++i) {
         size_t arg_index  = arg_len - i - 1;
         if( in_dim[ arg_index ] ) {
-            shape[arg_index] = 1;
+            new_shape[arg_index] = 1;
         } else if( res_index == 0 ) {
-            shape[arg_index] = 1;
+            new_shape[arg_index] = 1;
         } else {
             res_index -= 1;
-            shape[arg_index] = res_shape[res_index];
+            new_shape[arg_index] = res_shape[res_index];
         }
     }
     assert( res_index == 0 );
     //
-    return shape;
+    return new_shape;
 }
 } } // END_NAMESPACE_AD_TENSOR_DEV
