@@ -205,9 +205,6 @@ namespace ad_tensor { namespace dev {
             return;
         }
         //
-        // lock
-        bool lock;
-        //
         // arg_index
         size_t    arg_start = agraph.m_arg_start[op_index];
         //
@@ -247,13 +244,12 @@ namespace ad_tensor { namespace dev {
             c10::IntArrayRef dim(begin, end);
             //
             // res_shape
-            lock = true;
-            c10::IntArrayRef res_shape = rev_sum_view(
-                lock,
+            vector<int64_t> array = rev_sum_view(
                 dim,
                 var_vec[op_index].sizes(),
                 var_vec[operand_index].sizes()
             );
+            c10::IntArrayRef res_shape(array);
             if( rev_der[operand_index].numel() == 0 ) {
                 TensorType zeros   = TensorType( torch::zeros(operand_shape) );
                 rev_der[operand_index] = zeros + \
@@ -261,10 +257,6 @@ namespace ad_tensor { namespace dev {
             } else {
                 rev_der[operand_index] += rev_der[op_index].view(res_shape);
             }
-            //
-            // dim
-            lock = false;
-            rev_sum_view(lock);
         }
     }
     template void sum_op_t<adten_t>::reverse_der(

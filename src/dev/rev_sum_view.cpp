@@ -18,75 +18,45 @@ Determine Reshape for a Sum Result it Broadcast to Argument Sizes
 Prototype
 *********
 {xrst_literal ,
-    include/ad_tensor/dev/rev_sum_view.hpp
     BEGIN_REV_SUM_VIEW, END_REV_SUM_VIEW
 }
-
-lock
-****
-Calls to rev_sum_view must be made in pairs.
-The first (second) call should have lock true (lock false).
 
 dim
 ***
 is the dimension argument to the sum operation.
-This is not used and should not be in call when lock is false.
 
 res_shape
 *********
 contains the shape of the result of the sum operation.
-This is not used and should not be in call when lock is false.
 
 arg_shape
 *********
 contains the shape of the tensor argument to the sum operation.
-This is not used and should not be in call when lock is false.
 
 shape
 *****
 The return value, shape, is the new shape for the result res
 so the it will properly broadcast to the argument shape.
-The return is thread local and not valid for use by other threads.
-In addition, it only valid until the following call to rev_sum_view
-with lock false.
-
 
 {xrst_end rev_sum_view}
 */
 namespace ad_tensor { namespace dev { // BEGIN_NAMESPACE_AD_TENSOR_DEV
-c10::IntArrayRef rev_sum_view(
-    bool                       lock      ,
+// BEGIN_REV_SUM_VIEW
+// shape = rev_sum_view(dim, res_shape, arg_shape)
+vector<int64_t> rev_sum_view(
     const c10::IntArrayRef&    dim       ,
     const c10::IntArrayRef&    res_shape ,
     const c10::IntArrayRef&    arg_shape
-) {
-    //
-    // locked
-    thread_local bool locked = false;
+)
+{   // END_REV_SUM_VIEW
     //
     // in_dim, shape
-    thread_local vector<bool> in_dim;
-    thread_local vector<int64_t> shape;
-    //
-    // locked
-    if( ! lock )
-    {   assert( locked && "reverse_sum_view: "
-            "a call with lock false was not preceded by a call with lock true"
-        );
-        locked = false;
-        return c10::IntArrayRef();
-    }
-    assert( ! locked && "reverse_sum_view: "
-        "attempt to get a lock while another call is holding its lock"
-    );
-    locked = true;
+    vector<bool> in_dim;
+    vector<int64_t> shape;
     //
     // res_len, arg_len
     size_t res_len = res_shape.size();
     size_t arg_len = arg_shape.size();
-    if( res_len == arg_len ) {
-        return arg_shape;
-    }
     assert( res_len < arg_len && "reverse_sum_view: "
         "res shape is longer than arg shape"
     );
@@ -113,6 +83,6 @@ c10::IntArrayRef rev_sum_view(
     }
     assert( res_index == 0 );
     //
-    return c10::IntArrayRef (shape);
+    return shape;
 }
 } } // END_NAMESPACE_AD_TENSOR_DEV
