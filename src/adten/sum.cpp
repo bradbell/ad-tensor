@@ -68,14 +68,19 @@ the following is added to the parameter (variable) acyclic graph:
     arg_index, arg_value, arg_type
     start + 0, index for operand, type for operand
     start + 1, number of dimensions being summed (n_dim), ad_type_t::none
-    start + 2, index of first dimension being summed, ad_type::none
-    ...
-    start + 1 + n_dim, index of last dimension being summed, ad_type::none
+    start + 2, index of first m_int64 entry (start_int64), ad_type_t::none
 
-If n_dim is zero, all the dimensions are summed.
+.. csv-table::
+    m_int64 index, meaning
+    start_int64 + 0, index of first dimension being summed
+    ...
+    start_int64 + n_dim - 1, index of last dimension being summed
 
 where start is the length of arg_value and arg_type before this call to
 ``adten_t::binary`` .
+If n_dim is zero, all the dimensions are summed and start_int64
+does not appear.
+
 
 {xrst_end adten_sum_dev}
 */
@@ -139,9 +144,12 @@ adten_t adten_t::sum(const c10::IntArrayRef&    dim) const
         agraph->m_arg_value.push_back( n_dim );
         agraph->m_arg_type.push_back( ad_type_t::none );
         //
+        size_t start_int64 = agraph->m_int64.size();
+        agraph->m_arg_value.push_back( start_int64 );
+        agraph->m_arg_type.push_back( ad_type_t::none );
+        //
         for(size_t i = 0; i < n_dim; ++i) {
-            agraph->m_arg_value.push_back( size_t( dim[i] ) );
-            agraph->m_arg_type.push_back( ad_type_t::none );
+            agraph->m_int64.push_back( dim[i] );
         }
     }
     return adten_t(res_tape_id, res_index, res_tensor, res_ad_type);

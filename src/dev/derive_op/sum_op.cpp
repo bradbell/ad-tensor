@@ -33,7 +33,7 @@ namespace ad_tensor { namespace dev {
         //
         // n_arg
         size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
-        assert( n_arg == 2 + n_dim );
+        assert( n_arg == 3 && "sum_op: n_arg != 3" );
 #endif
         // operand_index
         size_t operand_index  = agraph.m_arg_value[arg_start];
@@ -44,7 +44,8 @@ namespace ad_tensor { namespace dev {
         } else {
             //
             // dim
-            const int64_t* begin = agraph.m_arg_value.data() + arg_start + 2;
+            size_t start_int64 = agraph.m_arg_value[arg_start + 2];
+            const int64_t* begin = agraph.m_int64.data() + start_int64;
             const int64_t* end   = begin + n_dim;
             c10::IntArrayRef dim(begin, end);
             //
@@ -90,7 +91,7 @@ namespace ad_tensor { namespace dev {
         //
         // n_arg
         size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
-        assert( n_arg == 2 + n_dim );
+        assert( n_arg == 3 && "sum_op: n_arg != 3" );
 #endif
         // operand_index
         size_t operand_index  = agraph.m_arg_value[arg_start];
@@ -101,10 +102,10 @@ namespace ad_tensor { namespace dev {
         } else {
             //
             // dim
-            const int64_t* begin = agraph.m_arg_value.data() + arg_start + 2;
+            size_t start_int64 = agraph.m_arg_value[arg_start + 2];
+            const int64_t* begin = agraph.m_int64.data() + start_int64;
             const int64_t* end   = begin + n_dim;
             c10::IntArrayRef dim(begin, end);
-            assert( dim.size() == n_dim );
             //
             // var_vec
             var_vec[op_index] = var_vec[operand_index].sum(dim);
@@ -151,7 +152,7 @@ namespace ad_tensor { namespace dev {
         //
         // n_arg
         size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
-        assert( n_arg == 2 + n_dim );
+        assert( n_arg == 3 && "sum_op: n_arg != 3" );
 #endif
         // operand_index
         size_t operand_index  = agraph.m_arg_value[arg_start];
@@ -162,10 +163,10 @@ namespace ad_tensor { namespace dev {
         } else {
             //
             // dim
-            const int64_t* begin = agraph.m_arg_value.data() + arg_start + 2;
+            size_t start_int64 = agraph.m_arg_value[arg_start + 2];
+            const int64_t* begin = agraph.m_int64.data() + start_int64;
             const int64_t* end   = begin + n_dim;
             c10::IntArrayRef dim(begin, end);
-            assert( dim.size() == n_dim );
             //
             // for_der
             for_der[op_index] = for_der[operand_index].sum(dim);
@@ -222,7 +223,7 @@ namespace ad_tensor { namespace dev {
         //
         // n_arg
         size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
-        assert( n_arg == 2 + n_dim );
+        assert( n_arg == 3 && "sum_op: n_arg != 3" );
 #endif
         // operand_index, operand_shape
         size_t           operand_index  = agraph.m_arg_value[arg_start];
@@ -240,10 +241,10 @@ namespace ad_tensor { namespace dev {
             assert( n_dim != 0 );
             //
             // dim
-            const int64_t* begin = agraph.m_arg_value.data() + arg_start + 2;
+            size_t start_int64 = agraph.m_arg_value[arg_start + 2];
+            const int64_t* begin = agraph.m_int64.data() + start_int64;
             const int64_t* end   = begin + n_dim;
             c10::IntArrayRef dim(begin, end);
-            assert( dim.size() == n_dim );
             //
             // res_shape
             lock = true;
