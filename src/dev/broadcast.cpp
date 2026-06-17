@@ -18,7 +18,6 @@ Determine Broadcast Dimensions for a Result Argument Pair
 Prototype
 *********
 {xrst_literal ,
-    include/ad_tensor/dev/broadcast.hpp
     BEGIN_BROADCAST, END_BROADCAST
 }
 
@@ -41,12 +40,14 @@ to the binary operation.
 
 {xrst_end broadcast}
 */
+// BEGIN_BROADCAST
 namespace ad_tensor { namespace dev {
     // dim = broadcast(res, arg)
     vector<int64_t>  broadcast(
         const c10::IntArrayRef&    res_shape ,
         const c10::IntArrayRef&    arg_shape
-    ) {
+    )
+    {   // END_BROADCAST
         //
         // dim
         vector<int64_t> dim;

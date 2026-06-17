@@ -6,12 +6,9 @@
 #include <torch/torch.h>
 #include <ad_tensor/vector.hpp>
 //
-// BEGIN_BROADCAST
 namespace ad_tensor { namespace dev {
-    // dim = broadcast(res, arg)
     vector<int64_t>  broadcast(
         const c10::IntArrayRef&    res_shape  = c10::IntArrayRef() ,
         const c10::IntArrayRef&    arg_shape  = c10::IntArrayRef()
     );
 } }
-// END_BROADCAST
