@@ -167,9 +167,6 @@ namespace ad_tensor { namespace dev {
         vector<TensorType>&          rev_der
     ) const {
         //
-        // lock
-        bool lock;
-        //
         // arg_index
         size_t arg_start = agraph.m_arg_start[op_index];
         //
@@ -189,17 +186,14 @@ namespace ad_tensor { namespace dev {
             size_t lhs_index = agraph.m_arg_value[arg_start];
             //
             // dim
-            lock = true;
-            c10::IntArrayRef dim = broadcast(
-                lock, var_vec[op_index].sizes(), var_vec[lhs_index].sizes()
+            vector<int64_t> array = broadcast(
+                var_vec[op_index].sizes(), var_vec[lhs_index].sizes()
             );
+            c10::IntArrayRef dim(array);
             //
             // rev_der[lhs_index] += rev_der[op_index]
             plus_equal(rev_der[lhs_index], rev_der[op_index], dim);
             //
-            // dim
-            lock = false;
-            broadcast(lock);
         }
         //
         // rev_der[rhs_index]
@@ -209,17 +203,14 @@ namespace ad_tensor { namespace dev {
             size_t rhs_index = agraph.m_arg_value[arg_start + 1];
             //
             // dim
-            lock = true;
-            c10::IntArrayRef dim = broadcast(
-                lock, var_vec[op_index].sizes(), var_vec[rhs_index].sizes()
+            vector<int64_t> array = broadcast(
+                var_vec[op_index].sizes(), var_vec[rhs_index].sizes()
             );
+            c10::IntArrayRef dim(array);
             //
             // rev_der[rhs_index] += rev_der[op_index]
             minus_equal(rev_der[rhs_index], rev_der[op_index], dim);
             //
-            // dim
-            lock = false;
-            broadcast(lock);
         }
     }
     template void sub_op_t<adten_t>::reverse_der(

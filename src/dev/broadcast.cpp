@@ -22,86 +22,44 @@ Prototype
     BEGIN_BROADCAST, END_BROADCAST
 }
 
-lock
-****
-Calls to broadcast must be made in pairs.
-The first (second) call should have lock true (lock false).
-
 res_shape
 *********
 contains the shape of the result of the binary operations.
 This is not used and should not be in call when lock is false.
 
-arg
-***
+arg_shape
+*********
 contains the shape of the left or right argument for the binary operation.
-This is not used and should not be in call when lock is false.
-
-dim
-***
-The return dim is the dimension indices, in the shape of res,
-where arg was broadcast to match the shape of the other argument
-to the binary operation.
-The return is thread local and not valid for use by other threads.
-In addition, it only valid until the following call to broadcast
-with lock false.
-
-arg
-===
 It helps think of arg as viewed, with ones in the initial dimensions,
 so that its shape as the same length as res.
 
+dim
+***
+The return dim is the dimension indices, in the res_shape,
+where arg_shape was broadcast to match the shape of the other argument
+to the binary operation.
 
 {xrst_end broadcast}
 */
 namespace ad_tensor { namespace dev {
     // dim = broadcast(res, arg)
-    c10::IntArrayRef broadcast(
-        bool                       lock      ,
+    vector<int64_t>  broadcast(
         const c10::IntArrayRef&    res_shape ,
         const c10::IntArrayRef&    arg_shape
     ) {
         //
-        // locked
-        thread_local bool locked = false;
-        //
         // dim
-        thread_local vector<int64_t> dim;
-        //
-        // locked
-        if( ! lock )
-        {   assert( locked && "broadcast: a call with lock false "
-                "was not preceded by a call with lock true"
-            );
-            locked = false;
-            return c10::IntArrayRef();
-        }
-        assert( ! locked && "broadcast: "
-            "attempt to get a lock while another call is holding its lock"
-        );
-        locked = true;
-        //
-        //
-        // dim
-#ifdef NDEBUG
-        dim.resize(0)
-#else
-        size_t cap = dim.capacity();
-        dim.resize(0);
-        assert( dim.capacity() == cap && "broadcast: "
-            "std::vector::resize to zero changed capacity"
-        );
-# endif
+        vector<int64_t> dim;
         //
         // check for case where tensor shapes are equal
         if( res_shape.equals( arg_shape) ) {
-            return c10::IntArrayRef ();
+            return dim;
         }
         //
         // dim
         size_t res_len = res_shape.size();
         size_t arg_len = arg_shape.size();
-        assert( arg_len <= res_len && "binary_broadcast: "
+        assert( arg_len <= res_len && "broadcast: "
             "arg shape is longer than res shape"
         );
         for(size_t i = 0; i < res_len; ++i)
@@ -109,7 +67,7 @@ namespace ad_tensor { namespace dev {
             if( i < arg_len )
             {   size_t arg_index = arg_len - i - 1;
                 if( arg_shape[arg_index] != res_shape[res_index] )
-                {   assert( arg_shape[arg_index] == 1 && "binary_broadcast: "
+                {   assert( arg_shape[arg_index] == 1 && "broadcast: "
                         "an arg size is different from its res size and not 1"
                     );
                     dim.push_back( static_cast<int64_t>(res_index) );
@@ -118,6 +76,6 @@ namespace ad_tensor { namespace dev {
                 dim.push_back(res_index);
             }
         }
-        return c10::IntArrayRef (dim);
+        return dim;
     }
 }  }

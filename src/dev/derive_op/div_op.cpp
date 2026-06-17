@@ -170,9 +170,6 @@ namespace ad_tensor { namespace dev {
         vector<TensorType>&          rev_der
     ) const {
         //
-        // lock
-        bool lock;
-        //
         // arg_index
         size_t arg_start = agraph.m_arg_start[op_index];
         //
@@ -201,17 +198,14 @@ namespace ad_tensor { namespace dev {
         if( lhs_type == ad_type_t::variable ) {
             //
             // dim
-            lock = true;
-            c10::IntArrayRef dim = broadcast(
-                lock, var_vec[op_index].sizes(), var_vec[lhs_index].sizes()
+            vector<int64_t> array = broadcast(
+                var_vec[op_index].sizes(), var_vec[lhs_index].sizes()
             );
+            c10::IntArrayRef dim(array);
             //
             // rev_der[lhs_index] += quotient
             plus_equal(rev_der[lhs_index], quotient, dim);
             //
-            // dim
-            lock = false;
-            broadcast(lock);
         }
         //
         // rev_der[rhs_index]
@@ -221,17 +215,14 @@ namespace ad_tensor { namespace dev {
             TensorType prod = quotient * var_vec[op_index];
             //
             // dim
-            lock = true;
-            c10::IntArrayRef dim = broadcast(
-                lock, var_vec[op_index].sizes(), var_vec[rhs_index].sizes()
+            vector<int64_t> array = broadcast(
+                var_vec[op_index].sizes(), var_vec[rhs_index].sizes()
             );
+            c10::IntArrayRef dim(array);
             //
             // rev_der[rhs_index] -= prod
             minus_equal(rev_der[rhs_index], prod, dim);
             //
-            // dim
-            lock = false;
-            broadcast(lock);
         }
     }
     template void div_op_t<adten_t>::reverse_der(
