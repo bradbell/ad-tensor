@@ -22,6 +22,8 @@ add_library(ad_tensor SHARED
     atom.cpp
     dev/broadcast.cpp
     dev/derive_op/add_op.cpp
+    dev/derive_op/call_op.cpp
+    dev/derive_op/call_result_op.cpp
     dev/derive_op/div_op.cpp
     dev/derive_op/dom_op.cpp
     dev/derive_op/matmul_op.cpp

@@ -47,12 +47,25 @@ is the value of the domain variables for this atomic function call.
 
 set
 ***
+
+name
+====
+After the atom_callback_t constructor,
+the name for the atomic function is empty.
+You must set this with a call of the form
+{xrst_literal ,
+    BEGIN_SET_NAME, END_SET_NAME
+}
+
+Functions
+=========
 After the atom_callback_t constructor, all the callback functions are null.
 Each of the callback functions can be set by a call of the form
 {xrst_code cpp}
-    atom_callback.set_name(const name_t& name)
+    atom_callback.set_function(const function_t& function)
 {xrst_code}
-where name is the callback name; e.g., depend.
+where function is the callback function; e.g., depend.
+
 
 depend
 ******
@@ -175,9 +188,11 @@ public:
     , m_ad_reverse_der(nullptr)
     // END_CTOR
     { }
+    // BEGIN_SET_NAME
+    void set_name(const std::string& name);
+    // END_SET_NAME
     //
-    // Setters
-    void set_name(const std::string&                   name);
+    // Function Setters
     void set_depend(const depend_t&                    depend);
     void set_forward(const forward_t&                  forward);
     void set_forward_der(const forward_der_t&          forward_der);

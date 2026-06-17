@@ -11,6 +11,8 @@ namespace ad_tensor { namespace dev {
     const base_op_t<TensorType>& op_enum2derive_op(op_enum_t op_enum) {
         // BEGIN_SORT_THIS_LINE_PLUS_1
         static const add_op_t<TensorType>         add_op;
+        static const call_op_t<TensorType>        call_op;
+        static const call_result_op_t<TensorType> call_result_op;
         static const div_op_t<TensorType>         div_op;
         static const dom_op_t<TensorType>         dom_op;
         static const matmul_op_t<TensorType>      matmul_op;
@@ -26,6 +28,8 @@ namespace ad_tensor { namespace dev {
         switch(op_enum) {
             // BEGIN_SORT_THIS_LINE_PLUS_1
             case op_enum_t::add:         return add_op;
+            case op_enum_t::call:        return call_op;
+            case op_enum_t::call_result: return call_result_op;
             case op_enum_t::div:         return div_op;
             case op_enum_t::dom:         return dom_op;
             case op_enum_t::matmul:      return matmul_op;
