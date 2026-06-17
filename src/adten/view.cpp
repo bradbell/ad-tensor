@@ -61,19 +61,22 @@ the following is added to the parameter (variable) acyclic graph:
     arg_index, arg_value, arg_type
     start + 0, index for operand,                           type of the operand
     start + 1, dim number of dimensions in the new shape,    ad_type::none
-    start + 2, size of the first dimension in new shape,     ad_type::none
-    ...
-    start + 1 + n_dim, size of last dimension in new shape,  ad_type::none
+    start + 2, index of first m_int64 entry (start_int64), ad_type_t::none
 
+.. csv-table::
+    m_int64 index, meaning
+    start_int64 + 0, size of first dimension in new shape
+    ...
+    start_int64 + n_dim - 1, size of last dimension in new shape
 
 where start is the length of arg_value and arg_type before this call to
-``adten_t::binary`` and n_dim is the number of dimensions in the new shape
+``adten_t::view`` and n_dim is the number of dimensions in the new shape
 
 {xrst_end adten_view_dev}
 */
 // BEGIN_VIEW BEGIN_DEV_VIEW
 // aview = adten.view(shape)
-adten_t adten_t::view(const c10::IntArrayRef&    shape) const
+adten_t adten_t::view(const c10::IntArrayRef& shape) const
 // END_VIEW END_DEV_VIEW
 {
     //
@@ -126,9 +129,12 @@ adten_t adten_t::view(const c10::IntArrayRef&    shape) const
         agraph->m_arg_value.push_back( n_dim );
         agraph->m_arg_type.push_back( ad_type_t::none );
         //
+        size_t start_int64 = agraph->m_int64.size();
+        agraph->m_arg_value.push_back( start_int64 );
+        agraph->m_arg_type.push_back( ad_type_t::none );
+        //
         for(size_t i = 0; i < n_dim; ++i) {
-            agraph->m_arg_value.push_back( size_t( shape[i] ) );
-            agraph->m_arg_type.push_back( ad_type_t::none );
+            agraph->m_int64.push_back( shape[i] );
         }
     }
     return adten_t(res_tape_id, res_index, res_tensor, res_ad_type);
