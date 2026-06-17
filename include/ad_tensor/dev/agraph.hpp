@@ -7,6 +7,8 @@
 {xrst_begin agraph dev}
 {xrst_spell
     seq
+    int
+    bool
 }
 
 Acyclic Graph Representation of an Operation Sequence

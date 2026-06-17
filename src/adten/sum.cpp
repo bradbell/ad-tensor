@@ -42,6 +42,9 @@ is the result of the summation.
 {xrst_end adten_sum}
 -------------------------------------------------------------------------------
 {xrst_begin adten_sum_dev dev}
+{xrst_spell
+    int
+}
 
 Compute and Record Sum Function
 ###############################
@@ -71,14 +74,16 @@ the following is added to the parameter (variable) acyclic graph:
     start + 2, index of first m_int64 entry (start_int64), ad_type_t::none
 
 .. csv-table::
+    :header-rows: 1
+
     m_int64 index, meaning
     start_int64 + 0, index of first dimension being summed
-    ...
+    ..., ...
     start_int64 + n_dim - 1, index of last dimension being summed
 
 where start is the length of arg_value and arg_type before this call to
 ``adten_t::binary`` .
-If n_dim is zero, all the dimensions are summed. 
+If n_dim is zero, all the dimensions are summed.
 
 
 {xrst_end adten_sum_dev}

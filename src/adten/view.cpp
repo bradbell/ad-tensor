@@ -40,6 +40,9 @@ is the AD tensor corresponding the new view.
 {xrst_end adten_view}
 -------------------------------------------------------------------------------
 {xrst_begin adten_view_dev dev}
+{xrst_spell
+    int
+}
 
 Create a View of an AD Tensor Developer Documentation
 #####################################################
@@ -64,9 +67,11 @@ the following is added to the parameter (variable) acyclic graph:
     start + 2, index of first m_int64 entry (start_int64), ad_type_t::none
 
 .. csv-table::
+    :header-rows: 1
+
     m_int64 index, meaning
     start_int64 + 0, size of first dimension in new shape
-    ...
+    ..., ...
     start_int64 + n_dim - 1, size of last dimension in new shape
 
 where start is the length of arg_value and arg_type before this call to
