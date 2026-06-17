@@ -36,6 +36,63 @@ arange
 is the AD tensor version of the range for this atomic function call.
 
 {xrst_end call_atom}
+------------------------------------------------------------------------------
+{xrst_begin call_atom_dev dev}
+{xrst_spell
+    enum
+    op
+    seq
+}
+
+call_atom Developer Documentation
+#################################
+
+User Documentation
+******************
+:ref:`call_atom-name` .
+
+Recording
+*********
+If this thread's tape is recording:
+
+#.  All the constant results are added to the tape.
+
+#.  If there are parameter results, a callback that computes them
+    is added to the tape.
+
+#.  If there are variable results, a callback that computes them
+    is added to the tape.
+
+Operation
+*********
+A callback has the following form in the parameter and variable
+acyclic graph:
+
+.. csv-table::
+    :header-rows: 1
+
+    arg_index, arg_value, arg_type
+    start + 0, atom_id, ad_type_t::none
+    start + 1, call_info, ad_type_t::none
+    start + 2, size of domain vector (n_domain), ad_type_t::none
+    start + 3, size of range vector (n_range), ad_type_t::none
+    start + 4, number of this graphs's type results (n_result), ad_type_t::none
+    start + 5, index in range for first result, ad_type::none
+    ..., ..., ...
+    start + n_result, index in range for last result, ad_type::none
+    start + n_result + 1, index of first domain argument, argument type
+    ..., ..., ...
+    start + n_result + n_domain, index of last domain argument, argument type
+
+op_seq
+******
+A callback has n_result operations in the tape so that operator
+indices are the same as result indices.
+The first operation is an ``op_enum_t::call`` and the next
+n_result - 1 operations are ``op_enum_t::call_result``.
+Only the first operation has entries in arg_value and arg_type.
+
+{xrst_end call_atom_dev}
 */
 #include<ad_tensor/vector.hpp>
 #include<ad_tensor/adten.hpp>

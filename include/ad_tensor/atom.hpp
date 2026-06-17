@@ -15,6 +15,17 @@ Atomic Functions
 
 {xrst_end atom}
 -------------------------------------------------------------------------------
+{xrst_begin atom_dev dev}
+
+Atomic Functions Developer Documentation
+########################################
+
+{xrst_toc_table
+    src/adten/call_atom.cpp
+}
+
+{xrst_end atom_dev}
+-------------------------------------------------------------------------------
 {xrst_begin atom_callback usr}
 
 The Atomic Callback Class atom_callback_t
