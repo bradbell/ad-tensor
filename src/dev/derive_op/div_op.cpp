@@ -20,19 +20,19 @@ namespace ad_tensor { namespace dev {
     ) const {
         //
         // arg_index
-        size_t arg_index = agraph.m_arg_start[op_index];
+        size_t arg_start = agraph.m_arg_start[op_index];
         //
 #ifndef NDEBUG
-        size_t n_arg = agraph.m_arg_start[op_index+1] - arg_index;
+        size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
         assert( n_arg == 2 && "div: n_arg != 2" );
 # endif
         //
         // lhs_tensor, rhs_tensor
         TensorType lhs_tensor  = tensor_at_arg_index(
-            arg_index, agraph, con_vec, par_vec
+            arg_start, agraph, con_vec, par_vec
         );
         TensorType rhs_tensor  = tensor_at_arg_index(
-            arg_index + 1, agraph, con_vec, par_vec
+            arg_start + 1, agraph, con_vec, par_vec
         );
         //
         // par_vec
@@ -62,19 +62,19 @@ namespace ad_tensor { namespace dev {
     ) const {
         //
         // arg_index
-        size_t arg_index = agraph.m_arg_start[op_index];
+        size_t arg_start = agraph.m_arg_start[op_index];
         //
 #ifndef NDEBUG
-        size_t n_arg = agraph.m_arg_start[op_index+1] - arg_index;
+        size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
         assert( n_arg == 2 && "div: n_arg != 2" );
 # endif
         //
         // lhs_tensor, rhs_tensor
         TensorType lhs_tensor  = tensor_at_arg_index(
-            arg_index, agraph, con_vec, par_vec, var_vec
+            arg_start, agraph, con_vec, par_vec, var_vec
         );
         TensorType rhs_tensor  = tensor_at_arg_index(
-            arg_index + 1, agraph, con_vec, par_vec, var_vec
+            arg_start + 1, agraph, con_vec, par_vec, var_vec
         );
         //
         // var_vec
@@ -107,20 +107,20 @@ namespace ad_tensor { namespace dev {
     ) const {
         //
         // arg_index
-        size_t arg_index = agraph.m_arg_start[op_index];
+        size_t arg_start = agraph.m_arg_start[op_index];
         //
 #ifndef NDEBUG
-        size_t n_arg = agraph.m_arg_start[op_index+1] - arg_index;
+        size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
         assert( n_arg == 2 && "div: n_arg != 2" );
 # endif
         //
         // lhs_type, rhs_type
-        ad_type_t lhs_type = agraph.m_arg_type[arg_index];
-        ad_type_t rhs_type = agraph.m_arg_type[arg_index + 1];
+        ad_type_t lhs_type = agraph.m_arg_type[arg_start];
+        ad_type_t rhs_type = agraph.m_arg_type[arg_start + 1];
         //
         // lhs_index, rhs_index
-        size_t lhs_index = agraph.m_arg_value[arg_index];
-        size_t rhs_index = agraph.m_arg_value[arg_index + 1];
+        size_t lhs_index = agraph.m_arg_value[arg_start];
+        size_t rhs_index = agraph.m_arg_value[arg_start + 1];
         //
         if( lhs_type != ad_type_t::variable ) {
             assert( rhs_type == ad_type_t::variable );
@@ -174,24 +174,24 @@ namespace ad_tensor { namespace dev {
         bool lock;
         //
         // arg_index
-        size_t arg_index = agraph.m_arg_start[op_index];
+        size_t arg_start = agraph.m_arg_start[op_index];
         //
 #ifndef NDEBUG
-        size_t n_arg = agraph.m_arg_start[op_index+1] - arg_index;
+        size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
         assert( n_arg == 2 && "div: n_arg != 2" );
 # endif
         //
         // lhs_type, rhs_type
-        ad_type_t lhs_type = agraph.m_arg_type[arg_index];
-        ad_type_t rhs_type = agraph.m_arg_type[arg_index + 1];
+        ad_type_t lhs_type = agraph.m_arg_type[arg_start];
+        ad_type_t rhs_type = agraph.m_arg_type[arg_start + 1];
         //
         // lhs_index, rhs_index
-        size_t lhs_index = agraph.m_arg_value[arg_index];
-        size_t rhs_index = agraph.m_arg_value[arg_index + 1];
+        size_t lhs_index = agraph.m_arg_value[arg_start];
+        size_t rhs_index = agraph.m_arg_value[arg_start + 1];
         //
         // rhs_tensor
         TensorType rhs_tensor = tensor_at_arg_index(
-            arg_index + 1, agraph, con_vec, par_vec, var_vec
+            arg_start + 1, agraph, con_vec, par_vec, var_vec
         );
         //
         // quotient

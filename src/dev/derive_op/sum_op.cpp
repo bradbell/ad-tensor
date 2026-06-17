@@ -19,24 +19,24 @@ namespace ad_tensor { namespace dev {
     ) const {
         //
         // arg_index
-        size_t    arg_index = agraph.m_arg_start[op_index];
+        size_t    arg_start = agraph.m_arg_start[op_index];
         //
         // n_dim
-        size_t n_dim = agraph.m_arg_value[arg_index + 1];
-        assert( ad_type_t::none ==  agraph.m_arg_type[arg_index + 1] );
+        size_t n_dim = agraph.m_arg_value[arg_start + 1];
+        assert( ad_type_t::none ==  agraph.m_arg_type[arg_start + 1] );
         //
 #ifndef NDEBUG
         //
         // ad_type
-        ad_type_t ad_type   = agraph.m_arg_type[arg_index];
+        ad_type_t ad_type   = agraph.m_arg_type[arg_start];
         assert( ad_type  == ad_type_t::parameter );
         //
         // n_arg
-        size_t n_arg = agraph.m_arg_start[op_index+1] - arg_index;
+        size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
         assert( n_arg == 2 + n_dim );
 #endif
         // operand_index
-        size_t operand_index  = agraph.m_arg_value[arg_index];
+        size_t operand_index  = agraph.m_arg_value[arg_start];
         //
         if( n_dim == 0 ) {
             // par_vec
@@ -44,7 +44,7 @@ namespace ad_tensor { namespace dev {
         } else {
             //
             // dim
-            const int64_t* begin = agraph.m_arg_value.data() + arg_index + 2;
+            const int64_t* begin = agraph.m_arg_value.data() + arg_start + 2;
             const int64_t* end   = begin + n_dim;
             c10::IntArrayRef dim(begin, end);
             //
@@ -76,24 +76,24 @@ namespace ad_tensor { namespace dev {
     ) const {
         //
         // arg_index
-        size_t    arg_index = agraph.m_arg_start[op_index];
+        size_t    arg_start = agraph.m_arg_start[op_index];
         //
         // n_dim
-        size_t n_dim = agraph.m_arg_value[arg_index + 1];
-        assert( ad_type_t::none ==  agraph.m_arg_type[arg_index + 1] );
+        size_t n_dim = agraph.m_arg_value[arg_start + 1];
+        assert( ad_type_t::none ==  agraph.m_arg_type[arg_start + 1] );
         //
 #ifndef NDEBUG
         //
         // ad_type
-        ad_type_t ad_type   = agraph.m_arg_type[arg_index];
+        ad_type_t ad_type   = agraph.m_arg_type[arg_start];
         assert( ad_type  == ad_type_t::variable );
         //
         // n_arg
-        size_t n_arg = agraph.m_arg_start[op_index+1] - arg_index;
+        size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
         assert( n_arg == 2 + n_dim );
 #endif
         // operand_index
-        size_t operand_index  = agraph.m_arg_value[arg_index];
+        size_t operand_index  = agraph.m_arg_value[arg_start];
         //
         if( n_dim == 0 ) {
             // var_vec
@@ -101,7 +101,7 @@ namespace ad_tensor { namespace dev {
         } else {
             //
             // dim
-            const int64_t* begin = agraph.m_arg_value.data() + arg_index + 2;
+            const int64_t* begin = agraph.m_arg_value.data() + arg_start + 2;
             const int64_t* end   = begin + n_dim;
             c10::IntArrayRef dim(begin, end);
             assert( dim.size() == n_dim );
@@ -137,24 +137,24 @@ namespace ad_tensor { namespace dev {
     ) const {
         //
         // arg_index
-        size_t    arg_index = agraph.m_arg_start[op_index];
+        size_t    arg_start = agraph.m_arg_start[op_index];
         //
         // n_dim
-        size_t n_dim = agraph.m_arg_value[arg_index + 1];
-        assert( ad_type_t::none ==  agraph.m_arg_type[arg_index + 1] );
+        size_t n_dim = agraph.m_arg_value[arg_start + 1];
+        assert( ad_type_t::none ==  agraph.m_arg_type[arg_start + 1] );
         //
 #ifndef NDEBUG
         //
         // ad_type
-        ad_type_t ad_type   = agraph.m_arg_type[arg_index];
+        ad_type_t ad_type   = agraph.m_arg_type[arg_start];
         assert( ad_type  == ad_type_t::variable );
         //
         // n_arg
-        size_t n_arg = agraph.m_arg_start[op_index+1] - arg_index;
+        size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
         assert( n_arg == 2 + n_dim );
 #endif
         // operand_index
-        size_t operand_index  = agraph.m_arg_value[arg_index];
+        size_t operand_index  = agraph.m_arg_value[arg_start];
         //
         if( n_dim == 0 ) {
             // for_der
@@ -162,7 +162,7 @@ namespace ad_tensor { namespace dev {
         } else {
             //
             // dim
-            const int64_t* begin = agraph.m_arg_value.data() + arg_index + 2;
+            const int64_t* begin = agraph.m_arg_value.data() + arg_start + 2;
             const int64_t* end   = begin + n_dim;
             c10::IntArrayRef dim(begin, end);
             assert( dim.size() == n_dim );
@@ -208,24 +208,24 @@ namespace ad_tensor { namespace dev {
         bool lock;
         //
         // arg_index
-        size_t    arg_index = agraph.m_arg_start[op_index];
+        size_t    arg_start = agraph.m_arg_start[op_index];
         //
         // n_dim
-        size_t n_dim = agraph.m_arg_value[arg_index + 1];
-        assert( ad_type_t::none ==  agraph.m_arg_type[arg_index + 1] );
+        size_t n_dim = agraph.m_arg_value[arg_start + 1];
+        assert( ad_type_t::none ==  agraph.m_arg_type[arg_start + 1] );
         //
 #ifndef NDEBUG
         //
         // ad_type
-        ad_type_t ad_type   = agraph.m_arg_type[arg_index];
+        ad_type_t ad_type   = agraph.m_arg_type[arg_start];
         assert( ad_type  == ad_type_t::variable );
         //
         // n_arg
-        size_t n_arg = agraph.m_arg_start[op_index+1] - arg_index;
+        size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
         assert( n_arg == 2 + n_dim );
 #endif
         // operand_index, operand_shape
-        size_t           operand_index  = agraph.m_arg_value[arg_index];
+        size_t           operand_index  = agraph.m_arg_value[arg_start];
         c10::IntArrayRef operand_shape  = var_vec[operand_index].sizes();
         //
         // rev_der[operand_index]
@@ -240,7 +240,7 @@ namespace ad_tensor { namespace dev {
             assert( n_dim != 0 );
             //
             // dim
-            const int64_t* begin = agraph.m_arg_value.data() + arg_index + 2;
+            const int64_t* begin = agraph.m_arg_value.data() + arg_start + 2;
             const int64_t* end   = begin + n_dim;
             c10::IntArrayRef dim(begin, end);
             assert( dim.size() == n_dim );

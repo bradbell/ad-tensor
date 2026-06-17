@@ -18,28 +18,28 @@ namespace ad_tensor { namespace dev {
     ) const {
         //
         // arg_index
-        size_t    arg_index = agraph.m_arg_start[op_index];
+        size_t    arg_start = agraph.m_arg_start[op_index];
         //
         // dim1
-        int64_t dim1 = int64_t( agraph.m_arg_value[arg_index + 1] );
-        assert( ad_type_t::none ==  agraph.m_arg_type[arg_index + 1] );
+        int64_t dim1 = int64_t( agraph.m_arg_value[arg_start + 1] );
+        assert( ad_type_t::none ==  agraph.m_arg_type[arg_start + 1] );
         //
         // dim2
-        int64_t dim2 = int64_t( agraph.m_arg_value[arg_index + 2] );
-        assert( ad_type_t::none ==  agraph.m_arg_type[arg_index + 2] );
+        int64_t dim2 = int64_t( agraph.m_arg_value[arg_start + 2] );
+        assert( ad_type_t::none ==  agraph.m_arg_type[arg_start + 2] );
         //
 #ifndef NDEBUG
         //
         // ad_type
-        ad_type_t ad_type   = agraph.m_arg_type[arg_index];
+        ad_type_t ad_type   = agraph.m_arg_type[arg_start];
         assert( ad_type  == ad_type_t::parameter );
         //
         // n_arg
-        size_t n_arg = agraph.m_arg_start[op_index+1] - arg_index;
+        size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
         assert( n_arg == 3 );
 #endif
         // operand_index
-        size_t operand_index  = agraph.m_arg_value[arg_index];
+        size_t operand_index  = agraph.m_arg_value[arg_start];
         //
         // par_vec
         par_vec[op_index] = par_vec[operand_index].transpose(dim1, dim2);
@@ -68,28 +68,28 @@ namespace ad_tensor { namespace dev {
     ) const {
         //
         // arg_index
-        size_t    arg_index = agraph.m_arg_start[op_index];
+        size_t    arg_start = agraph.m_arg_start[op_index];
         //
         // dim1
-        int64_t dim1 = int64_t( agraph.m_arg_value[arg_index + 1] );
-        assert( ad_type_t::none ==  agraph.m_arg_type[arg_index + 1] );
+        int64_t dim1 = int64_t( agraph.m_arg_value[arg_start + 1] );
+        assert( ad_type_t::none ==  agraph.m_arg_type[arg_start + 1] );
         //
         // dim2
-        int64_t dim2 = int64_t( agraph.m_arg_value[arg_index + 2] );
-        assert( ad_type_t::none ==  agraph.m_arg_type[arg_index + 2] );
+        int64_t dim2 = int64_t( agraph.m_arg_value[arg_start + 2] );
+        assert( ad_type_t::none ==  agraph.m_arg_type[arg_start + 2] );
         //
 #ifndef NDEBUG
         //
         // ad_type
-        ad_type_t ad_type   = agraph.m_arg_type[arg_index];
+        ad_type_t ad_type   = agraph.m_arg_type[arg_start];
         assert( ad_type  == ad_type_t::variable );
         //
         // n_arg
-        size_t n_arg = agraph.m_arg_start[op_index+1] - arg_index;
+        size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
         assert( n_arg == 3 );
 #endif
         // operand_index
-        size_t operand_index  = agraph.m_arg_value[arg_index];
+        size_t operand_index  = agraph.m_arg_value[arg_start];
         //
         // var_vec
         var_vec[op_index] = var_vec[operand_index].transpose(dim1, dim2);
@@ -121,28 +121,28 @@ namespace ad_tensor { namespace dev {
     ) const {
         //
         // arg_index
-        size_t    arg_index = agraph.m_arg_start[op_index];
+        size_t    arg_start = agraph.m_arg_start[op_index];
         //
         // dim1
-        int64_t dim1 = int64_t( agraph.m_arg_value[arg_index + 1] );
-        assert( ad_type_t::none ==  agraph.m_arg_type[arg_index + 1] );
+        int64_t dim1 = int64_t( agraph.m_arg_value[arg_start + 1] );
+        assert( ad_type_t::none ==  agraph.m_arg_type[arg_start + 1] );
         //
         // dim2
-        int64_t dim2 = int64_t( agraph.m_arg_value[arg_index + 2] );
-        assert( ad_type_t::none ==  agraph.m_arg_type[arg_index + 2] );
+        int64_t dim2 = int64_t( agraph.m_arg_value[arg_start + 2] );
+        assert( ad_type_t::none ==  agraph.m_arg_type[arg_start + 2] );
         //
 #ifndef NDEBUG
         //
         // ad_type
-        ad_type_t ad_type   = agraph.m_arg_type[arg_index];
+        ad_type_t ad_type   = agraph.m_arg_type[arg_start];
         assert( ad_type  == ad_type_t::variable );
         //
         // n_arg
-        size_t n_arg = agraph.m_arg_start[op_index+1] - arg_index;
+        size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
         assert( n_arg == 3 );
 #endif
         // operand_index
-        size_t operand_index  = agraph.m_arg_value[arg_index];
+        size_t operand_index  = agraph.m_arg_value[arg_start];
         //
         // for_der
         for_der[op_index] = for_der[operand_index].transpose(dim1, dim2);
@@ -176,28 +176,28 @@ namespace ad_tensor { namespace dev {
     ) const {
         //
         // arg_index
-        size_t    arg_index = agraph.m_arg_start[op_index];
+        size_t    arg_start = agraph.m_arg_start[op_index];
         //
         // dim1
-        int64_t dim1 = int64_t( agraph.m_arg_value[arg_index + 1] );
-        assert( ad_type_t::none ==  agraph.m_arg_type[arg_index + 1] );
+        int64_t dim1 = int64_t( agraph.m_arg_value[arg_start + 1] );
+        assert( ad_type_t::none ==  agraph.m_arg_type[arg_start + 1] );
         //
         // dim2
-        int64_t dim2 = int64_t( agraph.m_arg_value[arg_index + 2] );
-        assert( ad_type_t::none ==  agraph.m_arg_type[arg_index + 2] );
+        int64_t dim2 = int64_t( agraph.m_arg_value[arg_start + 2] );
+        assert( ad_type_t::none ==  agraph.m_arg_type[arg_start + 2] );
         //
 #ifndef NDEBUG
         //
         // ad_type
-        ad_type_t ad_type   = agraph.m_arg_type[arg_index];
+        ad_type_t ad_type   = agraph.m_arg_type[arg_start];
         assert( ad_type  == ad_type_t::variable );
         //
         // n_arg
-        size_t n_arg = agraph.m_arg_start[op_index+1] - arg_index;
+        size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
         assert( n_arg == 3 );
 #endif
         // operand_index
-        size_t operand_index  = agraph.m_arg_value[arg_index];
+        size_t operand_index  = agraph.m_arg_value[arg_start];
         //
         // rev_der
         if( rev_der[operand_index].numel() == 0 ) {

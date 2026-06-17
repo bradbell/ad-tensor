@@ -20,16 +20,16 @@ namespace ad_tensor { namespace dev {
     ) const {
         //
         // arg_index
-        size_t arg_index = agraph.m_arg_start[op_index];
+        size_t arg_start = agraph.m_arg_start[op_index];
         //
 #ifndef NDEBUG
-        size_t n_arg = agraph.m_arg_start[op_index+1] - arg_index;
+        size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
         assert( n_arg == 1 && "minus: n_arg != 1" );
 # endif
         //
         // operand_tensor
         TensorType operand_tensor  = tensor_at_arg_index(
-            arg_index, agraph, con_vec, par_vec
+            arg_start, agraph, con_vec, par_vec
         );
         //
         // par_vec
@@ -59,16 +59,16 @@ namespace ad_tensor { namespace dev {
     ) const {
         //
         // arg_index
-        size_t arg_index = agraph.m_arg_start[op_index];
+        size_t arg_start = agraph.m_arg_start[op_index];
         //
 #ifndef NDEBUG
-        size_t n_arg = agraph.m_arg_start[op_index+1] - arg_index;
+        size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
         assert( n_arg == 1 && "minus: n_arg != 1" );
 # endif
         //
         // operand_tensor
         TensorType operand_tensor  = tensor_at_arg_index(
-            arg_index, agraph, con_vec, par_vec, var_vec
+            arg_start, agraph, con_vec, par_vec, var_vec
         );
         //
         // var_vec
@@ -101,19 +101,19 @@ namespace ad_tensor { namespace dev {
     ) const {
         //
         // arg_index
-        size_t arg_index = agraph.m_arg_start[op_index];
+        size_t arg_start = agraph.m_arg_start[op_index];
         //
 #ifndef NDEBUG
-        size_t n_arg = agraph.m_arg_start[op_index+1] - arg_index;
+        size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
         assert( n_arg == 1 && "minus: n_arg != 1" );
-        ad_type_t operand_type  = agraph.m_arg_type[arg_index];
+        ad_type_t operand_type  = agraph.m_arg_type[arg_start];
         assert( operand_type == ad_type_t::variable && "minus::forward_der: "
             "operand is not a variable"
         );
 # endif
         //
         // operand_index
-        size_t    operand_index = agraph.m_arg_value[arg_index];
+        size_t    operand_index = agraph.m_arg_value[arg_start];
         //
         // for_der
         for_der[op_index] = - for_der[operand_index];
@@ -147,19 +147,19 @@ namespace ad_tensor { namespace dev {
     ) const {
         //
         // arg_index
-        size_t arg_index = agraph.m_arg_start[op_index];
+        size_t arg_start = agraph.m_arg_start[op_index];
         //
 #ifndef NDEBUG
-        size_t n_arg = agraph.m_arg_start[op_index+1] - arg_index;
+        size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
         assert( n_arg == 1 && "minus: n_arg != 1" );
-        ad_type_t operand_type  = agraph.m_arg_type[arg_index];
+        ad_type_t operand_type  = agraph.m_arg_type[arg_start];
         assert( operand_type == ad_type_t::variable &&
             "minus::forward_der: operand is not a variable"
         );
 # endif
         //
         // operand_index
-        size_t    operand_index = agraph.m_arg_value[arg_index];
+        size_t    operand_index = agraph.m_arg_value[arg_start];
         //
         // rev_der[operand_index]
         if( rev_der[operand_index].numel() == 0 ) {

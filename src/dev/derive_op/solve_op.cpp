@@ -24,23 +24,23 @@ namespace ad_tensor { namespace dev {
     ) const {
         //
         // arg_index
-        size_t arg_index = agraph.m_arg_start[op_index];
+        size_t arg_start = agraph.m_arg_start[op_index];
         //
         // left
-        bool left = bool( agraph.m_arg_value[arg_index + 2] );
+        bool left = bool( agraph.m_arg_value[arg_start + 2] );
         //
 #ifndef NDEBUG
-        size_t n_arg = agraph.m_arg_start[op_index+1] - arg_index;
+        size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
         assert( n_arg == 3  );
-        assert( agraph.m_arg_type[arg_index+2] == ad_type_t::none );
+        assert( agraph.m_arg_type[arg_start+2] == ad_type_t::none );
 # endif
         //
         // square_ten, rhs_ten
         TensorType square_ten  = tensor_at_arg_index(
-            arg_index, agraph, con_vec, par_vec
+            arg_start, agraph, con_vec, par_vec
         );
         TensorType rhs_ten  = tensor_at_arg_index(
-            arg_index + 1, agraph, con_vec, par_vec
+            arg_start + 1, agraph, con_vec, par_vec
         );
         //
         // par_vec
@@ -70,23 +70,23 @@ namespace ad_tensor { namespace dev {
     ) const {
         //
         // arg_index
-        size_t arg_index = agraph.m_arg_start[op_index];
+        size_t arg_start = agraph.m_arg_start[op_index];
         //
         // left
-        bool left = bool( agraph.m_arg_value[arg_index + 2] );
+        bool left = bool( agraph.m_arg_value[arg_start + 2] );
         //
 #ifndef NDEBUG
-        size_t n_arg = agraph.m_arg_start[op_index+1] - arg_index;
+        size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
         assert( n_arg == 3 );
-        assert( agraph.m_arg_type[arg_index+2] == ad_type_t::none );
+        assert( agraph.m_arg_type[arg_start+2] == ad_type_t::none );
 # endif
         //
         // square_ten, rhs_ten
         TensorType square_ten  = tensor_at_arg_index(
-            arg_index, agraph, con_vec, par_vec, var_vec
+            arg_start, agraph, con_vec, par_vec, var_vec
         );
         TensorType rhs_ten  = tensor_at_arg_index(
-            arg_index + 1, agraph, con_vec, par_vec, var_vec
+            arg_start + 1, agraph, con_vec, par_vec, var_vec
         );
         //
         // var_vec
@@ -122,28 +122,28 @@ namespace ad_tensor { namespace dev {
     ) const {
         //
         // arg_index
-        size_t arg_index = agraph.m_arg_start[op_index];
+        size_t arg_start = agraph.m_arg_start[op_index];
         //
         // left, transpose
-        bool left      = bool( agraph.m_arg_value[arg_index + 2] );
+        bool left      = bool( agraph.m_arg_value[arg_start + 2] );
         //
 #ifndef NDEBUG
-        size_t n_arg = agraph.m_arg_start[op_index+1] - arg_index;
+        size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
         assert( n_arg == 3 );
-        assert( agraph.m_arg_type[arg_index+2] == ad_type_t::none );
+        assert( agraph.m_arg_type[arg_start+2] == ad_type_t::none );
 # endif
         //
         // square_type, rhs_type
-        ad_type_t square_type     = agraph.m_arg_type[arg_index];
-        ad_type_t rhs_type        = agraph.m_arg_type[arg_index + 1];
+        ad_type_t square_type     = agraph.m_arg_type[arg_start];
+        ad_type_t rhs_type        = agraph.m_arg_type[arg_start + 1];
         //
         // square_index, rhs_index
-        size_t square_index = agraph.m_arg_value[arg_index];
-        size_t rhs_index = agraph.m_arg_value[arg_index + 1];
+        size_t square_index = agraph.m_arg_value[arg_start];
+        size_t rhs_index = agraph.m_arg_value[arg_start + 1];
         //
         // square
         TensorType square = tensor_at_arg_index(
-            arg_index, agraph, con_vec, par_vec, var_vec
+            arg_start, agraph, con_vec, par_vec, var_vec
         );
         //
         // prod
@@ -201,28 +201,28 @@ namespace ad_tensor { namespace dev {
     ) const {
         //
         // arg_index
-        size_t arg_index = agraph.m_arg_start[op_index];
+        size_t arg_start = agraph.m_arg_start[op_index];
         //
         // left, transpose
-        bool left      = bool( agraph.m_arg_value[arg_index + 2] );
+        bool left      = bool( agraph.m_arg_value[arg_start + 2] );
         //
 #ifndef NDEBUG
-        size_t n_arg = agraph.m_arg_start[op_index+1] - arg_index;
+        size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
         assert( n_arg == 3 );
-        assert( agraph.m_arg_type[arg_index+2] == ad_type_t::none );
+        assert( agraph.m_arg_type[arg_start+2] == ad_type_t::none );
 # endif
         //
         // square_type, rhs_type
-        ad_type_t square_type     = agraph.m_arg_type[arg_index];
-        ad_type_t rhs_type        = agraph.m_arg_type[arg_index + 1];
+        ad_type_t square_type     = agraph.m_arg_type[arg_start];
+        ad_type_t rhs_type        = agraph.m_arg_type[arg_start + 1];
         //
         // square_index, rhs_index
-        size_t square_index = agraph.m_arg_value[arg_index];
-        size_t rhs_index = agraph.m_arg_value[arg_index + 1];
+        size_t square_index = agraph.m_arg_value[arg_start];
+        size_t rhs_index = agraph.m_arg_value[arg_start + 1];
         //
         // square
         TensorType square = tensor_at_arg_index(
-            arg_index, agraph, con_vec, par_vec, var_vec
+            arg_start, agraph, con_vec, par_vec, var_vec
         );
         // square_tra, solution_tra
         TensorType square_tra   = square.transpose(0, 1);
