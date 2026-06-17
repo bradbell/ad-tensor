@@ -93,7 +93,7 @@ public:
     vector< vector<int64_t> >    m_dom_shapes;
     vector<op_enum_t>            m_op_seq;
     vector<size_t>               m_arg_start;
-    vector<int64_t>              m_arg_value;
+    vector<size_t>               m_arg_value;
     vector<ad_type_t>            m_arg_type;
     vector<int64_t>              m_int64;
     vector<bool>                 m_bool;

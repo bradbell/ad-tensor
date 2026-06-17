@@ -206,19 +206,19 @@ vector<adten_t> adten_t::call_atom(
         agraph->m_arg_start.push_back( agraph->m_arg_value.size() );
         //
         // agraph: m_arg_value, m_arg_type
-        agraph->m_arg_value.push_back( int64_t(atom_id) );
+        agraph->m_arg_value.push_back(atom_id);
         agraph->m_arg_value.push_back( call_info );
-        agraph->m_arg_value.push_back( int64_t(n_domain) );
-        agraph->m_arg_value.push_back( int64_t(n_range) );
-        agraph->m_arg_value.push_back( int64_t(n_result[ig]) );
+        agraph->m_arg_value.push_back(n_domain);
+        agraph->m_arg_value.push_back(n_range);
+        agraph->m_arg_value.push_back(n_result[ig]);
         for(size_t k = 0; k < n_result[ig]; ++k) {
-            agraph->m_arg_value.push_back( int64_t( (*rng_index)[k] ) );
+            agraph->m_arg_value.push_back( (*rng_index)[k] );
         }
         for(size_t k = 0; k < 5 + n_result[ig]; ++k) {
             agraph->m_arg_type.push_back( ad_type_t::none );
         }
         for(size_t j = 0; j < n_domain; ++j) {
-            agraph->m_arg_value.push_back( int64_t( adomain[j].m_index ) );
+            agraph->m_arg_value.push_back( adomain[j].m_index );
             agraph->m_arg_type.push_back( adomain[j].m_ad_type );
         }
         //
