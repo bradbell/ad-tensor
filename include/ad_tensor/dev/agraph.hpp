@@ -51,6 +51,22 @@ This vector has the same length as m_arg_value.
 
 is the AD type for the i_arg argument for the op_index operator usage.
 
+m_int64
+*******
+If an operation uses int64_t values, then there is an i_arg such that
+
+    m_arg_value[ m_arg_start[op_index] + i_arg ]
+
+is the start index in m_int64 of the int64_t values for this operation.
+
+m_bool
+******
+If an operation uses bool values, then there is an i_arg such that
+
+    m_arg_value[ m_arg_start[op_index] + i_arg ]
+
+is the start index in m_bool of the bool values for this operation.
+
 
 default constructor
 *******************
@@ -77,6 +93,8 @@ public:
     vector<size_t>               m_arg_start;
     vector<int64_t>              m_arg_value;
     vector<ad_type_t>            m_arg_type;
+    vector<int64_t>              m_int64;
+    vector<bool>                 m_bool;
     //
     // default constructor
     agraph_t()
@@ -85,6 +103,8 @@ public:
     , m_arg_start()
     , m_arg_value()
     , m_arg_type()
+    , m_int64()
+    , m_bool()
     { }
     //
     // swap
@@ -94,6 +114,8 @@ public:
         m_arg_start.swap(   other.m_arg_start);
         m_arg_value.swap(   other.m_arg_value);
         m_arg_type.swap(    other.m_arg_type);
+        m_int64.swap(       other.m_int64);
+        m_bool.swap(        other.m_bool);
     }
     //
     // is_empty
@@ -103,7 +125,9 @@ public:
             m_op_seq.empty() &&
             m_arg_start.empty() &&
             m_arg_value.empty() &&
-            m_arg_type.empty();
+            m_arg_type.empty() &&
+            m_int64.empty() &&
+            m_bool.empty();
     }
 }; } }
 // END_AGRAPH
