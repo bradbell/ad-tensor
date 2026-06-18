@@ -185,7 +185,7 @@ private:
     // call_atom
     static vector<adten_t> call_atom(
         size_t                 atom_id   ,
-        int64_t                call_info ,
+        size_t                 call_info ,
         const vector<adten_t>& adomain
     );
 public:

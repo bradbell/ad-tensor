@@ -27,23 +27,37 @@ Atomic Functions Developer Documentation
 {xrst_end atom_dev}
 -------------------------------------------------------------------------------
 {xrst_begin atom_callback usr}
+{xrst_spell
+    rng
+    adten
+}
 
 The Atomic Callback Class atom_callback_t
 #########################################
 
 atom_callback
 *************
-we use atom_callback below for an atom_callback_t
+We use atom_callback below for an atom_callback_t
 object created using its default constructor.
 
 call_info
 *********
-the meaning of this is special for the original call
-to this atomic function.
+This value is passed through to the callback functions
+from :ref:`call_atom@call_info` in the call to this atomic function.
+
+rng_used
+********
+If rng_used is the empty vector, all of the range values are used.
+Otherwise this vector has the same size as :ref:`call_atom@arange`
+in the corresponding call this atomic function.
+If rng_used[i] is true,
+the return value with index i is used and must be calculated.
+If it is false,
+the return value with index i is not used and need not be calculated.
 
 domain
 ******
-is the value of the domain variables for this atomic function call.
+is the value of the domain tensors for this atomic function call.
 
 set
 ***
@@ -52,28 +66,46 @@ name
 ====
 After the atom_callback_t constructor,
 the name for the atomic function is empty.
-You must set this with a call of the form
+It must set this with a call of the form
 {xrst_literal ,
     BEGIN_SET_NAME, END_SET_NAME
 }
 
 Functions
 =========
+The following is a list of the callback functions:
+
+.. csv-table::
+    :header-rows: 1
+
+    callback,       Required when this atomic is used with
+    depend,         always
+    forward,        always
+    forward_der,    :ref:`adfn_forward_der-name` with TensorType at::Tensor
+    reverse_der,    :ref:`adfn_reverse_der-name` with TensorType at::Tensor
+    ad_forward,     :ref:`adfn_forward_par-name` with TensorType adten
+    ad_forward_der, :ref:`adfn_forward_der-name` with TensorType adten
+    ad_reverse_der, :ref:`adfn_reverse_der-name` with TensorType adten
+
+Note that ad_forward is also required when :ref:`adfn_forward_var-name`
+is used with TensorType adten.
+
 After the atom_callback_t constructor, all the callback functions are null.
-Each of the callback functions can be set by a call of the form
+Each callback function that is used must be set by a call of the form
 {xrst_code cpp}
     atom_callback.set_function(const function_t& function)
 {xrst_code}
-where function is the callback function; e.g., depend.
-
+where function is the callback function; e.g.,
+{xrst_code cpp}
+    atom_callback.set_depend(const function_t& depend)
+{xrst_code}
 
 depend
 ******
 {xrst_literal ,
     BEGIN_DEPEND, END_DEPEND
 }
-This callback is required for all atomic functions.
-It returns a dependency :ref:`sparsity-name` pattern
+This returns a dependency :ref:`sparsity-name` pattern
 for this atomic function.
 If the atomic function range index i depends on the domain index j,
 then (i,j) is in the sparsity pattern for this atomic function.
@@ -81,10 +113,10 @@ then (i,j) is in the sparsity pattern for this atomic function.
 forward
 *******
 {xrst_literal ,
-    BEGIN_FORWARD, END_FORWARD
+    BEGIN_FORWARD_T, END_FORWARD_T
 }
-This callback is required for all atomic functions.
-It computes the range values for the atomic function.
+This computes the atomic function range values
+as a function of its domain values.
 
 {xrst_end atom_callback}
 -------------------------------------------------------------------------------
@@ -119,45 +151,56 @@ class atom_callback_t {
 public:
     //
     // BEGIN_DEPEND
-    typedef sparsity_t (*depend_t)(int64_t call_info);
+    typedef sparsity_t (*depend_t)(size_t call_info);
     // END_DEPEND
     //
-    // BEGIN_FORWARD
+    // BEGIN_FORWARD_T
     typedef vector<at::Tensor> (*forward_t) (
-        int64_t            call_info ,
-        vector<at::Tensor> domain
+        size_t                            call_info ,
+        const vector<bool>&               rng_used  ,
+        const vector<const at::Tensor*>&  domain
     );
-    // END_FORWARD
+    // END_FORWARD_T
     //
     // ad_forward_t
     typedef vector<adten_t> (*ad_forward_t) (
-        int64_t            call_info ,
-        vector<adten_t>    domain
+        size_t                            call_info ,
+        const vector<bool>&               rng_used  ,
+        const vector<const adten_t*>&     domain
     );
     //
-    // forward_der_t, ad_forward_der_t
+    // forward_der_t
     typedef vector<at::Tensor> (*forward_der_t) (
-        int64_t            call_info ,
-        vector<at::Tensor> domain ,
-        vector<at::Tensor> domain_der
-    );
-    typedef vector<adten_t> (*ad_forward_der_t) (
-        int64_t            call_info ,
-        vector<adten_t>    domain ,
-        vector<adten_t>    domain_der
+        size_t                            call_info ,
+        const vector<bool>&               rng_used  ,
+        const vector<const at::Tensor*>&  domain    ,
+        const vector<const at::Tensor*>&  dom_der
     );
     //
-    // reverse_der_t, ad_reverse_der_t
-    typedef vector<at::Tensor> (*reverse_der_t) (
-        int64_t            call_info ,
-        vector<at::Tensor> domain    ,
-        vector<at::Tensor> range_der
-        );
-    typedef vector<adten_t> (*ad_reverse_der_t) (
-        int64_t            call_info ,
-        vector<adten_t>    domain    ,
-        vector<adten_t>    range_der
+    // ad_forward_der_t
+    typedef vector<adten_t> (*ad_forward_der_t) (
+        size_t                            call_info ,
+        const vector<bool>&               rng_used  ,
+        const vector<const adten_t*>&     domain    ,
+        const vector<const adten_t*>&     dom_der
     );
+    //
+    // reverse_der_t
+    typedef vector<at::Tensor> (*reverse_der_t) (
+        size_t                            call_info ,
+        const vector<bool>&               rng_used  ,
+        const vector<const at::Tensor*>&  domain    ,
+        const vector<at::Tensor>&         rng_der
+    );
+    //
+    // ad_reverse_der_t
+    typedef vector<adten_t> (*ad_reverse_der_t) (
+        size_t                            call_info ,
+        const vector<bool>&               rng_used  ,
+        const vector<const adten_t*>&     domain    ,
+        const vector<adten_t>&            rng_der
+    );
+
 private:
     // m_name
     std::string m_name;

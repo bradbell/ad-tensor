@@ -24,8 +24,8 @@ is the atomic function identifier; see :ref:`atom_global@atom_id` .
 
 call_info
 *********
-is the call information passed to the callback functions;
-see :ref:`atom_callback@call_info` .
+is the call information passed from the atomic function call
+through to the callback functions; see :ref:`atom_callback@call_info` .
 
 adomain
 *******
@@ -105,7 +105,7 @@ namespace ad_tensor { // BEGIN_AD_TENSOR_NAMESPACE
 // BEGIN_CALL_ATOM
 // arange = call_atom(atom_id, call_info, adomain)
 vector<adten_t> adten_t::call_atom(
-    size_t atom_id, int64_t call_info, const vector<adten_t>& adomain
+    size_t atom_id, size_t call_info, const vector<adten_t>& adomain
 )
 {   // END_CALL_ATOM
     //
@@ -115,14 +115,16 @@ vector<adten_t> adten_t::call_atom(
     //
     // n_domain, domain
     size_t n_domain = adomain.size();
-    vector<at::Tensor> domain;
+    vector<const at::Tensor*> domain;
     for(size_t j = 0; j < n_domain; ++j) {
-        domain.push_back( adomain[j].m_tensor );
+        const at::Tensor* domain_j = &( adomain[j].m_tensor );
+        domain.push_back(domain_j);
     }
     //
     // range, n_range
+    vector<bool> rng_used;
     atom_callback_t::forward_t  forward = callback.get_forward();
-    vector<at::Tensor>          range   = forward(call_info, domain);
+    vector<at::Tensor>          range   = forward(call_info, rng_used, domain);
     size_t n_range  = range.size();
     //
     // arange
@@ -207,7 +209,7 @@ vector<adten_t> adten_t::call_atom(
         //
         // agraph: m_arg_value, m_arg_type
         agraph->m_arg_value.push_back(atom_id);
-        agraph->m_arg_value.push_back( call_info );
+        agraph->m_arg_value.push_back(call_info);
         agraph->m_arg_value.push_back(n_domain);
         agraph->m_arg_value.push_back(n_range);
         agraph->m_arg_value.push_back(n_result[ig]);
