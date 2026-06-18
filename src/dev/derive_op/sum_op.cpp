@@ -200,6 +200,9 @@ namespace ad_tensor { namespace dev {
         vector<TensorType>&          rev_der
     ) const {
         //
+        // array
+        thread_local vector<int64_t> array;
+        //
         // check for case where this operation is not connected to the range
         if( rev_der[op_index].numel() == 0 ) {
             return;
@@ -244,10 +247,11 @@ namespace ad_tensor { namespace dev {
             c10::IntArrayRef dim(begin, end);
             //
             // res_shape
-            vector<int64_t> array = rev_sum_view(
+            rev_sum_view(
                 dim,
                 var_vec[op_index].sizes(),
-                var_vec[operand_index].sizes()
+                var_vec[operand_index].sizes(),
+                array
             );
             c10::IntArrayRef res_shape(array);
             if( rev_der[operand_index].numel() == 0 ) {

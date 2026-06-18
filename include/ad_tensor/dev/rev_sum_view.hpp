@@ -7,9 +7,10 @@
 #include <ad_tensor/vector.hpp>
 //
 namespace ad_tensor { namespace dev {
-    vector<int64_t> rev_sum_view(
-        const c10::IntArrayRef&     dim       = c10::IntArrayRef() ,
-        const c10::IntArrayRef&     res_shape = c10::IntArrayRef() ,
-        const c10::IntArrayRef&     arg_shape = c10::IntArrayRef()
+    void rev_sum_view(
+        const c10::IntArrayRef&     dim       ,
+        const c10::IntArrayRef&     res_shape ,
+        const c10::IntArrayRef&     arg_shape ,
+        vector<int64_t>&            new_shape
     );
 } }

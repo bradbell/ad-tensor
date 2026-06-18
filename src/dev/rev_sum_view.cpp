@@ -35,24 +35,28 @@ contains the shape of the tensor argument to the sum operation.
 
 new_shape
 *********
-The return value, new_shape, is the new shape for the result res
+Only the capacity of the input of new_shape matters
+(it determines if new memory is allocated).
+Upon return, new_shape, is the new shape for the result res
 so the it will properly broadcast to the argument shape.
 
 {xrst_end rev_sum_view}
 */
 namespace ad_tensor { namespace dev { // BEGIN_NAMESPACE_AD_TENSOR_DEV
 // BEGIN_REV_SUM_VIEW
-// new_shape = rev_sum_view(dim, res_shape, arg_shape)
-vector<int64_t> rev_sum_view(
+// rev_sum_view(dim, res_shape, arg_shape, new_shape)
+void rev_sum_view(
     const c10::IntArrayRef&    dim       ,
     const c10::IntArrayRef&    res_shape ,
-    const c10::IntArrayRef&    arg_shape
+    const c10::IntArrayRef&    arg_shape ,
+    vector<int64_t>&           new_shape
 )
 {   // END_REV_SUM_VIEW
     //
     // in_dim, new_shape
-    vector<bool> in_dim;
-    vector<int64_t> new_shape;
+    thread_local vector<bool> in_dim;
+    in_dim.resize(0);
+    new_shape.resize(0);
     //
     // res_len, arg_len
     size_t res_len = res_shape.size();
@@ -83,6 +87,6 @@ vector<int64_t> rev_sum_view(
     }
     assert( res_index == 0 );
     //
-    return new_shape;
+    return;
 }
 } } // END_NAMESPACE_AD_TENSOR_DEV
