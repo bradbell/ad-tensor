@@ -168,6 +168,9 @@ namespace ad_tensor { namespace dev {
         vector<TensorType>&          rev_der
     ) const {
         //
+        // array
+        thread_local vector<int64_t> array;
+        //
         // arg_index
         size_t arg_start = agraph.m_arg_start[op_index];
         //
@@ -187,8 +190,8 @@ namespace ad_tensor { namespace dev {
             size_t lhs_index = agraph.m_arg_value[arg_start];
             //
             // dim
-            vector<int64_t> array = broadcast(
-                var_vec[op_index].sizes(), var_vec[lhs_index].sizes()
+            broadcast(
+                var_vec[op_index].sizes(), var_vec[lhs_index].sizes(), array
             );
             c10::IntArrayRef dim(array);
             //
@@ -204,8 +207,8 @@ namespace ad_tensor { namespace dev {
             size_t rhs_index = agraph.m_arg_value[arg_start + 1];
             //
             // dim
-            vector<int64_t> array = broadcast(
-                var_vec[op_index].sizes(), var_vec[rhs_index].sizes()
+            broadcast(
+                var_vec[op_index].sizes(), var_vec[rhs_index].sizes(), array
             );
             c10::IntArrayRef dim(array);
             //

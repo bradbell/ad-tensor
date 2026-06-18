@@ -34,7 +34,9 @@ so that its shape as the same length as res.
 
 dim
 ***
-The return dim is the dimension indices, in the res_shape,
+Only the capacity of the input of dim matters
+(it determines if new memory is allocated).
+Upon return, dim is the dimension indices, in the res_shape,
 where arg_shape was broadcast to match the shape of the other argument
 to the binary operation.
 
@@ -42,19 +44,20 @@ to the binary operation.
 */
 // BEGIN_BROADCAST
 namespace ad_tensor { namespace dev {
-    // dim = broadcast(res, arg)
-    vector<int64_t>  broadcast(
+    // broadcast(res, arg, dim)
+    void broadcast(
         const c10::IntArrayRef&    res_shape ,
-        const c10::IntArrayRef&    arg_shape
+        const c10::IntArrayRef&    arg_shape ,
+        vector<int64_t>&           dim
     )
     {   // END_BROADCAST
         //
         // dim
-        vector<int64_t> dim;
+        dim.resize(0);
         //
         // check for case where tensor shapes are equal
         if( res_shape.equals( arg_shape) ) {
-            return dim;
+            return;
         }
         //
         // dim
@@ -77,6 +80,6 @@ namespace ad_tensor { namespace dev {
                 dim.push_back(res_index);
             }
         }
-        return dim;
+        return;
     }
 }  }
