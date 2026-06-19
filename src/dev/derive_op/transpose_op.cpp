@@ -17,7 +17,7 @@ namespace ad_tensor { namespace dev {
         vector<TensorType>&          par_vec
     ) const {
         //
-        // arg_index
+        // arg_start
         size_t    arg_start = agraph.m_arg_start[op_index];
         //
         // dim1
@@ -67,7 +67,7 @@ namespace ad_tensor { namespace dev {
         vector<TensorType>&          var_vec
     ) const {
         //
-        // arg_index
+        // arg_start
         size_t    arg_start = agraph.m_arg_start[op_index];
         //
         // dim1
@@ -120,7 +120,7 @@ namespace ad_tensor { namespace dev {
         vector<TensorType>&          for_der
     ) const {
         //
-        // arg_index
+        // arg_start
         size_t    arg_start = agraph.m_arg_start[op_index];
         //
         // dim1
@@ -175,7 +175,7 @@ namespace ad_tensor { namespace dev {
         vector<TensorType>&          rev_der
     ) const {
         //
-        // arg_index
+        // arg_start
         size_t    arg_start = agraph.m_arg_start[op_index];
         //
         // dim1
