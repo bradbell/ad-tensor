@@ -22,7 +22,7 @@ source tools/grep_and_sed.sh
 # package_name, version_file_list
 source tools/dev_settings.sh
 #
-if [ "$0" != "tools/check_version.sh" ]
+if [ ! -e 'tools/check_version.sh' ]
 then
     echo "tools/check_version.sh: must be executed from its parent directory"
     exit 1

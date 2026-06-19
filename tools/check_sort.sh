@@ -3,7 +3,7 @@ set -e -u
 # !! EDITS TO THIS FILE ARE LOST DURING UPDATES BY xrst.git/tools/dev_tools.sh !!
 # SPDX-License-Identifier: EPL-2.0 OR GPL-2.0-or-later
 # SPDX-FileCopyrightText: Bradley M. Bell <bradbell@seanet.com>
-# SPDX-FileContributor: 2020-25 Bradley M. Bell
+# SPDX-FileContributor: 2020-26 Bradley M. Bell
 # -----------------------------------------------------------------------------
 # tools/check_sort.sh
 # Checks that for all files, all the sections between
@@ -11,7 +11,7 @@ set -e -u
 #  END_SORT_THIS_LINE_MINUS_#
 # are sorted. If not, it is corrected and an error is returned.
 # -----------------------------------------------------------------------------
-if [ "$0" != "tools/check_sort.sh" ]
+if [ ! -e 'tools/check_sort.sh' ]
 then
     echo "tools/check_sort.sh: must be executed from its parent directory"
     exit 1

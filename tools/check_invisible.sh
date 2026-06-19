@@ -3,7 +3,7 @@ set -e -u
 # !! EDITS TO THIS FILE ARE LOST DURING UPDATES BY xrst.git/tools/dev_tools.sh !!
 # SPDX-License-Identifier: EPL-2.0 OR GPL-2.0-or-later
 # SPDX-FileCopyrightText: Bradley M. Bell <bradbell@seanet.com>
-# SPDX-FileContributor: 2020-25 Bradley M. Bell
+# SPDX-FileContributor: 2020-26 Bradley M. Bell
 # -----------------------------------------------------------------------------
 # tools/check_invisible.sh
 # Checks that there is no invisible white space in any of the source files.
@@ -11,7 +11,7 @@ set -e -u
 # and this script exits with an error.
 # Files that are not checked can be specified in tools/dev_setting.sh
 # -----------------------------------------------------------------------------
-if [ "$0" != "tools/check_invisible.sh" ]
+if [ ! -e 'tools/check_invisible.sh' ]
 then
     echo "tools/check_invisible.sh: must be executed from its parent directory"
     exit 1

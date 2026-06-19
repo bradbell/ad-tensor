@@ -11,7 +11,7 @@ set -e -u
 # it is automatically corrected, and this script exits with an error.
 # Files that are not checked can be specified in tools/dev_setting.sh
 # ----------------------------------------------------------------------------
-if [ "$0" != "tools/check_copy.sh" ]
+if [ ! -e 'tools/check_copy.sh' ]
 then
     echo "tools/check_copy.sh: must be executed from its parent directory"
     exit 1
@@ -37,7 +37,7 @@ then
     echo 'tools/check_copy.sh does not expect any arguments'
     exit 1
 fi
-if [ "$0" != 'tools/check_copy.sh' ]
+if [ ! -e 'tools/check_copy.sh' ]
 then
     echo 'tools/check_copy.sh: must be executed from its parent directory'
     exit 1

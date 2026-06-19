@@ -4,7 +4,7 @@ set -e -u
 # ---------------------------------------------------------------------------
 # SPDX-License-Identifier: EPL-2.0 OR GPL-2.0-or-later
 # SPDX-FileCopyrightText: Bradley M. Bell <bradbell@seanet.com>
-# SPDX-FileContributor: 2003-25 Bradley M. Bell
+# SPDX-FileContributor: 2003-26 Bradley M. Bell
 # ---------------------------------------------------------------------------
 # tools/git_commit.sh
 # Opens your editor with comments about this git commit.
@@ -31,7 +31,7 @@ then
     echo 'usage: tools/git_commit.sh: does not expect arguments'
     exit 1
 fi
-if [ "$0" != 'tools/git_commit.sh' ]
+if [ ! -e 'tools/git_commit.sh' ]
 then
     echo 'tools/git_commit.sh: must execute this script from its parent directory'
     exit 1

@@ -11,7 +11,7 @@ echo_eval() {
     eval $*
 }
 # -----------------------------------------------------------------------------
-if [ "$0" != "tools/check_all.sh" ]
+if [ ! -e 'tools/check_all.sh' ]
 then
     echo "tools/check_all.sh: must be executed from its parent directory"
     exit 1

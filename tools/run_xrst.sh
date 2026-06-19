@@ -33,7 +33,7 @@ source tools/grep_and_sed.sh
 # index_page_name
 source tools/dev_settings.sh
 # -----------------------------------------------------------------------------
-if [ "$0" != 'tools/run_xrst.sh' ]
+if [ ! -e 'tools/run_xrst.sh' ]
 then
     echo 'tools/run_xrst.sh must be run from its parent directory.'
     exit 1
