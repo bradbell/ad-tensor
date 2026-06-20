@@ -115,10 +115,9 @@ vector<adten_t> adten_t::call_atom(
     //
     // n_domain, domain
     size_t n_domain = adomain.size();
-    vector<const at::Tensor*> domain;
+    vector<at::Tensor> domain;
     for(size_t j = 0; j < n_domain; ++j) {
-        const at::Tensor* domain_j = &( adomain[j].m_tensor );
-        domain.push_back(domain_j);
+        domain.push_back( adomain[j].m_tensor );
     }
     //
     // range, n_range

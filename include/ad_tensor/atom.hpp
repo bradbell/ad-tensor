@@ -158,7 +158,7 @@ public:
     typedef vector<at::Tensor> (*forward_t) (
         size_t                            call_info ,
         const vector<bool>&               rng_used  ,
-        const vector<const at::Tensor*>&  domain
+        const vector<at::Tensor>&         domain
     );
     // END_FORWARD_T
     //
@@ -166,30 +166,30 @@ public:
     typedef vector<adten_t> (*ad_forward_t) (
         size_t                            call_info ,
         const vector<bool>&               rng_used  ,
-        const vector<const adten_t*>&     domain
+        const vector<adten_t>&            domain
     );
     //
     // forward_der_t
     typedef vector<at::Tensor> (*forward_der_t) (
         size_t                            call_info ,
         const vector<bool>&               rng_used  ,
-        const vector<const at::Tensor*>&  domain    ,
-        const vector<const at::Tensor*>&  dom_der
+        const vector<at::Tensor>&         domain    ,
+        const vector<at::Tensor>&         dom_der
     );
     //
     // ad_forward_der_t
     typedef vector<adten_t> (*ad_forward_der_t) (
         size_t                            call_info ,
         const vector<bool>&               rng_used  ,
-        const vector<const adten_t*>&     domain    ,
-        const vector<const adten_t*>&     dom_der
+        const vector<adten_t>&            domain    ,
+        const vector<adten_t>&            dom_der
     );
     //
     // reverse_der_t
     typedef vector<at::Tensor> (*reverse_der_t) (
         size_t                            call_info ,
         const vector<bool>&               rng_used  ,
-        const vector<const at::Tensor*>&  domain    ,
+        const vector<at::Tensor>&         domain    ,
         const vector<at::Tensor>&         rng_der
     );
     //
@@ -197,7 +197,7 @@ public:
     typedef vector<adten_t> (*ad_reverse_der_t) (
         size_t                            call_info ,
         const vector<bool>&               rng_used  ,
-        const vector<const adten_t*>&     domain    ,
+        const vector<adten_t>&            domain    ,
         const vector<adten_t>&            rng_der
     );
 
