@@ -181,13 +181,6 @@ private:
     static adten_t binary(
         dev::op_enum_t op_enum, const adten_t& lhs, const adten_t& rhs
     );
-    //
-    // call_atom
-    static vector<adten_t> call_atom(
-        size_t                 atom_id   ,
-        size_t                 call_info ,
-        const vector<adten_t>& adomain
-    );
 public:
     // BEGIN_PUBLIC_CTOR
     explicit adten_t( const at::Tensor& tensor );
@@ -244,6 +237,13 @@ public:
     //
     // solve
     adten_t solve(const adten_t& rhs, bool left) const;
+    //
+    // call_atom
+    static vector<adten_t> call_atom(
+        size_t                 atom_id   ,
+        size_t                 call_info ,
+        const vector<adten_t>& adomain
+    );
 }; }
 
 namespace ad_tensor {

@@ -59,7 +59,6 @@ template<> void call_op_t<at::Tensor>::forward_par(
         size_t arg_index    = arg_start + 5 + n_domain + k;
         size_t rng_index    = agraph.m_arg_value[arg_index];
         rng_used[rng_index] = true;
-        assert( agraph.m_arg_type[arg_index] == ad_type_t::parameter );
     }
     //
     // range
@@ -121,7 +120,6 @@ template<> void call_op_t<at::Tensor>::forward_var(
         size_t arg_index    = arg_start + 5 + n_domain + k;
         size_t rng_index    = agraph.m_arg_value[arg_index];
         rng_used[rng_index] = true;
-        assert( agraph.m_arg_type[arg_index] == ad_type_t::variable );
     }
     //
     // range

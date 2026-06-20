@@ -5,14 +5,15 @@
 #
 # BEGIN_SORT_THIS_LINE_PLUS_2
 add_executable(examples
-    adten/binary.cpp
-    adten/recording.cpp
     adfn/forward_der.cpp
     adfn/forward_par.cpp
     adfn/forward_var.cpp
     adfn/get_range.cpp
     adfn/get_started.cpp
     adfn/reverse_der.cpp
+    adten/binary.cpp
+    adten/recording.cpp
+    atom/get_started.cpp
 )
 # END_SORT_THIS_LINE_MINUS_2
 #

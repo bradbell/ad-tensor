@@ -20,7 +20,7 @@ Prototype
 
 atom_id
 *******
-is the atomic function identifier; see :ref:`atom_global@atom_id` .
+is the atomic function identifier; see :ref:`atom_global@store@atom_id` .
 
 call_info
 *********

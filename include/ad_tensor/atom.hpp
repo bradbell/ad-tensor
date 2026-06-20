@@ -106,7 +106,7 @@ get
 ***
 All of the set functions have a corresponding get function:
 {xrst_literal ,
-    BEGIN_GET, END_GET
+    BEGIN_GET_CALLBACK, END_GET_CALLBACK
 }
 
 depend
@@ -133,6 +133,7 @@ as a function of its domain values.
 
 Global Object That holds All Atomic Callbacks
 #############################################
+This global object holds all the atomic functions.
 
 atom_global
 ***********
@@ -140,11 +141,31 @@ atom_global
     BEGIN_SINGLETON, END_SINGLETON
 }
 
-atom_id
-*******
+store
+*****
 {xrst_literal ,
-    BEGIN_STORE, END_STORE
+    BEGIN_STORE_GLOBAL, END_STORE_GLOBAL
 }
+A call to store will wait until it can lock out any other calls to
+store or get.
+
+atom_callback
+=============
+is the callback information for this atomic function.
+
+atom_id
+=======
+Is the identifier for this atomic function.
+
+
+
+get
+***
+{xrst_literal ,
+    BEGIN_GET_GLOBAL, END_GET_GLOBAL
+}
+A call to get will wait until it can lock out any calls to store.
+
 
 {xrst_end atom_global}
 */
@@ -255,7 +276,7 @@ public:
     void set_ad_reverse_der(const ad_reverse_der_t&    ad_reverse_der);
     // END_SET_FUNCTION
     //
-    // BEGIN_GET
+    // BEGIN_GET_CALLBACK
     const std::string&      get_name(void) const;
     const depend_t&         get_depend(void) const;
     const forward_t&        get_forward(void) const;
@@ -264,7 +285,7 @@ public:
     const ad_forward_t&     get_ad_forward(void) const;
     const ad_forward_der_t& get_ad_forward_der(void) const;
     const ad_reverse_der_t& get_ad_reverse_der(void) const;
-    // END_GET
+    // END_GET_CALLBACK
 };
 // atom_global_t
 class atom_global_t {
@@ -285,19 +306,17 @@ public:
     //
     // BEGIN_SINGLETON
     // atom_global = atom_global_t::singleton()
-    static atom_global_t& singleton(void)
-    {   // END_SINGLETON
-        static atom_global_t m_atom_global;
-        return m_atom_global;
-    }
+    static atom_global_t& singleton(void);
+    // END_SINGLETON
     //
-    // BEGIN_STORE
+    // BEGIN_STORE_GLOBAL
     // atom_id = atom_global.store(atom_callback)
     size_t store(const atom_callback_t& atom_callback);
-    // END_STORE
+    // END_STORE_GLOBAL
     //
-    // get
+    // BEGIN_GET_GLOBAL
     const atom_callback_t& get(size_t atom_id);
+    // END_GET_GLOBAL
 };
 
 } // END_AD_TENSOR_NAMESPACE

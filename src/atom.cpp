@@ -66,6 +66,12 @@ namespace ad_tensor {
         return m_atom_callback_vec[atom_id];
     }
     //
+    // atom_global_t::singleton
+    atom_global_t& atom_global_t::singleton(void) {
+        static atom_global_t atom_global;
+        return atom_global;
+    }
+    //
     // atom_callback_t::set_name
     void atom_callback_t::set_name(const std::string& name) {
         dev::user_assert( name != "",
