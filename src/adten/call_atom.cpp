@@ -72,17 +72,17 @@ acyclic graph:
     :header-rows: 1
 
     arg_index, arg_value, arg_type
-    start + 0, atom_id, ad_type_t::none
-    start + 1, call_info, ad_type_t::none
-    start + 2, size of domain vector (n_domain), ad_type_t::none
-    start + 3, size of range vector (n_range), ad_type_t::none
-    start + 4, number of this graphs's type results (n_result), ad_type_t::none
-    start + 5, index in range for first result, ad_type::none
+    start + 0, atom_id, none
+    start + 1, call_info, none
+    start + 2, size of domain vector (n_domain), none
+    start + 3, size of range vector (n_range), none
+    start + 4, number of this graphs's type results (n_result), none
+    start + 5, index of first domain argument, argument type
     ..., ..., ...
-    start + n_result, index in range for last result, ad_type::none
-    start + n_result + 1, index of first domain argument, argument type
+    start + 4 + n_domain, index of last domain argument, argument type
+    start + 5 + n_domain, index in range for first result, ad_type::none
     ..., ..., ...
-    start + n_result + n_domain, index of last domain argument, argument type
+    start + 4 + n_domain + n_result, index in range for last result, none
 
 op_seq
 ******
@@ -212,15 +212,16 @@ vector<adten_t> adten_t::call_atom(
         agraph->m_arg_value.push_back(n_domain);
         agraph->m_arg_value.push_back(n_range);
         agraph->m_arg_value.push_back(n_result[ig]);
-        for(size_t k = 0; k < n_result[ig]; ++k) {
-            agraph->m_arg_value.push_back( (*rng_index)[k] );
-        }
-        for(size_t k = 0; k < 5 + n_result[ig]; ++k) {
+        for(size_t k = 0; k < 5; ++k) {
             agraph->m_arg_type.push_back( ad_type_t::none );
         }
         for(size_t j = 0; j < n_domain; ++j) {
             agraph->m_arg_value.push_back( adomain[j].m_index );
             agraph->m_arg_type.push_back( adomain[j].m_ad_type );
+        }
+        for(size_t k = 0; k < n_result[ig]; ++k) {
+            agraph->m_arg_value.push_back( (*rng_index)[k] );
+            agraph->m_arg_type.push_back( ad_type_t::none );
         }
         //
         // agraph: m_op_seq, m_arg_start
