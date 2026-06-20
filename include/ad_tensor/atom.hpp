@@ -73,7 +73,9 @@ It must set this with a call of the form
 
 Functions
 =========
-The following is a list of the callback functions:
+{xrst_literal ,
+    BEGIN_SET_FUNCTION, END_SET_FUNCTION
+}
 
 .. csv-table::
     :header-rows: 1
@@ -99,6 +101,13 @@ where function is the callback function; e.g.,
 {xrst_code cpp}
     atom_callback.set_depend(const function_t& depend)
 {xrst_code}
+
+get
+***
+All of the set functions have a corresponding get function:
+{xrst_literal ,
+    BEGIN_GET, END_GET
+}
 
 depend
 ******
@@ -155,6 +164,7 @@ public:
     // END_DEPEND
     //
     // BEGIN_FORWARD_T
+    // range = forward(call_info, rng_used, domain)
     typedef vector<at::Tensor> (*forward_t) (
         size_t                            call_info ,
         const vector<bool>&               rng_used  ,
@@ -235,7 +245,7 @@ public:
     void set_name(const std::string& name);
     // END_SET_NAME
     //
-    // Function Setters
+    // BEGIN_SET_FUNCTION
     void set_depend(const depend_t&                    depend);
     void set_forward(const forward_t&                  forward);
     void set_forward_der(const forward_der_t&          forward_der);
@@ -243,8 +253,9 @@ public:
     void set_ad_forward(const ad_forward_t&            ad_forward);
     void set_ad_forward_der(const ad_forward_der_t&    ad_forward_der);
     void set_ad_reverse_der(const ad_reverse_der_t&    ad_reverse_der);
+    // END_SET_FUNCTION
     //
-    // Getters
+    // BEGIN_GET
     const std::string&      get_name(void) const;
     const depend_t&         get_depend(void) const;
     const forward_t&        get_forward(void) const;
@@ -253,6 +264,7 @@ public:
     const ad_forward_t&     get_ad_forward(void) const;
     const ad_forward_der_t& get_ad_forward_der(void) const;
     const ad_reverse_der_t& get_ad_reverse_der(void) const;
+    // END_GET
 };
 // atom_global_t
 class atom_global_t {
