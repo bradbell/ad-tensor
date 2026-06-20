@@ -3,8 +3,13 @@ set -e -u
 # !! EDITS TO THIS FILE ARE LOST DURING UPDATES BY xrst.git/tools/dev_tools.sh !!
 # SPDX-License-Identifier: EPL-2.0 OR GPL-2.0-or-later
 # SPDX-FileCopyrightText: Bradley M. Bell <bradbell@seanet.com>
-# SPDX-FileContributor: 2023-26 Bradley M. Bell
+# SPDX-FileContributor: 2026 Bradley M. Bell
 # ----------------------------------------------------------------------------
+# script_path
+script_dir="$( dirname -- "${BASH_SOURCE[0]}" )"
+script_dir="$( cd -- "$script_dir" &> /dev/null && pwd )"
+script_path="$script_dir/$(basename $0)"
+#
 # tools/check_copy.sh
 # Checks that the copyright message, in all the source files,
 # is correct and up to date. If there were any errors, a message is printed,
@@ -229,5 +234,5 @@ then
     echo 'Re-execute tools/check_copy.sh ?'
     exit 1
 fi
-echo 'tools/check_copy.sh: OK'
+echo "$script_path: OK"
 exit 0
