@@ -82,6 +82,58 @@ template<> void call_op_t<adten_t>::forward_par(
 }
 // ------------------------------------------------------------------------
 // forward_var
+template<> void call_op_t<at::Tensor>::forward_var(
+    size_t                       op_index    ,
+    const agraph_t&              agraph      ,
+    const vector<at::Tensor>&    con_vec     ,
+    const vector<at::Tensor>&    par_vec     ,
+    vector<at::Tensor>&          var_vec
+) const {
+    //
+    // rng_used, domain
+    thread_local vector<bool>       rng_used;
+    thread_local vector<at::Tensor> domain;
+    //
+    // forward_t
+    typedef atom_callback_t::forward_t forward_t;
+    //
+    // arg_start. atom_id, call_info, n_domain, n_range, n_result
+    UNPACK
+    //
+    // forward
+    atom_global_t&         atom_global   = atom_global_t::singleton();
+    const atom_callback_t& atom_callback = atom_global.get( atom_id );
+    const forward_t&       forward       = atom_callback.get_forward();
+    //
+    // domain
+    domain.resize(0);
+    for(size_t j = 0; j < n_domain; ++j) {
+        size_t arg_index = arg_start + 5 + j;
+        domain.push_back( tensor_at_arg_index(
+            arg_index, agraph, con_vec, par_vec, var_vec
+        ) );
+    };
+    //
+    // rng_used
+    rng_used.resize(0);
+    rng_used.resize(n_range, false);
+    for(size_t k = 0; k < n_result; ++k) {
+        size_t arg_index    = arg_start + 5 + n_domain + k;
+        size_t rng_index    = agraph.m_arg_value[arg_index];
+        rng_used[rng_index] = true;
+        assert( agraph.m_arg_type[arg_index] == ad_type_t::variable );
+    }
+    //
+    // range
+    vector<at::Tensor> range = forward(call_info, rng_used, domain);
+    //
+    // par_vec
+    for(size_t k = 0; k < n_result; ++k) {
+        size_t arg_index      = arg_start + 5 + n_domain + k;
+        size_t rng_index      = agraph.m_arg_value[arg_index];
+        var_vec[op_index + k] = range[ rng_index ];
+    }
+}
 template<> void call_op_t<adten_t>::forward_var(
     size_t                       op_index    ,
     const agraph_t&              agraph      ,
@@ -90,15 +142,6 @@ template<> void call_op_t<adten_t>::forward_var(
     vector<adten_t>&             var_vec
 ) const {
     assert(false && "call_op: ad_forward_var not implemented");
-}
-template<> void call_op_t<at::Tensor>::forward_var(
-    size_t                       op_index    ,
-    const agraph_t&              agraph      ,
-    const vector<at::Tensor>&    con_vec     ,
-    const vector<at::Tensor>&    par_vec     ,
-    vector<at::Tensor>&          var_vec
-) const {
-    assert(false && "call_op: forward_var not implemented");
 }
 // ------------------------------------------------------------------------
 // forward_der
