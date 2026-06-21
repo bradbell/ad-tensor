@@ -20,8 +20,7 @@ namespace {
     // depend
     ad_tensor::sparsity_t depend(size_t call_info) {
         ad_tensor::sparsity_t sparsity;
-        std::array<size_t, 2> pair = {0, 0};
-        sparsity.push_back( pair );
+        sparsity.push_back( {0, 0} );
         return sparsity;
     }
     //
