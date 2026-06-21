@@ -40,6 +40,14 @@ atom_callback
 We use atom_callback below for an atom_callback_t
 object created using its default constructor.
 
+atom_f
+******
+We use atom_f below for the function corresponding to atom_callback; i.e.
+
+    range = atom_f(domain)
+
+where domain and range are vectors of tensors.
+
 call_info
 *********
 This value is passed through to the callback functions
@@ -51,13 +59,13 @@ If rng_used is the empty vector, all of the range values are used.
 Otherwise this vector has the same size as :ref:`call_atom@arange`
 in the corresponding call this atomic function.
 If rng_used[i] is true,
-the return value with index i is used and must be calculated.
+the return tensor with index i is used and must be calculated.
 If it is false,
-the return value with index i is not used and need not be calculated.
+the return tensor with index i is not used and need not be calculated.
 
 domain
 ******
-is the value of the domain tensors for this atomic function call.
+is the vector of the domain tensors for this atomic function call.
 
 set
 ***
@@ -116,7 +124,7 @@ depend
 }
 This returns a dependency :ref:`sparsity-name` pattern
 for this atomic function.
-If the atomic function range index i depends on the domain index j,
+If the tensor with range index i depends on the tensor with domain index j,
 then (i,j) is in the sparsity pattern for this atomic function.
 
 forward
@@ -125,7 +133,20 @@ forward
     BEGIN_FORWARD_T, END_FORWARD_T
 }
 This computes the atomic function range values
-as a function of its domain values.
+as a function of its domain values; i.e.,
+
+    range = atom_f(domain)
+
+
+forward_der
+***********
+{xrst_literal ,
+    BEGIN_FORWARD_DER_T, END_FORWARD_DER_T
+}
+This computes the atomic function forward derivative tensors
+as a function of its domain tensors and domain derivative tensors; i.e
+
+    rng_der = atom_f'(domain) * dom_der
 
 {xrst_end atom_callback}
 -------------------------------------------------------------------------------
@@ -156,8 +177,6 @@ is the callback information for this atomic function.
 atom_id
 =======
 Is the identifier for this atomic function.
-
-
 
 get
 ***
@@ -200,13 +219,15 @@ public:
         const vector<adten_t>&            domain
     );
     //
-    // forward_der_t
+    // BEGIN_FORWARD_DER_T
+    // rng_der = forward_der(call_info, rng_used, domain, dom_der)
     typedef vector<at::Tensor> (*forward_der_t) (
         size_t                            call_info ,
         const vector<bool>&               rng_used  ,
         const vector<at::Tensor>&         domain    ,
         const vector<at::Tensor>&         dom_der
     );
+    // END_FORWARD_DER_T
     //
     // ad_forward_der_t
     typedef vector<adten_t> (*ad_forward_der_t) (

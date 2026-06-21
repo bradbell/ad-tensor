@@ -27,13 +27,26 @@ namespace {
     //
     // forward
     vector<at::Tensor> forward(
-        size_t                    call_info , 
+        size_t                    call_info ,
         const vector<bool>&       rng_used ,
         const vector<at::Tensor>& domain ) {
         //
         // range
         vector<at::Tensor> range;
         range.push_back( domain[0] * domain[0] );
+        return range;
+    }
+    //
+    // forward_der
+    vector<at::Tensor> forward_der(
+        size_t                    call_info ,
+        const vector<bool>&       rng_used ,
+        const vector<at::Tensor>& domain   ,
+        const vector<at::Tensor>& dom_der ) {
+        //
+        // range
+        vector<at::Tensor> range;
+        range.push_back( 2.0 * domain[0] * dom_der[0] );
         return range;
     }
 }
@@ -47,9 +60,10 @@ TEST(examples_atom, get_started)  {
     atom_callback.set_name("square");
     atom_callback.set_depend(depend);
     atom_callback.set_forward(forward);
+    atom_callback.set_forward_der(forward_der);
     //
     // atom_id
-    ad_tensor::atom_global_t& atom_global = 
+    ad_tensor::atom_global_t& atom_global =
         ad_tensor::atom_global_t::singleton();
     size_t atom_id = atom_global.store( atom_callback );
     //
@@ -79,6 +93,15 @@ TEST(examples_atom, get_started)  {
     //
     // check
     bool equal = y[0].equal( x[0] * x[0] );
+    EXPECT_TRUE( equal );
+    //
+    // dx, dy
+    vector<Tensor> dx;
+    dx.push_back( torch::tensor( {4.0, 5.0} ) );
+    vector<Tensor> dy = f.forward_der(par_all, var_all, dx, options);
+    //
+    // check
+    equal = dy[0].equal( 2.0 * x[0] * dx[0] );
     EXPECT_TRUE( equal );
 }
 // END_CPP

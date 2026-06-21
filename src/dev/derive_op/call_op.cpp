@@ -143,6 +143,85 @@ template<> void call_op_t<adten_t>::forward_var(
 }
 // ------------------------------------------------------------------------
 // forward_der
+template<> void call_op_t<at::Tensor>::forward_der(
+    size_t                       op_index    ,
+    const agraph_t&              agraph      ,
+    const vector<at::Tensor>&    con_vec     ,
+    const vector<at::Tensor>&    par_vec     ,
+    const vector<at::Tensor>&    var_vec     ,
+    vector<at::Tensor>&          for_der
+) const {
+    //
+    // rng_used, domain, dom_der
+    thread_local vector<bool>       rng_used;
+    thread_local vector<at::Tensor> domain;
+    thread_local vector<at::Tensor> dom_der;
+    //
+    // forward_der_t
+    typedef atom_callback_t::forward_der_t forward_der_t;
+    //
+    // arg_start. atom_id, call_info, n_domain, n_range, n_result
+    UNPACK
+    //
+    // forward_der
+    atom_global_t&         atom_global   = atom_global_t::singleton();
+    const atom_callback_t& atom_callback = atom_global.get( atom_id );
+    const forward_der_t&   forward_der   = atom_callback.get_forward_der();
+    //
+    // rng_used
+    rng_used.resize(0);
+    rng_used.resize(n_range, false);
+    for(size_t k = 0; k < n_result; ++k) {
+        size_t arg_index    = arg_start + 5 + n_domain + k;
+        size_t rng_index    = agraph.m_arg_value[arg_index];
+        rng_used[rng_index] = true;
+    }
+    //
+    // domain, dom_der
+    domain.resize(0);
+    dom_der.resize(0);
+    for(size_t j = 0; j < n_domain; ++j) {
+        size_t    arg_index = arg_start + 5 + j;
+        size_t    vec_index = agraph.m_arg_value[arg_index];
+        ad_type_t arg_type  = agraph.m_arg_type[arg_index];
+        switch( arg_type ) {
+            case ad_type_t::constant: {
+                const at::Tensor& domain_j = con_vec[vec_index];
+                domain.push_back( domain_j );
+                dom_der.push_back( torch::zeros( domain_j.sizes() ) );
+            }
+            break;
+            case ad_type_t::parameter: {
+                const at::Tensor& domain_j = par_vec[vec_index];
+                domain.push_back( domain_j );
+                dom_der.push_back( torch::zeros( domain_j.sizes() ) );
+            }
+            break;
+            case ad_type_t::variable: {
+                const at::Tensor& domain_j = var_vec[vec_index];
+                domain.push_back( domain_j );
+                dom_der.push_back( for_der[vec_index] );
+            }
+            break;
+            //
+            default:
+            assert(false);
+            break;
+        }
+    }
+    //
+    // rng_der
+    vector<at::Tensor> rng_der = forward_der(
+        call_info, rng_used, domain, dom_der
+    );
+    //
+    // for_der
+    for(size_t k = 0; k < n_result; ++k) {
+        size_t arg_index      = arg_start + 5 + n_domain + k;
+        size_t rng_index      = agraph.m_arg_value[arg_index];
+        for_der[op_index + k] = rng_der[ rng_index ];
+    }
+}
 template<> void call_op_t<adten_t>::forward_der(
     size_t                       op_index    ,
     const agraph_t&              agraph      ,
@@ -152,16 +231,6 @@ template<> void call_op_t<adten_t>::forward_der(
     vector<adten_t>&             for_der
 ) const {
     assert(false && "call_op: ad_forward_der not implemented");
-}
-template<> void call_op_t<at::Tensor>::forward_der(
-    size_t                       op_index    ,
-    const agraph_t&              agraph      ,
-    const vector<at::Tensor>&    con_vec     ,
-    const vector<at::Tensor>&    par_vec     ,
-    const vector<at::Tensor>&    var_vec     ,
-    vector<at::Tensor>&          for_der
-) const {
-    assert(false && "call_op: forward_der not implemented");
 }
 // ------------------------------------------------------------------------
 // reverse_der
