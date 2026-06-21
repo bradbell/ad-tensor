@@ -26,39 +26,39 @@ namespace {
     }
     //
     // forward
-    vector<at::Tensor> forward(
-        size_t                    call_info ,
-        const vector<bool>&       rng_used ,
-        const vector<at::Tensor>& domain ) {
+    vector<Tensor> forward(
+        size_t                call_info ,
+        const vector<bool>&   rng_used ,
+        const vector<Tensor>& domain ) {
         //
         // range
-        vector<at::Tensor> range;
+        vector<Tensor> range;
         range.push_back( domain[0] * domain[0] );
         return range;
     }
     //
     // forward_der
-    vector<at::Tensor> forward_der(
-        size_t                    call_info ,
-        const vector<bool>&       rng_used ,
-        const vector<at::Tensor>& domain   ,
-        const vector<at::Tensor>& dom_der ) {
+    vector<Tensor> forward_der(
+        size_t                call_info ,
+        const vector<bool>&   rng_used ,
+        const vector<Tensor>& domain   ,
+        const vector<Tensor>& dom_der ) {
         //
         // rng_der
-        vector<at::Tensor> rng_der;
+        vector<Tensor> rng_der;
         rng_der.push_back( 2.0 * domain[0] * dom_der[0] );
         return rng_der;
     }
     //
     // reverse_der
-    vector<at::Tensor> reverse_der(
-        size_t                    call_info ,
-        const vector<bool>&       rng_used ,
-        const vector<at::Tensor>& domain   ,
-        const vector<at::Tensor>& rng_der ) {
+    vector<Tensor> reverse_der(
+        size_t                call_info ,
+        const vector<bool>&   rng_used ,
+        const vector<Tensor>& domain   ,
+        const vector<Tensor>& rng_der ) {
         //
         // dom_der
-        vector<at::Tensor> dom_der;
+        vector<Tensor> dom_der;
         if( rng_der[0].numel() == 0 ) {
             dom_der.push_back( torch::empty( {0} ) );
         } else {
