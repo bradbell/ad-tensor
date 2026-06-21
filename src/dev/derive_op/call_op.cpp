@@ -234,6 +234,68 @@ template<> void call_op_t<adten_t>::forward_der(
 }
 // ------------------------------------------------------------------------
 // reverse_der
+template<> void call_op_t<at::Tensor>::reverse_der(
+    size_t                       op_index    ,
+    const agraph_t&              agraph      ,
+    const vector<at::Tensor>&    con_vec     ,
+    const vector<at::Tensor>&    par_vec     ,
+    const vector<at::Tensor>&    var_vec     ,
+    vector<at::Tensor>&          rev_der
+) const {
+    //
+    // rng_used, domain, rng_der
+    thread_local vector<bool>       rng_used;
+    thread_local vector<at::Tensor> domain;
+    thread_local vector<at::Tensor> rng_der;
+    //
+    // reverse_der_t
+    typedef atom_callback_t::reverse_der_t reverse_der_t;
+    //
+    // arg_start. atom_id, call_info, n_domain, n_range, n_result
+    UNPACK
+    //
+    // reverse_der
+    atom_global_t&         atom_global   = atom_global_t::singleton();
+    const atom_callback_t& atom_callback = atom_global.get( atom_id );
+    const reverse_der_t&   reverse_der   = atom_callback.get_reverse_der();
+    //
+    // rng_used, rng_der
+    rng_used.resize(0);
+    rng_used.resize(n_range, false);
+    rng_der.resize(0);
+    rng_der.resize( n_range, torch::empty( {0} ) );
+    for(size_t k = 0; k < n_result; ++k) {
+        size_t rev_index    = op_index + k;
+        size_t arg_index    = arg_start + 5 + n_domain + k;
+        size_t rng_index    = agraph.m_arg_value[arg_index];
+        rng_used[rng_index] = true;
+        rng_der[rng_index]  = rev_der[rev_index];
+    }
+    //
+    // domain
+    domain.resize(0);
+    for(size_t j = 0; j < n_domain; ++j) {
+        size_t arg_index = arg_start + 5 + j;
+        domain.push_back( tensor_at_arg_index(
+            arg_index, agraph, con_vec, par_vec, var_vec
+        ) );
+    };
+    //
+    // dom_der
+    vector<at::Tensor> dom_der = reverse_der(
+        call_info, rng_used, domain, rng_der
+    );
+    //
+    // rev_der
+    for(size_t j = 0; j < n_domain; ++j) {
+        size_t    arg_index  = arg_start + 5 + j;
+        ad_type_t ad_type    = agraph.m_arg_type[arg_index];
+        if( ad_type == ad_type_t::variable ) {
+            size_t rev_index = agraph.m_arg_value[arg_index];
+            plus_equal( rev_der[rev_index], dom_der[j] );
+        }
+    }
+}
 template<> void call_op_t<adten_t>::reverse_der(
     size_t                       op_index    ,
     const agraph_t&              agraph      ,
@@ -243,15 +305,5 @@ template<> void call_op_t<adten_t>::reverse_der(
     vector<adten_t>&             rev_der
 ) const {
     assert(false && "call_op: ad_reverse_der not implemented");
-}
-template<> void call_op_t<at::Tensor>::reverse_der(
-    size_t                       op_index    ,
-    const agraph_t&              agraph      ,
-    const vector<at::Tensor>&    con_vec     ,
-    const vector<at::Tensor>&    par_vec     ,
-    const vector<at::Tensor>&    var_vec     ,
-    vector<at::Tensor>&          rev_der
-) const {
-    assert(false && "call_op: reverse_der not implemented");
 }
 } } // END_AD_TENSOR_DEV_NAMESPACE

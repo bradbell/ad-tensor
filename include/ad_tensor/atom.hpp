@@ -30,6 +30,7 @@ Atomic Functions Developer Documentation
 {xrst_spell
     rng
     adten
+    numel
 }
 
 The Atomic Callback Class atom_callback_t
@@ -143,10 +144,26 @@ forward_der
 {xrst_literal ,
     BEGIN_FORWARD_DER_T, END_FORWARD_DER_T
 }
-This computes the atomic function forward derivative tensors
+This computes the atomic function range derivative tensors
 as a function of its domain tensors and domain derivative tensors; i.e
 
     rng_der = atom_f'(domain) * dom_der
+
+reverse_der
+***********
+{xrst_literal ,
+    BEGIN_REVERSE_DER_T, END_REVERSE_DER_T
+}
+This computes the atomic function domain derivative tensors
+as a function of its domain tensors and range derivative tensors; i.e
+
+    dom_der = rng_der * atom_f'(domain)
+
+If rng_der[i] is empty, rng_der[i].numel() is zero,
+rng_der[i] should be treated as zero with the proper dimensions
+for the i-th range component of the atomic function.
+Furthermore, if dom_der[j] is zero, you can return an empty tensor
+(instead of zero with the proper dimensions) for dom_der[j] .
 
 {xrst_end atom_callback}
 -------------------------------------------------------------------------------
@@ -237,13 +254,14 @@ public:
         const vector<adten_t>&            dom_der
     );
     //
-    // reverse_der_t
+    // BEGIN_REVERSE_DER_T
     typedef vector<at::Tensor> (*reverse_der_t) (
         size_t                            call_info ,
         const vector<bool>&               rng_used  ,
         const vector<at::Tensor>&         domain    ,
         const vector<at::Tensor>&         rng_der
     );
+    // END_REVERSE_DER_T
     //
     // ad_reverse_der_t
     typedef vector<adten_t> (*ad_reverse_der_t) (

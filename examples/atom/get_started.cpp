@@ -44,10 +44,27 @@ namespace {
         const vector<at::Tensor>& domain   ,
         const vector<at::Tensor>& dom_der ) {
         //
-        // range
-        vector<at::Tensor> range;
-        range.push_back( 2.0 * domain[0] * dom_der[0] );
-        return range;
+        // rng_der
+        vector<at::Tensor> rng_der;
+        rng_der.push_back( 2.0 * domain[0] * dom_der[0] );
+        return rng_der;
+    }
+    //
+    // reverse_der
+    vector<at::Tensor> reverse_der(
+        size_t                    call_info ,
+        const vector<bool>&       rng_used ,
+        const vector<at::Tensor>& domain   ,
+        const vector<at::Tensor>& rng_der ) {
+        //
+        // dom_der
+        vector<at::Tensor> dom_der;
+        if( rng_der[0].numel() == 0 ) {
+            dom_der.push_back( torch::empty( {0} ) );
+        } else {
+            dom_der.push_back( 2.0 * domain[0] * rng_der[0] );
+        }
+        return dom_der;
     }
 }
 TEST(examples_atom, get_started)  {
@@ -61,6 +78,7 @@ TEST(examples_atom, get_started)  {
     atom_callback.set_depend(depend);
     atom_callback.set_forward(forward);
     atom_callback.set_forward_der(forward_der);
+    atom_callback.set_reverse_der(reverse_der);
     //
     // atom_id
     ad_tensor::atom_global_t& atom_global =
@@ -99,11 +117,22 @@ TEST(examples_atom, get_started)  {
     EXPECT_EQ( z[0].item<float>(), (x[0] * x[0]).sum().item<float>() );
     //
     // dx, dz
+    // forward mode derivative
     vector<Tensor> dx;
     dx.push_back( torch::tensor( {4.0, 5.0} ) );
     vector<Tensor> dz = f.forward_der(par_all, var_all, dx, options);
     //
     // check
     EXPECT_EQ( dz[0].item<float>(), (2.0 * x[0] * dx[0]).sum().item<float>() );
+    //
+    // dz, dx
+    // reverse mode derivative
+    dz[0] = torch::tensor( 6.0 );
+    dx = f.reverse_der(par_all, var_all, dz, options);
+    //
+    // check
+    bool equal;
+    equal = dx[0].equal( dz[0] * 2.0 * x[0] );
+    EXPECT_TRUE( equal );
 }
 // END_CPP
