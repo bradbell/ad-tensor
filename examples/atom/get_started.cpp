@@ -80,28 +80,30 @@ TEST(examples_atom, get_started)  {
     size_t call_info = 0;
     vector<adten_t> ay = adten_t::call_atom(atom_id, call_info, ax);
     //
-    // y = f(x)
-    ad_tensor::adfn_t f = adten_t::stop_recording(ay);
+    // az
+    vector<adten_t> az;
+    az.push_back( ay[0].sum() );
+    //
+    // z = f(x)
+    ad_tensor::adfn_t f = adten_t::stop_recording(az);
     //
     // x
     x[0] = torch:: tensor( {3.0, 4.0} );
     //
-    // y
+    // z
     vector<Tensor> par_all;
     vector<Tensor> var_all = f.forward_var(par_all, x, options);
-    vector<Tensor> y       = f.get_range(par_all, var_all);
+    vector<Tensor> z       = f.get_range(par_all, var_all);
     //
     // check
-    bool equal = y[0].equal( x[0] * x[0] );
-    EXPECT_TRUE( equal );
+    EXPECT_EQ( z[0].item<float>(), (x[0] * x[0]).sum().item<float>() );
     //
-    // dx, dy
+    // dx, dz
     vector<Tensor> dx;
     dx.push_back( torch::tensor( {4.0, 5.0} ) );
-    vector<Tensor> dy = f.forward_der(par_all, var_all, dx, options);
+    vector<Tensor> dz = f.forward_der(par_all, var_all, dx, options);
     //
     // check
-    equal = dy[0].equal( 2.0 * x[0] * dx[0] );
-    EXPECT_TRUE( equal );
+    EXPECT_EQ( dz[0].item<float>(), (2.0 * x[0] * dx[0]).sum().item<float>() );
 }
 // END_CPP
