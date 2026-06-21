@@ -10,6 +10,11 @@ echo_eval() {
     echo $*
     eval $*
 }
+#
+# script_path
+script_dir="$( dirname -- "${BASH_SOURCE[0]}" )"
+script_dir="$( cd -- "$script_dir" &> /dev/null && pwd )"
+script_path="$script_dir/$(basename $0)"
 # -----------------------------------------------------------------------------
 if [ ! -e 'tools/check_all.sh' ]
 then
@@ -74,5 +79,5 @@ do
     echo_eval $check
 done
 #
-echo "check_all.sh OK"
+echo "$script_path: OK"
 exit 0

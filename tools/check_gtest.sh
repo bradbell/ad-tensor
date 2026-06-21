@@ -10,8 +10,13 @@ echo_eval() {
    echo $*
    eval $*
 }
+#
+# script_path
+script_dir="$( dirname -- "${BASH_SOURCE[0]}" )"
+script_dir="$( cd -- "$script_dir" &> /dev/null && pwd )"
+script_path="$script_dir/$(basename $0)"
 # -----------------------------------------------------------------------------
-if [ "$0" != "tools/check_gtest.sh" ]
+if [ ! -e 'tools/check_gtest.sh' ]
 then
    echo "tools/check_gtest.sh: must be executed from its parent directory"
    exit 1
@@ -32,5 +37,5 @@ echo_eval ./examples/examples
 echo_eval ninja tests
 echo_eval ./tests/tests
 #
-echo 'check_gtest.sh: OK'
+echo "$script_path: OK"
 exit 0

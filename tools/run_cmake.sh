@@ -10,8 +10,13 @@ echo_eval() {
    echo $*
    eval $*
 }
+#
+# script_path
+script_dir="$( dirname -- "${BASH_SOURCE[0]}" )"
+script_dir="$( cd -- "$script_dir" &> /dev/null && pwd )"
+script_path="$script_dir/$(basename $0)"
 # -----------------------------------------------------------------------------
-if [ "$0" != "tools/run_cmake.sh" ]
+if [ ! -e "tools/run_cmake.sh" ]
 then
    echo "tools/run_cmake.sh: must be executed from its parent directory"
    exit 1
@@ -86,5 +91,5 @@ then
     exit 1
 fi
 #
-echo 'run_cmake.sh: OK'
+echo "$script_path: OK"
 exit 0
