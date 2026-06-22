@@ -183,6 +183,7 @@ private:
     );
 public:
     // BEGIN_PUBLIC_CTOR
+    adten_t(void);
     explicit adten_t( const at::Tensor& tensor );
     // END_PUBLIC_CTOR
     //
