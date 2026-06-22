@@ -88,6 +88,9 @@ vector<TensorType> adfn_t::forward_par(
     //
     // trace
     bool trace = options.get_trace();
+    if( trace ) {
+        cout << "Begin tracing adfn::forward_par\n";
+    }
     //
     // n_op, n_all, empty
     size_t n_op      = m_par.m_op_seq.size();

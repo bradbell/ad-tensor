@@ -80,13 +80,9 @@ namespace ad_tensor {
         m_name = name;
     }
     //
-    // atom_callback_t:: set_depend, get_depend
+    // atom_callback_t:: set_depend, get_depend, set_forward, get_forward
     SETTER_AND_GETTER(depend)
-    //
-    // atom_callback_t::
-    // set_forward, get_forward, set_ad_forward, get_ad_forward
     SETTER_AND_GETTER(forward)
-    SETTER_AND_GETTER(ad_forward)
     //
     // atom_callback_t::
     // set_forward_der, get_forward_der, set_ad_forward_der, get_ad_forward_der

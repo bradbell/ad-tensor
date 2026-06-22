@@ -139,7 +139,35 @@ template<> void call_op_t<adten_t>::forward_var(
     const vector<adten_t>&       par_vec     ,
     vector<adten_t>&             var_vec
 ) const {
-    assert(false && "call_op: ad_forward_var not implemented");
+    //
+    // domain
+    thread_local vector<adten_t>    domain;
+    //
+    // arg_start. atom_id, call_info, n_domain, n_result
+    size_t arg_start = agraph.m_arg_start[op_index];
+    size_t atom_id   = agraph.m_arg_value[arg_start + 0];
+    size_t call_info = agraph.m_arg_value[arg_start + 1];
+    size_t n_domain  = agraph.m_arg_value[arg_start + 2];
+    size_t n_result  = agraph.m_arg_value[arg_start + 4];
+    //
+    // domain
+    domain.resize(0);
+    for(size_t j = 0; j < n_domain; ++j) {
+        size_t arg_index = arg_start + 5 + j;
+        domain.push_back( tensor_at_arg_index(
+            arg_index, agraph, con_vec, par_vec, var_vec
+        ) );
+    };
+    //
+    // range
+    vector<adten_t>  range = adten_t::call_atom(atom_id, call_info, domain);
+    //
+    // par_vec
+    for(size_t k = 0; k < n_result; ++k) {
+        size_t arg_index      = arg_start + 5 + n_domain + k;
+        size_t rng_index      = agraph.m_arg_value[arg_index];
+        var_vec[op_index + k] = range[ rng_index ];
+    }
 }
 // ------------------------------------------------------------------------
 // forward_der

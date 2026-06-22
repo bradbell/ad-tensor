@@ -109,6 +109,9 @@ vector<TensorType> adfn_t::forward_der(
     //
     // trace
     bool trace = options.get_trace();
+    if( trace ) {
+        cout << "Begin tracing adfn::forward_der\n";
+    }
     //
     // n_op, n_all, empty
     size_t n_op      = m_var.m_op_seq.size();

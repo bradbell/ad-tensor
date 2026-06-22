@@ -94,12 +94,8 @@ Functions
     forward,        always
     forward_der,    :ref:`adfn_forward_der-name` with TensorType at::Tensor
     reverse_der,    :ref:`adfn_reverse_der-name` with TensorType at::Tensor
-    ad_forward,     :ref:`adfn_forward_par-name` with TensorType adten
     ad_forward_der, :ref:`adfn_forward_der-name` with TensorType adten
     ad_reverse_der, :ref:`adfn_reverse_der-name` with TensorType adten
-
-Note that ad_forward is also required when :ref:`adfn_forward_var-name`
-is used with TensorType adten.
 
 After the atom_callback_t constructor, all the callback functions are null.
 Each callback function that is used must be set by a call of the form
@@ -229,13 +225,6 @@ public:
     );
     // END_FORWARD_T
     //
-    // ad_forward_t
-    typedef vector<adten_t> (*ad_forward_t) (
-        size_t                            call_info ,
-        const vector<bool>&               rng_used  ,
-        const vector<adten_t>&            domain
-    );
-    //
     // BEGIN_FORWARD_DER_T
     // rng_der = forward_der(call_info, rng_used, domain, dom_der)
     typedef vector<at::Tensor> (*forward_der_t) (
@@ -261,15 +250,13 @@ public:
         const vector<at::Tensor>&         domain    ,
         const vector<at::Tensor>&         rng_der
     );
-    // END_REVERSE_DER_T
-    //
-    // ad_reverse_der_t
     typedef vector<adten_t> (*ad_reverse_der_t) (
         size_t                            call_info ,
         const vector<bool>&               rng_used  ,
         const vector<adten_t>&            domain    ,
         const vector<adten_t>&            rng_der
     );
+    // END_REVERSE_DER_T
 
 private:
     // m_name
@@ -283,8 +270,7 @@ private:
     forward_der_t     m_forward_der;
     reverse_der_t     m_reverse_der;
     //
-    // m_ad_forward, m_ad_forward_der, m_ad_reverse_der
-    ad_forward_t         m_ad_forward;
+    // m_ad_forward_der, m_ad_reverse_der
     ad_forward_der_t     m_ad_forward_der;
     ad_reverse_der_t     m_ad_reverse_der;
 public:
@@ -296,7 +282,6 @@ public:
     , m_forward(nullptr)
     , m_forward_der(nullptr)
     , m_reverse_der(nullptr)
-    , m_ad_forward(nullptr)
     , m_ad_forward_der(nullptr)
     , m_ad_reverse_der(nullptr)
     // END_CTOR
@@ -310,7 +295,6 @@ public:
     void set_forward(const forward_t&                  forward);
     void set_forward_der(const forward_der_t&          forward_der);
     void set_reverse_der(const reverse_der_t&          reverse_der);
-    void set_ad_forward(const ad_forward_t&            ad_forward);
     void set_ad_forward_der(const ad_forward_der_t&    ad_forward_der);
     void set_ad_reverse_der(const ad_reverse_der_t&    ad_reverse_der);
     // END_SET_FUNCTION
@@ -321,7 +305,6 @@ public:
     const forward_t&        get_forward(void) const;
     const forward_der_t&    get_forward_der(void) const;
     const reverse_der_t&    get_reverse_der(void) const;
-    const ad_forward_t&     get_ad_forward(void) const;
     const ad_forward_der_t& get_ad_forward_der(void) const;
     const ad_reverse_der_t& get_ad_reverse_der(void) const;
     // END_GET_CALLBACK
