@@ -87,7 +87,7 @@ vector<TensorType> adfn_t::reverse_der(
     // rng_der
 # ifndef NDEBUg
     const vector< vector<int64_t> >&  shapes = m_rng_shapes;
-    string msg = "reverse_der: ";
+    string msg = m_name + ".reverse_der: ";
     if( rng_der.size() != shapes.size() ) {
         msg += "rng_der.size() = " + std::to_string( rng_der.size() );
         msg += " and the range size for this adfn is ";

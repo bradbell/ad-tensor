@@ -74,7 +74,7 @@ vector<TensorType> adfn_t::forward_var(
     // dom_var
 # ifndef NDEBUg
     const vector< vector<int64_t> >&  shapes = m_var.m_dom_shapes;
-    string msg = "forward_var: ";
+    string msg = m_name + ".forward_var: ";
     if( dom_var.size() != shapes.size() ) {
         msg += "dom_var.size() = " + std::to_string( dom_var.size() );
         msg += " and its size for this adfn is ";
