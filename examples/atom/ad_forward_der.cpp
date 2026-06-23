@@ -7,14 +7,21 @@
 #include <gtest/gtest.h>
 #include <torch/torch.h>
 #include <ad_tensor/adten.hpp>
+#include <ad_tensor/options.hpp>
 #include <ad_tensor/atom.hpp>
 #include <ad_tensor/sparsity.hpp>
+
+#include <ad_tensor/dev/to_string.hpp>
 namespace {
     //
-    // vector
+    // using
     using ad_tensor::vector;
     using ad_tensor::adten_t;
+    using ad_tensor::options_t;
+    //
     using at::Tensor;
+    using std::cout;
+    using ad_tensor::dev::to_string;
     //
     // atom_id_z
     size_t atom_id_z;
@@ -23,7 +30,9 @@ namespace {
     // y(x) = x * x * x
     // ----------------------------------------------------------------------
     // depend_y
-    ad_tensor::sparsity_t depend_y(size_t call_info) {
+    ad_tensor::sparsity_t depend_y(
+        const options_t& options,
+        size_t           call_info) {
         ad_tensor::sparsity_t sparsity;
         std::array<size_t, 2> pair = {0, 0};
         sparsity.push_back( pair );
@@ -32,6 +41,7 @@ namespace {
     //
     // forward
     vector<Tensor> forward_y(
+        const options_t&      options   ,
         size_t                call_info ,
         const vector<bool>&   rng_used ,
         const vector<Tensor>& domain ) {
@@ -41,11 +51,17 @@ namespace {
         // range
         vector<Tensor> range;
         range.push_back( x * x * x );
+        //
+        if( options.get_trace() ) {
+            cout << "forward_y: domain =\n" << to_string(domain);
+            cout << "forward_y: range =\n" << to_string(range);
+        }
         return range;
     }
     //
     // forward_der_y
     vector<Tensor> forward_der_y(
+        const options_t&      options   ,
         size_t                call_info ,
         const vector<bool>&   rng_used  ,
         const vector<Tensor>& domain    ,
@@ -55,13 +71,20 @@ namespace {
         Tensor dx = dom_der[0];
         //
         // range
-        vector<Tensor> range;
-        range.push_back( 3.0 * x * x * dx );
-        return range;
+        vector<Tensor> rng_der;
+        rng_der.push_back( 3.0 * x * x * dx );
+        //
+        if( options.get_trace() ) {
+            cout << "forward_der_y: domain =\n" << to_string(domain);
+            cout << "forward_der_y: dom_der =\n" << to_string(dom_der);
+            cout << "forward_der_y: rng_der =\n" << to_string(rng_der);
+        }
+        return rng_der;
     }
     //
     // ad_forward_der_y
     vector<adten_t> ad_forward_der_y(
+        const options_t&      options   ,
         size_t                 call_info ,
         const vector<bool>&    rng_used ,
         const vector<adten_t>& domain   ,
@@ -75,13 +98,20 @@ namespace {
         vector<adten_t> rng_der = adten_t::call_atom(
             atom_id_z, call_info, domain_z
         );
+        if( options.get_trace() ) {
+            cout << "ad_forward_der_y: domain =\n" << to_string(domain);
+            cout << "ad_forward_der_y: dom_der =\n" << to_string(dom_der);
+            cout << "ad_forward_der_y: rng_der =\n" << to_string(rng_der);
+        }
         return rng_der;
     }
     // ----------------------------------------------------------------------
     // z(x, dx) = 3 * x * x * dx
     // ----------------------------------------------------------------------
     // depend_z
-    ad_tensor::sparsity_t depend_z(size_t call_info) {
+    ad_tensor::sparsity_t depend_z(
+        const options_t&      options  ,
+        size_t                call_info) {
         ad_tensor::sparsity_t sparsity;
         sparsity.push_back( {0, 0} );
         sparsity.push_back( {0, 1} );
@@ -90,6 +120,7 @@ namespace {
     //
     // forward_z
     vector<Tensor> forward_z(
+        const options_t&      options   ,
         size_t                call_info ,
         const vector<bool>&   rng_used ,
         const vector<Tensor>& domain ) {
@@ -100,11 +131,16 @@ namespace {
         // range
         vector<Tensor> range;
         range.push_back( z );
+        if( options.get_trace() ) {
+            cout << "forward_z: domain =\n" << to_string(domain);
+            cout << "forward_z: range =\n" << to_string(range);
+        }
         return range;
     }
     //
     // forward_der_z
     vector<Tensor> forward_der_z(
+        const options_t&      options   ,
         size_t                call_info,
         const vector<bool>&   rng_used,
         const vector<Tensor>& domain,
@@ -115,11 +151,16 @@ namespace {
         Tensor dx   = domain[1];
         Tensor d_x  = dom_der[0];
         Tensor d_dx = dom_der[1];
-        Tensor dz   = 6.0 * x * x * dx * d_x + 3.0 * x * x * d_dx;
+        Tensor dz   = 6.0 * x * dx * d_x + 3.0 * x * x * d_dx;
         //
         // rng_der
         vector<Tensor> rng_der;
         rng_der.push_back( dz );
+        if( options.get_trace() ) {
+            cout << "forward_der_z: domain =\n" << to_string(domain);
+            cout << "forward_der_z: dom_der =\n" << to_string(dom_der);
+            cout << "forward_der_z: rng_der =\n" << to_string(rng_der);
+        }
         return rng_der;
     }
 }
@@ -127,7 +168,6 @@ TEST(examples_atom, ad_forward_der)  {
     //
     // options
     ad_tensor::options_t options;
-    options.set_trace(true);
     //
     // atom_global
     ad_tensor::atom_global_t& atom_global =
@@ -135,7 +175,8 @@ TEST(examples_atom, ad_forward_der)  {
     //
     // atom_callback_z
     ad_tensor::atom_callback_t atom_callback_z;
-    atom_callback_z.set_name("g");
+    atom_callback_z.set_name("z");
+    atom_callback_z.set_options(options);
     atom_callback_z.set_depend(depend_z);
     atom_callback_z.set_forward(forward_z);
     atom_callback_z.set_forward_der(forward_der_z);
@@ -145,7 +186,8 @@ TEST(examples_atom, ad_forward_der)  {
     //
     // atom_callback_y
     ad_tensor::atom_callback_t atom_callback_y;
-    atom_callback_y.set_name("h");
+    atom_callback_y.set_name("y");
+    atom_callback_y.set_options(options);
     atom_callback_y.set_depend(depend_y);
     atom_callback_y.set_forward(forward_y);
     atom_callback_y.set_forward_der(forward_der_y);
@@ -176,7 +218,7 @@ TEST(examples_atom, ad_forward_der)  {
     vector<adten_t> arange;
     arange.push_back( asum );
     //
-    // range = f(domain) = x_0^3 + x_1^3
+    // range = f(domain) = (x * x * x).sum()
     ad_tensor::adfn_t f = adten_t::stop_recording(arange);
     //
     // adomain
@@ -192,7 +234,7 @@ TEST(examples_atom, ad_forward_der)  {
         apar_all, avar_all, adom_der, options
     );
     //
-    // arng_der = g(domain) = f'(domain) = 3 * x * x
+    // arng_der = g(domain) = f'(domain) = (3 * x * x).sum()
     ad_tensor::adfn_t g = adten_t::stop_recording(arng_der);
     //
     // x, domain
@@ -205,12 +247,9 @@ TEST(examples_atom, ad_forward_der)  {
     vector<Tensor> var_all = g.forward_var(par_all, domain, options);
     vector<Tensor> range   = g.get_range(par_all, var_all);
     Tensor         dsum    = range[0];
-    /*
-    TODO: get this check to pass
     //
     // check
-    bool equal = dsum.equal(3.0 * x * x);
-    EXPECT_TRUE(equal);
+    EXPECT_EQ(dsum.item<float>(), (3.0 * x * x).sum().item<float>() );
     //
     // dx, dom_der
     Tensor dx = torch::tensor( {1.0, 1.0} );
@@ -222,10 +261,6 @@ TEST(examples_atom, ad_forward_der)  {
     Tensor ddsum           = rng_der[0];
     //
     // check
-    std::cout << "6.0 * x = " << 6.0 * x << "\n";
-    std::cout << "ddsum = " << ddsum << "\n";
-    equal = ddsum.equal( 6.0 * x );
-    EXPECT_TRUE(equal);
-    */
+    EXPECT_EQ(ddsum.item<float>(), (6.0 * x).sum().item<float>() );
 }
 // END_CPP

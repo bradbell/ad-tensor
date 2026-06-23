@@ -9,11 +9,13 @@
 #include <ad_tensor/adten.hpp>
 #include <ad_tensor/atom.hpp>
 #include <ad_tensor/sparsity.hpp>
+#include <ad_tensor/options.hpp>
 namespace {
     //
-    // vector
+    // using
     using ad_tensor::vector;
     using ad_tensor::adten_t;
+    using ad_tensor::options_t;
     using at::Tensor;
     //
     // atom_id_z
@@ -23,7 +25,9 @@ namespace {
     // y(x) = x * x * x
     // ----------------------------------------------------------------------
     // depend_y
-    ad_tensor::sparsity_t depend_y(size_t call_info) {
+    ad_tensor::sparsity_t depend_y(
+        const options_t&      options   ,
+        size_t                call_info ) {
         ad_tensor::sparsity_t sparsity;
         std::array<size_t, 2> pair = {0, 0};
         sparsity.push_back( pair );
@@ -32,6 +36,7 @@ namespace {
     //
     // forward
     vector<Tensor> forward_y(
+        const options_t&      options   ,
         size_t                call_info ,
         const vector<bool>&   rng_used ,
         const vector<Tensor>& domain ) {
@@ -46,6 +51,7 @@ namespace {
     //
     // forward_der_y
     vector<Tensor> forward_der_y(
+        const options_t&      options   ,
         size_t                call_info ,
         const vector<bool>&   rng_used  ,
         const vector<Tensor>& domain    ,
@@ -62,6 +68,7 @@ namespace {
     //
     // ad_reverse_der_y
     vector<adten_t> ad_reverse_der_y(
+        const options_t&       options   ,
         size_t                 call_info ,
         const vector<bool>&    rng_used ,
         const vector<adten_t>& domain   ,
@@ -85,7 +92,9 @@ namespace {
     // z(x, dy) = 3 * x * x * dy
     // ----------------------------------------------------------------------
     // depend_z
-    ad_tensor::sparsity_t depend_z(size_t call_info) {
+    ad_tensor::sparsity_t depend_z(
+        const options_t&      options   ,
+        size_t                call_info ) {
         ad_tensor::sparsity_t sparsity;
         sparsity.push_back( {0, 0} );
         sparsity.push_back( {0, 1} );
@@ -94,6 +103,7 @@ namespace {
     //
     // forward_z
     vector<Tensor> forward_z(
+        const options_t&      options   ,
         size_t                call_info ,
         const vector<bool>&   rng_used ,
         const vector<Tensor>& domain ) {
@@ -109,6 +119,7 @@ namespace {
     //
     // forward_der_z
     vector<Tensor> forward_der_z(
+        const options_t&      options   ,
         size_t                call_info,
         const vector<bool>&   rng_used,
         const vector<Tensor>& domain,

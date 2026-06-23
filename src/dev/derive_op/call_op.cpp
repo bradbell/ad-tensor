@@ -4,6 +4,7 @@
 // ----------------------------------------------------------------------------
 #include <ad_tensor/adten.hpp>
 #include <ad_tensor/atom.hpp>
+#include <ad_tensor/options.hpp>
 #include <ad_tensor/dev/derive_op.hpp>
 #include <ad_tensor/dev/broadcast.hpp>
 #include <ad_tensor/dev/plus_minus_equal.hpp>
@@ -38,9 +39,10 @@ template<> void call_op_t<at::Tensor>::forward_par(
     // arg_start. atom_id, call_info, n_domain, n_range, n_result
     UNPACK
     //
-    // forward
+    // options, forward
     atom_global_t&         atom_global   = atom_global_t::singleton();
     const atom_callback_t& atom_callback = atom_global.get( atom_id );
+    const options_t&       options       = atom_callback.get_options();
     const forward_t&       forward       = atom_callback.get_forward();
     //
     // domain
@@ -62,7 +64,7 @@ template<> void call_op_t<at::Tensor>::forward_par(
     }
     //
     // range
-    vector<at::Tensor> range = forward(call_info, rng_used, domain);
+    vector<at::Tensor> range = forward(options, call_info, rng_used, domain);
     //
     // par_vec
     for(size_t k = 0; k < n_result; ++k) {
@@ -102,6 +104,7 @@ template<> void call_op_t<at::Tensor>::forward_var(
     // forward
     atom_global_t&         atom_global   = atom_global_t::singleton();
     const atom_callback_t& atom_callback = atom_global.get( atom_id );
+    const options_t&       options   = atom_callback.get_options();
     const forward_t&       forward       = atom_callback.get_forward();
     //
     // domain
@@ -123,7 +126,7 @@ template<> void call_op_t<at::Tensor>::forward_var(
     }
     //
     // range
-    vector<at::Tensor> range = forward(call_info, rng_used, domain);
+    vector<at::Tensor> range = forward(options, call_info, rng_used, domain);
     //
     // par_vec
     for(size_t k = 0; k < n_result; ++k) {
@@ -194,6 +197,7 @@ template<> void call_op_t<at::Tensor>::forward_der(
     // forward_der
     atom_global_t&         atom_global   = atom_global_t::singleton();
     const atom_callback_t& atom_callback = atom_global.get( atom_id );
+    const options_t&       options   = atom_callback.get_options();
     const forward_der_t&   forward_der   = atom_callback.get_forward_der();
     //
     // rng_used
@@ -240,7 +244,7 @@ template<> void call_op_t<at::Tensor>::forward_der(
     //
     // rng_der
     vector<at::Tensor> rng_der = forward_der(
-        call_info, rng_used, domain, dom_der
+        options, call_info, rng_used, domain, dom_der
     );
     //
     // for_der
@@ -273,6 +277,7 @@ template<> void call_op_t<adten_t>::forward_der(
     // forward_der
     atom_global_t&         atom_global   = atom_global_t::singleton();
     const atom_callback_t& atom_callback = atom_global.get( atom_id );
+    const options_t&       options   = atom_callback.get_options();
     const forward_der_t&   forward_der   = atom_callback.get_ad_forward_der();
     //
     // rng_used
@@ -321,7 +326,7 @@ template<> void call_op_t<adten_t>::forward_der(
     //
     // rng_der
     vector<adten_t> rng_der = forward_der(
-        call_info, rng_used, domain, dom_der
+        options, call_info, rng_used, domain, dom_der
     );
     //
     // for_der
@@ -356,6 +361,7 @@ template<> void call_op_t<at::Tensor>::reverse_der(
     // reverse_der
     atom_global_t&         atom_global   = atom_global_t::singleton();
     const atom_callback_t& atom_callback = atom_global.get( atom_id );
+    const options_t&       options   = atom_callback.get_options();
     const reverse_der_t&   reverse_der   = atom_callback.get_reverse_der();
     //
     // rng_used, rng_der
@@ -382,7 +388,7 @@ template<> void call_op_t<at::Tensor>::reverse_der(
     //
     // dom_der
     vector<at::Tensor> dom_der = reverse_der(
-        call_info, rng_used, domain, rng_der
+        options, call_info, rng_used, domain, rng_der
     );
     //
     // rev_der
@@ -418,6 +424,7 @@ template<> void call_op_t<adten_t>::reverse_der(
     // reverse_der
     atom_global_t&         atom_global   = atom_global_t::singleton();
     const atom_callback_t& atom_callback = atom_global.get( atom_id );
+    const options_t&       options   = atom_callback.get_options();
     const reverse_der_t&   reverse_der   = atom_callback.get_ad_reverse_der();
     //
     // rng_used, rng_der
@@ -444,7 +451,7 @@ template<> void call_op_t<adten_t>::reverse_der(
     //
     // dom_der
     vector<adten_t> dom_der = reverse_der(
-        call_info, rng_used, domain, rng_der
+        options, call_info, rng_used, domain, rng_der
     );
     //
     // rev_der

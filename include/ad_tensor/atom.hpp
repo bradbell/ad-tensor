@@ -53,6 +53,9 @@ call_info
 *********
 This value is passed through to the callback functions
 from :ref:`call_atom@call_info` in the call to this atomic function.
+Each atomic function callback
+can decided what to do based on the value of call_info.
+
 
 rng_used
 ********
@@ -79,6 +82,17 @@ It must set this with a call of the form
 {xrst_literal ,
     BEGIN_SET_NAME, END_SET_NAME
 }
+
+options
+=======
+After the constructor, the default value is used for all the
+:ref:`options-name`. You can change this with a call of the form
+{xrst_literal ,
+    BEGIN_SET_OPTIONS, END_SET_OPTIONS
+}
+Each atomic function will have one value for its options
+but can have a different call_info value for each
+:ref`call_atom-name` to the atomic function.
 
 Functions
 =========
@@ -145,6 +159,9 @@ as a function of its domain tensors and domain derivative tensors; i.e
 
     rng_der = atom_f'(domain) * dom_der
 
+It is suggested that the AD version of forward_der call an atomic function
+so the values for the calculations are not in the tape being recorded.
+
 reverse_der
 ***********
 {xrst_literal ,
@@ -155,11 +172,18 @@ as a function of its domain tensors and range derivative tensors; i.e
 
     dom_der = rng_der * atom_f'(domain)
 
-If rng_der[i] is empty, rng_der[i].numel() is zero,
-rng_der[i] should be treated as zero with the proper dimensions
-for the i-th range component of the atomic function.
-Furthermore, if dom_der[j] is zero, you can return an empty tensor
-(instead of zero with the proper dimensions) for dom_der[j] .
+#.  If rng_der[i] is empty, rng_der[i].numel() is zero,
+    rng_der[i] should be treated as zero with the proper dimensions
+    for the i-th range component of the atomic function.
+
+#.  If you know dom_der[j] is zero based on the empty input tensors,
+    you can return an empty dom_der[j],
+    instead of zero with the proper dimensions for dom_der[j] .
+    This avoids the memory for the operations that use this return value.
+
+#.  It is suggested that the AD version of forward_der call a different
+    atomic function so the values for the calculations are not in the
+    tape being recorded.
 
 {xrst_end atom_callback}
 -------------------------------------------------------------------------------
@@ -205,6 +229,7 @@ A call to get will wait until it can lock out any calls to store.
 #include <ad_tensor/vector.hpp>
 #include <ad_tensor/sparsity.hpp>
 #include <ad_tensor/adfn.hpp>
+#include <ad_tensor/options.hpp>
 //
 namespace ad_tensor {  // BEGIN_AD_TENSOR_NAMESPACE
 // --------------------------------------------------------------------------
@@ -213,12 +238,16 @@ class atom_callback_t {
 public:
     //
     // BEGIN_DEPEND
-    typedef sparsity_t (*depend_t)(size_t call_info);
+    typedef sparsity_t (*depend_t)(
+        const options_t&                  options   ,
+        size_t                            call_info
+    );
     // END_DEPEND
     //
     // BEGIN_FORWARD_T
     // range = forward(call_info, rng_used, domain)
     typedef vector<at::Tensor> (*forward_t) (
+        const options_t&                  options   ,
         size_t                            call_info ,
         const vector<bool>&               rng_used  ,
         const vector<at::Tensor>&         domain
@@ -228,6 +257,7 @@ public:
     // BEGIN_FORWARD_DER_T
     // rng_der = forward_der(call_info, rng_used, domain, dom_der)
     typedef vector<at::Tensor> (*forward_der_t) (
+        const options_t&                  options   ,
         size_t                            call_info ,
         const vector<bool>&               rng_used  ,
         const vector<at::Tensor>&         domain    ,
@@ -237,6 +267,7 @@ public:
     //
     // ad_forward_der_t
     typedef vector<adten_t> (*ad_forward_der_t) (
+        const options_t&                  options   ,
         size_t                            call_info ,
         const vector<bool>&               rng_used  ,
         const vector<adten_t>&            domain    ,
@@ -245,12 +276,14 @@ public:
     //
     // BEGIN_REVERSE_DER_T
     typedef vector<at::Tensor> (*reverse_der_t) (
+        const options_t&                  options   ,
         size_t                            call_info ,
         const vector<bool>&               rng_used  ,
         const vector<at::Tensor>&         domain    ,
         const vector<at::Tensor>&         rng_der
     );
     typedef vector<adten_t> (*ad_reverse_der_t) (
+        const options_t&                  options   ,
         size_t                            call_info ,
         const vector<bool>&               rng_used  ,
         const vector<adten_t>&            domain    ,
@@ -261,6 +294,9 @@ public:
 private:
     // m_name
     std::string m_name;
+    //
+    // m_options
+    options_t m_options;
     //
     // m_depend
     depend_t   m_depend;
@@ -278,6 +314,7 @@ public:
     // BEGIN_CTOR
     atom_callback_t(void)
     : m_name()
+    , m_options()
     , m_depend(nullptr)
     , m_forward(nullptr)
     , m_forward_der(nullptr)
@@ -290,6 +327,11 @@ public:
     void set_name(const std::string& name);
     // END_SET_NAME
     //
+    // BEGIN_SET_OPTIONS
+    void set_options(const options_t& options);
+    // END_SET_OPTIONS
+    //
+    //
     // BEGIN_SET_FUNCTION
     void set_depend(const depend_t&                    depend);
     void set_forward(const forward_t&                  forward);
@@ -301,6 +343,7 @@ public:
     //
     // BEGIN_GET_CALLBACK
     const std::string&      get_name(void) const;
+    const options_t&        get_options(void) const;
     const depend_t&         get_depend(void) const;
     const forward_t&        get_forward(void) const;
     const forward_der_t&    get_forward_der(void) const;

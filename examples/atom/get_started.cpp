@@ -9,16 +9,20 @@
 #include <ad_tensor/adten.hpp>
 #include <ad_tensor/atom.hpp>
 #include <ad_tensor/sparsity.hpp>
+#include <ad_tensor/options.hpp>
 //
 namespace {
     //
     // vector
     using ad_tensor::vector;
     using ad_tensor::adten_t;
+    using ad_tensor::options_t;
     using at::Tensor;
     //
     // depend
-    ad_tensor::sparsity_t depend(size_t call_info) {
+    ad_tensor::sparsity_t depend(
+        const options_t&      options   ,
+        size_t                call_info ) {
         ad_tensor::sparsity_t sparsity;
         sparsity.push_back( {0, 0} );
         return sparsity;
@@ -26,6 +30,7 @@ namespace {
     //
     // forward
     vector<Tensor> forward(
+        const options_t&      options   ,
         size_t                call_info ,
         const vector<bool>&   rng_used ,
         const vector<Tensor>& domain ) {
@@ -38,6 +43,7 @@ namespace {
     //
     // forward_der
     vector<Tensor> forward_der(
+        const options_t&      options   ,
         size_t                call_info ,
         const vector<bool>&   rng_used ,
         const vector<Tensor>& domain   ,
@@ -51,6 +57,7 @@ namespace {
     //
     // reverse_der
     vector<Tensor> reverse_der(
+        const options_t&      options   ,
         size_t                call_info ,
         const vector<bool>&   rng_used ,
         const vector<Tensor>& domain   ,

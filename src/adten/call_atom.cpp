@@ -97,6 +97,7 @@ Only the first operation has entries in arg_value and arg_type.
 #include<ad_tensor/vector.hpp>
 #include<ad_tensor/adten.hpp>
 #include<ad_tensor/atom.hpp>
+#include<ad_tensor/options.hpp>
 #include<ad_tensor/dev/tape.hpp>
 #include<ad_tensor/dev/agraph.hpp>
 
@@ -120,10 +121,13 @@ vector<adten_t> adten_t::call_atom(
         domain.push_back( adomain[j].m_tensor );
     }
     //
-    // range, n_range
+    // options, range, n_range
     vector<bool> rng_used;
     atom_callback_t::forward_t  forward = callback.get_forward();
-    vector<at::Tensor>          range   = forward(call_info, rng_used, domain);
+    const options_t&            options = callback.get_options();
+    vector<at::Tensor>           range  = forward(
+        options, call_info, rng_used, domain
+    );
     size_t n_range  = range.size();
     //
     // arange
@@ -140,7 +144,7 @@ vector<adten_t> adten_t::call_atom(
     //
     // pattern
     atom_callback_t::depend_t   depend  = callback.get_depend();
-    sparsity_t                  pattern = depend(call_info);
+    sparsity_t                  pattern = depend(options, call_info);
     //
     // arange[i].m_ad_type
     for(size_t i = 0; i < n_range; ++i) {

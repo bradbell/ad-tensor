@@ -25,7 +25,9 @@
     }
 //
 namespace ad_tensor {
-    //
+    // -----------------------------------------------------------------------
+    // atom_global_t
+    // -----------------------------------------------------------------------
     // atom_global_t::store
     size_t atom_global_t::store(const atom_callback_t& atom_callback) {
         //
@@ -71,13 +73,27 @@ namespace ad_tensor {
         static atom_global_t atom_global;
         return atom_global;
     }
+    // -----------------------------------------------------------------------
+    // atom_callback_t
+    // -----------------------------------------------------------------------
     //
-    // atom_callback_t::set_name
+    // atom_callback_t::set_name, get_name
     void atom_callback_t::set_name(const std::string& name) {
         dev::user_assert( name != "",
             "atom_callback set_name: name is the empty string"
         );
         m_name = name;
+    }
+    const std::string& atom_callback_t::get_name(void) const {
+        return m_name;
+    }
+    //
+    // atom_callback_t::set_options, get_options
+    void atom_callback_t::set_options(const options_t& options) {
+        m_options = options;
+    }
+    const options_t& atom_callback_t::get_options(void) const {
+        return m_options;
     }
     //
     // atom_callback_t:: set_depend, get_depend, set_forward, get_forward

@@ -63,4 +63,18 @@ namespace ad_tensor { namespace dev {
     std::string to_string(const adten_t& atensor) {
         return to_string( atensor.tensor() );
     }
+    std::string to_string(const vector<at::Tensor>& vec) {
+        std::string res;
+        for(size_t i = 0; i < vec.size(); ++i) {
+            res += "[" + std::to_string(i) + "] = " + to_string(vec[i]) + "\n";
+        }
+        return res;
+    }
+    std::string to_string(const vector<adten_t>& vec) {
+        std::string res;
+        for(size_t i = 0; i < vec.size(); ++i) {
+            res += "[" + std::to_string(i) + "] = " + to_string(vec[i]) + "\n";
+        }
+        return res;
+    }
 } }
