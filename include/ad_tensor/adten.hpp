@@ -18,11 +18,15 @@ The AD Tensor Class
     BEGIN_AD_CLASS, END_AD_CLASS
 }
 
-From Tensor
+Constructor
 ***********
 {xrst_literal ,
     BEGIN_PUBLIC_CTOR, END_PUBLIC_CTOR
 }
+The default constructor uses an empty tensor.
+If the tensor used in the construction is non-empty,
+and a tape is currently being recorded,
+the AD tensor is linked to a new constant in the current tape.
 
 To Tensor
 *********
