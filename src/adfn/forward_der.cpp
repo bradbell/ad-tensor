@@ -148,7 +148,7 @@ vector<TensorType> adfn_t::forward_der(
     //
     // rng_der
     vector<TensorType> rng_der;
-    TensorType zero = torch::tensor( { 0.0 } );
+    TensorType zero = TensorType( torch::tensor( { 0.0 } ) );
     for(size_t i = 0; i < m_rng_index.size(); ++i) {
         size_t index = m_rng_index[i];
         ad_type_t ad_type  = m_rng_ad_type[i];
@@ -156,13 +156,13 @@ vector<TensorType> adfn_t::forward_der(
             //
             case ad_type_t::constant: {
                 c10::IntArrayRef shape = m_con[index].sizes();
-                rng_der.push_back( torch::zeros( shape ) );
+                rng_der.push_back( TensorType(torch::zeros( shape ) ) );
             }
             break;
             //
             case ad_type_t::parameter: {
                 c10::IntArrayRef shape = par_all[index].sizes();
-                rng_der.push_back( torch::zeros( shape ) );
+                rng_der.push_back( TensorType( torch::zeros( shape ) ) );
             }
             break;
             //
@@ -189,6 +189,12 @@ template vector<at::Tensor> adfn_t::forward_der(
     const vector<at::Tensor>& par_all ,
     const vector<at::Tensor>& var_all ,
     const vector<at::Tensor>& dom_der ,
+    const options_t&          options
+) const;
+template vector<adten_t> adfn_t::forward_der(
+    const vector<adten_t>&    par_all ,
+    const vector<adten_t>&    var_all ,
+    const vector<adten_t>&    dom_der ,
     const options_t&          options
 ) const;
 
