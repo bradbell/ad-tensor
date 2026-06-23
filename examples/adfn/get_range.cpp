@@ -44,7 +44,7 @@ TEST(examples_adfn, get_range)  {
     ay.push_back( ax[0] * acon );    // a variable
     //
     // y = f(p, x)
-    adfn_t f = adten_t::stop_recording(ay);
+    adfn_t f = adten_t::stop_recording(ay, "f");
     //
     // p
     p.resize(0);

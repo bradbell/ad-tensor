@@ -109,7 +109,7 @@ TEST(examples_atom, get_started)  {
     az.push_back( ay[0].sum() );
     //
     // z = f(x)
-    ad_tensor::adfn_t f = adten_t::stop_recording(az);
+    ad_tensor::adfn_t f = adten_t::stop_recording(az, "f");
     //
     // x
     x[0] = torch:: tensor( {3.0, 4.0} );

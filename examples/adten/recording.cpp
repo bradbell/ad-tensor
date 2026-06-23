@@ -31,7 +31,7 @@ TEST(examples_ad, record)  {
     ad_tensor::vector<adten_t> arange = { adom_par[0], adom_var[0] };
     //
     // stop_recording
-    adten_t::stop_recording( arange  );
+    adten_t::stop_recording(arange, "" );
     //
     bool equal = adom_par[0].tensor().equal( torch::tensor( {2.0, 3.0} ) );
     EXPECT_TRUE(equal);

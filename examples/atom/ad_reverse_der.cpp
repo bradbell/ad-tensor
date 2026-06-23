@@ -142,7 +142,6 @@ TEST(examples_atom, ad_reverse_der)  {
     //
     // options
     ad_tensor::options_t options;
-    options.set_trace(true);
     //
     // atom_global
     ad_tensor::atom_global_t& atom_global =

@@ -41,7 +41,7 @@ TEST(examples_adfn, forward_par)  {
     ay.push_back( acon + aprod );
     //
     // y = f(p)
-    adfn_t f = adten_t::stop_recording(ay);
+    adfn_t f = adten_t::stop_recording(ay, "f");
     //
     // p
     p.resize(0);

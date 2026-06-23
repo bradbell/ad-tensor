@@ -219,7 +219,7 @@ TEST(examples_atom, ad_forward_der)  {
     arange.push_back( asum );
     //
     // range = f(domain) = (x * x * x).sum()
-    ad_tensor::adfn_t f = adten_t::stop_recording(arange);
+    ad_tensor::adfn_t f = adten_t::stop_recording(arange, "f");
     //
     // adomain
     std::tie(apar, adomain) = adten_t::start_recording(par, domain);
@@ -235,7 +235,7 @@ TEST(examples_atom, ad_forward_der)  {
     );
     //
     // arng_der = g(domain) = f'(domain) = (3 * x * x).sum()
-    ad_tensor::adfn_t g = adten_t::stop_recording(arng_der);
+    ad_tensor::adfn_t g = adten_t::stop_recording(arng_der, "g");
     //
     // x, domain
     x = torch::tensor( {3.0, 4.0} );

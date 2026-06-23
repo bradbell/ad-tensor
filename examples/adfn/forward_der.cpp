@@ -38,7 +38,7 @@ TEST(examples_adfn, forward_der)  {
     //
     // y = f(x)
     // We use f for the adfn_t object.
-    adfn_t f = adten_t::stop_recording(ay);
+    adfn_t f = adten_t::stop_recording(ay, "f");
     //
     // var_all
     vector<Tensor> par_all;

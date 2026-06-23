@@ -46,7 +46,7 @@ namespace {
         //
         // ares_sq = objective( (x,y), (slope,intercept) )
         vector<adten_t> arange = {asumsq};
-        adfn_t f = adten_t::stop_recording(arange);
+        adfn_t f = adten_t::stop_recording(arange, "f");
         //
         return f;
     }
@@ -139,7 +139,7 @@ TEST(examples_adfn, get_started_second_derivative)  {
     vector<adten_t> adom_der   = f.reverse_der(
         apar_all, avar_all, arng_der, options
     );
-    adfn_t g = adten_t::stop_recording(adom_der);
+    adfn_t g = adten_t::stop_recording(adom_der, "g");
     //
     // x, y, dom_par
     x       = torch::tensor( {0.0, 1.0, 2.0}  );

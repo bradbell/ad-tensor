@@ -24,9 +24,9 @@ TEST(tests, adten_transpose_op)  {
     //
     // x
     vector<Tensor> x;
-    x.push_back( torch::tensor( { 
-        {1.0, 2.0}, 
-        {3.0, 4.0} 
+    x.push_back( torch::tensor( {
+        {1.0, 2.0},
+        {3.0, 4.0}
     } ) );
     //
     // ap, ax
@@ -37,7 +37,7 @@ TEST(tests, adten_transpose_op)  {
     ay.push_back( ax[0].transpose(0, 1) );
     //
     // y = f(p)
-    adfn_t f = adten_t::stop_recording(ay);
+    adfn_t f = adten_t::stop_recording(ay, "f");
     //
     // par_all, var_all
     vector<Tensor> par_all = f.forward_par(p, options);
@@ -49,8 +49,8 @@ TEST(tests, adten_transpose_op)  {
     EXPECT_EQ( y.size(), ay.size() );
     //
     Tensor check = torch::tensor( {
-        {1.0, 3.0}, 
-        {2.0, 4.0} 
+        {1.0, 3.0},
+        {2.0, 4.0}
     } );
     bool equal = y[0].equal( check );
     EXPECT_TRUE( equal );

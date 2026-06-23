@@ -34,7 +34,7 @@ TEST(examples_adfn, reverse_der)  {
     ay.push_back(  ax[0] + ax[1] );
     //
     // y = f(x)
-    adfn_t f = adten_t::stop_recording(ay);
+    adfn_t f = adten_t::stop_recording(ay, "f");
     //
     // var_all
     vector<Tensor> par_all;

@@ -218,7 +218,7 @@ public:
     // adfn = adten_t::stop_recording(arnage, name)
     static adfn_t stop_recording(
         const vector<adten_t>& arange ,
-        const std::string&     name = std::string()
+        const std::string&
     );
     // END_STOP_RECORDING
     //
