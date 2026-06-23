@@ -215,8 +215,11 @@ public:
     // END_START_RECORDING
     //
     // BEGIN_STOP_RECORDING
-    // adfn = adten_t::stop_recording(arnage)
-    static adfn_t stop_recording(const vector<adten_t>& arange);
+    // adfn = adten_t::stop_recording(arnage, name)
+    static adfn_t stop_recording(
+        const vector<adten_t>& arange ,
+        const std::string&     name = std::string()
+    );
     // END_STOP_RECORDING
     //
     // Binary operators

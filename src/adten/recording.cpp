@@ -192,8 +192,10 @@ Example
 
 {xrst_end stop_recording}
 */
-adfn_t adten_t::stop_recording(const vector<adten_t>& arange)
-{   //
+adfn_t adten_t::stop_recording(
+    const vector<adten_t>& arange ,
+    const std::string&     name   ) {
+    //
     // tape
     dev::tape_t& tape = dev::this_threads_tape();
     //
@@ -239,6 +241,9 @@ adfn_t adten_t::stop_recording(const vector<adten_t>& arange)
             shape[i] = sizes[i];
         }
     }
+    //
+    // adfn: name
+    adfn.m_name = name;
     //
     return adfn;
 }

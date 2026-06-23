@@ -96,7 +96,7 @@ vector<TensorType> adfn_t::forward_var(
     // trace
     bool trace = options.get_trace();
     if( trace ) {
-        cout << "Begin tracing adfn::forward_var\n";
+        cout << "Begin tracing " + m_name + ".forward_var\n";
     }
     //
     // n_op, n_all, empty
@@ -132,7 +132,7 @@ vector<TensorType> adfn_t::forward_var(
         }
     }
     if( trace ) {
-        cout << "End tracing adfn::forward_var\n";
+        cout << "End tracing " + m_name + ".forward_var\n";
     }
     return var_all;
 }

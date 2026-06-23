@@ -142,6 +142,7 @@ TEST(examples_atom, ad_reverse_der)  {
     //
     // options
     ad_tensor::options_t options;
+    options.set_trace(true);
     //
     // atom_global
     ad_tensor::atom_global_t& atom_global =
@@ -149,7 +150,8 @@ TEST(examples_atom, ad_reverse_der)  {
     //
     // atom_callback_z
     ad_tensor::atom_callback_t atom_callback_z;
-    atom_callback_z.set_name("g");
+    atom_callback_z.set_name("z");
+    atom_callback_z.set_options(options);
     atom_callback_z.set_depend(depend_z);
     atom_callback_z.set_forward(forward_z);
     atom_callback_z.set_forward_der(forward_der_z);
@@ -159,7 +161,8 @@ TEST(examples_atom, ad_reverse_der)  {
     //
     // atom_callback_y
     ad_tensor::atom_callback_t atom_callback_y;
-    atom_callback_y.set_name("h");
+    atom_callback_y.set_name("y");
+    atom_callback_z.set_options(options);
     atom_callback_y.set_depend(depend_y);
     atom_callback_y.set_forward(forward_y);
     atom_callback_y.set_forward_der(forward_der_y);
@@ -191,7 +194,7 @@ TEST(examples_atom, ad_reverse_der)  {
     arange.push_back( asum );
     //
     // range = f(domain)
-    ad_tensor::adfn_t f = adten_t::stop_recording(arange);
+    ad_tensor::adfn_t f = adten_t::stop_recording(arange, "f");
     //
     // adomain
     std::tie(apar, adomain) = adten_t::start_recording(par, domain);
@@ -207,14 +210,13 @@ TEST(examples_atom, ad_reverse_der)  {
     );
     //
     // adom_der = g(domain) = f'(domain)
-    ad_tensor::adfn_t g = adten_t::stop_recording(adom_der);
+    ad_tensor::adfn_t g = adten_t::stop_recording(adom_der, "g");
     //
     // x, domain
     x = torch::tensor( {3.0, 4.0} );
     domain[0] = x;
     //
     // dsum
-    std::cout << "g.forward_var\n";
     vector<Tensor> par_all;
     vector<Tensor> var_all = g.forward_var(par_all, domain, options);
     vector<Tensor> range   = g.get_range(par_all, var_all);

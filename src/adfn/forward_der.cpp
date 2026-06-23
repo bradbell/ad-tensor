@@ -110,7 +110,7 @@ vector<TensorType> adfn_t::forward_der(
     // trace
     bool trace = options.get_trace();
     if( trace ) {
-        cout << "Begin tracing adfn::forward_der\n";
+        cout << "Begin tracing " + m_name + ".forward_der\n";
     }
     //
     // n_op, n_all, empty
@@ -181,7 +181,7 @@ vector<TensorType> adfn_t::forward_der(
             string element = to_string( rng_der[i] );
             cout << "rng_der[" << i << "] = " << element << "\n";
         }
-        cout << "End tracing adfn::forward_der\n";
+        cout << "End tracing " + m_name + ".forward_der\n";
     }
     return rng_der;
 }

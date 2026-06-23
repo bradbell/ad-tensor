@@ -242,7 +242,6 @@ TEST(examples_atom, ad_forward_der)  {
     domain[0] = x;
     //
     // dsum
-    std::cout << "g.forward_var\n";
     vector<Tensor> par_all;
     vector<Tensor> var_all = g.forward_var(par_all, domain, options);
     vector<Tensor> range   = g.get_range(par_all, var_all);

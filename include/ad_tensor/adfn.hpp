@@ -24,6 +24,13 @@ Returns true if there are no operations in this AD function:
     BEGIN_IS_EMPTY, END_IS_EMPTY
 }
 
+name
+****
+Returns the name chosen by :ref`stop_recording-name` :
+{xrst_literal ,
+    BEGIN_NAME, END_NAME
+}
+
 Other Public Members
 ********************
 {xrst_toc_table
@@ -96,6 +103,7 @@ private:
     vector<size_t>            m_rng_index;
     vector<ad_type_t>         m_rng_ad_type;
     vector< vector<int64_t> > m_rng_shapes;
+    std::string               m_name;
 // END_PRIVATE
 public:
     //
@@ -108,6 +116,7 @@ public:
     , m_rng_index()
     , m_rng_ad_type()
     , m_rng_shapes()
+    , m_name()
     { }
     //
     // BEGIN_IS_EMPTY
@@ -119,8 +128,15 @@ public:
         m_con.empty() &&
         m_rng_index.empty() &&
         m_rng_ad_type.empty() &&
-        m_rng_shapes.empty()
+        m_rng_shapes.empty() &&
+        m_name.empty()
         ;
+    }
+    //
+    // BEGIN_NAME
+    const std::string& name(void) const
+    {   // END_NAME
+        return m_name;
     }
     //
     // forward_par

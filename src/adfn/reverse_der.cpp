@@ -109,7 +109,7 @@ vector<TensorType> adfn_t::reverse_der(
     // trace
     bool trace = options.get_trace();
     if( trace ) {
-        cout << "Begin tracing adfn::reverse_der\n";
+        cout << "Begin tracing " + m_name + ".reverse_der\n";
     }
     //
     // n_op, n_all, empty
@@ -179,7 +179,7 @@ vector<TensorType> adfn_t::reverse_der(
             string element = to_string( dom_der[j] );
             cout << "dom_der[" << j << "] = " << element << "\n";
         }
-        cout << "End tracing adfn::reverse_der\n";
+        cout << "End tracing " + m_name + ".reverse_der\n";
     }
     return dom_der;
 }
