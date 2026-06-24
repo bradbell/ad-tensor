@@ -39,6 +39,7 @@ add_library(ad_tensor SHARED
     dev/tape.cpp
     dev/tensor_at_index.cpp
     dev/to_string.cpp
+    dev/vec_set.cpp
     options.cpp
     sparsity.cpp
     to_string.cpp

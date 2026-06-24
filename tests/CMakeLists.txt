@@ -14,6 +14,7 @@ add_executable(tests
     dev/base_op.cpp
     dev/op_enum.cpp
     dev/tape.cpp
+    dev/vec_set.cpp
 )
 # END_SORT_THIS_LINE_MINUS_2
 #
