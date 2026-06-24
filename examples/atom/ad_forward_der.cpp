@@ -11,7 +11,7 @@
 #include <ad_tensor/atom.hpp>
 #include <ad_tensor/sparsity.hpp>
 
-#include <ad_tensor/dev/to_string.hpp>
+#include <ad_tensor/to_string.hpp>
 namespace {
     //
     // using
@@ -21,7 +21,6 @@ namespace {
     //
     using at::Tensor;
     using std::cout;
-    using ad_tensor::dev::to_string;
     //
     // atom_id_z
     size_t atom_id_z;
