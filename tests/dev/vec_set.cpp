@@ -31,8 +31,8 @@ namespace {
         set_id.push_back( vec_set.singleton_set(5) );
         set_id.push_back( vec_set.singleton_set(4) );
         set_id.push_back( vec_set.empty_set() );
-        vector<size_t> sets = {0, 1, 2};
-        set_id.push_back( vec_set.union_set(sets) );
+        vector<size_t> sub_sets = {0, 1, 2};
+        set_id.push_back( vec_set.union_set(sub_sets) );
         //
         for(size_t i = 0; i < 4; ++i) {
             EXPECT_EQ(set_id[i], i);

@@ -49,8 +49,8 @@ sparsity_t  adfn_t::forward_dep(ad_type_t domain_type) const
             m_name + ".forward_dep: domain_type is not variable or parameter"
     );
     //
-    // sets
-    vector<size_t > sets;
+    // sub_sets
+    vector<size_t> sub_sets;
     //
     // i_graph
     size_t i_graph_start = 0;
@@ -90,18 +90,18 @@ sparsity_t  adfn_t::forward_dep(ad_type_t domain_type) const
                     size_t arg_start = agraph->m_arg_start[op_index];
                     size_t arg_end   = agraph->m_arg_start[op_index + 1];
                     size_t arg_index = arg_start;
-                    sets.resize(0);
+                    sub_sets.resize(0);
                     while( arg_index < arg_end )
                     {   if( agraph->m_arg_type[arg_index] == domain_type ) {
                             size_t operand = agraph->m_arg_value[arg_index];
-                            sets.push_back( operand);
+                            sub_sets.push_back( operand);
                         }
                         ++arg_index;
                     }
 #ifdef NDEBUG
-                    vec_set.union_set(sets);
+                    vec_set.union_set(sub_sets);
 #else
-                    size_t set_id = vec_set.union_set(sets);
+                    size_t set_id = vec_set.union_set(sub_sets);
                     assert( set_id == op_index );
 #endif
                 }

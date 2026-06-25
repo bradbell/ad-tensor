@@ -67,8 +67,8 @@ void call_op_depend(
     //
     assert( agraph.m_op_seq[op_index] == op_enum_t::call );
     //
-    // sets
-    thread_local vector<size_t>    sets;
+    // sub_sets
+    thread_local vector<size_t>    sub_sets;
     //
     // depend_t
     typedef atom_callback_t::depend_t depend_t;
@@ -104,7 +104,7 @@ void call_op_depend(
                 sparsity_row = sparsity[sparsity_index][0];
             }
         }
-        sets.resize(0);
+        sub_sets.resize(0);
         while(more && sparsity_row == rng_index) {
             size_t dom_index = sparsity[sparsity_index][1];
             if( n_domain <= dom_index ) {
@@ -115,7 +115,7 @@ void call_op_depend(
             }
             arg_index = arg_start + 5 + dom_index;
             if( agraph.m_arg_type[arg_index] == domain_type ) {
-                sets.push_back( agraph.m_arg_value[arg_index] );
+                sub_sets.push_back( agraph.m_arg_value[arg_index] );
             }
             ++sparsity_index;
             more  = sparsity_index < sparsity.size();
@@ -125,9 +125,9 @@ void call_op_depend(
             }
         }
 #ifdef NDEBUG
-        vec_set.union_set(sets);
+        vec_set.union_set(sub_sets);
 #else
-        size_t set_id = vec_set.union_set(sets);
+        size_t set_id = vec_set.union_set(sub_sets);
         assert( set_id == op_index + k);
     }
 #endif

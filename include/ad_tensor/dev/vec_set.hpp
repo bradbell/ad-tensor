@@ -23,6 +23,6 @@ namespace ad_tensor { namespace dev {
         size_t empty_set(void);
         size_t singleton_set(size_t element);
         const c10::ArrayRef<size_t> get_set(size_t set_id) const;
-        size_t union_set( const c10::ArrayRef<size_t>& sets);
+        size_t union_set( const c10::ArrayRef<size_t>& sub_sets);
     };
 } }

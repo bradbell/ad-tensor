@@ -127,6 +127,7 @@ vec_set_t::vec_set_t(void)
 // END_CTOR
 //
 // BEGIN_N_DATA
+// n_data = vec_set.data_size()
 size_t vec_set_t::data_size(void) const {
     return m_data.size();
 }
@@ -170,7 +171,7 @@ size_t vec_set_t::singleton_set(size_t element)
 }
 //
 // BEGIN_GET_SET
-// set = get_set(set_id)
+// set = vec_set.get_set(set_id)
 const c10::ArrayRef<size_t> vec_set_t::get_set(size_t set_id) const
 {   // END_GET_SET
 #ifndef NDEBUG
@@ -192,17 +193,18 @@ const c10::ArrayRef<size_t> vec_set_t::get_set(size_t set_id) const
 }
 //
 // BEGIN_UNION_SETS
-size_t vec_set_t::union_set( const c10::ArrayRef<size_t>& sets)
+// new_set_id = vec_set.union_set(sub_sets)
+size_t vec_set_t::union_set( const c10::ArrayRef<size_t>& sub_sets)
 {   // END_UNION_SETS
     //
     // m_arg, m_equal, m_next
     m_arg.resize(0);
     m_equal.resize(0);
     m_next.resize(0);
-    for(size_t i = 0; i < sets.size(); ++i) {
+    for(size_t i = 0; i < sub_sets.size(); ++i) {
         //
         // set_id
-        size_t set_id = sets[i];
+        size_t set_id = sub_sets[i];
         if( m_link[set_id] ) {
             set_id = m_data[ m_start[set_id] ];
         }
