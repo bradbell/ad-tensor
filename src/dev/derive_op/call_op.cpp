@@ -125,9 +125,9 @@ void call_op_depend(
             }
         }
 #ifdef NDEBUG
-        vec_set.union_sets(sets);
+        vec_set.union_set(sets);
 #else
-        size_t set_id = vec_set.union_sets(sets);
+        size_t set_id = vec_set.union_set(sets);
         assert( set_id == op_index + k);
     }
 #endif

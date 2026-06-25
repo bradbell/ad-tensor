@@ -10,12 +10,25 @@
 
 Get The Range Tensors
 #####################
+Compute the sparsity pattern for how the range values depend
+on the domain values.
 
 Prototype
 *********
 {xrst_literal ,
     BEGIN_FORWARD_DEP, END_FORWARD_DEP
 }
+
+domain_type
+***********
+This is either ad_type_t::variable or ad_type_t::parameter
+and specifies which domain values we are computing the sparsity pattern for.
+
+depend
+******
+If domain_type in variable (parameter) and (i, j) is in this sparsity pattern,
+the value with range index i depends on the
+domain variable (parameter) with index j.
 
 {xrst_end adfn_forward_dep}
 */
@@ -86,9 +99,9 @@ sparsity_t  adfn_t::forward_dep(ad_type_t domain_type) const
                         ++arg_index;
                     }
 #ifdef NDEBUG
-                    vec_set.union_sets(sets);
+                    vec_set.union_set(sets);
 #else
-                    size_t set_id = vec_set.union_sets(sets);
+                    size_t set_id = vec_set.union_set(sets);
                     assert( set_id == op_index );
 #endif
                 }
@@ -97,9 +110,9 @@ sparsity_t  adfn_t::forward_dep(ad_type_t domain_type) const
                 // dom
                 case dev::op_enum_t::dom: {
 #ifdef NDEBUG
-                    vec_set.new_singleton(op_index);
+                    vec_set.singleton_set(op_index);
 #else
-                    size_t set_id = vec_set.new_singleton(op_index);
+                    size_t set_id = vec_set.singleton_set(op_index);
                     assert( set_id == op_index );
 #endif
                 }

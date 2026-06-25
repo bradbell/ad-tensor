@@ -34,6 +34,7 @@ Returns the name chosen by :ref`stop_recording-name` :
 Other Public Members
 ********************
 {xrst_toc_table
+    src/adfn/forward_dep.cpp
     src/adfn/forward_par.cpp
     src/adfn/forward_var.cpp
     src/adfn/get_range.cpp

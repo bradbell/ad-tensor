@@ -80,7 +80,7 @@ data_size
     BEGIN_N_DATA, END_N_DATA
 }
 
-new_empty
+empty_set
 *********
 {xrst_literal ,
     BEGIN_NEW_EMPTY, END_NEW_EMPTY
@@ -88,7 +88,7 @@ new_empty
 The new set id is one grater that the previous set id
 (the first set id is zero).
 
-new_singleton
+singleton_set
 *************
 {xrst_literal ,
     BEGIN_NEW_SINGLETON, END_NEW_SINGLETON
@@ -133,8 +133,8 @@ size_t vec_set_t::data_size(void) const {
 // END_N_DATA
 //
 // BEGIN_NEW_EMPTY
-// new_set_id = vec_set.new_empty()
-size_t vec_set_t::new_empty(void)
+// new_set_id = vec_set.empty_set()
+size_t vec_set_t::empty_set(void)
 {   // END_NEW_EMPTY
     //
     // new_set_id
@@ -151,8 +151,8 @@ size_t vec_set_t::new_empty(void)
 }
 //
 // BEGIN_NEW_SINGLETON
-// new_set_id = vec_set.new_empty()
-size_t vec_set_t::new_singleton(size_t element)
+// new_set_id = vec_set.empty_set()
+size_t vec_set_t::singleton_set(size_t element)
 {   // END_NEW_SINGLETON
     //
     // new_set_id
@@ -192,7 +192,7 @@ const c10::ArrayRef<size_t> vec_set_t::get_set(size_t set_id) const
 }
 //
 // BEGIN_UNION_SETS
-size_t vec_set_t::union_sets( const c10::ArrayRef<size_t>& sets)
+size_t vec_set_t::union_set( const c10::ArrayRef<size_t>& sets)
 {   // END_UNION_SETS
     //
     // m_arg, m_equal, m_next
@@ -216,7 +216,7 @@ size_t vec_set_t::union_sets( const c10::ArrayRef<size_t>& sets)
         }
     }
     if( m_arg.size() == 0 ) {
-        return new_empty();
+        return empty_set();
     }
     //
     // i_min

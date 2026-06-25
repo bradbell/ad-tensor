@@ -12,14 +12,14 @@ namespace {
     //
     void check_empty(void) {
         vec_set_t        vec_set = vec_set_t();
-        size_t           set_id  = vec_set.new_empty();
+        size_t           set_id  = vec_set.empty_set();
         ArrayRef<size_t> set     = vec_set.get_set(set_id);
         EXPECT_EQ(set.size(), 0);
     }
     //
     void check_singleton(void) {
         vec_set_t        vec_set = vec_set_t();
-        size_t           set_id  = vec_set.new_singleton(5);
+        size_t           set_id  = vec_set.singleton_set(5);
         ArrayRef<size_t> set     = vec_set.get_set(set_id);
         EXPECT_EQ(set.size(), 1);
         EXPECT_EQ(set[0],     5);
@@ -28,40 +28,40 @@ namespace {
     void check_union(void) {
         vec_set_t        vec_set       = vec_set_t();
         vector<size_t> set_id;
-        set_id.push_back( vec_set.new_singleton(5) );
-        set_id.push_back( vec_set.new_singleton(4) );
-        set_id.push_back( vec_set.new_empty() );
+        set_id.push_back( vec_set.singleton_set(5) );
+        set_id.push_back( vec_set.singleton_set(4) );
+        set_id.push_back( vec_set.empty_set() );
         vector<size_t> sets = {0, 1, 2};
-        set_id.push_back( vec_set.union_sets(sets) );
+        set_id.push_back( vec_set.union_set(sets) );
         //
         for(size_t i = 0; i < 4; ++i) {
             EXPECT_EQ(set_id[i], i);
         }
-        c10::ArrayRef<size_t> union_sets = vec_set.get_set(3);
-        EXPECT_EQ(union_sets.size(), 2);
-        EXPECT_EQ(union_sets[0], 4);
-        EXPECT_EQ(union_sets[1], 5);
+        c10::ArrayRef<size_t> union_set = vec_set.get_set(3);
+        EXPECT_EQ(union_set.size(), 2);
+        EXPECT_EQ(union_set[0], 4);
+        EXPECT_EQ(union_set[1], 5);
     }
     //
     void check_link(void) {
         vec_set_t        vec_set       = vec_set_t();
         EXPECT_EQ(vec_set.data_size(), 0);
-        vec_set.new_singleton(5);
-        vec_set.new_singleton(4);
+        vec_set.singleton_set(5);
+        vec_set.singleton_set(4);
         EXPECT_EQ(vec_set.data_size(), 2);
         //
         // new set is not a link
-        vec_set.union_sets({0, 1});
+        vec_set.union_set({0, 1});
         EXPECT_EQ(vec_set.data_size(), 4);
         //
         // new set is a link
-        size_t set_id_link = vec_set.union_sets({0, 1, 2});
+        size_t set_id_link = vec_set.union_set({0, 1, 2});
         EXPECT_EQ(vec_set.data_size(), 5);
         //
-        c10::ArrayRef<size_t> union_sets = vec_set.get_set(set_id_link);
-        EXPECT_EQ(union_sets.size(), 2);
-        EXPECT_EQ(union_sets[0], 4);
-        EXPECT_EQ(union_sets[1], 5);
+        c10::ArrayRef<size_t> union_set = vec_set.get_set(set_id_link);
+        EXPECT_EQ(union_set.size(), 2);
+        EXPECT_EQ(union_set[0], 4);
+        EXPECT_EQ(union_set[1], 5);
     }
 }
 TEST(tests_dev, vec_set)  {

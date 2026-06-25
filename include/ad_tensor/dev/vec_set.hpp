@@ -20,9 +20,9 @@ namespace ad_tensor { namespace dev {
     public:
         vec_set_t(void);
         size_t data_size(void) const;
-        size_t new_empty(void);
-        size_t new_singleton(size_t element);
+        size_t empty_set(void);
+        size_t singleton_set(size_t element);
         const c10::ArrayRef<size_t> get_set(size_t set_id) const;
-        size_t union_sets( const c10::ArrayRef<size_t>& sets);
+        size_t union_set( const c10::ArrayRef<size_t>& sets);
     };
 } }
