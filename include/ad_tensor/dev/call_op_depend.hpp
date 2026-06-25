@@ -6,12 +6,12 @@
 #include <ad_tensor/ad_type.hpp>
 #include <ad_tensor/dev/op_enum.hpp>
 #include <ad_tensor/dev/agraph.hpp>
-#include <ad_tensor/dev/vec_set.hpp>
+#include <ad_tensor/dev/vec_sets.hpp>
 namespace ad_tensor { namespace dev {
     void call_op_depend(
         size_t          op_index    ,
         const agraph_t& agraph      ,
         ad_type_t       domain_type ,
-        vec_set_t&      vec_set
+        vec_sets_t&     vec_sets
     );
 } }

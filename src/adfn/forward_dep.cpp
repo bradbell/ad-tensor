@@ -74,8 +74,8 @@ sparsity_t  adfn_t::forward_dep(ad_type_t domain_type) const
             agraph     = &m_var;
         }
         //
-        // vec_set
-        dev::vec_set_t vec_set;
+        // vec_sets
+        dev::vec_sets_t vec_sets;
         //
         // n_op, n_dom
         size_t n_op      = agraph->m_op_seq.size();
@@ -99,9 +99,9 @@ sparsity_t  adfn_t::forward_dep(ad_type_t domain_type) const
                         ++arg_index;
                     }
 #ifdef NDEBUG
-                    vec_set.union_set(sub_sets);
+                    vec_sets.union_set(sub_sets);
 #else
-                    size_t set_id = vec_set.union_set(sub_sets);
+                    size_t set_id = vec_sets.union_set(sub_sets);
                     assert( set_id == op_index );
 #endif
                 }
@@ -110,9 +110,9 @@ sparsity_t  adfn_t::forward_dep(ad_type_t domain_type) const
                 // dom
                 case dev::op_enum_t::dom: {
 #ifdef NDEBUG
-                    vec_set.singleton_set(op_index);
+                    vec_sets.singleton_set(op_index);
 #else
-                    size_t set_id = vec_set.singleton_set(op_index);
+                    size_t set_id = vec_sets.singleton_set(op_index);
                     assert( set_id == op_index );
 #endif
                 }
@@ -124,7 +124,7 @@ sparsity_t  adfn_t::forward_dep(ad_type_t domain_type) const
                 //
                 // call
                 case dev::op_enum_t::call:
-                dev::call_op_depend(op_index, *agraph, domain_type, vec_set);
+                dev::call_op_depend(op_index, *agraph, domain_type, vec_sets);
                 break;
             }
         }
@@ -132,7 +132,7 @@ sparsity_t  adfn_t::forward_dep(ad_type_t domain_type) const
         // sparsity
         for(size_t i = 0; i < m_rng_index.size(); ++i) {
             if( m_rng_ad_type[i] == range_type ) {
-                c10::ArrayRef<size_t> set = vec_set.get_set( m_rng_index[i] );
+                c10::ArrayRef<size_t> set = vec_sets.get_set( m_rng_index[i] );
                 for(size_t j : set) {
                     std::array<size_t, 2> pair = {i, j};
                     sparsity.push_back(pair);

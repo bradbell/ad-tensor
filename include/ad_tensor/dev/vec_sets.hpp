@@ -7,7 +7,7 @@
 #include <ad_tensor/vector.hpp>
 
 namespace ad_tensor { namespace dev {
-    class vec_set_t {
+    class vec_sets_t {
     private:
         // BEGIN_MEMBER_VARIABLES
         vector<size_t> m_data;
@@ -18,7 +18,7 @@ namespace ad_tensor { namespace dev {
         vector<size_t> m_next;
         // END_MEMBER_VARIABLES
     public:
-        vec_set_t(void);
+        vec_sets_t(void);
         size_t data_size(void) const;
         size_t empty_set(void);
         size_t singleton_set(size_t element);

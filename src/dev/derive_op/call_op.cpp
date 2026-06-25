@@ -18,20 +18,20 @@ Prototype
 }
 
 op_index
-========
+********
 The index in the graph for this operator.
 
 agraph
-======
+******
 the acyclic operator graph
 
 domain_type
-===========
+***********
 the domain type for which we are computing dependencies.
-The column indices in the vec_set are for this type.
+The column indices in the vec_sets are for this type.
 
-vec_set
-=======
+vec_sets
+========
 On input, this is the dependencies for operator indices less than op_index.
 Upon return the n_result sets have been added, one for each result.
 
@@ -62,7 +62,7 @@ void call_op_depend(
     size_t          op_index    ,
     const agraph_t& agraph      ,
     ad_type_t       domain_type ,
-    vec_set_t&      vec_set     )
+    vec_sets_t&     vec_sets    )
 {   // END_CALL_OP_DEPEND
     //
     assert( agraph.m_op_seq[op_index] == op_enum_t::call );
@@ -125,9 +125,9 @@ void call_op_depend(
             }
         }
 #ifdef NDEBUG
-        vec_set.union_set(sub_sets);
+        vec_sets.union_set(sub_sets);
 #else
-        size_t set_id = vec_set.union_set(sub_sets);
+        size_t set_id = vec_sets.union_set(sub_sets);
         assert( set_id == op_index + k);
     }
 #endif

@@ -24,7 +24,7 @@ Contents
     src/dev/derive_op/call_op.cpp
     src/dev/rev_sum_view.cpp
     src/dev/tensor_at_index.cpp
-    src/dev/vec_set.cpp
+    src/dev/vec_sets.cpp
 }
 {xrst_comment END_SORT_THIS_LINE_MINUS_2}
 

@@ -3,7 +3,7 @@
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
 /*
-{xrst_begin vec_set dev}
+{xrst_begin vec_sets dev}
 
 Vector of Sets Class Specialized for Forward Mode Sparsity Calculations
 #######################################################################
@@ -19,7 +19,7 @@ Properties
 Private Member Variables
 ************************
 {xrst_literal ,
-    include/ad_tensor/dev/vec_set.hpp
+    include/ad_tensor/dev/vec_sets.hpp
     BEGIN_MEMBER_VARIABLES, END_MEMBER_VARIABLES
 }
 
@@ -68,8 +68,8 @@ there are no more elements in this set (to be included in the union).
 Otherwise, m_data[ m_next[i] ] is the next element of this set to
 include in the union.
 
-vec_set
-*******
+vec_sets
+********
 {xrst_literal ,
     BEGIN_CTOR, END_CTOR
 }
@@ -113,29 +113,29 @@ The new set id is one grater that the previous set id
 If the new set is equal to one of the sets in the union,
 the new set is a link.
 
-{xrst_end vec_set}
+{xrst_end vec_sets}
 */
-# include<ad_tensor/dev/vec_set.hpp>
+# include<ad_tensor/dev/vec_sets.hpp>
 
 namespace ad_tensor { namespace dev { // BEGIN_AD_TENSOR_DEV
 
 // BEGIN_CTOR
-// vec_set = vec_set_t()
-vec_set_t::vec_set_t(void)
+// vec_sets = vec_sets_t()
+vec_sets_t::vec_sets_t(void)
 : m_data(), m_link(), m_start({0}), m_arg(), m_equal(), m_next()
 { }
 // END_CTOR
 //
 // BEGIN_N_DATA
-// n_data = vec_set.data_size()
-size_t vec_set_t::data_size(void) const {
+// n_data = vec_sets.data_size()
+size_t vec_sets_t::data_size(void) const {
     return m_data.size();
 }
 // END_N_DATA
 //
 // BEGIN_NEW_EMPTY
-// new_set_id = vec_set.empty_set()
-size_t vec_set_t::empty_set(void)
+// new_set_id = vec_sets.empty_set()
+size_t vec_sets_t::empty_set(void)
 {   // END_NEW_EMPTY
     //
     // new_set_id
@@ -152,8 +152,8 @@ size_t vec_set_t::empty_set(void)
 }
 //
 // BEGIN_NEW_SINGLETON
-// new_set_id = vec_set.empty_set()
-size_t vec_set_t::singleton_set(size_t element)
+// new_set_id = vec_sets.empty_set()
+size_t vec_sets_t::singleton_set(size_t element)
 {   // END_NEW_SINGLETON
     //
     // new_set_id
@@ -171,8 +171,8 @@ size_t vec_set_t::singleton_set(size_t element)
 }
 //
 // BEGIN_GET_SET
-// set = vec_set.get_set(set_id)
-const c10::ArrayRef<size_t> vec_set_t::get_set(size_t set_id) const
+// set = vec_sets.get_set(set_id)
+const c10::ArrayRef<size_t> vec_sets_t::get_set(size_t set_id) const
 {   // END_GET_SET
 #ifndef NDEBUG
     size_t n_set = m_link.size();
@@ -193,8 +193,8 @@ const c10::ArrayRef<size_t> vec_set_t::get_set(size_t set_id) const
 }
 //
 // BEGIN_UNION_SETS
-// new_set_id = vec_set.union_set(sub_sets)
-size_t vec_set_t::union_set( const c10::ArrayRef<size_t>& sub_sets)
+// new_set_id = vec_sets.union_set(sub_sets)
+size_t vec_sets_t::union_set( const c10::ArrayRef<size_t>& sub_sets)
 {   // END_UNION_SETS
     //
     // m_arg, m_equal, m_next
