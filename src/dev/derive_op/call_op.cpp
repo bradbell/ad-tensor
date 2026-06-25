@@ -2,6 +2,42 @@
 // SPDX-FileCopyrightText: Bradley M. Bell <bradbell@seanet.com>
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
+/*
+{xrst_begin call_op_depend dev}
+{xrst_spell
+    agraph
+}
+
+Compute Call Operator Dependencies
+##################################
+
+Prototype
+*********
+{xrst_literal ,
+    BEGIN_CALL_OP_DEPEND, END_CALL_OP_DEPEND
+}
+
+op_index
+========
+The index in the graph for this operator.
+
+agraph
+======
+the acyclic operator graph
+
+domain_type
+===========
+the domain type for which we are computing dependencies.
+The column indices in the vec_set are for this type.
+
+vec_set
+=======
+On input, this is the dependencies for operator indices less than op_index.
+Upon return the n_result sets have been added, one for each result.
+
+
+{xrst_end call_op_depend}
+*/
 #include <ad_tensor/adten.hpp>
 #include <ad_tensor/atom.hpp>
 #include <ad_tensor/options.hpp>
@@ -20,6 +56,82 @@
 
 //
 namespace ad_tensor { namespace dev { // BEGIN_AD_TENSOR_DEV_NAMESPACE
+// ------------------------------------------------------------------------
+// BEGIN_CALL_OP_DEPEND
+void call_op_depend(
+    size_t          op_index    ,
+    const agraph_t& agraph      ,
+    ad_type_t       domain_type ,
+    vec_set_t&      vec_set     )
+{   // END_CALL_OP_DEPEND
+    //
+    assert( agraph.m_op_seq[op_index] == op_enum_t::call );
+    //
+    // sets
+    thread_local vector<size_t>    sets;
+    //
+    // depend_t
+    typedef atom_callback_t::depend_t depend_t;
+    //
+    // arg_start. atom_id, call_info, n_domain, n_result
+    size_t arg_start = agraph.m_arg_start[op_index];
+    size_t atom_id   = agraph.m_arg_value[arg_start + 0];
+    size_t call_info = agraph.m_arg_value[arg_start + 1];
+    size_t n_domain  = agraph.m_arg_value[arg_start + 2];
+    size_t n_result  = agraph.m_arg_value[arg_start + 4];
+    //
+    // options, forward
+    atom_global_t&         atom_global   = atom_global_t::singleton();
+    const atom_callback_t& atom_callback = atom_global.get( atom_id );
+    const options_t&       options       = atom_callback.get_options();
+    const depend_t&        depend        = atom_callback.get_depend();
+    //
+    // sparsity
+    sparsity_t sparsity = depend(options, call_info);
+    sparsity.sort();
+    //
+    size_t sparsity_index = 0;
+    size_t sparsity_row   = sparsity[0][0];
+    for(size_t k = 0; k < n_result; ++k) {
+        size_t arg_index    = arg_start + 5 + n_domain + k;
+        size_t rng_index    = agraph.m_arg_value[arg_index];
+        bool   more         = sparsity_index < sparsity.size();
+        while(more && sparsity_row < rng_index) {
+            ++sparsity_index;
+            more  = sparsity_index < sparsity.size();
+            if( more  ) {
+                assert( sparsity_row <= sparsity[sparsity_index][0] );
+                sparsity_row = sparsity[sparsity_index][0];
+            }
+        }
+        sets.resize(0);
+        while(more && sparsity_row == rng_index) {
+            size_t dom_index = sparsity[sparsity_index][1];
+            if( n_domain <= dom_index ) {
+                std::string name = atom_callback.get_name();
+                user_assert( dom_index < n_domain, name +
+                    ".depend: sparsity column index is to large"
+                );
+            }
+            arg_index = arg_start + 5 + dom_index;
+            if( agraph.m_arg_type[arg_index] == domain_type ) {
+                sets.push_back( agraph.m_arg_value[arg_index] );
+            }
+            ++sparsity_index;
+            more  = sparsity_index < sparsity.size();
+            if( more  ) {
+                assert( sparsity_row <= sparsity[sparsity_index][0] );
+                sparsity_row = sparsity[sparsity_index][0];
+            }
+        }
+#ifdef NDEBUG
+        vec_set.union_sets(sets);
+#else
+        size_t set_id = vec_set.union_sets(sets);
+        assert( set_id == op_index + k);
+    }
+#endif
+}
 // ------------------------------------------------------------------------
 // forward_par
 template<> void call_op_t<at::Tensor>::forward_par(

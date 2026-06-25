@@ -84,6 +84,10 @@ acyclic graph:
     ..., ..., ...
     start + 4 + n_domain + n_result, index in range for last result, none
 
+The result range result indices are strictly increasing; i.e.,
+
+    arg_value[start + 5 + n_domain] < ... < arg_value[start + 4 + n_result]
+
 op_seq
 ******
 A callback has n_result operations in the tape so that operator

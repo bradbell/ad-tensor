@@ -86,7 +86,9 @@ is the shape for each of the range tensors.
 #include <torch/torch.h>
 #include <ad_tensor/options.hpp>
 #include <ad_tensor/ad_type.hpp>
+#include <ad_tensor/sparsity.hpp>
 #include <ad_tensor/dev/agraph.hpp>
+#include <ad_tensor/dev/call_op_depend.hpp>
 //
 namespace ad_tensor { class adten_t; }
 //
@@ -138,6 +140,9 @@ public:
     {   // END_NAME
         return m_name;
     }
+    //
+    // forward_dep
+    sparsity_t  forward_dep(ad_type_t domain_type) const;
     //
     // forward_par
     template <class TensorType>

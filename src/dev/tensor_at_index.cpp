@@ -3,13 +3,13 @@
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
 /*
-{xrst_begin base_op_static dev}
+{xrst_begin tensor_at_index dev}
 {xrst_spell
     agraph
 }
 
-tensor_at_arg_index
-###################
+Get Tensor Corresponding to an Operator Argument Index
+######################################################
 
 Prototype
 *********
@@ -51,7 +51,7 @@ return
 ******
 The return is the tensor corresponding to this argument and operator usage.
 
-{xrst_end base_op_static}
+{xrst_end tensor_at_index}
 */
 #include <cassert>
 #include <torch/torch.h>

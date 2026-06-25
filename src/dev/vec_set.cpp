@@ -5,8 +5,8 @@
 /*
 {xrst_begin vec_set dev}
 
-Vector of Sets Class Specialized for Forward Mode Sparsiy Calculations
-######################################################################
+Vector of Sets Class Specialized for Forward Mode Sparsity Calculations
+#######################################################################
 
 Properties
 **********
@@ -110,7 +110,7 @@ union
 }
 The new set id is one grater that the previous set id
 (the first set id is zero).
-If the new set is equal to one of the sets being unioned,
+If the new set is equal to one of the sets in the union,
 the new set is a link.
 
 {xrst_end vec_set}
@@ -193,7 +193,7 @@ const c10::ArrayRef<size_t> vec_set_t::get_set(size_t set_id) const
 //
 // BEGIN_UNION_SETS
 size_t vec_set_t::union_sets( const c10::ArrayRef<size_t>& sets)
-{   // BEGIN_UNION_SETS
+{   // END_UNION_SETS
     //
     // m_arg, m_equal, m_next
     m_arg.resize(0);
