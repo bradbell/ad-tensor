@@ -5,6 +5,7 @@
 #
 # BEGIN_SORT_THIS_LINE_PLUS_2
 add_executable(examples
+    adfn/forward_dep.cpp
     adfn/forward_der.cpp
     adfn/forward_par.cpp
     adfn/forward_var.cpp

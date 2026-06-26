@@ -5,6 +5,8 @@
 #include <ad_tensor/adfn.hpp>
 #include <ad_tensor/atom.hpp>
 #include <ad_tensor/dev/user_assert.hpp>
+#include <ad_tensor/dev/vec_sets.hpp>
+#include <ad_tensor/dev/to_string.hpp>
 /*
 {xrst_begin adfn_forward_dep usr}
 
@@ -19,127 +21,232 @@ Prototype
     BEGIN_FORWARD_DEP, END_FORWARD_DEP
 }
 
-domain_type
-***********
-This is either ad_type_t::variable or ad_type_t::parameter
-and specifies which domain values we are computing the sparsity pattern for.
+options
+*******
+Trace the dependency calculations when options.get_trace() is true.
 
-depend
-******
-If domain_type in variable (parameter) and (i, j) is in this sparsity pattern,
-the value with range index i depends on the
-domain variable (parameter) with index j.
+depend_par
+**********
+If the index (i, j) is in depend_par,
+the value at range index i depends on the domain parameter with index j,
+
+depend_var
+**********
+If the index (i, j) is in depend_var,
+the value at range index i value depends on the domain variable with index j,
 
 {xrst_end adfn_forward_dep}
 */
 namespace ad_tensor { // BEGIN_NAMESPACE_AD_TENSOR
 //
 // BEGIN_FORWARD_DEP
-// depend = adfn.forward_dep()
-sparsity_t  adfn_t::forward_dep(ad_type_t domain_type) const
+// [depend_par, depend_var] = adfn.forward_dep(options)
+std::tuple<sparsity_t, sparsity_t> adfn_t::forward_dep(
+    const options_t& options
+) const
 {   // END_FORWARD_DEP
+    //
+    // cout, to_string
+    using std::cout;
+    using ad_tensor::dev::to_string;
     //
     // parameter, variable
     ad_type_t parameter = ad_type_t::parameter;
     ad_type_t variable  = ad_type_t::variable;
     //
-    // domain_type, range_type
-    dev::user_assert(
-        domain_type == parameter || domain_type == variable,
-            m_name + ".forward_dep: domain_type is not variable or parameter"
-    );
-    //
     // sub_sets
     vector<size_t> sub_sets;
     //
-    // i_graph
-    size_t i_graph_start = 0;
-    if( domain_type == variable ) {
-        // parameters do not depend on variables so start with variable agraph
-        i_graph_start = 1;
+    // vec_sets
+    dev::vec_sets_t vec_sets;
+    //
+    // trace
+    bool trace = options.get_trace();
+    if( trace ) {
+        cout << "Begin tracing " + m_name + ".forward_dep\n";
     }
     //
-    // sparsity
-    sparsity_t sparsity;
-    for(size_t i_graph = i_graph_start; i_graph < 2; ++i_graph) {
+    // ------------------------------------------------------------------------
+    // n_par, op_index, agraph, vec_sets
+    size_t n_par = m_par.m_op_seq.size();
+    for(size_t op_index = 0; op_index < n_par; ++op_index) {
+        const dev::agraph_t& agraph = m_par;
         //
-        // range_type agraph
-        const dev::agraph_t* agraph = nullptr;
-        ad_type_t      range_type;
-        if( i_graph == 0 ) {
-            range_type = parameter;
-            agraph     = &m_par;
-        } else {
-            range_type = variable;
-            agraph     = &m_var;
-        }
-        //
-        // vec_sets
-        dev::vec_sets_t vec_sets;
-        //
-        // n_op, n_dom
-        size_t n_op      = agraph->m_op_seq.size();
-        for(size_t op_index = 0; op_index < n_op; ++op_index) {
+        // op_enum
+        dev::op_enum_t op_enum = agraph.m_op_seq[op_index];
+        switch( op_enum ) {
             //
-            // op_enum
-            dev::op_enum_t op_enum = agraph->m_op_seq[op_index];
-            switch( op_enum ) {
-                //
-                // default
-                default: {
-                    size_t arg_start = agraph->m_arg_start[op_index];
-                    size_t arg_end   = agraph->m_arg_start[op_index + 1];
-                    size_t arg_index = arg_start;
-                    sub_sets.resize(0);
-                    while( arg_index < arg_end )
-                    {   if( agraph->m_arg_type[arg_index] == domain_type ) {
-                            size_t operand = agraph->m_arg_value[arg_index];
-                            sub_sets.push_back( operand);
-                        }
-                        ++arg_index;
+            // default
+            default: {
+                size_t arg_start = agraph.m_arg_start[op_index];
+                size_t arg_end   = agraph.m_arg_start[op_index + 1];
+                sub_sets.resize(0);
+                for(size_t arg_index = arg_start; arg_index < arg_end;
+                ++arg_index) {
+                    ad_type_t domain_type = agraph.m_arg_type[arg_index];
+                    if( domain_type == parameter ) {
+                        size_t operand = agraph.m_arg_value[arg_index];
+                        sub_sets.push_back( operand);
                     }
-#ifdef NDEBUG
-                    vec_sets.union_set(sub_sets);
-#else
-                    size_t set_id = vec_sets.union_set(sub_sets);
-                    assert( set_id == op_index );
-#endif
                 }
-                break;
-                //
-                // dom
-                case dev::op_enum_t::dom: {
 #ifdef NDEBUG
-                    vec_sets.singleton_set(op_index);
+                vec_sets.union_set(sub_sets);
 #else
-                    size_t set_id = vec_sets.singleton_set(op_index);
-                    assert( set_id == op_index );
+                size_t set_id = vec_sets.union_set(sub_sets);
+                assert( set_id == op_index );
 #endif
-                }
-                break;
-                //
-                // call_result
-                case dev::op_enum_t::call_result:
-                break;
-                //
-                // call
-                case dev::op_enum_t::call:
-                dev::call_op_depend(op_index, *agraph, domain_type, vec_sets);
-                break;
             }
+            break;
+            //
+            // dom
+            case dev::op_enum_t::dom: {
+#ifdef NDEBUG
+                vec_sets.singleton_set(op_index);
+#else
+                size_t set_id = vec_sets.singleton_set(op_index);
+                assert( set_id == op_index );
+#endif
+            }
+            break;
+            //
+            // call_result
+            case dev::op_enum_t::call_result:
+            break;
+            //
+            // call
+            case dev::op_enum_t::call:
+            dev::call_op_depend(op_index, agraph, n_par, vec_sets);
+            break;
         }
+        if( trace ) {
+            const c10::ArrayRef<size_t> set = vec_sets.get_set(op_index);
+            cout << "set(" << op_index << ") = " << to_string(set) << ", ";
+            cout << dev::to_string(op_enum)  << "(";
+            size_t start = m_par.m_arg_start[op_index];
+            size_t stop  = m_par.m_arg_start[op_index + 1];
+            for(size_t i = start; i < stop; ++i) {
+                cout << "[" << m_par.m_arg_value[i] << ",";
+                cout << dev::to_string( m_par.m_arg_type[i] ) << "]";
+            }
+            cout << ")\n";
+        }
+    }
+    if( trace ) {
+        cout << "n_par = " << n_par << "\n";
+    }
+    // ------------------------------------------------------------------------
+    // op_index, agraph, vec_sets
+    size_t n_var = m_var.m_op_seq.size();
+    for(size_t op_index = 0; op_index < n_var; ++op_index) {
+        const dev::agraph_t& agraph = m_var;
         //
-        // sparsity
-        for(size_t i = 0; i < m_rng_index.size(); ++i) {
-            if( m_rng_ad_type[i] == range_type ) {
-                c10::ArrayRef<size_t> set = vec_sets.get_set( m_rng_index[i] );
-                for(size_t j : set) {
+        // op_enum
+        dev::op_enum_t op_enum = agraph.m_op_seq[op_index];
+        switch( op_enum ) {
+            //
+            // default
+            default: {
+                size_t arg_start = agraph.m_arg_start[op_index];
+                size_t arg_end   = agraph.m_arg_start[op_index + 1];
+                sub_sets.resize(0);
+                for(size_t arg_index = arg_start; arg_index < arg_end;
+                ++arg_index) {
+                    ad_type_t domain_type = agraph.m_arg_type[arg_index];
+                    if( domain_type == parameter ) {
+                        size_t operand = agraph.m_arg_value[arg_index];
+                        sub_sets.push_back( operand);
+                    } else if ( domain_type == variable ) {
+                        size_t operand = agraph.m_arg_value[arg_index];
+                        sub_sets.push_back(operand + n_par);
+                    }
+                }
+#ifdef NDEBUG
+                vec_sets.union_set(sub_sets);
+#else
+                size_t set_id = vec_sets.union_set(sub_sets);
+                assert( set_id == op_index + n_par);
+#endif
+            }
+            break;
+            //
+            // dom
+            case dev::op_enum_t::dom: {
+#ifdef NDEBUG
+                vec_sets.singleton_set(op_index + n_par);
+#else
+                size_t set_id = vec_sets.singleton_set(op_index + n_par);
+                assert( set_id == op_index + n_par);
+#endif
+            }
+            break;
+            //
+            // call_result
+            case dev::op_enum_t::call_result:
+            break;
+            //
+            // call
+            case dev::op_enum_t::call:
+            dev::call_op_depend( op_index, agraph, n_par, vec_sets);
+            break;
+        }
+        if( trace ) {
+            size_t set_id = op_index + n_par;
+            const c10::ArrayRef<size_t> set = vec_sets.get_set(set_id);
+            cout << "set(" << set_id << ") = " << to_string(set) << ", ";
+            cout << dev::to_string(op_enum)  << "(";
+            size_t start = m_var.m_arg_start[op_index];
+            size_t stop  = m_var.m_arg_start[op_index + 1];
+            for(size_t i = start; i < stop; ++i) {
+                cout << "[" << m_var.m_arg_value[i] << ",";
+                cout << dev::to_string( m_var.m_arg_type[i] ) << "]";
+            }
+            cout << ")\n";
+        }
+    }
+    //
+    // depend_par
+    sparsity_t depend_par;
+    for(size_t i = 0; i < m_rng_index.size(); ++i) {
+        ad_type_t range_type = m_rng_ad_type[i];
+        if( range_type == parameter ) {
+            size_t rng_set_id = m_rng_index[i];
+            c10::ArrayRef<size_t> set = vec_sets.get_set( rng_set_id );
+            for(size_t j : set) {
+                std::array<size_t, 2> pair = {i, j};
+                depend_par.push_back(pair);
+            }
+        }  else if( range_type == variable ) {
+            size_t rng_set_id = m_rng_index[i] + n_par;
+            c10::ArrayRef<size_t> set = vec_sets.get_set( rng_set_id );
+            for(size_t dom_set_id : set) {
+                if( dom_set_id < n_par ) {
+                    size_t j = dom_set_id;
                     std::array<size_t, 2> pair = {i, j};
-                    sparsity.push_back(pair);
+                    depend_par.push_back(pair);
                 }
             }
         }
     }
-    return sparsity;
+    //
+    // depend_var
+    sparsity_t depend_var;
+    for(size_t i = 0; i < m_rng_index.size(); ++i) {
+        ad_type_t range_type = m_rng_ad_type[i];
+        if( range_type == variable ) {
+            size_t rng_set_id = m_rng_index[i] + n_par;
+            c10::ArrayRef<size_t> set = vec_sets.get_set( rng_set_id );
+            for(size_t dom_set_id : set) {
+                if( n_par <= dom_set_id ) {
+                    size_t j = dom_set_id - n_par;
+                    std::array<size_t, 2> pair = {i, j};
+                    depend_var.push_back(pair);
+                }
+            }
+        }
+    }
+    if( trace ) {
+        cout << "End tracing " + m_name + ".forward_dep\n";
+    }
+    return std::tuple<sparsity_t, sparsity_t>(depend_par, depend_var);
 }
 } // END_NAMESPACE_AD_TENSOR

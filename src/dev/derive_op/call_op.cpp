@@ -17,23 +17,50 @@ Prototype
     BEGIN_CALL_OP_DEPEND, END_CALL_OP_DEPEND
 }
 
+n_set
+*****
+We use the notation n_set for the input value of vec_sets.n_set().
+
 op_index
 ********
-The index in the graph for this operator.
+The index in agraph for this operator.
+This must correspond to a call operator.
 
 agraph
 ******
-the acyclic operator graph
+If n_set < n_par this is the acyclic operator graph for parameters.
+Otherwise it is for variables.
 
-domain_type
-***********
-the domain type for which we are computing dependencies.
-The column indices in the vec_sets are for this type.
+n_par
+*****
+is the number of parameters.
 
 vec_sets
 ========
-On input, this is the dependencies for operator indices less than op_index.
-Upon return the n_result sets have been added, one for each result.
+#.  If i_par < n_par and set_id is in vec_sets.get_set(i_par),
+    the parameter with index i_par depends on the parameter with index set_id.
+#.  If set_id is in vec_sets.get_set(i_var + n_par) and set_id < n_par,
+    the variable with index i_var depends on parameter with index set_id.
+#.  If set_id is in vec_sets.get_set(i_var + n_par) and n_par <= set_id,
+    the variable with index i_var depends on variable with index set_id - n_par.
+
+On input, vec_sets is the dependencies for indices less than n_set.
+If n_set < n_par,  n_result sets have been added, one for each
+parameter result for this atomic function.
+Otherwise, n_result sets have been added, one for each
+variable result for this atomic function.
+
+vec_sets_var
+============
+This is not used when range_type is parameter.
+Otherwise, on input, vec_sets_var is the dependencies for variable indices
+less than op_index.  Upon return the n_result sets have been added,
+one for each variable result for this atomic function.
+This vector of sets is unusual in that variables can have both parameter
+and variable dependencies.
+A parameter dependency is represented by its parameter index.
+A variable dependency is represented by its variable index plus
+the number of parameters.
 
 
 {xrst_end call_op_depend}
@@ -59,13 +86,20 @@ namespace ad_tensor { namespace dev { // BEGIN_AD_TENSOR_DEV_NAMESPACE
 // ------------------------------------------------------------------------
 // BEGIN_CALL_OP_DEPEND
 void call_op_depend(
-    size_t          op_index    ,
-    const agraph_t& agraph      ,
-    ad_type_t       domain_type ,
-    vec_sets_t&     vec_sets    )
+    size_t          op_index     ,
+    const agraph_t& agraph       ,
+    size_t          n_par        ,
+    vec_sets_t&     vec_sets     )
 {   // END_CALL_OP_DEPEND
     //
     assert( agraph.m_op_seq[op_index] == op_enum_t::call );
+    //
+    // parameter, variable
+    ad_type_t parameter = ad_type_t::parameter;
+    ad_type_t variable  = ad_type_t::variable;
+    //
+    // n_set
+    size_t n_set = vec_sets.n_set();
     //
     // sub_sets
     thread_local vector<size_t>    sub_sets;
@@ -113,9 +147,14 @@ void call_op_depend(
                     ".depend: sparsity column index is to large"
                 );
             }
-            arg_index = arg_start + 5 + dom_index;
-            if( agraph.m_arg_type[arg_index] == domain_type ) {
-                sub_sets.push_back( agraph.m_arg_value[arg_index] );
+            arg_index           = arg_start + 5 + dom_index;
+            ad_type_t arg_type  = agraph.m_arg_type[arg_index];
+            size_t    arg_value = agraph.m_arg_value[arg_index];
+            if( arg_type == parameter ) {
+                sub_sets.push_back( arg_value );
+            } else if( arg_type == variable ) {
+                assert( n_par <= n_set );
+                sub_sets.push_back( arg_value + n_par );
             }
             ++sparsity_index;
             more  = sparsity_index < sparsity.size();
@@ -128,7 +167,11 @@ void call_op_depend(
         vec_sets.union_set(sub_sets);
 #else
         size_t set_id = vec_sets.union_set(sub_sets);
-        assert( set_id == op_index + k);
+        if( n_set < n_par ) {
+            assert( set_id == op_index + k);
+        } else {
+            assert( set_id - n_par == op_index + k);
+        }
     }
 #endif
 }

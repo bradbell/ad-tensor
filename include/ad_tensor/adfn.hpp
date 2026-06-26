@@ -143,7 +143,9 @@ public:
     }
     //
     // forward_dep
-    sparsity_t  forward_dep(ad_type_t domain_type) const;
+    std::tuple<sparsity_t, sparsity_t> forward_dep(
+        const options_t& options
+    ) const;
     //
     // forward_par
     template <class TensorType>

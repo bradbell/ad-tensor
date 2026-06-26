@@ -11,7 +11,7 @@ namespace ad_tensor { namespace dev {
     void call_op_depend(
         size_t          op_index    ,
         const agraph_t& agraph      ,
-        ad_type_t       domain_type ,
+        size_t          n_par       ,
         vec_sets_t&     vec_sets
     );
 } }

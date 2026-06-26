@@ -46,6 +46,16 @@ namespace ad_tensor { namespace dev {
         res += ")";
         return res;
     }
+    std::string to_string(const c10::ArrayRef<size_t>& vec) {
+        std::string res = "(";
+        for(size_t i = 0; i < vec.size(); ++i) {
+            res += std::to_string( vec[i] );
+            if( i + 1 < vec.size() )
+                res += ", ";
+        }
+        res += ")";
+        return res;
+    }
     std::string to_string(const at::Tensor& tensor) {
         at::IntArrayRef shape  = tensor.sizes();
         std::string res = to_string(shape);
