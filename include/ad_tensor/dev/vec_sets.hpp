@@ -19,7 +19,8 @@ namespace ad_tensor { namespace dev {
         // END_MEMBER_VARIABLES
     public:
         vec_sets_t(void);
-        size_t data_size(void) const;
+        size_t n_set(void) const;
+        size_t n_data(void) const;
         size_t empty_set(void);
         size_t singleton_set(size_t element);
         const c10::ArrayRef<size_t> get_set(size_t set_id) const;

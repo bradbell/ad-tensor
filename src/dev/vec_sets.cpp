@@ -74,8 +74,14 @@ vec_sets
     BEGIN_CTOR, END_CTOR
 }
 
-data_size
-*********
+n_set
+*****
+{xrst_literal ,
+    BEGIN_N_SET, END_N_SET
+}
+
+n_data
+******
 {xrst_literal ,
     BEGIN_N_DATA, END_N_DATA
 }
@@ -126,9 +132,16 @@ vec_sets_t::vec_sets_t(void)
 { }
 // END_CTOR
 //
+// BEGIN_N_SET
+// n_set = vec_sets.n_set()
+size_t vec_sets_t::n_set(void) const {
+    return m_link.size();
+}
+// END_N_SET
+//
 // BEGIN_N_DATA
-// n_data = vec_sets.data_size()
-size_t vec_sets_t::data_size(void) const {
+// n_data = vec_sets.n_data()
+size_t vec_sets_t::n_data(void) const {
     return m_data.size();
 }
 // END_N_DATA
