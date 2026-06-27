@@ -18,12 +18,8 @@ namespace {
 TEST(examples_adfn, forward_dep)  {
     using ad_tensor::adten_t;
     using ad_tensor::adfn_t;
-    using ad_tensor::options_t;
     using at::Tensor;
     using ad_tensor::vector;
-    //
-    // options
-    options_t options;
     //
     // c
     // We use c for the domain parameters
@@ -50,7 +46,7 @@ TEST(examples_adfn, forward_dep)  {
     adfn_t f = adten_t::stop_recording(ap, "f");
     //
     // depend_par, depend_var
-    auto [depend_par, depend_var] = f.forward_dep(options);
+    auto [depend_par, depend_var] = f.forward_dep();
     depend_par.sort();
     depend_var.sort();
     //

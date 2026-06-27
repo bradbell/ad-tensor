@@ -10,8 +10,8 @@
 /*
 {xrst_begin adfn_forward_dep usr}
 
-Get The Range Tensors
-#####################
+Determine Range Dependencies
+############################
 Compute the sparsity pattern for how the range values depend
 on the domain values.
 
@@ -21,9 +21,9 @@ Prototype
     BEGIN_FORWARD_DEP, END_FORWARD_DEP
 }
 
-options
-*******
-Trace the dependency calculations when options.get_trace() is true.
+trace
+*****
+if :ref:`adfn@trace` is true, this calculation will be traced.
 
 depend_par
 **********
@@ -40,10 +40,8 @@ the value at range index i value depends on the domain variable with index j,
 namespace ad_tensor { // BEGIN_NAMESPACE_AD_TENSOR
 //
 // BEGIN_FORWARD_DEP
-// [depend_par, depend_var] = adfn.forward_dep(options)
-std::tuple<sparsity_t, sparsity_t> adfn_t::forward_dep(
-    const options_t& options
-) const
+// [depend_par, depend_var] = adfn.forward_dep()
+std::tuple<sparsity_t, sparsity_t> adfn_t::forward_dep(void) const
 {   // END_FORWARD_DEP
     //
     // cout, to_string
@@ -61,7 +59,7 @@ std::tuple<sparsity_t, sparsity_t> adfn_t::forward_dep(
     dev::vec_sets_t vec_sets;
     //
     // trace
-    bool trace = options.get_trace();
+    bool trace = m_options.get_trace();
     if( trace ) {
         cout << "Begin tracing " + get_name() + ".forward_dep\n";
     }

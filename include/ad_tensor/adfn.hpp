@@ -164,9 +164,7 @@ public:
     }
     //
     // forward_dep
-    std::tuple<sparsity_t, sparsity_t> forward_dep(
-        const options_t& options
-    ) const;
+    std::tuple<sparsity_t, sparsity_t> forward_dep(void) const;
     //
     // forward_par
     template <class TensorType>
