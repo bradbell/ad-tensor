@@ -49,7 +49,7 @@ TEST(examples_adfn, forward_var)  {
     //
     // var_all
     vector<Tensor> par_all;
-    vector<Tensor> var_all = f.forward_var(x, par_all);
+    vector<Tensor> var_all = f.forward_var(x);
     //
     EXPECT_EQ( var_all.size(), 4 );
     //

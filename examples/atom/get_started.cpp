@@ -115,7 +115,7 @@ TEST(examples_atom, get_started)  {
     //
     // z
     vector<Tensor> par_all;
-    vector<Tensor> var_all = f.forward_var(x, par_all);
+    vector<Tensor> var_all = f.forward_var(x);
     vector<Tensor> z       = f.get_range(par_all, var_all);
     //
     // check

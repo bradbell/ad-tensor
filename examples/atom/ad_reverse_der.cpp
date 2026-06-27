@@ -198,7 +198,7 @@ TEST(examples_atom, ad_reverse_der)  {
     adomain = adten_t::start_recording(domain);
     //
     vector<adten_t> apar_all;
-    vector<adten_t> avar_all = f.forward_var(adomain, apar_all);
+    vector<adten_t> avar_all = f.forward_var(adomain);
     //
     // adom_der
     vector<adten_t> arng_der;
@@ -216,7 +216,7 @@ TEST(examples_atom, ad_reverse_der)  {
     //
     // dsum
     vector<Tensor> par_all;
-    vector<Tensor> var_all = g.forward_var(domain, par_all);
+    vector<Tensor> var_all = g.forward_var(domain);
     vector<Tensor> range   = g.get_range(par_all, var_all);
     Tensor         dsum    = range[0];
     //
