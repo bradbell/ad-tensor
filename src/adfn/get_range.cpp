@@ -50,8 +50,8 @@ namespace ad_tensor { // BEGIN_NAMESPACE_AD_TENSOR
 // rng_vec = adfn.get_range(par_all, var_all)
 template <class TensorType>
 vector<TensorType> adfn_t::get_range(
-    const vector<TensorType>& par_all ,
-    const vector<TensorType>& var_all
+    const vector<TensorType>& var_all ,
+    const vector<TensorType>& par_all
 ) const
 // END_RANGE
 {   //

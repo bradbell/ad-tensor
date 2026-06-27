@@ -79,7 +79,7 @@ TEST(examples_adfn, get_started_first_derivative)  {
     vector<Tensor> var_all = f.forward_var(dom_var, par_all);
     //
     // sumsq
-    vector<Tensor> range = f.get_range(par_all, var_all);
+    vector<Tensor> range = f.get_range(var_all, par_all);
     Tensor sumsq         = range[0];
     //
     // residual

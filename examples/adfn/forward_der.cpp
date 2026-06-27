@@ -44,7 +44,7 @@ TEST(examples_adfn, forward_der)  {
     vector<Tensor> var_all = f.forward_var(x);
     //
     // y
-    vector<Tensor> y = f.get_range(par_all, var_all);
+    vector<Tensor> y = f.get_range(var_all, par_all);
     //
     EXPECT_EQ( y.size(), ay.size() );
     //

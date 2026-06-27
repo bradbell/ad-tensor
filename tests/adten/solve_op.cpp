@@ -57,7 +57,7 @@ TEST(tests, adten_solve_op)  {
     vector<Tensor> var_all = f.forward_var(x, par_all);
     //
     // y
-    vector<Tensor> y = f.get_range(par_all, var_all);
+    vector<Tensor> y = f.get_range(var_all, par_all);
     //
     // det
     double det = x0 * x3 - x1 * x2;

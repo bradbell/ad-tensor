@@ -217,7 +217,7 @@ TEST(examples_atom, ad_reverse_der)  {
     // dsum
     vector<Tensor> par_all;
     vector<Tensor> var_all = g.forward_var(domain);
-    vector<Tensor> range   = g.get_range(par_all, var_all);
+    vector<Tensor> range   = g.get_range(var_all, par_all);
     Tensor         dsum    = range[0];
     //
     // check

@@ -180,8 +180,8 @@ public:
     // get_range
     template <class TensorType>
     vector<TensorType> get_range(
-        const vector<TensorType>& all_par ,
-        const vector<TensorType>& all_var
+        const vector<TensorType>& all_var ,
+        const vector<TensorType>& all_par = vector<TensorType>()
     ) const;
     //
     // forward_der
