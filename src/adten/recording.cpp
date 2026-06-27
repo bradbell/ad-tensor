@@ -21,8 +21,8 @@ namespace ad_tensor { // BEGIN_NAMESPACE_AD_TENSOR
 Start Recording adten_t Operations
 ##################################
 {xrst_literal ,
-    include/ad_tensor/adten.hpp
-    BEGIN_START_RECORDING, END_START_RECORDING
+    BEGIN_START_RECORDING_1, END_START_RECORDING_1
+    BEGIN_START_RECORDING_2, END_START_RECORDING_2
 }
 
 Recording
@@ -39,6 +39,7 @@ The range space is defined when the recording is stopped; see
 dom_par
 *******
 This is the domain parameter vector of tensors.
+It this argument is (is not) present, the are no parameters in this recording.
 
 dom_var
 *******
@@ -63,12 +64,23 @@ Example
 
 {xrst_end start_recording}
 */
+
+// BEGIN_START_RECORDING_1
+// adom_var = adten_t::start_recording(dom_var)
+vector<adten_t> adten_t::start_recording(const vector<at::Tensor>& dom_var)
+{   // END_START_RECORDING_1
+    vector<at::Tensor> dom_par;
+    auto [ adom_par, adom_var] = start_recording(dom_par, dom_var);
+    return adom_var;
+}
+// BEGIN_START_RECORDING_2
+// auto [adom_par, adom_var] = adten_t::start_recording(dom_par, dom_var)
 std::tuple< vector<adten_t>, vector<adten_t> >
 adten_t::start_recording(
         const vector<at::Tensor>& dom_par ,
-        const vector<at::Tensor>& dom_var
-)
-{   //
+        const vector<at::Tensor>& dom_var )
+{   // END_START_RECORDING_2
+    //
     // tape
     dev::tape_t& tape = dev::this_threads_tape();
     //
@@ -157,8 +169,7 @@ adten_t::start_recording(
 
 Stop Recording adten_t Operations
 #################################
-{xrst_literal,
-    include/ad_tensor/adten.hpp
+{xrst_literal ,
     BEGIN_STOP_RECORDING, END_STOP_RECORDING
 }
 
@@ -177,6 +188,10 @@ arange
 ******
 This vector of AD tensors specifies the range for the AD function *adfn* .
 
+name
+****
+is the name attached to the return adfn.
+
 adfn
 ****
 The operation sequence that was recording is transferred to this AD function.
@@ -192,9 +207,12 @@ Example
 
 {xrst_end stop_recording}
 */
+// BEGIN_STOP_RECORDING
+// adfn = adten_t::stop_recording(arnage, name)
 adfn_t adten_t::stop_recording(
     const vector<adten_t>& arange ,
-    const std::string&     name   ) {
+    const std::string&     name   )
+{   // END_STOP_RECORDING
     //
     // tape
     dev::tape_t& tape = dev::this_threads_tape();

@@ -206,21 +206,18 @@ public:
     // END_TO_TENSOR
     {   return m_tensor; }
     //
-    // BEGIN_START_RECORDING
-    // auto [adom_par, adom_var] = adten_t::start_recording(dom_par, dom_var)
+    vector<adten_t> start_recording(
+        const vector<at::Tensor>& dom_var
+    );
     static std::tuple< vector<adten_t>, vector<adten_t> > start_recording(
         const vector<at::Tensor>& dom_par,
         const vector<at::Tensor>& dom_var
     );
-    // END_START_RECORDING
     //
-    // BEGIN_STOP_RECORDING
-    // adfn = adten_t::stop_recording(arnage, name)
     static adfn_t stop_recording(
         const vector<adten_t>& arange ,
-        const std::string&
+        const std::string&     name
     );
-    // END_STOP_RECORDING
     //
     // Binary operators
     AD_TENSOR_BINARY_OP(+, add)
