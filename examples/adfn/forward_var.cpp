@@ -49,8 +49,8 @@ TEST(examples_adfn, forward_var)  {
     x.push_back( torch::tensor( {8.0, 9.0} ) );
     //
     // var_all
-    ad_tensor::vector<Tensor> par_all;
-    ad_tensor::vector<Tensor> var_all = f.forward_var(par_all, x, options);
+    vector<Tensor> par_all;
+    vector<Tensor> var_all = f.forward_var(par_all, x, options);
     //
     EXPECT_EQ( var_all.size(), 4 );
     //

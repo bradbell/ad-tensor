@@ -28,7 +28,7 @@ TEST(examples_ad, record)  {
     dom_var = vector<Tensor>();
     //
     // arange
-    ad_tensor::vector<adten_t> arange = { adom_par[0], adom_var[0] };
+    vector<adten_t> arange = { adom_par[0], adom_var[0] };
     //
     // stop_recording
     adten_t::stop_recording(arange, "" );
