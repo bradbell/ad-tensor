@@ -42,7 +42,7 @@ TEST(tests, adten_matmul_op)  {
     adfn_t f = adten_t::stop_recording(ay, "f");
     //
     // par_all, var_all
-    vector<Tensor> par_all = f.forward_par(p, options);
+    vector<Tensor> par_all = f.forward_par(p);
     vector<Tensor> var_all = f.forward_var(par_all, x, options);
     //
     // y

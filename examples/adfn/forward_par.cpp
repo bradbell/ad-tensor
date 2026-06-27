@@ -49,7 +49,7 @@ TEST(examples_adfn, forward_par)  {
     p.push_back( torch::tensor( {8.0, 9.0} ) );
     //
     // par_all
-    vector<Tensor> par_all = f.forward_par(p, options);
+    vector<Tensor> par_all = f.forward_par(p);
     //
     EXPECT_EQ( par_all.size(), 4 );
     //

@@ -75,7 +75,7 @@ TEST(examples_adfn, get_started_first_derivative)  {
     vector<Tensor> dom_var = {slope, intercept};
     //
     // par_all, var_all
-    vector<Tensor> par_all = f.forward_par(dom_par, options);
+    vector<Tensor> par_all = f.forward_par(dom_par);
     vector<Tensor> var_all = f.forward_var(par_all, dom_var, options);
     //
     // sumsq
@@ -133,7 +133,7 @@ TEST(examples_adfn, get_started_second_derivative)  {
     //
     // g_0  = f_slope ( (x, y), (slope, intercept) )
     // g_1  = f_interceopt ( (x, y), (slope, intercept) )
-    vector<adten_t>   apar_all = f.forward_par(adom_par, options);
+    vector<adten_t>   apar_all = f.forward_par(adom_par);
     vector<adten_t>   avar_all = f.forward_var(apar_all, adom_var, options);
     vector<adten_t> arng_der   = { adten_t( torch::tensor(1.0) ) };
     vector<adten_t> adom_der   = f.reverse_der(
@@ -152,7 +152,7 @@ TEST(examples_adfn, get_started_second_derivative)  {
     dom_var   = {slope, intercept};
     //
     // par_all, var_all
-    vector<Tensor> par_all = g.forward_par(dom_par, options);
+    vector<Tensor> par_all = g.forward_par(dom_par);
     vector<Tensor> var_all = g.forward_var(par_all, dom_var, options);
     //
     // sumsq_slope_slope, sumsq_intercept_slope

@@ -55,7 +55,7 @@ TEST(examples_adfn, get_range)  {
     x.push_back( torch::tensor( {9.0, 10.0} ) );
     //
     // y
-    vector<Tensor> par_all = f.forward_par(p, options);
+    vector<Tensor> par_all = f.forward_par(p);
     vector<Tensor> var_all = f.forward_var(par_all, x, options);
     vector<Tensor> y       = f.get_range(par_all, var_all);
     //

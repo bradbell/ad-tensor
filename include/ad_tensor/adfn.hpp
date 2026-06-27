@@ -168,10 +168,7 @@ public:
     //
     // forward_par
     template <class TensorType>
-    vector<TensorType> forward_par(
-        const vector<TensorType>& dom_par ,
-        const options_t&    options
-    ) const;
+    vector<TensorType> forward_par(const vector<TensorType>& dom_par) const;
     //
     // forward_var
     template <class TensorType>

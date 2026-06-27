@@ -29,9 +29,9 @@ dom_par
 *******
 Is the value of the domain parameters for this calculation.
 
-options
-*******
-Trace the parameter calculations when options.get_trace() is true.
+trace
+*****
+if :ref:`adfn@trace` is true, this calculation will be traced.
 
 par_all
 *******
@@ -52,12 +52,9 @@ Example
 namespace ad_tensor { // BEGIN_NAMESPACE_AD_TENSOR
 //
 // BEGIN_FORWARD_PAR
-// par_all = adfn.forward_par(dom_par, options)
+// par_all = adfn.forward_par(dom_par)
 template <class TensorType>
-vector<TensorType> adfn_t::forward_par(
-    const vector<TensorType>& dom_par ,
-    const options_t&          options
-) const
+vector<TensorType> adfn_t::forward_par(const vector<TensorType>& dom_par) const
 // END_FORWARD_PAR
 {
     // cout
@@ -87,7 +84,7 @@ vector<TensorType> adfn_t::forward_par(
 # endif
     //
     // trace
-    bool trace = options.get_trace();
+    bool trace = m_options.get_trace();
     if( trace ) {
         cout << "Begin tracing " + get_name() + ".forward_par\n";
     }
@@ -129,13 +126,10 @@ vector<TensorType> adfn_t::forward_par(
     }
     return par_all;
 }
-template vector<adten_t> adfn_t::forward_par(
-    const vector<adten_t>&    dom_par ,
-    const options_t&          options
-) const;
-template vector<at::Tensor> adfn_t::forward_par(
-    const vector<at::Tensor>& dom_par ,
-    const options_t&          options
-) const;
+template vector<adten_t>
+adfn_t::forward_par(const vector<adten_t>& dom_par) const;
+//
+template vector<at::Tensor>
+adfn_t::forward_par(const vector<at::Tensor>& dom_par) const;
 
 } // END_NAMESPACE_AD_TENSOR
