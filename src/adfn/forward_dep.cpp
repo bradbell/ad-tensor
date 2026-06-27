@@ -63,7 +63,7 @@ std::tuple<sparsity_t, sparsity_t> adfn_t::forward_dep(
     // trace
     bool trace = options.get_trace();
     if( trace ) {
-        cout << "Begin tracing " + m_name + ".forward_dep\n";
+        cout << "Begin tracing " + get_name() + ".forward_dep\n";
     }
     //
     // ------------------------------------------------------------------------
@@ -245,7 +245,7 @@ std::tuple<sparsity_t, sparsity_t> adfn_t::forward_dep(
         }
     }
     if( trace ) {
-        cout << "End tracing " + m_name + ".forward_dep\n";
+        cout << "End tracing " + get_name() + ".forward_dep\n";
     }
     return std::tuple<sparsity_t, sparsity_t>(depend_par, depend_var);
 }

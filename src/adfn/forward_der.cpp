@@ -88,7 +88,7 @@ vector<TensorType> adfn_t::forward_der(
     // dom_der
 # ifndef NDEBUg
     const vector< vector<int64_t> >&  shapes = m_var.m_dom_shapes;
-    string msg = m_name + ".forward_der: ";
+    string msg = get_name() + ".forward_der: ";
     if( dom_der.size() != shapes.size() ) {
         msg += "dom_der.size() = " + std::to_string( dom_der.size() );
         msg += " and the dom_var size for this adfn is ";
@@ -110,7 +110,7 @@ vector<TensorType> adfn_t::forward_der(
     // trace
     bool trace = options.get_trace();
     if( trace ) {
-        cout << "Begin tracing " + m_name + ".forward_der\n";
+        cout << "Begin tracing " + get_name() + ".forward_der\n";
     }
     //
     // n_op, n_all, empty
@@ -181,7 +181,7 @@ vector<TensorType> adfn_t::forward_der(
             string element = to_string( rng_der[i] );
             cout << "rng_der[" << i << "] = " << element << "\n";
         }
-        cout << "End tracing " + m_name + ".forward_der\n";
+        cout << "End tracing " + get_name() + ".forward_der\n";
     }
     return rng_der;
 }

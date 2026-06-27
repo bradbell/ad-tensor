@@ -26,10 +26,19 @@ Returns true if there are no operations in this AD function:
 
 name
 ****
-Returns the name chosen by :ref`stop_recording-name` :
+get_name returns the name chosen by :ref`stop_recording-name` :
 {xrst_literal ,
-    BEGIN_NAME, END_NAME
+    BEGIN_GET_NAME, END_GET_NAME
 }
+
+trace
+*****
+{xrst_literal ,
+    BEGIN_GET_TRACE, END_GET_TRACE
+    BEGIN_SET_TRACE, END_SET_TRACE
+}
+get_trace returns the previous value chosen by set_trace.
+The default value, when trace has not been set, is false.
 
 Other Public Members
 ********************
@@ -106,7 +115,7 @@ private:
     vector<size_t>            m_rng_index;
     vector<ad_type_t>         m_rng_ad_type;
     vector< vector<int64_t> > m_rng_shapes;
-    std::string               m_name;
+    options_t                 m_options;
 // END_PRIVATE
 public:
     //
@@ -119,7 +128,7 @@ public:
     , m_rng_index()
     , m_rng_ad_type()
     , m_rng_shapes()
-    , m_name()
+    , m_options()
     { }
     //
     // BEGIN_IS_EMPTY
@@ -132,14 +141,26 @@ public:
         m_rng_index.empty() &&
         m_rng_ad_type.empty() &&
         m_rng_shapes.empty() &&
-        m_name.empty()
+        m_options.get_name().empty()
         ;
     }
     //
-    // BEGIN_NAME
-    const std::string& name(void) const
-    {   // END_NAME
-        return m_name;
+    // BEGIN_GET_NAME
+    const std::string& get_name(void) const
+    {   // END_GET_NAME
+        return m_options.get_name();
+    }
+    //
+    // BEGIN_GET_TRACE
+    bool get_trace(void) const
+    {   // END_GET_TRACE
+        return m_options.get_trace();
+    }
+    //
+    // BEGIN_SET_TRACE
+    void set_trace(bool trace)
+    {   // END_SET_TRACE
+        m_options.set_trace(trace);
     }
     //
     // forward_dep

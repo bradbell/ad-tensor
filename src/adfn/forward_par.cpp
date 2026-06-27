@@ -67,7 +67,7 @@ vector<TensorType> adfn_t::forward_par(
     // dom_par
 # ifndef NDEBUg
     const vector< vector<int64_t> >&  shapes = m_par.m_dom_shapes;
-    string msg = m_name + ".forward_par: ";
+    string msg = get_name() + ".forward_par: ";
     if( dom_par.size() != shapes.size() ) {
         msg += "dom_par.size() = " + std::to_string( dom_par.size() );
         msg += " and its size for this adfn is ";
@@ -89,7 +89,7 @@ vector<TensorType> adfn_t::forward_par(
     // trace
     bool trace = options.get_trace();
     if( trace ) {
-        cout << "Begin tracing " + m_name + ".forward_par\n";
+        cout << "Begin tracing " + get_name() + ".forward_par\n";
     }
     //
     // n_op, n_all, empty
@@ -125,7 +125,7 @@ vector<TensorType> adfn_t::forward_par(
         }
     }
     if( trace ) {
-        cout << "End tracing " + m_name + ".forward_par\n";
+        cout << "End tracing " + get_name() + ".forward_par\n";
     }
     return par_all;
 }

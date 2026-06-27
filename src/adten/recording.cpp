@@ -243,7 +243,7 @@ adfn_t adten_t::stop_recording(
     }
     //
     // adfn: name
-    adfn.m_name = name;
+    adfn.m_options.set_name(name);
     //
     return adfn;
 }

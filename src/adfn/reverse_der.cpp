@@ -87,7 +87,7 @@ vector<TensorType> adfn_t::reverse_der(
     // rng_der
 # ifndef NDEBUg
     const vector< vector<int64_t> >&  shapes = m_rng_shapes;
-    string msg = m_name + ".reverse_der: ";
+    string msg = get_name() + ".reverse_der: ";
     if( rng_der.size() != shapes.size() ) {
         msg += "rng_der.size() = " + std::to_string( rng_der.size() );
         msg += " and the range size for this adfn is ";
@@ -109,7 +109,7 @@ vector<TensorType> adfn_t::reverse_der(
     // trace
     bool trace = options.get_trace();
     if( trace ) {
-        cout << "Begin tracing " + m_name + ".reverse_der\n";
+        cout << "Begin tracing " + get_name() + ".reverse_der\n";
     }
     //
     // n_op, n_all, empty
@@ -179,7 +179,7 @@ vector<TensorType> adfn_t::reverse_der(
             string element = to_string( dom_der[j] );
             cout << "dom_der[" << j << "] = " << element << "\n";
         }
-        cout << "End tracing " + m_name + ".reverse_der\n";
+        cout << "End tracing " + get_name() + ".reverse_der\n";
     }
     return dom_der;
 }
