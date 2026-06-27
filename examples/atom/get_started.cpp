@@ -97,8 +97,7 @@ TEST(examples_atom, get_started)  {
     x.push_back( torch::tensor( {2.0, 3.0} ) );
     //
     // ax
-    vector<Tensor> p;
-    auto [ap, ax] = adten_t::start_recording(p, x);
+    vector<adten_t> ax = adten_t::start_recording(x);
     //
     // ay
     size_t call_info = 0;

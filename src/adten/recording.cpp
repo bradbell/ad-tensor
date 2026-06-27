@@ -21,6 +21,7 @@ namespace ad_tensor { // BEGIN_NAMESPACE_AD_TENSOR
 Start Recording adten_t Operations
 ##################################
 {xrst_literal ,
+    include/ad_tensor/adten.hpp
     BEGIN_START_RECORDING_1, END_START_RECORDING_1
     BEGIN_START_RECORDING_2, END_START_RECORDING_2
 }
@@ -65,21 +66,17 @@ Example
 {xrst_end start_recording}
 */
 
-// BEGIN_START_RECORDING_1
-// adom_var = adten_t::start_recording(dom_var)
 vector<adten_t> adten_t::start_recording(const vector<at::Tensor>& dom_var)
-{   // END_START_RECORDING_1
+{   //
     vector<at::Tensor> dom_par;
     auto [ adom_par, adom_var] = start_recording(dom_par, dom_var);
     return adom_var;
 }
-// BEGIN_START_RECORDING_2
-// auto [adom_par, adom_var] = adten_t::start_recording(dom_par, dom_var)
 std::tuple< vector<adten_t>, vector<adten_t> >
 adten_t::start_recording(
         const vector<at::Tensor>& dom_par ,
         const vector<at::Tensor>& dom_var )
-{   // END_START_RECORDING_2
+{   //
     //
     // tape
     dev::tape_t& tape = dev::this_threads_tape();

@@ -206,13 +206,19 @@ public:
     // END_TO_TENSOR
     {   return m_tensor; }
     //
-    vector<adten_t> start_recording(
+    // BEGIN_START_RECORDING_1
+    // adom_var = adten_t::start_recording(dom_var)
+    static vector<adten_t> start_recording(
         const vector<at::Tensor>& dom_var
     );
+    // END_START_RECORDING_1
+    // BEGIN_START_RECORDING_2
+    // auto [adom_par, adom_var] = adten_t::start_recording(dom_par, dom_var)
     static std::tuple< vector<adten_t>, vector<adten_t> > start_recording(
         const vector<at::Tensor>& dom_par,
         const vector<at::Tensor>& dom_var
     );
+    // END_START_RECORDING_2
     //
     static adfn_t stop_recording(
         const vector<adten_t>& arange ,

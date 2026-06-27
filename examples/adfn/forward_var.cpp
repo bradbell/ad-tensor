@@ -25,8 +25,7 @@ TEST(examples_adfn, forward_var)  {
     x.push_back( torch::tensor( {4.0, 5.0} ) );
     //
     // ax
-    vector<Tensor> p;
-    auto [ap, ax] = adten_t::start_recording(p, x);
+    vector<adten_t> ax = adten_t::start_recording(x);
     //
     // acon
     // create a constant after start_recording so can use it in the recording

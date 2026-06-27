@@ -203,8 +203,7 @@ TEST(examples_atom, ad_forward_der)  {
     domain.push_back(x);
     //
     // adomain
-    vector<Tensor> par;
-    auto [apar, adomain] = adten_t::start_recording(par, domain);
+    vector<adten_t> adomain = adten_t::start_recording(domain);
     //
     // ay
     size_t call_info = 0;
@@ -221,7 +220,7 @@ TEST(examples_atom, ad_forward_der)  {
     ad_tensor::adfn_t f = adten_t::stop_recording(arange, "f");
     //
     // adomain
-    std::tie(apar, adomain) = adten_t::start_recording(par, domain);
+    adomain = adten_t::start_recording(domain);
     //
     vector<adten_t> apar_all;
     vector<adten_t> avar_all = f.forward_var(apar_all, adomain, options);

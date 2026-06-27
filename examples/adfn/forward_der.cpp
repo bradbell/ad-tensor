@@ -25,8 +25,7 @@ TEST(examples_adfn, forward_der)  {
     x.push_back( torch::tensor( {2.0} ) );
     //
     // ax
-    vector<Tensor> p;
-    auto [ap, ax] = adten_t::start_recording(p, x);
+    vector<adten_t> ax = adten_t::start_recording(x);
     //
     // ay
     // We use y for the range space
