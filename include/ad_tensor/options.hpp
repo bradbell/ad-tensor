@@ -3,36 +3,23 @@
 // SPDX-FileCopyrightText: Bradley M. Bell <bradbell@seanet.com>
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
-/*
-{xrst_begin options usr}
-
-The Options Key Value Map
-#########################
-
-trace
-*****
-{xrst_literal ,
-    BEGIN_TRACE, END_TRACE
-}
-The default value for trace is false.
-
-{xrst_end options}
-*/
-#include<map>
 #include<string>
 
 namespace ad_tensor {
     class options_t {
     private:
-        bool m_trace;
+        std::string m_name;
+        bool        m_trace;
     public:
-        options_t(void)
-        : m_trace(false)
-        { }
+        // ctor
+        options_t(void);
         //
-        // BEGIN_TRACE
+        // name
+        void set_name(const std::string& name);
+        const std::string& get_name(void) const;
+        //
+        // trace
         void set_trace(bool trace);
         bool get_trace(void) const;
-        // END_TRACE
     };
 }

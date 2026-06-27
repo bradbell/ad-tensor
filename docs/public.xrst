@@ -17,8 +17,8 @@ TODO
     void adten::current_recording(adten_t& adten)
 
 {xrst_toc_table
+    src/options.cpp
     include/ad_tensor/vector.hpp
-    include/ad_tensor/options.hpp
     include/ad_tensor/sparsity.hpp
     include/ad_tensor/adten.hpp
     include/ad_tensor/ad_type.hpp

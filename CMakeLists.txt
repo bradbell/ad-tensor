@@ -7,7 +7,7 @@
 cmake_minimum_required(VERSION 3.10)
 #
 # ad_tensor_SOURCE_DIR
-project(ad_tensor VERSION "2026.6.26")
+project(ad_tensor VERSION "2026.6.27")
 #
 # TORCH_INCLUDE_DIRS, TORCH_CXX_FLAGS, TORCH_LIBRARIES
 find_package(Torch REQUIRED)
