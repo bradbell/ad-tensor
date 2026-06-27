@@ -173,9 +173,8 @@ public:
     // forward_var
     template <class TensorType>
     vector<TensorType> forward_var(
-        const vector<TensorType>& all_par ,
         const vector<TensorType>& dom_var ,
-        const options_t&          options
+        const vector<TensorType>& all_par = vector<TensorType>()
     ) const;
     //
     // get_range

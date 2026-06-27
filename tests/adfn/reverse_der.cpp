@@ -39,7 +39,7 @@ TEST(tests, adfn_reverse_der)  {
     //
     // var_all
     vector<Tensor> par_all;
-    vector<Tensor> var_all = f.forward_var(par_all, x, options);
+    vector<Tensor> var_all = f.forward_var(x, par_all);
     //
     // y
     vector<Tensor> y = f.get_range(par_all, var_all);

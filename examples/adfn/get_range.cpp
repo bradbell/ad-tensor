@@ -56,7 +56,7 @@ TEST(examples_adfn, get_range)  {
     //
     // y
     vector<Tensor> par_all = f.forward_par(p);
-    vector<Tensor> var_all = f.forward_var(par_all, x, options);
+    vector<Tensor> var_all = f.forward_var(x, par_all);
     vector<Tensor> y       = f.get_range(par_all, var_all);
     //
     EXPECT_EQ( y.size(), 3 );

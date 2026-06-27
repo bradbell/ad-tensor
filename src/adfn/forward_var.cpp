@@ -25,6 +25,10 @@ TensorType
 **********
 This is either at::Tensor or :ref:`adten-name` .
 
+dom_var
+*******
+Is the value of the domain variables for this calculation.
+
 par_all
 *******
 is the value of all the parameters for this function.
@@ -32,18 +36,15 @@ This is usually calculated by :ref:`adfn_forward_par-name` .
 In the special case where dom_par is empty, par_all is also empty
 and need not be computed by adfn::forward_par .
 
-dom_var
-*******
-Is the value of the domain variables for this calculation.
 
-options
-*******
-Trace the variable calculations when options.get_trace() is true.
+trace
+*****
+if :ref:`adfn@trace` is true, this calculation will be traced.
 
 var_all
 *******
 A tensor is a variable tensor if it depends on the tensors in dom_var.
-The vector var_all contains all the variable tensors that are calculated.
+The vector var_all contains all the variable tensors.
 The vector dom_var is a sub-vector at the beginning of par_all.
 
 Example
@@ -57,22 +58,20 @@ Example
 namespace ad_tensor { // BEGIN_NAMESPACE_AD_TENSOR
 //
 // BEGIN_FORWARD_VAR
-// var_all = adfn.forward_var(par_all, dom_var, options)
+// var_all = adfn.forward_var(dom_var, par_all)
 template <class TensorType>
 vector<TensorType> adfn_t::forward_var(
-    const vector<TensorType>& par_all ,
     const vector<TensorType>& dom_var ,
-    const options_t&          options
-) const
-// END_FORWARD_VAR
-{
-    // cout
+    const vector<TensorType>& par_all ) const
+{   // END_FORWARD_VAR
+    //
+    // using
     using std::cout;
     using std::string;
     using ad_tensor::dev::to_string;
     //
     // dom_var
-# ifndef NDEBUg
+# ifndef NDEBUG
     const vector< vector<int64_t> >&  shapes = m_var.m_dom_shapes;
     string msg = get_name() + ".forward_var: ";
     if( dom_var.size() != shapes.size() ) {
@@ -94,7 +93,7 @@ vector<TensorType> adfn_t::forward_var(
 # endif
     //
     // trace
-    bool trace = options.get_trace();
+    bool trace = m_options.get_trace();
     if( trace ) {
         cout << "Begin tracing " + get_name() + ".forward_var\n";
     }
@@ -137,14 +136,12 @@ vector<TensorType> adfn_t::forward_var(
     return var_all;
 }
 template vector<adten_t> adfn_t::forward_var(
-    const vector<adten_t>&    par_all ,
     const vector<adten_t>&    dom_var ,
-    const options_t&          options
+    const vector<adten_t>&    par_all
 ) const;
 template vector<at::Tensor> adfn_t::forward_var(
-    const vector<at::Tensor>& par_all ,
     const vector<at::Tensor>& dom_var ,
-    const options_t&          options
+    const vector<at::Tensor>& par_al
 ) const;
 
 } // END_NAMESPACE_AD_TENSOR
