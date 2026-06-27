@@ -69,13 +69,13 @@ Example
 vector<adten_t> adten_t::start_recording(const vector<at::Tensor>& dom_var)
 {   //
     vector<at::Tensor> dom_par;
-    auto [ adom_par, adom_var] = start_recording(dom_par, dom_var);
+    auto [ adom_var, adom_par] = start_recording(dom_var, dom_par);
     return adom_var;
 }
 std::tuple< vector<adten_t>, vector<adten_t> >
 adten_t::start_recording(
-        const vector<at::Tensor>& dom_par ,
-        const vector<at::Tensor>& dom_var )
+        const vector<at::Tensor>& dom_var ,
+        const vector<at::Tensor>& dom_par )
 {   //
     //
     // tape
@@ -151,9 +151,7 @@ adten_t::start_recording(
             adten_t( tape_id, index, dom_var[index], variable)
         );
     }
-    return std::tuple<
-        vector<adten_t>, vector<adten_t>
-    > ( adom_par, adom_var);
+    return std::tuple< vector<adten_t>, vector<adten_t> >(adom_var, adom_par);
 }
 /*
 ------------------------------------------------------------------------------

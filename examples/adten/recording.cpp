@@ -17,9 +17,9 @@ TEST(examples_ad, record)  {
     vector<Tensor> dom_par = { torch::tensor( {2.0, 3.0} ) };
     vector<Tensor> dom_var = { torch::tensor( {4.0, 5.0} ) };
     //
-    // adom_par, adom_var
-    auto [ adom_par, adom_var ] = adten_t::start_recording(
-        dom_par, dom_var
+    // adom_var, adom_par
+    auto [ adom_var, adom_par ] = adten_t::start_recording(
+        dom_var, dom_par
     );
     //
     // dom_par, dom_var

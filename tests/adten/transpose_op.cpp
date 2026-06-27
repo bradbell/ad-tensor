@@ -30,7 +30,7 @@ TEST(tests, adten_transpose_op)  {
     } ) );
     //
     // ap, ax
-    auto [ap, ax] = adten_t::start_recording(p, x);
+    auto [ax, ap] = adten_t::start_recording(x, p);
     //
     // ay
     vector<adten_t> ay;

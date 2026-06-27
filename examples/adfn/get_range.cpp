@@ -27,7 +27,7 @@ TEST(examples_adfn, get_range)  {
     x.push_back( torch::tensor( {4.0, 5.0} ) );
     //
     // ap, ax
-    auto [ap, ax] = adten_t::start_recording(p, x);
+    auto [ax, ap] = adten_t::start_recording(x, p);
     //
     // acon
     // create a constant after start_recording so can use it in the recording

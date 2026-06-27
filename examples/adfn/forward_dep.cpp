@@ -34,7 +34,7 @@ TEST(examples_adfn, forward_dep)  {
     x.push_back( torch::tensor( {1.0, 1.0} ) );
     //
     // ac, ax
-    auto [ac, ax] = adten_t::start_recording(c, x);
+    auto [ax, ac] = adten_t::start_recording(x, c);
     //
     // ap
     vector<adten_t> ap;

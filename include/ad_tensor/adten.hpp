@@ -213,10 +213,10 @@ public:
     );
     // END_START_RECORDING_1
     // BEGIN_START_RECORDING_2
-    // auto [adom_par, adom_var] = adten_t::start_recording(dom_par, dom_var)
+    // auto [adom_var  adom_par] = adten_t::start_recording(dom_var, dom_par)
     static std::tuple< vector<adten_t>, vector<adten_t> > start_recording(
-        const vector<at::Tensor>& dom_par,
-        const vector<at::Tensor>& dom_var
+        const vector<at::Tensor>& dom_var ,
+        const vector<at::Tensor>& dom_par
     );
     // END_START_RECORDING_2
     //

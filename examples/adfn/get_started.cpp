@@ -30,7 +30,7 @@ namespace {
         vector<Tensor> dom_var = {slope, intercept};
         //
         // adom_par, adom_var
-        auto [adom_par, adom_var] = adten_t::start_recording(dom_par, dom_var);
+        auto [adom_var, adom_par] = adten_t::start_recording(dom_var, dom_par);
         //
         // ax, ay, aslope, aintercept
         adten_t ax         = adom_par[0];
@@ -129,7 +129,7 @@ TEST(examples_adfn, get_started_second_derivative)  {
     vector<Tensor> dom_var = {slope, intercept};
     //
     // adom_par, adom_var
-    auto [adom_par, adom_var] = adten_t::start_recording(dom_par, dom_var);
+    auto [adom_var, adom_par] = adten_t::start_recording(dom_var, dom_par);
     //
     // g_0  = f_slope ( (x, y), (slope, intercept) )
     // g_1  = f_interceopt ( (x, y), (slope, intercept) )

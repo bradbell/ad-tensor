@@ -26,7 +26,7 @@ TEST(examples_adfn, forward_par)  {
     //
     // ap
     vector<Tensor> x;
-    auto [ap, ax] = adten_t::start_recording(p, x);
+    auto [ax, ap] = adten_t::start_recording(x, p);
     //
     // acon
     // create a constant after start_recording so can use it in the recording

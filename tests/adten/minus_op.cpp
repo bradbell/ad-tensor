@@ -28,7 +28,7 @@ TEST(tests, adten_minus_op)  {
     x.push_back( torch::tensor( { {1.0, 2.0, 3.0}, {4.0, 5.0, 6.0} } ) );
     //
     // ap, ax
-    auto [ap, ax] = adten_t::start_recording(p, x);
+    auto [ax, ap] = adten_t::start_recording(x, p);
     //
     // ay
     vector<adten_t> ay;
