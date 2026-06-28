@@ -93,7 +93,7 @@ TEST(examples_adfn, get_started_first_derivative)  {
     //
     // sumsq_intercept, sumsq_slope
     vector<Tensor> rng_der = { torch::tensor(1.0) };
-    vector<Tensor> dom_der = f.reverse_der(par_all, var_all, rng_der, options);
+    vector<Tensor> dom_der = f.reverse_der(rng_der, var_all, par_all);
     Tensor sumsq_slope     = dom_der[0];
     Tensor sumsq_intercept = dom_der[1];
     //
@@ -137,7 +137,7 @@ TEST(examples_adfn, get_started_second_derivative)  {
     vector<adten_t>   avar_all = f.forward_var(adom_var, apar_all);
     vector<adten_t> arng_der   = { adten_t( torch::tensor(1.0) ) };
     vector<adten_t> adom_der   = f.reverse_der(
-        apar_all, avar_all, arng_der, options
+        arng_der, avar_all, apar_all
     );
     adfn_t g = adten_t::stop_recording(adom_der, "g");
     //

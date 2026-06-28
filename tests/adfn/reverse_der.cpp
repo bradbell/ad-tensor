@@ -63,7 +63,7 @@ TEST(tests, adfn_reverse_der)  {
     dy.push_back( torch::tensor( {7.0, 8.0} ) );
     //
     // dx
-    vector<Tensor> dx = f.reverse_der(par_all, var_all, dy, options);
+    vector<Tensor> dx = f.reverse_der(dy, var_all, par_all);
     //
     EXPECT_EQ( dx.size(), x.size() );
     //

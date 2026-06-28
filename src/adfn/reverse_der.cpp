@@ -28,12 +28,9 @@ TensorType
 **********
 This is either at::Tensor or :ref:`adten-name` .
 
-par_all
+rng_der
 *******
-is the value of all the parameters for this function.
-This is usually calculated by :ref:`adfn_forward_par-name` .
-In the special case where dom_par is empty, par_all is also empty
-and need not be computed by adfn::forward_par .
+This is the range direction that the derivative is computed with respect to.
 
 var_all
 *******
@@ -42,20 +39,22 @@ This is usually calculated by :ref:`adfn_forward_var-name` .
 Since derivatives are only computed with respect to domain variables,
 it does not make sense for dom_var to be empty.
 
-rng_der
+par_all
 *******
-This is the range direction that the derivative is computed with respect to.
+is the value of all the parameters for this function.
+This is usually calculated by :ref:`adfn_forward_par-name` .
+In the special case where dom_par is empty, par_all is also empty
+and need not be computed by adfn::forward_par .
 
-
-options
-*******
-Trace the reverse derivative calculations when options.get_trace() is true.
+trace
+*****
+if :ref:`adfn@trace` is true, this calculation will be traced.
 
 dom_der
 *******
 is the domain derivative of the range space direction; i.e.
 
-    dom_der =  (d / d dom_var) sum[ rng_der * adfn(dom_par, dom_var ) ]
+    dom_der =  (d / d dom_var) sum[ rng_der * adfn(dom_var, dom_par ) ]
 
 
 Example
@@ -69,13 +68,12 @@ Example
 namespace ad_tensor { // BEGIN_NAMESPACE_AD_TENSOR
 //
 // BEGIN_REVERSE_DER
-// dom_der = adfn.reverse_der(par_all, var_all, rng_der, options)
+// dom_der = adfn.reverse_der(rng_der, var_all, par_all)
 template <class TensorType>
 vector<TensorType> adfn_t::reverse_der(
-    const vector<TensorType>& par_all ,
-    const vector<TensorType>& var_all ,
     const vector<TensorType>& rng_der ,
-    const options_t&          options
+    const vector<TensorType>& var_all ,
+    const vector<TensorType>& par_all
 ) const
 // END_REVERSE_DER
 {
@@ -107,7 +105,7 @@ vector<TensorType> adfn_t::reverse_der(
 # endif
     //
     // trace
-    bool trace = options.get_trace();
+    bool trace = m_options.get_trace();
     if( trace ) {
         cout << "Begin tracing " + get_name() + ".reverse_der\n";
     }
@@ -184,16 +182,14 @@ vector<TensorType> adfn_t::reverse_der(
     return dom_der;
 }
 template vector<adten_t> adfn_t::reverse_der(
-    const vector<adten_t>&    par_all ,
-    const vector<adten_t>&    var_all ,
     const vector<adten_t>&    rng_der ,
-    const options_t&          options
+    const vector<adten_t>&    var_all ,
+    const vector<adten_t>&    par_all
 ) const;
 template vector<at::Tensor> adfn_t::reverse_der(
-    const vector<at::Tensor>& par_all ,
-    const vector<at::Tensor>& var_all ,
     const vector<at::Tensor>& rng_der ,
-    const options_t&          options
+    const vector<at::Tensor>& var_all ,
+    const vector<at::Tensor>& par_all
 ) const;
 
 } // END_NAMESPACE_AD_TENSOR

@@ -117,7 +117,7 @@ TEST(tests, adten_solve_op)  {
     double g_x3 =   p0 / det - times_det * x0 / (det * det);
     //
     // dx
-    dx     = f.reverse_der(par_all, var_all, dy, options);
+    dx     = f.reverse_der(dy, var_all, par_all);
     check  = torch::tensor( { {g_x0, g_x1}, {g_x2, g_x3} } );
     close  = dx[0].allclose( check );
     EXPECT_TRUE( close );
@@ -136,7 +136,7 @@ TEST(tests, adten_solve_op)  {
     double h_x3 =   p2 / det - times_det * x0 / (det * det);
     //
     // dx
-    dx     = f.reverse_der(par_all, var_all, dy, options);
+    dx     = f.reverse_der(dy, var_all, par_all);
     check  = torch::tensor( { {h_x0, h_x1}, {h_x2, h_x3} } );
     close  = dx[0].allclose( check );
     EXPECT_TRUE( close );

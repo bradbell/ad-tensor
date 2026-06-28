@@ -195,9 +195,8 @@ public:
     // reverse_der
     template <class TensorType>
     vector<TensorType> reverse_der(
-        const vector<TensorType>& all_par ,
-        const vector<TensorType>& all_var ,
         const vector<TensorType>& rng_der ,
-        const options_t&          options
+        const vector<TensorType>& all_var ,
+        const vector<TensorType>& all_par = vector<TensorType>()
     ) const;
 }; }

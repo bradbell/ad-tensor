@@ -62,7 +62,7 @@ TEST(tests, adten_view_op)  {
     //
     // dy, dx
     dy[0] = torch::tensor( { {1.0, 2.0}, {3.0, 4.0} } );
-    dx    = f.reverse_der(par_all, var_all, dy, options);
+    dx    = f.reverse_der(dy, var_all, par_all);
     equal = dx[0].equal( torch::tensor( {1.0, 2.0, 3.0, 4.0} ) );
     EXPECT_TRUE( equal );
 }

@@ -72,7 +72,7 @@ TEST(tests, adten_transpose_op)  {
     EXPECT_TRUE( equal );
     //
     // dx
-    dx    = f.reverse_der(par_all, var_all, dy, options);
+    dx    = f.reverse_der(dy, var_all, par_all);
     check = torch::tensor( {
         {5.0, 6.0},
         {7.0, 8.0}

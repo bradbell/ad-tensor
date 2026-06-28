@@ -133,7 +133,7 @@ TEST(examples_atom, get_started)  {
     // dz, dx
     // reverse mode derivative
     dz[0] = torch::tensor( 6.0 );
-    dx = f.reverse_der(par_all, var_all, dz, options);
+    dx = f.reverse_der(dz, var_all, par_all);
     //
     // check
     bool equal;

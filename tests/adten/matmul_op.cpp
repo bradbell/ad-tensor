@@ -76,7 +76,7 @@ TEST(tests, adten_matmul_op)  {
     dy[0] = torch::tensor( {
         {1.0, 0.0}, {0.0, 0.0}
     } );
-    dx    = f.reverse_der(par_all, var_all, dy, options);
+    dx    = f.reverse_der(dy, var_all, par_all);
     check = torch::tensor( {
         {2.0 * x00, x10},
         {x01,       0.0}

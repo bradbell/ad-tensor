@@ -55,7 +55,7 @@ rng_der
 *******
 is the directional derivative of the range in the dom_der direction; i.e.
 
-    rng_der = d/dt adfn(dom_par, dom_var + t * dom_der)
+    rng_der = d/dt adfn(dom_var + t * dom_der, dom_par)
 
 
 Example
@@ -69,7 +69,7 @@ Example
 namespace ad_tensor { // BEGIN_NAMESPACE_AD_TENSOR
 //
 // BEGIN_FORWARD_DER
-// rng_der = adfn.forward_der(par_all, var_all, dom_der, options)
+// rng_der = adfn.forward_der(dom_der, var_all, par_all)
 template <class TensorType>
 vector<TensorType> adfn_t::forward_der(
     const vector<TensorType>& dom_der ,

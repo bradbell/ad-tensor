@@ -71,7 +71,7 @@ TEST(tests, adten_minus_op)  {
     // dy, dx
     dy[0] = torch::tensor( {2.0, 3.0} );
     dy[1] = torch::tensor( { {11.0, 12.0, 13.0}, {14.0, 15.0, 16.0} } );
-    dx    = f.reverse_der(par_all, var_all, dy, options);
+    dx    = f.reverse_der(dy, var_all, par_all);
     //
     EXPECT_EQ( x.size(), dx.size() );
     //
