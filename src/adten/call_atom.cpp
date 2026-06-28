@@ -130,9 +130,15 @@ vector<adten_t> adten_t::call_atom(
     vector<bool> rng_used;
     atom_callback_t::forward_t  forward = callback.get_forward();
     const options_t&            options = callback.get_options();
-    vector<at::Tensor>           range  = forward(
+    std::optional< vector<at::Tensor> > opt_forward = forward(
         options, call_info, rng_used, domain
     );
+    if( ! opt_forward.has_value() ) {
+        std::string msg = "atomic " + options.get_name();
+        msg += ".forward did not return a value\n";
+        dev::user_assert(false, msg);
+    }
+    vector<at::Tensor> range = opt_forward.value();
     size_t n_range  = range.size();
     //
     // arange
@@ -148,14 +154,14 @@ vector<adten_t> adten_t::call_atom(
     }
     //
     // pattern
-    atom_callback_t::depend_t   depend  = callback.get_depend();
-    std::optional<sparsity_t>   opt     = depend(options, call_info);
-    if( ! opt.has_value() ) {
+    atom_callback_t::depend_t   depend     = callback.get_depend();
+    std::optional<sparsity_t>   opt_depend = depend(options, call_info);
+    if( ! opt_depend.has_value() ) {
         std::string msg = "atomic " + options.get_name();
-        msg += " did not return a value\n";
+        msg += ".depend did not return a value\n";
         dev::user_assert(false, msg);
     }
-    sparsity_t pattern = opt.value();
+    sparsity_t pattern = opt_depend.value();
     //
     // arange[i].m_ad_type
     for(size_t i = 0; i < n_range; ++i) {

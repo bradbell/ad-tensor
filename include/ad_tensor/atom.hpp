@@ -238,6 +238,7 @@ class atom_callback_t {
 public:
     //
     // BEGIN_DEPEND
+    // sparsity = depend(options, call_info).value()
     typedef std::optional<sparsity_t> (*depend_t)(
         const options_t&                  options   ,
         size_t                            call_info
@@ -245,8 +246,8 @@ public:
     // END_DEPEND
     //
     // BEGIN_FORWARD_T
-    // range = forward(call_info, rng_used, domain)
-    typedef vector<at::Tensor> (*forward_t) (
+    // range = forward(call_info, rng_used, domain).value()
+    typedef std::optional< vector<at::Tensor> > (*forward_t) (
         const options_t&                  options   ,
         size_t                            call_info ,
         const vector<bool>&               rng_used  ,

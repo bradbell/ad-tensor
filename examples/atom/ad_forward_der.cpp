@@ -42,7 +42,7 @@ namespace {
     }
     //
     // forward
-    vector<Tensor> forward_y(
+    std::optional< vector<Tensor> > forward_y(
         const options_t&      options   ,
         size_t                call_info ,
         const vector<bool>&   rng_used ,
@@ -58,7 +58,8 @@ namespace {
             cout << "forward_y: domain =\n" << to_string(domain);
             cout << "forward_y: range =\n" << to_string(range);
         }
-        return range;
+        std::optional< vector<Tensor> > opt = range;
+        return opt;
     }
     //
     // forward_der_y
@@ -123,7 +124,7 @@ namespace {
     }
     //
     // forward_z
-    vector<Tensor> forward_z(
+    std::optional< vector<Tensor> > forward_z(
         const options_t&      options   ,
         size_t                call_info ,
         const vector<bool>&   rng_used ,
@@ -139,7 +140,8 @@ namespace {
             cout << "forward_z: domain =\n" << to_string(domain);
             cout << "forward_z: range =\n" << to_string(range);
         }
-        return range;
+        std::optional< vector<Tensor> > opt = range;
+        return opt;
     }
     //
     // forward_der_z

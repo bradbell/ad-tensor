@@ -38,7 +38,7 @@ namespace {
     }
     //
     // forward
-    vector<Tensor> forward_y(
+    std::optional< vector<Tensor> > forward_y(
         const options_t&      options   ,
         size_t                call_info ,
         const vector<bool>&   rng_used ,
@@ -49,7 +49,9 @@ namespace {
         // range
         vector<Tensor> range;
         range.push_back( x * x * x );
-        return range;
+        //
+        std::optional< vector<Tensor> > opt = range;
+        return opt;
     }
     //
     // forward_der_y
@@ -107,7 +109,7 @@ namespace {
     }
     //
     // forward_z
-    vector<Tensor> forward_z(
+    std::optional< vector<Tensor> > forward_z(
         const options_t&      options   ,
         size_t                call_info ,
         const vector<bool>&   rng_used ,
@@ -119,7 +121,9 @@ namespace {
         // range
         vector<Tensor> range;
         range.push_back( z );
-        return range;
+        //
+        std::optional< vector<Tensor> > opt = range;
+        return opt;
     }
     //
     // forward_der_z

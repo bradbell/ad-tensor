@@ -32,7 +32,7 @@ namespace {
     }
     //
     // forward
-    vector<Tensor> forward(
+    std::optional< vector<Tensor> > forward(
         const options_t&      options   ,
         size_t                call_info ,
         const vector<bool>&   rng_used ,
@@ -41,7 +41,9 @@ namespace {
         // range
         vector<Tensor> range;
         range.push_back( domain[0] * domain[0] );
-        return range;
+        //
+        std::optional< vector<Tensor> > opt = range;
+        return opt;
     }
     //
     // forward_der

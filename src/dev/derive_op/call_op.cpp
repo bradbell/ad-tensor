@@ -124,7 +124,7 @@ void call_op_depend(
     std::optional<sparsity_t> opt = depend(options, call_info);
     if( ! opt.has_value() ) {
         std::string msg = "atomic " + options.get_name();
-        msg += " did not return a value\n";
+        msg += ".depend did not return a value\n";
         user_assert(false, msg);
     }
     sparsity_t sparsity = opt.value();
@@ -225,7 +225,15 @@ template<> void call_op_t<at::Tensor>::forward_par(
     }
     //
     // range
-    vector<at::Tensor> range = forward(options, call_info, rng_used, domain);
+    std::optional< vector<at::Tensor> > opt = forward(
+        options, call_info, rng_used, domain
+    );
+    if( ! opt.has_value() ) {
+        std::string msg = "atomic " + options.get_name();
+        msg += ".forward did not return a value\n";
+        user_assert(false, msg);
+    }
+    vector<at::Tensor> range = opt.value();
     //
     // par_vec
     for(size_t k = 0; k < n_result; ++k) {
@@ -287,7 +295,15 @@ template<> void call_op_t<at::Tensor>::forward_var(
     }
     //
     // range
-    vector<at::Tensor> range = forward(options, call_info, rng_used, domain);
+    std::optional< vector<at::Tensor> > opt = forward(
+        options, call_info, rng_used, domain
+    );
+    if( ! opt.has_value() ) {
+        std::string msg = "atomic " + options.get_name();
+        msg += ".forward did not return a value\n";
+        user_assert(false, msg);
+    }
+    vector<at::Tensor> range = opt.value();
     //
     // par_vec
     for(size_t k = 0; k < n_result; ++k) {
