@@ -47,7 +47,7 @@ namespace {
     }
     //
     // forward_der
-    vector<Tensor> forward_der(
+    std::optional< vector<Tensor> > forward_der(
         const options_t&      options   ,
         size_t                call_info ,
         const vector<bool>&   rng_used ,
@@ -57,7 +57,9 @@ namespace {
         // rng_der
         vector<Tensor> rng_der;
         rng_der.push_back( 2.0 * domain[0] * dom_der[0] );
-        return rng_der;
+        //
+        std::optional< vector<Tensor> > opt = rng_der;
+        return opt;
     }
     //
     // reverse_der

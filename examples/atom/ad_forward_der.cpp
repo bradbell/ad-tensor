@@ -63,7 +63,7 @@ namespace {
     }
     //
     // forward_der_y
-    vector<Tensor> forward_der_y(
+    std::optional< vector<Tensor> > forward_der_y(
         const options_t&      options   ,
         size_t                call_info ,
         const vector<bool>&   rng_used  ,
@@ -82,7 +82,8 @@ namespace {
             cout << "forward_der_y: dom_der =\n" << to_string(dom_der);
             cout << "forward_der_y: rng_der =\n" << to_string(rng_der);
         }
-        return rng_der;
+        std::optional< vector<Tensor> > opt = rng_der;
+        return opt;
     }
     //
     // ad_forward_der_y
@@ -145,7 +146,7 @@ namespace {
     }
     //
     // forward_der_z
-    vector<Tensor> forward_der_z(
+    std::optional< vector<Tensor> > forward_der_z(
         const options_t&      options   ,
         size_t                call_info,
         const vector<bool>&   rng_used,
@@ -167,7 +168,8 @@ namespace {
             cout << "forward_der_z: dom_der =\n" << to_string(dom_der);
             cout << "forward_der_z: rng_der =\n" << to_string(rng_der);
         }
-        return rng_der;
+        std::optional< vector<Tensor> > opt = rng_der;
+        return opt;
     }
 }
 TEST(examples_atom, ad_forward_der)  {

@@ -55,7 +55,7 @@ namespace {
     }
     //
     // forward_der_y
-    vector<Tensor> forward_der_y(
+    std::optional< vector<Tensor> > forward_der_y(
         const options_t&      options   ,
         size_t                call_info ,
         const vector<bool>&   rng_used  ,
@@ -66,9 +66,11 @@ namespace {
         Tensor dx = dom_der[0];
         //
         // range
-        vector<Tensor> range;
-        range.push_back( 3.0 * x * x * dx );
-        return range;
+        vector<Tensor> rng_der;
+        rng_der.push_back( 3.0 * x * x * dx );
+        //
+        std::optional< vector<Tensor> > opt = rng_der;
+        return opt;
     }
     //
     // ad_reverse_der_y
@@ -127,7 +129,7 @@ namespace {
     }
     //
     // forward_der_z
-    vector<Tensor> forward_der_z(
+    std::optional< vector<Tensor> > forward_der_z(
         const options_t&      options   ,
         size_t                call_info,
         const vector<bool>&   rng_used,
@@ -144,7 +146,9 @@ namespace {
         // rng_der
         vector<Tensor> rng_der;
         rng_der.push_back( dz );
-        return rng_der;
+        //
+        std::optional< vector<Tensor> > opt = rng_der;
+        return opt;
     }
 }
 TEST(examples_atom, ad_reverse_der)  {

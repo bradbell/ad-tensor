@@ -420,9 +420,15 @@ template<> void call_op_t<at::Tensor>::forward_der(
     }
     //
     // rng_der
-    vector<at::Tensor> rng_der = forward_der(
+    std::optional< vector<at::Tensor> > opt = forward_der(
         options, call_info, rng_used, domain, dom_der
     );
+    if( ! opt.has_value() ) {
+        std::string msg = "atomic " + options.get_name();
+        msg += ".forward_der did not return a value\n";
+        user_assert(false, msg);
+    }
+    vector<at::Tensor> rng_der = opt.value();
     //
     // for_der
     for(size_t k = 0; k < n_result; ++k) {

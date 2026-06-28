@@ -256,8 +256,8 @@ public:
     // END_FORWARD_T
     //
     // BEGIN_FORWARD_DER_T
-    // rng_der = forward_der(call_info, rng_used, domain, dom_der)
-    typedef vector<at::Tensor> (*forward_der_t) (
+    // rng_der = forward_der(call_info, rng_used, domain, dom_der).value()
+    typedef std::optional< vector<at::Tensor> > (*forward_der_t) (
         const options_t&                  options   ,
         size_t                            call_info ,
         const vector<bool>&               rng_used  ,
