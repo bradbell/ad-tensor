@@ -13,6 +13,7 @@
 namespace {
     //
     // using
+    using std::optional;
     using ad_tensor::vector;
     using ad_tensor::adten_t;
     using ad_tensor::options_t;
@@ -25,13 +26,15 @@ namespace {
     // y(x) = x * x * x
     // ----------------------------------------------------------------------
     // depend_y
-    ad_tensor::sparsity_t depend_y(
+    std::optional<ad_tensor::sparsity_t> depend_y(
         const options_t&      options   ,
         size_t                call_info ) {
         ad_tensor::sparsity_t sparsity;
         std::array<size_t, 2> pair = {0, 0};
         sparsity.push_back( pair );
-        return sparsity;
+        //
+        std::optional<ad_tensor::sparsity_t> opt = sparsity;
+        return opt;
     }
     //
     // forward
@@ -92,13 +95,15 @@ namespace {
     // z(x, dy) = 3 * x * x * dy
     // ----------------------------------------------------------------------
     // depend_z
-    ad_tensor::sparsity_t depend_z(
+    std::optional<ad_tensor::sparsity_t> depend_z(
         const options_t&      options   ,
         size_t                call_info ) {
         ad_tensor::sparsity_t sparsity;
         sparsity.push_back( {0, 0} );
         sparsity.push_back( {0, 1} );
-        return sparsity;
+        //
+        std::optional<ad_tensor::sparsity_t> opt = sparsity;
+        return opt;
     }
     //
     // forward_z

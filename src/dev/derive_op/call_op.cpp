@@ -121,7 +121,13 @@ void call_op_depend(
     const depend_t&        depend        = atom_callback.get_depend();
     //
     // sparsity
-    sparsity_t sparsity = depend(options, call_info);
+    std::optional<sparsity_t> opt = depend(options, call_info);
+    if( ! opt.has_value() ) {
+        std::string msg = "atomic " + options.get_name();
+        msg += " did not return a value\n";
+        user_assert(false, msg);
+    }
+    sparsity_t sparsity = opt.value();
     sparsity.sort();
     //
     size_t sparsity_index = 0;

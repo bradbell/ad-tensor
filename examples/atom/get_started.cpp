@@ -14,18 +14,21 @@
 namespace {
     //
     // vector
+    using std::optional;
     using ad_tensor::vector;
     using ad_tensor::adten_t;
     using ad_tensor::options_t;
     using at::Tensor;
     //
     // depend
-    ad_tensor::sparsity_t depend(
+    optional<ad_tensor::sparsity_t> depend(
         const options_t&      options   ,
         size_t                call_info ) {
         ad_tensor::sparsity_t sparsity;
         sparsity.push_back( {0, 0} );
-        return sparsity;
+        //
+        std::optional<ad_tensor::sparsity_t> opt = sparsity;
+        return opt;
     }
     //
     // forward

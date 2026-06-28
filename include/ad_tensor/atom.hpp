@@ -238,7 +238,7 @@ class atom_callback_t {
 public:
     //
     // BEGIN_DEPEND
-    typedef sparsity_t (*depend_t)(
+    typedef std::optional<sparsity_t> (*depend_t)(
         const options_t&                  options   ,
         size_t                            call_info
     );

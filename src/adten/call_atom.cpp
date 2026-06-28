@@ -104,6 +104,7 @@ Only the first operation has entries in arg_value and arg_type.
 #include<ad_tensor/options.hpp>
 #include<ad_tensor/dev/tape.hpp>
 #include<ad_tensor/dev/agraph.hpp>
+#include<ad_tensor/dev/user_assert.hpp>
 
 namespace ad_tensor { // BEGIN_AD_TENSOR_NAMESPACE
 
@@ -148,7 +149,13 @@ vector<adten_t> adten_t::call_atom(
     //
     // pattern
     atom_callback_t::depend_t   depend  = callback.get_depend();
-    sparsity_t                  pattern = depend(options, call_info);
+    std::optional<sparsity_t>   opt     = depend(options, call_info);
+    if( ! opt.has_value() ) {
+        std::string msg = "atomic " + options.get_name();
+        msg += " did not return a value\n";
+        dev::user_assert(false, msg);
+    }
+    sparsity_t pattern = opt.value();
     //
     // arange[i].m_ad_type
     for(size_t i = 0; i < n_range; ++i) {
