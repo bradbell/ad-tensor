@@ -74,7 +74,7 @@ namespace {
     }
     //
     // ad_reverse_der_y
-    vector<adten_t> ad_reverse_der_y(
+    std::optional< vector<adten_t> > ad_reverse_der_y(
         const options_t&       options   ,
         size_t                 call_info ,
         const vector<bool>&    rng_used ,
@@ -93,7 +93,9 @@ namespace {
         vector<adten_t> dom_der = adten_t::call_atom(
             atom_id_z, call_info, domain_z
         );
-        return dom_der;
+        //
+        std::optional< vector<adten_t> > opt = dom_der;
+        return opt;
     }
     // ----------------------------------------------------------------------
     // z(x, dy) = 3 * x * x * dy

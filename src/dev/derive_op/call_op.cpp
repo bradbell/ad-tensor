@@ -645,9 +645,15 @@ template<> void call_op_t<adten_t>::reverse_der(
     };
     //
     // dom_der
-    vector<adten_t> dom_der = reverse_der(
+    std::optional< vector<adten_t> > opt = reverse_der(
         options, call_info, rng_used, domain, rng_der
     );
+    if( ! opt.has_value() ) {
+        std::string msg = "atomic " + options.get_name();
+        msg += ".ad_reverse_der did not return a value\n";
+        user_assert(false, msg);
+    }
+    vector<adten_t> dom_der = opt.value();
     //
     // rev_der
     for(size_t j = 0; j < n_domain; ++j) {
