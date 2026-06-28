@@ -116,7 +116,7 @@ TEST(examples_atom, get_started)  {
     // z
     vector<Tensor> par_all;
     vector<Tensor> var_all = f.forward_var(x);
-    vector<Tensor> z       = f.get_range(var_all, par_all);
+    vector<Tensor> z       = f.get_range(var_all);
     //
     // check
     EXPECT_EQ( z[0].item<float>(), (x[0] * x[0]).sum().item<float>() );
