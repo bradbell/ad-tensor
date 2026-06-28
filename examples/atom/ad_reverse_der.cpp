@@ -155,9 +155,6 @@ namespace {
 }
 TEST(examples_atom, ad_reverse_der)  {
     //
-    // options
-    ad_tensor::options_t options;
-    //
     // atom_global
     ad_tensor::atom_global_t& atom_global =
         ad_tensor::atom_global_t::singleton();
@@ -165,7 +162,6 @@ TEST(examples_atom, ad_reverse_der)  {
     // atom_callback_z
     ad_tensor::atom_callback_t atom_callback_z;
     atom_callback_z.set_name("z");
-    atom_callback_z.set_options(options);
     atom_callback_z.set_depend(depend_z);
     atom_callback_z.set_forward(forward_z);
     atom_callback_z.set_forward_der(forward_der_z);
@@ -176,7 +172,6 @@ TEST(examples_atom, ad_reverse_der)  {
     // atom_callback_y
     ad_tensor::atom_callback_t atom_callback_y;
     atom_callback_y.set_name("y");
-    atom_callback_z.set_options(options);
     atom_callback_y.set_depend(depend_y);
     atom_callback_y.set_forward(forward_y);
     atom_callback_y.set_forward_der(forward_der_y);

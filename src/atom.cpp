@@ -17,7 +17,7 @@
     const atom_callback_t::name ## _t& \
     atom_callback_t::get_ ## name(void) const { \
         if( m_ ## name == nullptr ) { \
-            std::string msg = m_name + \
+            std::string msg = m_options.get_name() + \
                 " atom_callback: " #name " has not been set"; \
             dev::user_assert(false, msg); \
         } \
@@ -77,21 +77,18 @@ namespace ad_tensor {
     // atom_callback_t
     // -----------------------------------------------------------------------
     //
-    // atom_callback_t::set_name, get_name
+    // atom_callback_t::set_name
     void atom_callback_t::set_name(const std::string& name) {
         dev::user_assert( name != "",
             "atom_callback set_name: name is the empty string"
         );
-        m_name = name;
+        m_options.set_name(name);
     }
-    const std::string& atom_callback_t::get_name(void) const {
-        return m_name;
+    void atom_callback_t::set_trace(bool trace) {
+        m_options.set_trace(trace);
     }
     //
-    // atom_callback_t::set_options, get_options
-    void atom_callback_t::set_options(const options_t& options) {
-        m_options = options;
-    }
+    // get_options
     const options_t& atom_callback_t::get_options(void) const {
         return m_options;
     }

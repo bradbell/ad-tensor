@@ -148,7 +148,7 @@ void call_op_depend(
         while(more && sparsity_row == rng_index) {
             size_t dom_index = sparsity[sparsity_index][1];
             if( n_domain <= dom_index ) {
-                std::string name = atom_callback.get_name();
+                std::string name = options.get_name();
                 user_assert( dom_index < n_domain, name +
                     ".depend: sparsity column index is to large"
                 );
@@ -351,6 +351,8 @@ template<> void call_op_t<adten_t>::forward_var(
 }
 // ------------------------------------------------------------------------
 // forward_der
+// TODO: figure out how to template this routine so do not need a different
+// version for ad::Tensor and adten_t .
 template<> void call_op_t<at::Tensor>::forward_der(
     size_t                       op_index    ,
     const agraph_t&              agraph      ,
@@ -527,6 +529,8 @@ template<> void call_op_t<adten_t>::forward_der(
 }
 // ------------------------------------------------------------------------
 // reverse_der
+// TODO: figure out how to template this routine so do not need a different
+// version for ad::Tensor and adten_t .
 template<> void call_op_t<at::Tensor>::reverse_der(
     size_t                       op_index    ,
     const agraph_t&              agraph      ,

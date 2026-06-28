@@ -83,16 +83,13 @@ It must set this with a call of the form
     BEGIN_SET_NAME, END_SET_NAME
 }
 
-options
-=======
-After the constructor, the default value is used for all the
-:ref:`options-name`. You can change this with a call of the form
+trace
+=====
+After the atom_callback_t constructor, the trace flag is false.
+It can be changed with a call of the form
 {xrst_literal ,
-    BEGIN_SET_OPTIONS, END_SET_OPTIONS
+    BEGIN_SET_TRACE, END_SET_TRACE
 }
-Each atomic function will have one value for its options
-but can have a different call_info value for each
-:ref`call_atom-name` to the atomic function.
 
 Functions
 =========
@@ -127,6 +124,7 @@ All of the set functions have a corresponding get function:
 {xrst_literal ,
     BEGIN_GET_CALLBACK, END_GET_CALLBACK
 }
+The values chosen by set_name and set_trace are in the get_options return.
 
 depend
 ******
@@ -292,9 +290,6 @@ public:
     // END_REVERSE_DER_T
 
 private:
-    // m_name
-    std::string m_name;
-    //
     // m_options
     options_t m_options;
     //
@@ -313,8 +308,7 @@ public:
     //
     // BEGIN_CTOR
     atom_callback_t(void)
-    : m_name()
-    , m_options()
+    : m_options()
     , m_depend(nullptr)
     , m_forward(nullptr)
     , m_forward_der(nullptr)
@@ -327,10 +321,9 @@ public:
     void set_name(const std::string& name);
     // END_SET_NAME
     //
-    // BEGIN_SET_OPTIONS
-    void set_options(const options_t& options);
-    // END_SET_OPTIONS
-    //
+    // BEGIN_SET_TRACE
+    void set_trace(bool trace);
+    // END_SET_TRACE
     //
     // BEGIN_SET_FUNCTION
     void set_depend(const depend_t&                    depend);
@@ -342,7 +335,6 @@ public:
     // END_SET_FUNCTION
     //
     // BEGIN_GET_CALLBACK
-    const std::string&      get_name(void) const;
     const options_t&        get_options(void) const;
     const depend_t&         get_depend(void) const;
     const forward_t&        get_forward(void) const;
