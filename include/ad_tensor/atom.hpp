@@ -264,7 +264,7 @@ public:
         const vector<at::Tensor>&         domain    ,
         const vector<at::Tensor>&         dom_der
     );
-    typedef vector<adten_t> (*ad_forward_der_t) (
+    typedef std::optional< vector<adten_t> > (*ad_forward_der_t) (
         const options_t&                  options   ,
         size_t                            call_info ,
         const vector<bool>&               rng_used  ,

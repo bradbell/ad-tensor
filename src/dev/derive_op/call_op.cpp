@@ -508,9 +508,15 @@ template<> void call_op_t<adten_t>::forward_der(
     }
     //
     // rng_der
-    vector<adten_t> rng_der = forward_der(
+    std::optional< vector<adten_t> > opt = forward_der(
         options, call_info, rng_used, domain, dom_der
     );
+    if( ! opt.has_value() ) {
+        std::string msg = "atomic " + options.get_name();
+        msg += ".ad_forward_der did not return a value\n";
+        user_assert(false, msg);
+    }
+    vector<adten_t> rng_der = opt.value();
     //
     // for_der
     for(size_t k = 0; k < n_result; ++k) {

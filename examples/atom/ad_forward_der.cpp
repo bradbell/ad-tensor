@@ -87,8 +87,8 @@ namespace {
     }
     //
     // ad_forward_der_y
-    vector<adten_t> ad_forward_der_y(
-        const options_t&      options   ,
+    std::optional< vector<adten_t> > ad_forward_der_y(
+        const options_t&       options   ,
         size_t                 call_info ,
         const vector<bool>&    rng_used ,
         const vector<adten_t>& domain   ,
@@ -107,7 +107,9 @@ namespace {
             cout << "ad_forward_der_y: dom_der =\n" << to_string(dom_der);
             cout << "ad_forward_der_y: rng_der =\n" << to_string(rng_der);
         }
-        return rng_der;
+        //
+        std::optional< vector<adten_t> > opt = rng_der;
+        return opt;
     }
     // ----------------------------------------------------------------------
     // z(x, dx) = 3 * x * x * dx
