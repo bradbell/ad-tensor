@@ -230,7 +230,7 @@ TEST(examples_atom, ad_reverse_der)  {
     dom_der.push_back( dx );
     //
     // ddsum
-    vector<Tensor> rng_der = g.forward_der(dom_der, var_all, par_all);
+    vector<Tensor> rng_der = g.forward_der(dom_der, var_all);
     Tensor ddsum           = rng_der[0];
     //
     // check
