@@ -63,6 +63,7 @@ namespace ad_tensor {
     }
     //
     // atom_global_t::get
+    // not const because m_rw_mutex is modified
     const atom_callback_t& atom_global_t::get(size_t atom_id) {
         std::shared_lock<std::shared_mutex> lock(m_rw_mutex);
         return m_atom_callback_vec[atom_id];
