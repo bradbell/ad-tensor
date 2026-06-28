@@ -125,7 +125,7 @@ TEST(examples_atom, get_started)  {
     // forward mode derivative
     vector<Tensor> dx;
     dx.push_back( torch::tensor( {4.0, 5.0} ) );
-    vector<Tensor> dz = f.forward_der(par_all, var_all, dx, options);
+    vector<Tensor> dz = f.forward_der(dx, var_all, par_all);
     //
     // check
     EXPECT_EQ( dz[0].item<float>(), (2.0 * x[0] * dx[0]).sum().item<float>() );

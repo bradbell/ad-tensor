@@ -157,7 +157,7 @@ TEST(examples_adfn, get_started_second_derivative)  {
     //
     // sumsq_slope_slope, sumsq_intercept_slope
     vector<Tensor> dom_der  = { torch::tensor(1.0), torch::tensor(0.0) };
-    vector<Tensor> rng_der  = g.forward_der(par_all, var_all, dom_der, options);
+    vector<Tensor> rng_der  = g.forward_der(dom_der, var_all, par_all);
     Tensor sumsq_slope_slope     = rng_der[0];
     Tensor sumsq_intercept_slope = rng_der[1];
     //
@@ -171,7 +171,7 @@ TEST(examples_adfn, get_started_second_derivative)  {
     //
     // sumsq_slope_intercept, sumsq_intercept_intercept
     dom_der  = { torch::tensor(0.0), torch::tensor(1.0) };
-    rng_der  = g.forward_der(par_all, var_all, dom_der, options);
+    rng_der  = g.forward_der(dom_der, var_all, par_all);
     Tensor sumsq_slope_intercept     = rng_der[0];
     Tensor sumsq_intercept_intercept = rng_der[1];
     //

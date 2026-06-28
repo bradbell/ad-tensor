@@ -187,10 +187,9 @@ public:
     // forward_der
     template <class TensorType>
     vector<TensorType> forward_der(
-        const vector<TensorType>& all_par ,
-        const vector<TensorType>& all_var ,
         const vector<TensorType>& dom_der ,
-        const options_t&          options
+        const vector<TensorType>& all_var ,
+        const vector<TensorType>& all_par = vector<TensorType>()
     ) const;
     //
     // reverse_der

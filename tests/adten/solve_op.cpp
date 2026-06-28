@@ -89,7 +89,7 @@ TEST(tests, adten_solve_op)  {
     // dx, dy
     vector<Tensor> dx(1), dy(1);
     dx[0]  = torch::tensor( { {1.0, 0.0}, {0.0, 0.0} } );
-    dy     = f.forward_der(par_all, var_all, dx, options);
+    dy     = f.forward_der(dx, var_all, par_all);
     //
     // check dy[0]
     check  = torch::tensor( { {0.0, 0.0}, {p2,  p3} } ) / det;

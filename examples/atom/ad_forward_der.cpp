@@ -229,7 +229,7 @@ TEST(examples_atom, ad_forward_der)  {
     vector<adten_t> adom_der;
     adom_der.push_back( adten_t( torch::tensor( {1.0, 1.0} ) ) );
     vector<adten_t> arng_der = f.forward_der(
-        apar_all, avar_all, adom_der, options
+        adom_der, avar_all, apar_all
     );
     //
     // arng_der = g(domain) = f'(domain) = (3 * x * x).sum()
@@ -254,7 +254,7 @@ TEST(examples_atom, ad_forward_der)  {
     dom_der.push_back( dx );
     //
     // ddsum
-    vector<Tensor> rng_der = g.forward_der(par_all, var_all, dom_der, options);
+    vector<Tensor> rng_der = g.forward_der(dom_der, var_all, par_all);
     Tensor ddsum           = rng_der[0];
     //
     // check

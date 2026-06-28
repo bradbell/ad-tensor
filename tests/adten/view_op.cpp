@@ -56,7 +56,7 @@ TEST(tests, adten_view_op)  {
     dx.push_back( torch::tensor( {5.0, 6.0, 7.0, 8.0} ) );
     //
     // dy
-    vector<Tensor> dy = f.forward_der(par_all, var_all, dx, options);
+    vector<Tensor> dy = f.forward_der(dx, var_all, par_all);
     equal = dy[0].equal( torch::tensor( { {5.0, 6.0}, {7.0, 8.0} } ) );
     EXPECT_TRUE( equal );
     //

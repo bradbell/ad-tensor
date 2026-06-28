@@ -62,7 +62,7 @@ TEST(tests, adten_sum_op)  {
     dx.push_back(torch::tensor( { {7.0, 8.0, 9.0}, {10.0, 11.0, 12.0} } ));
     //
     // dy
-    vector<Tensor> dy = f.forward_der(par_all, var_all, dx, options);
+    vector<Tensor> dy = f.forward_der(dx, var_all, par_all);
     //
     EXPECT_EQ( dy.size(), y.size() );
     //

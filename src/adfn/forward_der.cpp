@@ -29,12 +29,9 @@ TensorType
 **********
 This is either at::Tensor or :ref:`adten-name` .
 
-par_all
+dom_der
 *******
-is the value of all the parameters for this function.
-This is usually calculated by :ref:`adfn_forward_par-name` .
-In the special case where dom_par is empty, par_all is also empty
-and need not be computed by adfn::forward_par .
+This is the domain direction that the derivative is computed with respect to.
 
 var_all
 *******
@@ -43,14 +40,16 @@ This is usually calculated by :ref:`adfn_forward_var-name` .
 Since derivatives are only computed with respect to domain variables,
 it does not make sense for dom_var to be empty.
 
-dom_der
+par_all
 *******
-This is the domain direction that the derivative is computed with respect to.
+is the value of all the parameters for this function.
+This is usually calculated by :ref:`adfn_forward_par-name` .
+In the special case where dom_par is empty, par_all is also empty
+and need not be computed by adfn::forward_par .
 
-
-options
-*******
-Trace the forward derivative calculations when options.get_trace() is true.
+trace
+*****
+if :ref:`adfn@trace` is true, this calculation will be traced.
 
 rng_der
 *******
@@ -73,10 +72,9 @@ namespace ad_tensor { // BEGIN_NAMESPACE_AD_TENSOR
 // rng_der = adfn.forward_der(par_all, var_all, dom_der, options)
 template <class TensorType>
 vector<TensorType> adfn_t::forward_der(
-    const vector<TensorType>& par_all ,
-    const vector<TensorType>& var_all ,
     const vector<TensorType>& dom_der ,
-    const options_t&          options
+    const vector<TensorType>& var_all ,
+    const vector<TensorType>& par_all
 ) const
 // END_FORWARD_DER
 {
@@ -108,7 +106,7 @@ vector<TensorType> adfn_t::forward_der(
 # endif
     //
     // trace
-    bool trace = options.get_trace();
+    bool trace = m_options.get_trace();
     if( trace ) {
         cout << "Begin tracing " + get_name() + ".forward_der\n";
     }
@@ -186,16 +184,14 @@ vector<TensorType> adfn_t::forward_der(
     return rng_der;
 }
 template vector<at::Tensor> adfn_t::forward_der(
-    const vector<at::Tensor>& par_all ,
-    const vector<at::Tensor>& var_all ,
     const vector<at::Tensor>& dom_der ,
-    const options_t&          options
+    const vector<at::Tensor>& var_all ,
+    const vector<at::Tensor>& par_all
 ) const;
 template vector<adten_t> adfn_t::forward_der(
-    const vector<adten_t>&    par_all ,
-    const vector<adten_t>&    var_all ,
     const vector<adten_t>&    dom_der ,
-    const options_t&          options
+    const vector<adten_t>&    var_all ,
+    const vector<adten_t>&    par_all
 ) const;
 
 } // END_NAMESPACE_AD_TENSOR

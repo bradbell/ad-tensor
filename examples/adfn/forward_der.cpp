@@ -58,7 +58,7 @@ TEST(examples_adfn, forward_der)  {
     //
     // dy
     vector<Tensor> dy = f.forward_der(
-        par_all, var_all, dx, options
+        dx, var_all, par_all
     );
     //
     EXPECT_EQ( dy.size(), y.size() );

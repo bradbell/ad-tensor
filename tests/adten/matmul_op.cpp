@@ -65,7 +65,7 @@ TEST(tests, adten_matmul_op)  {
     } ) );
     //
     // dy
-    vector<Tensor> dy = f.forward_der(par_all, var_all, dx, options);
+    vector<Tensor> dy = f.forward_der(dx, var_all, par_all);
     check = torch::tensor( {
             {0.0,       x01},
             {x10, 2.0 * x11}
