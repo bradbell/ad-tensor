@@ -63,7 +63,7 @@ namespace {
     }
     //
     // reverse_der
-    vector<Tensor> reverse_der(
+    std::optional< vector<Tensor> > reverse_der(
         const options_t&      options   ,
         size_t                call_info ,
         const vector<bool>&   rng_used ,
@@ -77,7 +77,9 @@ namespace {
         } else {
             dom_der.push_back( 2.0 * domain[0] * rng_der[0] );
         }
-        return dom_der;
+        //
+        std::optional< vector<Tensor> > opt = dom_der;
+        return opt;
     }
 }
 TEST(examples_atom, get_started)  {

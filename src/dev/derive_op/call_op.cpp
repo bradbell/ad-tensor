@@ -570,9 +570,15 @@ template<> void call_op_t<at::Tensor>::reverse_der(
     };
     //
     // dom_der
-    vector<at::Tensor> dom_der = reverse_der(
+    std::optional< vector<at::Tensor> > opt = reverse_der(
         options, call_info, rng_used, domain, rng_der
     );
+    if( ! opt.has_value() ) {
+        std::string msg = "atomic " + options.get_name();
+        msg += ".reverse_der did not return a value\n";
+        user_assert(false, msg);
+    }
+    vector<at::Tensor> dom_der = opt.value();
     //
     // rev_der
     for(size_t j = 0; j < n_domain; ++j) {

@@ -264,9 +264,6 @@ public:
         const vector<at::Tensor>&         domain    ,
         const vector<at::Tensor>&         dom_der
     );
-    // END_FORWARD_DER_T
-    //
-    // ad_forward_der_t
     typedef vector<adten_t> (*ad_forward_der_t) (
         const options_t&                  options   ,
         size_t                            call_info ,
@@ -274,9 +271,11 @@ public:
         const vector<adten_t>&            domain    ,
         const vector<adten_t>&            dom_der
     );
+    // END_FORWARD_DER_T
     //
     // BEGIN_REVERSE_DER_T
-    typedef vector<at::Tensor> (*reverse_der_t) (
+    // dom_der = forward_der(call_info, rng_used, domain, rng_der).value()
+    typedef std::optional< vector<at::Tensor> > (*reverse_der_t) (
         const options_t&                  options   ,
         size_t                            call_info ,
         const vector<bool>&               rng_used  ,
