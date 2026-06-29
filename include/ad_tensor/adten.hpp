@@ -255,6 +255,12 @@ public:
         size_t                 call_info ,
         const vector<adten_t>& adomain
     );
+    //
+    // call_chkpnt
+    static vector<adten_t> call_chkpnt(
+        size_t                 chkpnt_id ,
+        const vector<adten_t>& adomain
+    );
 }; }
 
 namespace ad_tensor {

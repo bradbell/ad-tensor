@@ -29,19 +29,24 @@ namespace ad_tensor  {
     );
     // -----------------------------------------------------------------------
     // chkpnt_info_t
-    struct chkpnt_info_t {
-    public:
-        //
-        // m_adfn, m_depend
-        const adfn_t     m_adfn;
-        const sparsity_t m_depend;
-        //
+    class chkpnt_info_t {
+    private:
         chkpnt_info_t(
             adfn_t&&       adfn    ,
             sparsity_t&&   depend  )
         : m_adfn(adfn)
         , m_depend(depend)
         { }
+    public:
+        static chkpnt_info_t from_adfn(adfn_t&& adfn) {
+            auto [depend_par, depend_var] = adfn.forward_dep();
+            return chkpnt_info_t( std::move(adfn), std::move(depend_var) );
+        }
+        //
+        // m_adfn, m_depend
+        const adfn_t     m_adfn;
+        const sparsity_t m_depend;
+        //
     };
     // -----------------------------------------------------------------------
     // chkpnt_global_t
