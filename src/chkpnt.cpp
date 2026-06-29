@@ -3,6 +3,7 @@
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
 #include <ad_tensor/chkpnt.hpp>
+#include <ad_tensor/dev/move_swap.hpp>
 //
 //
 namespace ad_tensor { // BEGIN_AD_TENSOR_NAMESPACE
@@ -72,11 +73,11 @@ size_t chkpnt_global_t::get_atom_id(void) const {
 // get_chkpnt_info
 const chkpnt_info_t& chkpnt_global_t::get_chkpnt_info(size_t chkpnt_id) {
     std::shared_lock<std::shared_mutex> lock(m_rw_mutex);
-    return m_info_vec[chkpnt_id];
+    return *m_info_vec[chkpnt_id];
 }
 //
 // store
-size_t chkpnt_global_t::store(chkpnt_info_t&& chkpnt_info) {
+size_t chkpnt_global_t::store(chkpnt_info_t& chkpnt_info) {
     //
     // lock, m_rw_mutex
     size_t count = 0;
@@ -102,7 +103,8 @@ size_t chkpnt_global_t::store(chkpnt_info_t&& chkpnt_info) {
     size_t chkpnt_id = m_info_vec.size();
     //
     // m_info_vec
-    m_info_vec.push_back( chkpnt_info );
+    m_info_vec.push_back( std::make_unique<chkpnt_info_t>() );
+    dev::move_swap( *m_info_vec[chkpnt_id], chkpnt_info );
     //
     // m_rw_mutex
     if( lock ) {

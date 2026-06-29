@@ -8,6 +8,7 @@
 #include <ad_tensor/sparsity.hpp>
 #include <ad_tensor/adfn.hpp>
 #include <ad_tensor/atom.hpp>
+#include <ad_tensor/dev/move_swap.hpp>
 //
 namespace ad_tensor  {
     // -----------------------------------------------------------------------
@@ -36,30 +37,27 @@ namespace ad_tensor  {
     // -----------------------------------------------------------------------
     // chkpnt_info_t
     class chkpnt_info_t {
-    private:
-        chkpnt_info_t(
-            adfn_t&&       adfn    ,
-            sparsity_t&&   depend  )
-        : m_adfn(adfn)
-        , m_depend(depend)
-        { }
     public:
-        static chkpnt_info_t from_adfn(adfn_t&& adfn) {
+        static chkpnt_info_t from_adfn(adfn_t& adfn) {
+            chkpnt_info_t info;
+            //
             auto [depend_par, depend_var] = adfn.forward_dep();
-            return chkpnt_info_t( std::move(adfn), std::move(depend_var) );
+            dev::move_swap( depend_var, info.m_depend );
+            dev::move_swap( adfn,       info.m_adfn );
+            return info;
         }
         //
         // m_adfn, m_depend
-        const adfn_t     m_adfn;
-        const sparsity_t m_depend;
+        adfn_t     m_adfn;
+        sparsity_t m_depend;
     };
     // -----------------------------------------------------------------------
     // chkpnt_global_t
     class chkpnt_global_t {
     private:
-        std::shared_mutex        m_rw_mutex;
-        vector<chkpnt_info_t>    m_info_vec;
-        size_t                   m_atom_id;
+        std::shared_mutex                        m_rw_mutex;
+        vector< std::unique_ptr<chkpnt_info_t> > m_info_vec;
+        size_t                                   m_atom_id;
         //
         // default constructor
         chkpnt_global_t(void)
@@ -89,7 +87,7 @@ namespace ad_tensor  {
         static chkpnt_global_t& singleton(void);
         //
         // chkpnt_id = store(chkpnt_info)
-        size_t store(chkpnt_info_t&& chkpnt_info);
+        size_t store(chkpnt_info_t& chkpnt_info);
         //
         // get_atom_id
         size_t get_atom_id(void) const;

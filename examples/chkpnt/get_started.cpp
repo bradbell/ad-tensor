@@ -39,8 +39,8 @@ TEST(examples_chkpnt, get_started)  {
     //
     // chkpnt_id
     chkpnt_global_t& chkpnt_global = chkpnt_global_t::singleton();
-    chkpnt_info_t    chkpnt_info   = chkpnt_info_t::from_adfn( std::move(f) );
-    size_t chkpnt_id    = chkpnt_global.store( std::move(chkpnt_info) );
+    chkpnt_info_t    chkpnt_info   = chkpnt_info_t::from_adfn(f);
+    size_t chkpnt_id    = chkpnt_global.store(chkpnt_info);
     //
     // ax, ay, az
     ax = adten_t::start_recording(x);
