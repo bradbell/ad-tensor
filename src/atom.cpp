@@ -82,7 +82,26 @@ namespace ad_tensor {
     // atom_callback_t
     // -----------------------------------------------------------------------
     //
-    // atom_callback_t::set_name
+    // default_long_name
+    const std::string& atom_callback_t::default_long_name(
+        const options_t&                  options   ,
+        size_t                            call_info ) {
+        return options.get_name();
+    }
+    //
+    // ctor
+    atom_callback_t::atom_callback_t(void)
+    : m_options()
+    , m_long_name(default_long_name)
+    , m_depend(nullptr)
+    , m_forward(nullptr)
+    , m_forward_der(nullptr)
+    , m_reverse_der(nullptr)
+    , m_ad_forward_der(nullptr)
+    , m_ad_reverse_der(nullptr)
+    { }
+    //
+    // set_name
     void atom_callback_t::set_name(const std::string& name) {
         dev::user_assert( name != "",
             "atom_callback set_name: name is the empty string"
@@ -98,7 +117,8 @@ namespace ad_tensor {
         return m_options;
     }
     //
-    // atom_callback_t:: set_depend, get_depend, set_forward, get_forward
+    // long_name, set_depend, get_depend, set_forward, get_forward
+    SETTER_AND_GETTER(long_name)
     SETTER_AND_GETTER(depend)
     SETTER_AND_GETTER(forward)
     //

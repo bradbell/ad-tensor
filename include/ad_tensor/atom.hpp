@@ -101,6 +101,7 @@ Functions
     :header-rows: 1
 
     callback,       Required when this atomic is used with
+    long_name       never
     depend,         always
     forward,        always
     forward_der,    :ref:`adfn_forward_der-name` with TensorType at::Tensor
@@ -108,14 +109,16 @@ Functions
     ad_forward_der, :ref:`adfn_forward_der-name` with TensorType adten
     ad_reverse_der, :ref:`adfn_reverse_der-name` with TensorType adten
 
-After the atom_callback_t constructor, all the callback functions are null.
-Each callback function that is used must be set by a call of the form
+The default long_name callback function returns the name chosen by set_name.
+After the atom_callback_t constructor,
+all the other callback functions are null.
+of these callback function that is used must be set by a call of the form
 {xrst_code cpp}
     atom_callback.set_function(const function_t& function)
 {xrst_code}
 where function is the callback function; e.g.,
 {xrst_code cpp}
-    atom_callback.set_depend(const function_t& depend)
+    atom_callback.set_depend(const depend_t& depend)
 {xrst_code}
 
 get
@@ -125,6 +128,16 @@ All of the set functions have a corresponding get function:
     BEGIN_GET_CALLBACK, END_GET_CALLBACK
 }
 The values chosen by set_name and set_trace are in the get_options return.
+
+long_name
+*********
+{xrst_literal ,
+    BEGIN_LONG_NAME, END_LONG_NAME
+}
+This returns a long name for this atomic function that can include
+information determined by the value of call_info.
+The default version of this callback just returns the name in its
+options argument which is the same as :ref:`atom_callback@set@name` above.
 
 depend
 ******
@@ -235,6 +248,14 @@ namespace ad_tensor {  // BEGIN_AD_TENSOR_NAMESPACE
 class atom_callback_t {
 public:
     //
+    // BEGIN_LONG_NAME
+    // name = long_name(options, call_info).value()
+    typedef const std::string& (*long_name_t)(
+        const options_t&                  options   ,
+        size_t                            call_info
+    );
+    // END_LONG_NAME
+    //
     // BEGIN_DEPEND
     // sparsity = depend(options, call_info).value()
     typedef std::optional<sparsity_t> (*depend_t)(
@@ -290,11 +311,10 @@ public:
     // END_REVERSE_DER_T
 
 private:
-    // m_options
-    options_t m_options;
-    //
-    // m_depend
-    depend_t   m_depend;
+    // m_options, m_long_name, m_depend
+    options_t         m_options;
+    long_name_t       m_long_name;
+    depend_t          m_depend;
     //
     // m_forward, m_forward_der, m_reverse_der
     forward_t         m_forward;
@@ -304,19 +324,17 @@ private:
     // m_ad_forward_der, m_ad_reverse_der
     ad_forward_der_t     m_ad_forward_der;
     ad_reverse_der_t     m_ad_reverse_der;
+    //
+    // default_long_name
+    static const std::string& default_long_name(
+        const options_t&                  options   ,
+        size_t                            call_info
+    );
 public:
     //
-    // BEGIN_CTOR
-    atom_callback_t(void)
-    : m_options()
-    , m_depend(nullptr)
-    , m_forward(nullptr)
-    , m_forward_der(nullptr)
-    , m_reverse_der(nullptr)
-    , m_ad_forward_der(nullptr)
-    , m_ad_reverse_der(nullptr)
-    // END_CTOR
-    { }
+    // ctor
+    atom_callback_t(void);
+    //
     // BEGIN_SET_NAME
     void set_name(const std::string& name);
     // END_SET_NAME
@@ -326,6 +344,7 @@ public:
     // END_SET_TRACE
     //
     // BEGIN_SET_FUNCTION
+    void set_long_name(const long_name_t&              long_name);
     void set_depend(const depend_t&                    depend);
     void set_forward(const forward_t&                  forward);
     void set_forward_der(const forward_der_t&          forward_der);
@@ -336,6 +355,7 @@ public:
     //
     // BEGIN_GET_CALLBACK
     const options_t&        get_options(void) const;
+    const long_name_t&      get_long_name(void) const;
     const depend_t&         get_depend(void) const;
     const forward_t&        get_forward(void) const;
     const forward_der_t&    get_forward_der(void) const;

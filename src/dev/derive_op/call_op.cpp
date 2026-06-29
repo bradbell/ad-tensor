@@ -81,10 +81,11 @@ the number of parameters.
     size_t n_range   = agraph.m_arg_value[arg_start + 3]; \
     size_t n_result  = agraph.m_arg_value[arg_start + 4]; \
     \
+    typedef atom_callback_t::long_name_t long_name_t;\
     atom_global_t&         atom_global   = atom_global_t::singleton(); \
     const atom_callback_t& atom_callback = atom_global.get( atom_id ); \
-    const options_t&       options   = atom_callback.get_options();
-
+    const options_t&       options   = atom_callback.get_options(); \
+    const long_name_t&     long_name = atom_callback.get_long_name();
 //
 namespace ad_tensor { namespace dev { // BEGIN_AD_TENSOR_DEV_NAMESPACE
 // ------------------------------------------------------------------------
@@ -108,8 +109,9 @@ void call_op_depend(
     // sub_sets
     thread_local vector<size_t>    sub_sets;
     //
-    // depend_t
-    typedef atom_callback_t::depend_t depend_t;
+    // long_name_t, depend_t
+    typedef atom_callback_t::long_name_t long_name_t;
+    typedef atom_callback_t::depend_t    depend_t;
     //
     // arg_start. atom_id, call_info, n_domain, n_result
     size_t arg_start = agraph.m_arg_start[op_index];
@@ -118,16 +120,17 @@ void call_op_depend(
     size_t n_domain  = agraph.m_arg_value[arg_start + 2];
     size_t n_result  = agraph.m_arg_value[arg_start + 4];
     //
-    // options, forward
+    // options, long_name, depend
     atom_global_t&         atom_global   = atom_global_t::singleton();
     const atom_callback_t& atom_callback = atom_global.get( atom_id );
     const options_t&       options       = atom_callback.get_options();
+    const long_name_t&     long_name     = atom_callback.get_long_name();
     const depend_t&        depend        = atom_callback.get_depend();
     //
     // sparsity
     std::optional<sparsity_t> opt = depend(options, call_info);
     if( ! opt.has_value() ) {
-        std::string msg = "atomic " + options.get_name();
+        std::string msg = "atomic " + long_name(options, call_info);
         msg += ".depend did not return a value\n";
         user_assert(false, msg);
     }
@@ -152,7 +155,7 @@ void call_op_depend(
         while(more && sparsity_row == rng_index) {
             size_t dom_index = sparsity[sparsity_index][1];
             if( n_domain <= dom_index ) {
-                std::string name = options.get_name();
+                std::string name = long_name(options, call_info);
                 user_assert( dom_index < n_domain, name +
                     ".depend: sparsity column index is to large"
                 );
@@ -231,7 +234,7 @@ template<> void call_op_t<at::Tensor>::forward_par(
         options, call_info, rng_used, domain
     );
     if( ! opt.has_value() ) {
-        std::string msg = "atomic " + options.get_name();
+        std::string msg = "atomic " + long_name(options, call_info);
         msg += ".forward did not return a value\n";
         user_assert(false, msg);
     }
@@ -299,7 +302,7 @@ template<> void call_op_t<at::Tensor>::forward_var(
         options, call_info, rng_used, domain
     );
     if( ! opt.has_value() ) {
-        std::string msg = "atomic " + options.get_name();
+        std::string msg = "atomic " + long_name(options, call_info);
         msg += ".forward did not return a value\n";
         user_assert(false, msg);
     }
@@ -424,7 +427,7 @@ template<> void call_op_t<at::Tensor>::forward_der(
         options, call_info, rng_used, domain, dom_der
     );
     if( ! opt.has_value() ) {
-        std::string msg = "atomic " + options.get_name();
+        std::string msg = "atomic " + long_name(options, call_info);
         msg += ".forward_der did not return a value\n";
         user_assert(false, msg);
     }
@@ -510,7 +513,7 @@ template<> void call_op_t<adten_t>::forward_der(
         options, call_info, rng_used, domain, dom_der
     );
     if( ! opt.has_value() ) {
-        std::string msg = "atomic " + options.get_name();
+        std::string msg = "atomic " + long_name(options, call_info);
         msg += ".ad_forward_der did not return a value\n";
         user_assert(false, msg);
     }
@@ -578,7 +581,7 @@ template<> void call_op_t<at::Tensor>::reverse_der(
         options, call_info, rng_used, domain, rng_der
     );
     if( ! opt.has_value() ) {
-        std::string msg = "atomic " + options.get_name();
+        std::string msg = "atomic " + long_name(options, call_info);
         msg += ".reverse_der did not return a value\n";
         user_assert(false, msg);
     }
@@ -645,7 +648,7 @@ template<> void call_op_t<adten_t>::reverse_der(
         options, call_info, rng_used, domain, rng_der
     );
     if( ! opt.has_value() ) {
-        std::string msg = "atomic " + options.get_name();
+        std::string msg = "atomic " + long_name(options, call_info);
         msg += ".ad_reverse_der did not return a value\n";
         user_assert(false, msg);
     }

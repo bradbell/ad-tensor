@@ -126,15 +126,16 @@ vector<adten_t> adten_t::call_atom(
         domain.push_back( adomain[j].m_tensor );
     }
     //
-    // options, range, n_range
+    // long_name, options, range, n_range
     vector<bool> rng_used;
-    atom_callback_t::forward_t  forward = callback.get_forward();
-    const options_t&            options = callback.get_options();
+    atom_callback_t::long_name_t long_name = callback.get_long_name();
+    atom_callback_t::forward_t   forward   = callback.get_forward();
+    const options_t&             options   = callback.get_options();
     std::optional< vector<at::Tensor> > opt_forward = forward(
         options, call_info, rng_used, domain
     );
     if( ! opt_forward.has_value() ) {
-        std::string msg = "atomic " + options.get_name();
+        std::string msg = "atomic " + long_name(options, call_info);
         msg += ".forward did not return a value\n";
         dev::user_assert(false, msg);
     }
@@ -157,7 +158,7 @@ vector<adten_t> adten_t::call_atom(
     atom_callback_t::depend_t   depend     = callback.get_depend();
     std::optional<sparsity_t>   opt_depend = depend(options, call_info);
     if( ! opt_depend.has_value() ) {
-        std::string msg = "atomic " + options.get_name();
+        std::string msg = "atomic " + long_name(options, call_info);
         msg += ".depend did not return a value\n";
         dev::user_assert(false, msg);
     }
