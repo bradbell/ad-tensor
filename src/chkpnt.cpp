@@ -72,7 +72,7 @@ size_t chkpnt_global_t::get_atom_id(void) const {
 // get_chkpnt_info
 const chkpnt_info_t& chkpnt_global_t::get_chkpnt_info(size_t chkpnt_id) {
     std::shared_lock<std::shared_mutex> lock(m_rw_mutex);
-    return m_chkpnt_info_vec[chkpnt_id];
+    return m_info_vec[chkpnt_id];
 }
 //
 // store
@@ -97,16 +97,19 @@ size_t chkpnt_global_t::store(chkpnt_info_t&& chkpnt_info) {
         assert(lock);
 #endif
     }
-    // m_chkpnt_info_vec
-    m_chkpnt_info_vec.push_back( chkpnt_info );
+    //
+    // chkpnt_id
+    size_t chkpnt_id = m_info_vec.size();
+    //
+    // m_info_vec
+    m_info_vec.push_back( chkpnt_info );
     //
     // m_rw_mutex
     if( lock ) {
         m_rw_mutex.unlock();
     }
     //
-    // chkpnt_id
-    return m_chkpnt_info_vec.size() - 1;
+    return chkpnt_id;
 }
 // ------------------------------------------------------------------------
 }  // END_AD_TENSOR_NAMESPACE

@@ -52,14 +52,13 @@ namespace ad_tensor  {
         // m_adfn, m_depend
         const adfn_t     m_adfn;
         const sparsity_t m_depend;
-        //
     };
     // -----------------------------------------------------------------------
     // chkpnt_global_t
     class chkpnt_global_t {
     private:
         std::shared_mutex        m_rw_mutex;
-        vector<chkpnt_info_t>    m_chkpnt_info_vec;
+        vector<chkpnt_info_t>    m_info_vec;
         size_t                   m_atom_id;
         //
         // default constructor
