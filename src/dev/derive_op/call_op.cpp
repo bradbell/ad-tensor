@@ -80,6 +80,10 @@ the number of parameters.
     size_t n_domain  = agraph.m_arg_value[arg_start + 2]; \
     size_t n_range   = agraph.m_arg_value[arg_start + 3]; \
     size_t n_result  = agraph.m_arg_value[arg_start + 4]; \
+    \
+    atom_global_t&         atom_global   = atom_global_t::singleton(); \
+    const atom_callback_t& atom_callback = atom_global.get( atom_id ); \
+    const options_t&       options   = atom_callback.get_options();
 
 //
 namespace ad_tensor { namespace dev { // BEGIN_AD_TENSOR_DEV_NAMESPACE
@@ -198,12 +202,10 @@ template<> void call_op_t<at::Tensor>::forward_par(
     typedef atom_callback_t::forward_t forward_t;
     //
     // arg_start. atom_id, call_info, n_domain, n_range, n_result
+    // atom_callback, options
     UNPACK
     //
-    // options, forward
-    atom_global_t&         atom_global   = atom_global_t::singleton();
-    const atom_callback_t& atom_callback = atom_global.get( atom_id );
-    const options_t&       options       = atom_callback.get_options();
+    // forward
     const forward_t&       forward       = atom_callback.get_forward();
     //
     // domain
@@ -268,12 +270,10 @@ template<> void call_op_t<at::Tensor>::forward_var(
     typedef atom_callback_t::forward_t forward_t;
     //
     // arg_start. atom_id, call_info, n_domain, n_range, n_result
+    // atom_callback, options
     UNPACK
     //
     // forward
-    atom_global_t&         atom_global   = atom_global_t::singleton();
-    const atom_callback_t& atom_callback = atom_global.get( atom_id );
-    const options_t&       options   = atom_callback.get_options();
     const forward_t&       forward       = atom_callback.get_forward();
     //
     // domain
@@ -371,12 +371,10 @@ template<> void call_op_t<at::Tensor>::forward_der(
     typedef atom_callback_t::forward_der_t forward_der_t;
     //
     // arg_start. atom_id, call_info, n_domain, n_range, n_result
+    // atom_callback, options
     UNPACK
     //
     // forward_der
-    atom_global_t&         atom_global   = atom_global_t::singleton();
-    const atom_callback_t& atom_callback = atom_global.get( atom_id );
-    const options_t&       options   = atom_callback.get_options();
     const forward_der_t&   forward_der   = atom_callback.get_forward_der();
     //
     // rng_used
@@ -457,12 +455,10 @@ template<> void call_op_t<adten_t>::forward_der(
     typedef atom_callback_t::ad_forward_der_t forward_der_t;
     //
     // arg_start. atom_id, call_info, n_domain, n_range, n_result
+    // atom_callback, options
     UNPACK
     //
     // forward_der
-    atom_global_t&         atom_global   = atom_global_t::singleton();
-    const atom_callback_t& atom_callback = atom_global.get( atom_id );
-    const options_t&       options   = atom_callback.get_options();
     const forward_der_t&   forward_der   = atom_callback.get_ad_forward_der();
     //
     // rng_used
@@ -549,12 +545,10 @@ template<> void call_op_t<at::Tensor>::reverse_der(
     typedef atom_callback_t::reverse_der_t reverse_der_t;
     //
     // arg_start. atom_id, call_info, n_domain, n_range, n_result
+    // atom_callback, options
     UNPACK
     //
     // reverse_der
-    atom_global_t&         atom_global   = atom_global_t::singleton();
-    const atom_callback_t& atom_callback = atom_global.get( atom_id );
-    const options_t&       options   = atom_callback.get_options();
     const reverse_der_t&   reverse_der   = atom_callback.get_reverse_der();
     //
     // rng_used, rng_der
@@ -618,12 +612,10 @@ template<> void call_op_t<adten_t>::reverse_der(
     typedef atom_callback_t::ad_reverse_der_t reverse_der_t;
     //
     // arg_start. atom_id, call_info, n_domain, n_range, n_result
+    // atom_callback, options
     UNPACK
     //
     // reverse_der
-    atom_global_t&         atom_global   = atom_global_t::singleton();
-    const atom_callback_t& atom_callback = atom_global.get( atom_id );
-    const options_t&       options   = atom_callback.get_options();
     const reverse_der_t&   reverse_der   = atom_callback.get_ad_reverse_der();
     //
     // rng_used, rng_der
