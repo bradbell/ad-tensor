@@ -3,6 +3,61 @@
 // SPDX-FileCopyrightText: Bradley M. Bell <bradbell@seanet.com>
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
+/*
+{xrst_begin_parent chkpnt usr}
+
+Checkpoint Functions
+####################
+Checkpoint functions are like atomic functions except
+ad-tensor is used to compute the corresponding derivatives.
+If a function is used many times, making it an checkpoint function
+can greatly reduce the required memory
+because only on copy of its parameters and variables will be required.
+
+{xrst_toc_table
+    src/adten/call_chkpnt.cpp
+}
+
+{xrst_end chkpnt}
+------------------------------------------------------------------------------
+{xrst_begin chkpnt_global usr}
+
+Global Object That holds The Checkpoint Functions
+#################################################
+
+chkpnt_global
+*************
+{xrst_literal ,
+    BEGIN_SINGLETON, END_SINGLETON
+}
+
+store
+*****
+{xrst_literal ,
+    BEGIN_STORE, END_STORE
+}
+A call to store will wait until it can lock out any other calls to
+store or get.
+
+chkpnt_info
+===========
+This chkpnt information will be moved to global data
+and chkpnt_info will be empty upon return.
+
+chkpnt_id
+=========
+is the identifier for this checkpoint function.
+
+get_chkpnt_info
+***************
+{xrst_literal ,
+    BEGIN_GET_INFO, END_GET_INFO
+}
+A call to get will wait until it can lock out any calls to store.
+
+
+{xrst_end chkpnt_global}
+*/
 #include <torch/torch.h>
 #include <ad_tensor/vector.hpp>
 #include <ad_tensor/sparsity.hpp>
@@ -64,18 +119,23 @@ namespace ad_tensor  {
         //  automatic assignment operator
         void operator=(const chkpnt_global_t&) = delete;
         //
-        // singleton
+        // BEGIN_SINGLETON
+        // chkpnt_global = chkpnt_global_t::singleton()
         static chkpnt_global_t& singleton(void);
+        // END_SINGLETON
         //
+        // BEGIN_STORE
         // chkpnt_id = store(chkpnt_info)
         size_t store(chkpnt_info_t& chkpnt_info);
+        // END_STORE
         //
         // get_atom_id
         size_t get_atom_id(void) const;
         //
-        // get_chkpnt_info
-        // not const because m_rw_mutex is modified
-        const chkpnt_info_t& get_chkpnt_info(size_t cknpnt_id);
+        // BEGIN_GET_INFO
+        // chkpnt_info = get_chkpnt_info(chkpnt_id)
+        const chkpnt_info_t& get_chkpnt_info(size_t chkpnt_id);
+        // END_GET_INFO
     };
     // -----------------------------------------------------------------------
 }

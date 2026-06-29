@@ -24,6 +24,7 @@ TODO
     include/ad_tensor/ad_type.hpp
     include/ad_tensor/adfn.hpp
     include/ad_tensor/atom.hpp
+    include/ad_tensor/chkpnt.hpp
     docs/bib.xrst
 }
 
