@@ -7,8 +7,8 @@
 #include <ad_tensor/dev/op_enum.hpp>
 #include <ad_tensor/dev/agraph.hpp>
 #include <ad_tensor/dev/user_assert.hpp>
+#include <ad_tensor/dev/move_swap.hpp>
 //
-namespace ad_tensor { // BEGIN_NAMESPACE_AD_TENSOR
 /*
 ------------------------------------------------------------------------------
 {xrst_begin start_recording usr}
@@ -65,6 +65,7 @@ Example
 
 {xrst_end start_recording}
 */
+namespace ad_tensor { // BEGIN_NAMESPACE_AD_TENSOR
 
 vector<adten_t> adten_t::start_recording(const vector<at::Tensor>& dom_var)
 {   //
@@ -234,9 +235,9 @@ adfn_t adten_t::stop_recording(
     adfn_t adfn;
     //
     // adfn, tape: m_con, m_par, m_var
-    adfn.m_con.swap( tape.m_con );
-    adfn.m_par.swap( tape.m_par );
-    adfn.m_var.swap( tape.m_var );
+    dev::move_swap( adfn.m_con, tape.m_con );
+    dev::move_swap( adfn.m_par, tape.m_par );
+    dev::move_swap( adfn.m_var, tape.m_var );
     //
     // adfn: m_rng_index, m_rng_adtype
     for(size_t i = 0; i < arange.size(); ++i)

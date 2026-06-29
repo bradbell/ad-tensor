@@ -74,10 +74,6 @@ default constructor
 *******************
 This constructor creates an empty graph (all its vectors are empty).
 
-swap
-****
-Exchange the contents between two acyclic graphs.
-
 is_empty
 ********
 This member function returns true if all the vectors in the graph are empty.
@@ -108,17 +104,6 @@ public:
     , m_int64()
     , m_bool()
     { }
-    //
-    // swap
-    void swap(agraph_t& other) noexcept
-    {   m_dom_shapes.swap(  other.m_dom_shapes);
-        m_op_seq.swap(      other.m_op_seq);
-        m_arg_start.swap(   other.m_arg_start);
-        m_arg_value.swap(   other.m_arg_value);
-        m_arg_type.swap(    other.m_arg_type);
-        m_int64.swap(       other.m_int64);
-        m_bool.swap(        other.m_bool);
-    }
     //
     // is_empty
     bool is_empty(void) const {

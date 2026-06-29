@@ -17,6 +17,7 @@ Contents
     include/ad_tensor/atom.hpp
     include/ad_tensor/dev/agraph.hpp
     include/ad_tensor/dev/base_op.hpp
+    include/ad_tensor/dev/move_swap.hpp
     include/ad_tensor/dev/op_enum.hpp
     include/ad_tensor/dev/plus_minus_equal.hpp
     include/ad_tensor/dev/tape.hpp
