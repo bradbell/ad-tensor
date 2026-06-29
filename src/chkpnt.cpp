@@ -57,9 +57,40 @@ std::optional< vector<at::Tensor> > chkpnt_forward(
     return opt;
 }
 // ------------------------------------------------------------------------
+// chkpnt_info_t
+// ------------------------------------------------------------------------
+//
+// from_adfn
+chkpnt_info_t chkpnt_info_t::from_adfn(adfn_t& adfn) {
+    chkpnt_info_t info;
+
+    auto [depend_par, depend_var] = adfn.forward_dep();
+    dev::move_swap( depend_var, info.m_depend );
+    dev::move_swap( adfn,       info.m_adfn );
+    return info;
+}
+// ------------------------------------------------------------------------
 // chkpnt_global_t
 // ------------------------------------------------------------------------
-// chkpnt_global_t::singleton
+//
+// chkpnt_global_t
+chkpnt_global_t::chkpnt_global_t(void)
+{   //
+    // atom_global
+    atom_global_t& atom_global = atom_global_t::singleton();
+
+    // atom_callback
+    atom_callback_t atom_callback;
+    atom_callback.set_name("chkpnt_callback");
+    atom_callback.set_long_name(chkpnt_long_name);
+    atom_callback.set_depend(chkpnt_depend);
+    atom_callback.set_forward(chkpnt_forward);
+    //
+    // m_atom_id
+    m_atom_id = atom_global.store( atom_callback );
+}
+//
+// singleton
 chkpnt_global_t& chkpnt_global_t::singleton(void) {
     static chkpnt_global_t chkpnt_global;
     return chkpnt_global;

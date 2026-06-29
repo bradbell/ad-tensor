@@ -38,18 +38,13 @@ namespace ad_tensor  {
     // chkpnt_info_t
     class chkpnt_info_t {
     public:
-        static chkpnt_info_t from_adfn(adfn_t& adfn) {
-            chkpnt_info_t info;
-            //
-            auto [depend_par, depend_var] = adfn.forward_dep();
-            dev::move_swap( depend_var, info.m_depend );
-            dev::move_swap( adfn,       info.m_adfn );
-            return info;
-        }
         //
         // m_adfn, m_depend
         adfn_t     m_adfn;
         sparsity_t m_depend;
+        //
+        // from_adfn
+        static chkpnt_info_t from_adfn(adfn_t& adfn);
     };
     // -----------------------------------------------------------------------
     // chkpnt_global_t
@@ -60,21 +55,7 @@ namespace ad_tensor  {
         size_t                                   m_atom_id;
         //
         // default constructor
-        chkpnt_global_t(void)
-        {   //
-            // atom_global
-            atom_global_t& atom_global = atom_global_t::singleton();
-
-            // atom_callback
-            atom_callback_t atom_callback;
-            atom_callback.set_name("chkpnt_callback");
-            atom_callback.set_long_name(chkpnt_long_name);
-            atom_callback.set_depend(chkpnt_depend);
-            atom_callback.set_forward(chkpnt_forward);
-            //
-            // m_atom_id
-            m_atom_id = atom_global.store( atom_callback );
-        }
+        chkpnt_global_t(void);
     public:
         //
         // automatic copy constructor
