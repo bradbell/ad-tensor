@@ -50,23 +50,27 @@ namespace ad_tensor {
             assert(lock);
 #endif
         }
-        // m_atom_callback_vec
-        m_atom_callback_vec.push_back( atom_callback );
+        //
+        // atom_id
+        size_t atom_id = m_callback_vec.size();
+        //
+        // m_callback_vec
+        m_callback_vec.push_back( std::make_unique<atom_callback_t>() );
+        *m_callback_vec[atom_id] = atom_callback;
         //
         // m_rw_mutex
         if( lock ) {
             m_rw_mutex.unlock();
         }
         //
-        // atom_id
-        return m_atom_callback_vec.size() - 1;
+        return atom_id;
     }
     //
     // atom_global_t::get
     // not const because m_rw_mutex is modified
     const atom_callback_t& atom_global_t::get(size_t atom_id) {
         std::shared_lock<std::shared_mutex> lock(m_rw_mutex);
-        return m_atom_callback_vec[atom_id];
+        return *m_callback_vec[atom_id];
     }
     //
     // atom_global_t::singleton

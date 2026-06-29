@@ -347,8 +347,8 @@ public:
 // atom_global_t
 class atom_global_t {
 private:
-    std::shared_mutex          m_rw_mutex;
-    vector<atom_callback_t>    m_atom_callback_vec;
+    std::shared_mutex                          m_rw_mutex;
+    vector< std::unique_ptr<atom_callback_t> > m_callback_vec;
     //
     // default constructor
     atom_global_t(void)
