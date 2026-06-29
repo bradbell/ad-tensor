@@ -83,7 +83,7 @@ namespace ad_tensor {
     // -----------------------------------------------------------------------
     //
     // default_long_name
-    const std::string& atom_callback_t::default_long_name(
+    std::string atom_callback_t::default_long_name(
         const options_t&                  options   ,
         size_t                            call_info ) {
         return options.get_name();

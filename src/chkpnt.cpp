@@ -10,6 +10,19 @@ namespace ad_tensor { // BEGIN_AD_TENSOR_NAMESPACE
 // atom_callbacks
 // ------------------------------------------------------------------------
 //
+// chkpnt_long_name
+std::string chkpnt_long_name(
+    const options_t&                  options   ,
+    size_t                            chkpnt_id ) {
+    //
+    // depend
+    chkpnt_global_t&     global       = chkpnt_global_t::singleton();
+    const chkpnt_info_t& chkpnt_info  = global.get_chkpnt_info( chkpnt_id );
+    const adfn_t&        adfn         = chkpnt_info.m_adfn;
+    //
+    return options.get_name() + "." + adfn.get_name();
+}
+//
 // chkpnt_depend
 std::optional<sparsity_t> chkpnt_depend(
     const options_t&                  options   ,

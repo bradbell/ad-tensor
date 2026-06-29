@@ -250,7 +250,7 @@ public:
     //
     // BEGIN_LONG_NAME
     // name = long_name(options, call_info).value()
-    typedef const std::string& (*long_name_t)(
+    typedef std::string (*long_name_t)(
         const options_t&                  options   ,
         size_t                            call_info
     );
@@ -326,7 +326,7 @@ private:
     ad_reverse_der_t     m_ad_reverse_der;
     //
     // default_long_name
-    static const std::string& default_long_name(
+    static std::string default_long_name(
         const options_t&                  options   ,
         size_t                            call_info
     );

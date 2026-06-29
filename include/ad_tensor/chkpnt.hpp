@@ -14,6 +14,12 @@ namespace ad_tensor  {
     // atom callbacks
     // -----------------------------------------------------------------------
     //
+    // chkpnt_long_name
+    std::string chkpnt_long_name(
+        const options_t&                  options   ,
+        size_t                            chkpnt_id
+    );
+    //
     // chkpnt_depend
     std::optional<sparsity_t> chkpnt_depend(
         const options_t&                  options   ,
@@ -65,6 +71,7 @@ namespace ad_tensor  {
             // atom_callback
             atom_callback_t atom_callback;
             atom_callback.set_name("chkpnt_callback");
+            atom_callback.set_long_name(chkpnt_long_name);
             atom_callback.set_depend(chkpnt_depend);
             atom_callback.set_forward(chkpnt_forward);
             //
