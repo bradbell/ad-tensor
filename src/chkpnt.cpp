@@ -121,7 +121,7 @@ chkpnt_global_t::chkpnt_global_t(void)
 
     // atom_callback
     atom_callback_t atom_callback;
-    atom_callback.set_name("chkpnt_callback");
+    atom_callback.set_name("chkpnt");
     atom_callback.set_long_name(chkpnt_long_name);
     atom_callback.set_depend(chkpnt_depend);
     atom_callback.set_forward(chkpnt_forward);

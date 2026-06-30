@@ -10,15 +10,16 @@
 #define SETTER_AND_GETTER(name) \
     void atom_callback_t::set_ ## name(const name ## _t& name) { \
         dev::user_assert( name != nullptr, \
-            "atom " #name " is the nullptr in set_" #name  \
+            "atom_callback_t: " #name " is the nullptr in set_" #name  \
         ); \
         m_ ## name = name; \
     } \
     const atom_callback_t::name ## _t& \
-    atom_callback_t::get_ ## name(void) const { \
+    atom_callback_t::get_ ## name(size_t call_info) const { \
         if( m_ ## name == nullptr ) { \
-            std::string msg = m_options.get_name() + \
-                " atom_callback: " #name " has not been set"; \
+            std::string msg = "atom_callback: " + \
+                m_long_name(m_options, call_info) + \
+                    ": " #name " has not been set"; \
             dev::user_assert(false, msg); \
         } \
         return m_ ## name; \
@@ -117,8 +118,20 @@ namespace ad_tensor {
         return m_options;
     }
     //
-    // long_name, set_depend, get_depend, set_forward, get_forward
-    SETTER_AND_GETTER(long_name)
+    // set_long_name, get_long_name
+    void atom_callback_t::set_long_name(const long_name_t& long_name) {
+        dev::user_assert( long_name != nullptr,
+            "atom_callback_t: long_name is nullptr in set_long_name"
+        );
+        m_long_name = long_name;
+    }
+    const atom_callback_t::long_name_t&
+    atom_callback_t::get_long_name(void) const {
+        assert( m_long_name != nullptr );
+        return m_long_name;
+    }
+    //
+    // set_depend, get_depend, set_forward, get_forward
     SETTER_AND_GETTER(depend)
     SETTER_AND_GETTER(forward)
     //

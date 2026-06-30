@@ -123,9 +123,9 @@ void call_op_depend(
     // options, long_name, depend
     atom_global_t&         atom_global   = atom_global_t::singleton();
     const atom_callback_t& atom_callback = atom_global.get( atom_id );
-    const options_t&       options       = atom_callback.get_options();
-    const long_name_t&     long_name     = atom_callback.get_long_name();
-    const depend_t&        depend        = atom_callback.get_depend();
+    const options_t&       options    = atom_callback.get_options();
+    const long_name_t&     long_name  = atom_callback.get_long_name();
+    const depend_t&        depend     = atom_callback.get_depend(call_info);
     //
     // sparsity
     std::optional<sparsity_t> opt = depend(options, call_info);
@@ -209,7 +209,7 @@ template<> void call_op_t<at::Tensor>::forward_par(
     UNPACK
     //
     // forward
-    const forward_t&       forward       = atom_callback.get_forward();
+    const forward_t& forward = atom_callback.get_forward(call_info);
     //
     // domain
     domain.resize(0);
@@ -277,7 +277,7 @@ template<> void call_op_t<at::Tensor>::forward_var(
     UNPACK
     //
     // forward
-    const forward_t&       forward       = atom_callback.get_forward();
+    const forward_t& forward = atom_callback.get_forward(call_info);
     //
     // domain
     domain.resize(0);
@@ -378,7 +378,7 @@ template<> void call_op_t<at::Tensor>::forward_der(
     UNPACK
     //
     // forward_der
-    const forward_der_t&   forward_der   = atom_callback.get_forward_der();
+    const forward_der_t& forward_der = atom_callback.get_forward_der(call_info);
     //
     // rng_used
     rng_used.resize(0);
@@ -462,7 +462,8 @@ template<> void call_op_t<adten_t>::forward_der(
     UNPACK
     //
     // forward_der
-    const forward_der_t&   forward_der   = atom_callback.get_ad_forward_der();
+    const forward_der_t& forward_der =
+        atom_callback.get_ad_forward_der(call_info);
     //
     // rng_used
     rng_used.resize(0);
@@ -552,7 +553,7 @@ template<> void call_op_t<at::Tensor>::reverse_der(
     UNPACK
     //
     // reverse_der
-    const reverse_der_t&   reverse_der   = atom_callback.get_reverse_der();
+    const reverse_der_t& reverse_der = atom_callback.get_reverse_der(call_info);
     //
     // rng_used, rng_der
     rng_used.resize(0);
@@ -619,7 +620,8 @@ template<> void call_op_t<adten_t>::reverse_der(
     UNPACK
     //
     // reverse_der
-    const reverse_der_t&   reverse_der   = atom_callback.get_ad_reverse_der();
+    const reverse_der_t& reverse_der
+        = atom_callback.get_ad_reverse_der(call_info);
     //
     // rng_used, rng_der
     rng_der.resize(0);

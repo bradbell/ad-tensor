@@ -356,12 +356,12 @@ public:
     // BEGIN_GET_CALLBACK
     const options_t&        get_options(void) const;
     const long_name_t&      get_long_name(void) const;
-    const depend_t&         get_depend(void) const;
-    const forward_t&        get_forward(void) const;
-    const forward_der_t&    get_forward_der(void) const;
-    const reverse_der_t&    get_reverse_der(void) const;
-    const ad_forward_der_t& get_ad_forward_der(void) const;
-    const ad_reverse_der_t& get_ad_reverse_der(void) const;
+    const depend_t&         get_depend(size_t call_info) const;
+    const forward_t&        get_forward(size_t call_info) const;
+    const forward_der_t&    get_forward_der(size_t call_info) const;
+    const reverse_der_t&    get_reverse_der(size_t call_info) const;
+    const ad_forward_der_t& get_ad_forward_der(size_t call_info) const;
+    const ad_reverse_der_t& get_ad_reverse_der(size_t call_info) const;
     // END_GET_CALLBACK
 };
 // atom_global_t

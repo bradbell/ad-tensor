@@ -128,9 +128,9 @@ vector<adten_t> adten_t::call_atom(
     //
     // long_name, options, range, n_range
     vector<bool> rng_used;
-    atom_callback_t::long_name_t long_name = callback.get_long_name();
-    atom_callback_t::forward_t   forward   = callback.get_forward();
     const options_t&             options   = callback.get_options();
+    atom_callback_t::long_name_t long_name = callback.get_long_name();
+    atom_callback_t::forward_t   forward   = callback.get_forward(call_info);
     std::optional< vector<at::Tensor> > opt_forward = forward(
         options, call_info, rng_used, domain
     );
@@ -155,7 +155,7 @@ vector<adten_t> adten_t::call_atom(
     }
     //
     // pattern
-    atom_callback_t::depend_t   depend     = callback.get_depend();
+    atom_callback_t::depend_t   depend     = callback.get_depend(call_info);
     std::optional<sparsity_t>   opt_depend = depend(options, call_info);
     if( ! opt_depend.has_value() ) {
         std::string msg = "atomic " + long_name(options, call_info);
