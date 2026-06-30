@@ -50,19 +50,6 @@ parameter result for this atomic function.
 Otherwise, n_result sets have been added, one for each
 variable result for this atomic function.
 
-vec_sets_var
-============
-This is not used when range_type is parameter.
-Otherwise, on input, vec_sets_var is the dependencies for variable indices
-less than op_index.  Upon return the n_result sets have been added,
-one for each variable result for this atomic function.
-This vector of sets is unusual in that variables can have both parameter
-and variable dependencies.
-A parameter dependency is represented by its parameter index.
-A variable dependency is represented by its variable index plus
-the number of parameters.
-
-
 {xrst_end call_op_depend}
 */
 #include <ad_tensor/adten.hpp>
