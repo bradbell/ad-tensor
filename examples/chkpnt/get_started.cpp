@@ -68,4 +68,12 @@ TEST(examples_chkpnt, get_started)  {
     // equal
     equal =  dz[0].equal( 3.0 * x[0] * x[0] * dx[0] );
     EXPECT_TRUE(equal);
+    //
+    // dz, dx
+    dz[0] = torch::tensor( {2.0, 1.0} );
+    dx = g.reverse_der(dz, var_all);
+    //
+    // equal
+    equal =  dx[0].equal( 3.0 * x[0] * x[0] * dz[0] );
+    EXPECT_TRUE(equal);
 }
