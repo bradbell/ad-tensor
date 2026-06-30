@@ -2,189 +2,72 @@
 // SPDX-FileCopyrightText: Bradley M. Bell <bradbell@seanet.com>
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
-#include <ad_tensor/chkpnt.hpp>
+/*
+{xrst_begin_parent chkpnt usr}
+
+Checkpoint Functions
+####################
+If a function is used many times, making it an checkpoint
+may greatly reduce memory usage.
+because only on copy of its parameters and variables will be required.
+On the other hand, its dependent parameter and variable values will
+be recomputed for each derivative direction.
+
+{xrst_toc_table after
+    src/adten/call_chkpnt.cpp
+}
+
+{xrst_end chkpnt}
+-----------------------------------------------------------------------------
+{xrst_begin make_chkpnt usr}
+{xrst_spell
+    adfn
+}
+
+Convert an AD Function to a Checkpoint Function
+###############################################
+
+Syntax
+******
+{xrst_code cpp}
+chkpnt_id = make_chkpnt(adfn)
+{xrst_code}
+
+Prototype
+*********
+{xrst_literal ,
+    include/ad_tensor/chkpnt.hpp
+    BEGIN_MAKE_CHKPNT, END_MAKE_CHKPNT
+}
+
+adfn
+****
+On input, this as an AD function representation of the checkpoint function.
+Upon return, this AD function is empty.
+The representation was moved to global data
+and can be accessed using chkpnt_id.
+
+chkpnt_id
+*********
+is the identifier for this checkpoint function.
+
+
+{xrst_end make_chkpnt}
+*/
+#include <ad_tensor/dev/chkpnt.hpp>
 #include <ad_tensor/dev/move_swap.hpp>
 //
 //
 namespace ad_tensor { // BEGIN_AD_TENSOR_NAMESPACE
-// ------------------------------------------------------------------------
-// atom_callbacks
-// ------------------------------------------------------------------------
 //
-// chkpnt_long_name
-std::string chkpnt_long_name(
-    const options_t&                  options   ,
-    size_t                            chkpnt_id ) {
-    //
-    // depend
-    chkpnt_global_t&     global       = chkpnt_global_t::singleton();
-    const chkpnt_info_t& chkpnt_info  = global.get_chkpnt_info( chkpnt_id );
-    const adfn_t&        adfn         = chkpnt_info.m_adfn;
-    //
-    return options.get_name() + "." + adfn.get_name();
-}
-//
-// chkpnt_depend
-std::optional<sparsity_t> chkpnt_depend(
-    const options_t&                  options   ,
-    size_t                            chkpnt_id ) {
-    //
-    // depend
-    chkpnt_global_t&     global       = chkpnt_global_t::singleton();
-    const chkpnt_info_t& chkpnt_info  = global.get_chkpnt_info( chkpnt_id );
-    const sparsity_t&    depend       = chkpnt_info.m_depend;
-    //
-    std::optional<sparsity_t> opt = depend;
-    return opt;
-}
-//
-// chkpnt_forward
-std::optional< vector<at::Tensor> > chkpnt_forward(
-    const options_t&                  options   ,
-    size_t                            chkpnt_id ,
-    const vector<bool>&               rng_used  ,
-    const vector<at::Tensor>&         domain    ) {
-    //
-    // adfn
-    chkpnt_global_t&     global       = chkpnt_global_t::singleton();
-    const chkpnt_info_t& chkpnt_info  = global.get_chkpnt_info( chkpnt_id );
-    const adfn_t&        adfn        = chkpnt_info.m_adfn;
-    //
-    vector<at::Tensor> var_all = adfn.forward_var(domain);
-    vector<at::Tensor> range   = adfn.get_range(var_all);
-    //
-    std::optional< vector<at::Tensor> > opt = range;
-    return opt;
-}
-//
-// chkpnt_forward_der
-std::optional< vector<at::Tensor> > chkpnt_forward_der(
-    const options_t&                  options   ,
-    size_t                            chkpnt_id ,
-    const vector<bool>&               rng_used  ,
-    const vector<at::Tensor>&         domain    ,
-    const vector<at::Tensor>&         dom_der   ) {
-    //
-    // adfn
-    chkpnt_global_t&     global       = chkpnt_global_t::singleton();
-    const chkpnt_info_t& chkpnt_info  = global.get_chkpnt_info( chkpnt_id );
-    const adfn_t&        adfn        = chkpnt_info.m_adfn;
-    //
-    vector<at::Tensor> var_all = adfn.forward_var(domain);
-    vector<at::Tensor> rng_der = adfn.forward_der(dom_der, var_all);
-    //
-    std::optional< vector<at::Tensor> > opt = rng_der;
-    return opt;
-}
-//
-// chkpnt_reverse_der
-std::optional< vector<at::Tensor> > chkpnt_reverse_der(
-    const options_t&                  options   ,
-    size_t                            chkpnt_id ,
-    const vector<bool>&               rng_used  ,
-    const vector<at::Tensor>&         domain    ,
-    const vector<at::Tensor>&         rng_der   ) {
-    //
-    // adfn
-    chkpnt_global_t&     global       = chkpnt_global_t::singleton();
-    const chkpnt_info_t& chkpnt_info  = global.get_chkpnt_info( chkpnt_id );
-    const adfn_t&        adfn        = chkpnt_info.m_adfn;
-    //
-    vector<at::Tensor> var_all = adfn.forward_var(domain);
-    vector<at::Tensor> dom_der = adfn.reverse_der(rng_der, var_all);
-    //
-    std::optional< vector<at::Tensor> > opt = dom_der;
-    return opt;
-}
-// ------------------------------------------------------------------------
-// chkpnt_info_t
-// ------------------------------------------------------------------------
-//
-// from_adfn
-chkpnt_info_t chkpnt_info_t::from_adfn(adfn_t& adfn) {
-    chkpnt_info_t info;
-
-    auto [depend_par, depend_var] = adfn.forward_dep();
-    dev::move_swap( depend_var, info.m_depend );
-    dev::move_swap( adfn,       info.m_adfn );
-    return info;
-}
-// ------------------------------------------------------------------------
-// chkpnt_global_t
-// ------------------------------------------------------------------------
-//
-// chkpnt_global_t
-chkpnt_global_t::chkpnt_global_t(void)
-{   //
-    // atom_global
-    atom_global_t& atom_global = atom_global_t::singleton();
-
-    // atom_callback
-    atom_callback_t atom_callback;
-    atom_callback.set_name("chkpnt");
-    atom_callback.set_long_name(chkpnt_long_name);
-    atom_callback.set_depend(chkpnt_depend);
-    atom_callback.set_forward(chkpnt_forward);
-    atom_callback.set_forward_der(chkpnt_forward_der);
-    atom_callback.set_reverse_der(chkpnt_reverse_der);
-    //
-    // m_atom_id
-    m_atom_id = atom_global.store( atom_callback );
-}
-//
-// singleton
-chkpnt_global_t& chkpnt_global_t::singleton(void) {
-    static chkpnt_global_t chkpnt_global;
-    return chkpnt_global;
-}
-//
-// atom_id
-size_t chkpnt_global_t::get_atom_id(void) const {
-    return m_atom_id;
-}
-//
-// get_chkpnt_info
-const chkpnt_info_t& chkpnt_global_t::get_chkpnt_info(size_t chkpnt_id) {
-    std::shared_lock<std::shared_mutex> lock(m_rw_mutex);
-    return *m_info_vec[chkpnt_id];
-}
-//
-// store
-size_t chkpnt_global_t::store(chkpnt_info_t& chkpnt_info) {
-    //
-    // lock, m_rw_mutex
-    size_t count = 0;
-    bool   lock  = false;
-    while( count < 100 && ! lock ) {
-        lock = m_rw_mutex.try_lock();
-        if( ! lock )
-        {   ++count;
-            std::this_thread::sleep_for( std::chrono::milliseconds(10) );
-        }
-    }
-    if( ! lock ) {
-        std::cerr << "chkpnt_global::store: "
-            " tried for 1 second to get a lock\n";
-#ifndef NDEBUG
-        std::exit(1);
-#else
-        assert(lock);
-#endif
-    }
+// make_chkpnt
+size_t make_chkpnt(adfn_t& adfn) {
     //
     // chkpnt_id
-    size_t chkpnt_id = m_info_vec.size();
-    //
-    // m_info_vec
-    m_info_vec.push_back( std::make_unique<chkpnt_info_t>() );
-    dev::move_swap( *m_info_vec[chkpnt_id], chkpnt_info );
-    //
-    // m_rw_mutex
-    if( lock ) {
-        m_rw_mutex.unlock();
-    }
+    dev::chkpnt_global_t& chkpnt_global = dev::chkpnt_global_t::singleton();
+    dev::chkpnt_info_t    chkpnt_info   = dev::chkpnt_info_t::from_adfn(adfn);
+    size_t chkpnt_id                    = chkpnt_global.store(chkpnt_info);
     //
     return chkpnt_id;
 }
-// ------------------------------------------------------------------------
 }  // END_AD_TENSOR_NAMESPACE

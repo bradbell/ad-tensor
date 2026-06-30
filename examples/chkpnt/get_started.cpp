@@ -15,8 +15,6 @@ namespace {
     using ad_tensor::vector;
     using ad_tensor::adten_t;
     using ad_tensor::adfn_t;
-    using ad_tensor::chkpnt_info_t;
-    using ad_tensor::chkpnt_global_t;
 }
 TEST(examples_chkpnt, get_started)  {
     //
@@ -38,9 +36,7 @@ TEST(examples_chkpnt, get_started)  {
     adfn_t f = adten_t::stop_recording(ay, "f");
     //
     // chkpnt_id
-    chkpnt_global_t& chkpnt_global = chkpnt_global_t::singleton();
-    chkpnt_info_t    chkpnt_info   = chkpnt_info_t::from_adfn(f);
-    size_t chkpnt_id    = chkpnt_global.store(chkpnt_info);
+    size_t chkpnt_id  = ad_tensor::make_chkpnt(f);
     //
     // ax, ay, az
     ax = adten_t::start_recording(x);

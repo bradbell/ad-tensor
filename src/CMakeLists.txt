@@ -24,6 +24,7 @@ add_library(ad_tensor SHARED
     atom.cpp
     chkpnt.cpp
     dev/broadcast.cpp
+    dev/chkpnt.cpp
     dev/derive_op/add_op.cpp
     dev/derive_op/call_op.cpp
     dev/derive_op/call_result_op.cpp

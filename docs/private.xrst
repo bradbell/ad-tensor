@@ -22,6 +22,7 @@ Contents
     include/ad_tensor/dev/plus_minus_equal.hpp
     include/ad_tensor/dev/tape.hpp
     src/dev/broadcast.cpp
+    src/dev/chkpnt.cpp
     src/dev/derive_op/call_op.cpp
     src/dev/rev_sum_view.cpp
     src/dev/tensor_at_index.cpp
