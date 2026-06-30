@@ -67,29 +67,6 @@ A call to get will wait until it can lock out any calls to store.
 //
 namespace ad_tensor  {
     // -----------------------------------------------------------------------
-    // atom callbacks
-    // -----------------------------------------------------------------------
-    //
-    // chkpnt_long_name
-    std::string chkpnt_long_name(
-        const options_t&                  options   ,
-        size_t                            chkpnt_id
-    );
-    //
-    // chkpnt_depend
-    std::optional<sparsity_t> chkpnt_depend(
-        const options_t&                  options   ,
-        size_t                            chkpnt_id
-    );
-    //
-    // chkpnt_forward
-    std::optional< vector<at::Tensor> > chkpnt_forward (
-        const options_t&                  options   ,
-        size_t                            chkpnt_id ,
-        const vector<bool>&               rng_used  ,
-        const vector<at::Tensor>&         domain
-    );
-    // -----------------------------------------------------------------------
     // chkpnt_info_t
     class chkpnt_info_t {
     public:
