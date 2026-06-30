@@ -56,6 +56,26 @@ std::optional< vector<at::Tensor> > chkpnt_forward(
     std::optional< vector<at::Tensor> > opt = range;
     return opt;
 }
+//
+// chkpnt_forward_der
+std::optional< vector<at::Tensor> > chkpnt_forward_der(
+    const options_t&                  options   ,
+    size_t                            chkpnt_id ,
+    const vector<bool>&               rng_used  ,
+    const vector<at::Tensor>&         domain    ,
+    const vector<at::Tensor>&         dom_der   ) {
+    //
+    // adfn
+    chkpnt_global_t&     global       = chkpnt_global_t::singleton();
+    const chkpnt_info_t& chkpnt_info  = global.get_chkpnt_info( chkpnt_id );
+    const adfn_t&        adfn        = chkpnt_info.m_adfn;
+    //
+    vector<at::Tensor> var_all = adfn.forward_var(domain);
+    vector<at::Tensor> rng_der = adfn.forward_der(dom_der, var_all);
+    //
+    std::optional< vector<at::Tensor> > opt = rng_der;
+    return opt;
+}
 // ------------------------------------------------------------------------
 // chkpnt_info_t
 // ------------------------------------------------------------------------
@@ -85,6 +105,7 @@ chkpnt_global_t::chkpnt_global_t(void)
     atom_callback.set_long_name(chkpnt_long_name);
     atom_callback.set_depend(chkpnt_depend);
     atom_callback.set_forward(chkpnt_forward);
+    atom_callback.set_forward_der(chkpnt_forward_der);
     //
     // m_atom_id
     m_atom_id = atom_global.store( atom_callback );

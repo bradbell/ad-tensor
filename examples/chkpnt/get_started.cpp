@@ -56,7 +56,16 @@ TEST(examples_chkpnt, get_started)  {
     vector<Tensor> var_all = g.forward_var(x);
     vector<Tensor> z       = g.get_range(var_all);
     //
-    // check
+    // equal
     bool equal =  z[0].equal( x[0] * x[0] * x[0] );
+    EXPECT_TRUE(equal);
+    //
+    // dx, dz
+    vector<Tensor> dx;
+    dx.push_back( torch::tensor( {1.0, 2.0} ) );
+    vector<Tensor> dz = g.forward_der(dx, var_all);
+    //
+    // equal
+    equal =  dz[0].equal( 3.0 * x[0] * x[0] * dx[0] );
     EXPECT_TRUE(equal);
 }
