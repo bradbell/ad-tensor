@@ -15,9 +15,16 @@ Determine Range Dependencies
 Compute the sparsity pattern for how the range values depend
 on the domain values.
 
+Syntax
+******
+{xrst_code cpp}
+[depend_par, depend_var] = adfn.forward_dep()
+{xrst_code}
+
 Prototype
 *********
 {xrst_literal ,
+    include/ad_tensor/adfn.hpp
     BEGIN_FORWARD_DEP, END_FORWARD_DEP
 }
 
@@ -39,11 +46,8 @@ the value at range index i value depends on the domain variable with index j,
 */
 namespace ad_tensor { // BEGIN_NAMESPACE_AD_TENSOR
 //
-// BEGIN_FORWARD_DEP
-// [depend_par, depend_var] = adfn.forward_dep()
 std::tuple<sparsity_t, sparsity_t> adfn_t::forward_dep(void) const
-{   // END_FORWARD_DEP
-    //
+{   //
     // cout, to_string
     using std::cout;
     using ad_tensor::dev::to_string;

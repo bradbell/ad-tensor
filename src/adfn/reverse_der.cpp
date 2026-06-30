@@ -18,9 +18,16 @@
 Compute Derivative of A Range Direction Summation
 #################################################
 
+Syntax
+******
+{xrst_code cpp}
+dom_der = adfn.reverse_der(rng_der, var_all, par_all)
+{xrst_code}
+
 Prototype
 *********
 {xrst_literal ,
+    include/ad_tensor/adfn.hpp
     BEGIN_REVERSE_DER, END_REVERSE_DER
 }
 
@@ -68,7 +75,6 @@ Example
 namespace ad_tensor { // BEGIN_NAMESPACE_AD_TENSOR
 //
 // BEGIN_REVERSE_DER
-// dom_der = adfn.reverse_der(rng_der, var_all, par_all)
 template <class TensorType>
 vector<TensorType> adfn_t::reverse_der(
     const vector<TensorType>& rng_der ,

@@ -9,10 +9,17 @@
 Get The Range Tensors
 #####################
 
+Syntax
+******
+{xrst_code cpp}
+range = adfn.get_range(par_all, var_all)
+{xrst_code}
+
 Prototype
 *********
 {xrst_literal ,
-    BEGIN_RANGE, END_RANGE
+    include/ad_tensor/adfn.hpp
+    BEGIN_GET_RANGE, END_GET_RANGE
 }
 This returns the range tensors for
 
@@ -46,36 +53,33 @@ Example
 */
 namespace ad_tensor { // BEGIN_NAMESPACE_AD_TENSOR
 //
-// BEGIN_RANGE
-// rng_vec = adfn.get_range(par_all, var_all)
 template <class TensorType>
 vector<TensorType> adfn_t::get_range(
     const vector<TensorType>& var_all ,
     const vector<TensorType>& par_all
 ) const
-// END_RANGE
 {   //
     assert( m_rng_index.size() == m_rng_ad_type.size() &&
         "adfn: m_rng_index and m_rng_ad_type have different sizes"
     );
     //
-    // rng_vec
-    vector<TensorType> rng_vec;
+    // range
+    vector<TensorType> range;
     for(size_t i = 0; i < m_rng_index.size(); ++i)
     {   size_t    index    = m_rng_index[i];
         ad_type_t ad_type  = m_rng_ad_type[i];
         switch(ad_type) {
             //
             case ad_type_t::constant:
-            rng_vec.push_back( m_con[index] );
+            range.push_back( m_con[index] );
             break;
             //
             case ad_type_t::parameter:
-            rng_vec.push_back( par_all[index] );
+            range.push_back( par_all[index] );
             break;
             //
             case ad_type_t::variable:
-            rng_vec.push_back( var_all[index] );
+            range.push_back( var_all[index] );
             break;
             //
             default:
@@ -84,7 +88,7 @@ vector<TensorType> adfn_t::get_range(
             );
         }
     }
-    return rng_vec;
+    return range;
 }
 template vector<at::Tensor> adfn_t::get_range(
     const vector<at::Tensor>& par_all ,

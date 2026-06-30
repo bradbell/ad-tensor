@@ -15,9 +15,16 @@
 Compute The Dependent Parameters
 ################################
 
+Syntax
+******
+{xrst_code cpp}
+par_all = adfn.forward_par(dom_par)
+{xrst_code}
+
 Prototype
 *********
 {xrst_literal ,
+    include/ad_tensor/adfn.hpp
     BEGIN_FORWARD_PAR, END_FORWARD_PAR
 }
 
@@ -51,11 +58,8 @@ Example
 */
 namespace ad_tensor { // BEGIN_NAMESPACE_AD_TENSOR
 //
-// BEGIN_FORWARD_PAR
-// par_all = adfn.forward_par(dom_par)
 template <class TensorType>
 vector<TensorType> adfn_t::forward_par(const vector<TensorType>& dom_par) const
-// END_FORWARD_PAR
 {
     // cout
     using std::cout;

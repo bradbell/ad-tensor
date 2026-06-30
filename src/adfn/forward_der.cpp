@@ -19,9 +19,16 @@
 Compute A Domain Directional Derivative
 #######################################
 
+Syntax
+******
+{xrst_code cpp}
+rng_der = adfn.forward_der(dom_der, var_all, par_all)
+{xrst_code}
+
 Prototype
 *********
 {xrst_literal ,
+    include/ad_tensor/adfn.hpp
     BEGIN_FORWARD_DER, END_FORWARD_DER
 }
 
@@ -68,15 +75,12 @@ Example
 */
 namespace ad_tensor { // BEGIN_NAMESPACE_AD_TENSOR
 //
-// BEGIN_FORWARD_DER
-// rng_der = adfn.forward_der(dom_der, var_all, par_all)
 template <class TensorType>
 vector<TensorType> adfn_t::forward_der(
     const vector<TensorType>& dom_der ,
     const vector<TensorType>& var_all ,
     const vector<TensorType>& par_all
 ) const
-// END_FORWARD_DER
 {
     // cout
     using std::cout;

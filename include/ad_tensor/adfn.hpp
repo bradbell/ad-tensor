@@ -163,40 +163,46 @@ public:
         m_options.set_trace(trace);
     }
     //
-    // forward_dep
+    // BEGIN_FORWARD_DEP
     std::tuple<sparsity_t, sparsity_t> forward_dep(void) const;
+    // END_FORWARD_DEP
     //
-    // forward_par
+    // BEGIN_FORWARD_PAR
     template <class TensorType>
     vector<TensorType> forward_par(const vector<TensorType>& dom_par) const;
+    // END_FORWARD_PAR
     //
-    // forward_var
+    // BEGIN_FORWARD_VAR
     template <class TensorType>
     vector<TensorType> forward_var(
         const vector<TensorType>& dom_var ,
         const vector<TensorType>& all_par = vector<TensorType>()
     ) const;
+    // END_FORWARD_VAR
     //
-    // get_range
+    // BEGIN_GET_RANGE
     template <class TensorType>
     vector<TensorType> get_range(
         const vector<TensorType>& all_var ,
         const vector<TensorType>& all_par = vector<TensorType>()
     ) const;
+    // END_GET_RANGE
     //
-    // forward_der
+    // BEGIN_FORWARD_DER
     template <class TensorType>
     vector<TensorType> forward_der(
         const vector<TensorType>& dom_der ,
         const vector<TensorType>& all_var ,
         const vector<TensorType>& all_par = vector<TensorType>()
     ) const;
+    // END_FORWARD_DER
     //
-    // reverse_der
+    // BEGIN_REVERSE_DER
     template <class TensorType>
     vector<TensorType> reverse_der(
         const vector<TensorType>& rng_der ,
         const vector<TensorType>& all_var ,
         const vector<TensorType>& all_par = vector<TensorType>()
     ) const;
+    // END_REVERSE_DER
 }; }

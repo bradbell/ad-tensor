@@ -15,9 +15,16 @@
 Compute The Dependent Variables
 ###############################
 
+Syntax
+******
+{xrst_code cpp}
+var_all = adfn.forward_var(dom_var, par_all)
+{xrst_code}
+
 Prototype
 *********
 {xrst_literal ,
+    include/ad_tensor/adfn.hpp
     BEGIN_FORWARD_VAR, END_FORWARD_VAR
 }
 
@@ -57,13 +64,11 @@ Example
 */
 namespace ad_tensor { // BEGIN_NAMESPACE_AD_TENSOR
 //
-// BEGIN_FORWARD_VAR
-// var_all = adfn.forward_var(dom_var, par_all)
 template <class TensorType>
 vector<TensorType> adfn_t::forward_var(
     const vector<TensorType>& dom_var ,
     const vector<TensorType>& par_all ) const
-{   // END_FORWARD_VAR
+{
     //
     // using
     using std::cout;
