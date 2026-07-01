@@ -62,6 +62,41 @@ size_t make_chkpnt(adfn_t& adfn) {
     return chkpnt_id;
 }
 // ------------------------------------------------------------------------
+// derive_chkpnt_t
+// ------------------------------------------------------------------------
+class derive_chkpnt_t : public base_atom_t {
+public:
+    // ctor
+    derive_chkpnt_t(void) {
+        set_name("ckhpnt");
+    }
+    // long_name
+    std::string long_name(size_t call_info) const override {
+        //
+        // adfn
+        size_t               chkpnt_id    = call_info;
+        chkpnt_global_t&     global       = chkpnt_global_t::singleton();
+        const chkpnt_info_t& chkpnt_info  = global.get_chkpnt_info(chkpnt_id);
+        const adfn_t&        adfn         = chkpnt_info.m_adfn;
+        //
+        return get_name() + "." + adfn.get_name();
+    }
+    // depend
+    std::optional<sparsity_t> depend(
+        size_t              call_info ) const override {
+        //
+        // depend
+        size_t               chkpnt_id    = call_info;
+        chkpnt_global_t&     global       = chkpnt_global_t::singleton();
+        const chkpnt_info_t& chkpnt_info  = global.get_chkpnt_info( chkpnt_id );
+        const sparsity_t&    depend       = chkpnt_info.m_depend;
+        //
+        std::optional<sparsity_t> opt = depend;
+        return opt;
+    }
+};
+
+// ------------------------------------------------------------------------
 // atom_callbacks
 // ------------------------------------------------------------------------
 //
@@ -70,7 +105,7 @@ std::string chkpnt_long_name(
     const options_t&                  options   ,
     size_t                            chkpnt_id ) {
     //
-    // depend
+    // adfn
     chkpnt_global_t&     global       = chkpnt_global_t::singleton();
     const chkpnt_info_t& chkpnt_info  = global.get_chkpnt_info( chkpnt_id );
     const adfn_t&        adfn         = chkpnt_info.m_adfn;
@@ -175,8 +210,7 @@ chkpnt_global_t::chkpnt_global_t(void)
     //
     // base_atom_ptr
     std::unique_ptr<base_atom_t> base_atom_ptr =
-        std::make_unique<base_atom_t>();
-    base_atom_ptr->set_name("ckhpnt");
+        std::make_unique<derive_chkpnt_t>();
     //
     // atom_callback
     atom_callback_t atom_callback;

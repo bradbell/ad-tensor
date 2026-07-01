@@ -30,16 +30,38 @@ namespace {
     // derive_atom_y
     class derive_atom_y_t : public base_atom_t {
     public:
+        // ctor
         derive_atom_y_t(void) {
             set_name("y");
+        }
+        // depend
+        std::optional<ad_tensor::sparsity_t> depend(
+            size_t           call_info) const override {
+            ad_tensor::sparsity_t sparsity;
+            std::array<size_t, 2> pair = {0, 0};
+            sparsity.push_back( pair );
+            //
+            std::optional<ad_tensor::sparsity_t> opt = sparsity;
+            return opt;
         }
     };
     //
     // derive_atom_z
     class derive_atom_z_t : public base_atom_t {
     public:
+        // ctor
         derive_atom_z_t(void) {
             set_name("z");
+        }
+        // depend
+        std::optional<ad_tensor::sparsity_t> depend(
+            size_t                call_info) const override {
+            ad_tensor::sparsity_t sparsity;
+            sparsity.push_back( {0, 0} );
+            sparsity.push_back( {0, 1} );
+            //
+            std::optional<ad_tensor::sparsity_t> opt = sparsity;
+            return opt;
         }
     };
     //

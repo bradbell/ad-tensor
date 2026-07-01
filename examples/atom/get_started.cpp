@@ -25,8 +25,18 @@ namespace {
     // derive_atom
     class derive_atom_t : public base_atom_t {
     public:
+        // ctor
         derive_atom_t(void) {
             set_name("square");
+        }
+        // depend
+        optional<ad_tensor::sparsity_t> depend(
+            size_t                call_info ) const override {
+            ad_tensor::sparsity_t sparsity;
+            sparsity.push_back( {0, 0} );
+            //
+            std::optional<ad_tensor::sparsity_t> opt = sparsity;
+            return opt;
         }
     };
     //
