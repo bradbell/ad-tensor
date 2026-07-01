@@ -63,6 +63,28 @@ namespace {
             std::optional< vector<Tensor> > opt = range;
             return opt;
         }
+        // forward_der
+        std::optional< vector<Tensor> > forward_der(
+            size_t                call_info ,
+            const vector<bool>&   rng_used  ,
+            const vector<Tensor>& domain    ,
+            const vector<Tensor>& dom_der   ) const override {
+            //
+            Tensor x  = domain[0];
+            Tensor dx = dom_der[0];
+            //
+            // range
+            vector<Tensor> rng_der;
+            rng_der.push_back( 3.0 * x * x * dx );
+            //
+            if( get_trace() ) {
+                cout << "forward_der_y: domain =\n" << to_string(domain);
+                cout << "forward_der_y: dom_der =\n" << to_string(dom_der);
+                cout << "forward_der_y: rng_der =\n" << to_string(rng_der);
+            }
+            std::optional< vector<Tensor> > opt = rng_der;
+            return opt;
+        }
     };
     //
     // derive_atom_z
@@ -99,6 +121,31 @@ namespace {
                 cout << "forward_z: range =\n" << to_string(range);
             }
             std::optional< vector<Tensor> > opt = range;
+            return opt;
+        }
+        // forward_der
+        std::optional< vector<Tensor> > forward_der(
+            size_t                call_info,
+            const vector<bool>&   rng_used,
+            const vector<Tensor>& domain,
+            const vector<Tensor>& dom_der) const override {
+            //
+            // dz
+            Tensor x    = domain[0];
+            Tensor dx   = domain[1];
+            Tensor d_x  = dom_der[0];
+            Tensor d_dx = dom_der[1];
+            Tensor dz   = 6.0 * x * dx * d_x + 3.0 * x * x * d_dx;
+            //
+            // rng_der
+            vector<Tensor> rng_der;
+            rng_der.push_back( dz );
+            if( get_trace() ) {
+                cout << "forward_der_z: domain =\n" << to_string(domain);
+                cout << "forward_der_z: dom_der =\n" << to_string(dom_der);
+                cout << "forward_der_z: rng_der =\n" << to_string(rng_der);
+            }
+            std::optional< vector<Tensor> > opt = rng_der;
             return opt;
         }
     };

@@ -56,6 +56,24 @@ namespace {
             std::optional< vector<Tensor> > opt = range;
             return opt;
         }
+        //
+        // forward_der
+        std::optional< vector<Tensor> > forward_der(
+            size_t                call_info ,
+            const vector<bool>&   rng_used  ,
+            const vector<Tensor>& domain    ,
+            const vector<Tensor>& dom_der   ) const override {
+            //
+            Tensor x  = domain[0];
+            Tensor dx = dom_der[0];
+            //
+            // range
+            vector<Tensor> rng_der;
+            rng_der.push_back( 3.0 * x * x * dx );
+            //
+            std::optional< vector<Tensor> > opt = rng_der;
+            return opt;
+        }
     };
     //
     // derive_atom_z
@@ -89,6 +107,28 @@ namespace {
             range.push_back( z );
             //
             std::optional< vector<Tensor> > opt = range;
+            return opt;
+        }
+        //
+        // forward_der
+        std::optional< vector<Tensor> > forward_der(
+            size_t                call_info,
+            const vector<bool>&   rng_used,
+            const vector<Tensor>& domain,
+            const vector<Tensor>& dom_der) const override {
+            //
+            // dz
+            Tensor x    = domain[0];
+            Tensor dy   = domain[1];
+            Tensor d_x  = dom_der[0];
+            Tensor d_dy = dom_der[1];
+            Tensor dz  = 6.0 * x * dy * d_x + 3.0 * x * x * d_dy;
+            //
+            // rng_der
+            vector<Tensor> rng_der;
+            rng_der.push_back( dz );
+            //
+            std::optional< vector<Tensor> > opt = rng_der;
             return opt;
         }
     };

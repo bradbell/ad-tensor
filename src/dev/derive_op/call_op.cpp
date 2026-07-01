@@ -180,7 +180,7 @@ template<> void call_op_t<at::Tensor>::forward_par(
     thread_local vector<at::Tensor> domain;
     //
     // arg_start. atom_id, call_info, n_domain, n_range, n_result
-    // atom_callback, long_name, base_atom
+    // long_name, base_atom
     UNPACK
     //
     // domain
@@ -241,17 +241,9 @@ template<> void call_op_t<at::Tensor>::forward_var(
     thread_local vector<bool>       rng_used;
     thread_local vector<at::Tensor> domain;
     //
-    // forward_t
-    typedef atom_callback_t::forward_t forward_t;
-    //
     // arg_start. atom_id, call_info, n_domain, n_range, n_result
-    // atom_callback, options
+    // long_name, base_atom
     UNPACK
-    const atom_callback_t& atom_callback = atom_global.get_callback(atom_id);
-    const options_t& options = atom_callback.get_options();
-    //
-    // forward
-    const forward_t& forward = atom_callback.get_forward(call_info);
     //
     // domain
     domain.resize(0);
@@ -272,8 +264,8 @@ template<> void call_op_t<at::Tensor>::forward_var(
     }
     //
     // range
-    std::optional< vector<at::Tensor> > opt = forward(
-        options, call_info, rng_used, domain
+    std::optional< vector<at::Tensor> > opt = base_atom.forward(
+         call_info, rng_used, domain
     );
     if( ! opt.has_value() ) {
         std::string msg = "atomic " + long_name;
