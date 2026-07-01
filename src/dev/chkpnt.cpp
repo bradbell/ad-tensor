@@ -129,6 +129,22 @@ public:
         std::optional< vector<at::Tensor> > opt = rng_der;
         return opt;
     }
+    // reverse_der
+    std::optional< vector<at::Tensor> > reverse_der(
+        size_t                            call_info ,
+        const vector<bool>&               rng_used  ,
+        const vector<at::Tensor>&         domain    ,
+        const vector<at::Tensor>&         rng_der   ) const override {
+        //
+        // adfn
+        GET_ADFN
+        //
+        vector<at::Tensor> var_all = adfn.forward_var(domain);
+        vector<at::Tensor> dom_der = adfn.reverse_der(rng_der, var_all);
+        //
+        std::optional< vector<at::Tensor> > opt = dom_der;
+        return opt;
+    }
 };
 
 // ------------------------------------------------------------------------

@@ -51,20 +51,38 @@ namespace {
             std::optional< vector<Tensor> > opt = range;
             return opt;
         }
-       // forward_der
-       std::optional< vector<Tensor> > forward_der(
-           size_t                call_info ,
-           const vector<bool>&   rng_used ,
-           const vector<Tensor>& domain   ,
-           const vector<Tensor>& dom_der ) const override {
-           //
-           // rng_der
-           vector<Tensor> rng_der;
-           rng_der.push_back( 2.0 * domain[0] * dom_der[0] );
-           //
-           std::optional< vector<Tensor> > opt = rng_der;
-           return opt;
-       }
+        // forward_der
+        std::optional< vector<Tensor> > forward_der(
+            size_t                call_info ,
+            const vector<bool>&   rng_used ,
+            const vector<Tensor>& domain   ,
+            const vector<Tensor>& dom_der ) const override {
+            //
+            // rng_der
+            vector<Tensor> rng_der;
+            rng_der.push_back( 2.0 * domain[0] * dom_der[0] );
+            //
+            std::optional< vector<Tensor> > opt = rng_der;
+            return opt;
+        }
+        // reverse_der
+        std::optional< vector<Tensor> > reverse_der(
+            size_t                call_info ,
+            const vector<bool>&   rng_used ,
+            const vector<Tensor>& domain   ,
+            const vector<Tensor>& rng_der ) const override {
+            //
+            // dom_der
+            vector<Tensor> dom_der;
+            if( rng_der[0].numel() == 0 ) {
+                dom_der.push_back( torch::empty( {0} ) );
+            } else {
+                dom_der.push_back( 2.0 * domain[0] * rng_der[0] );
+            }
+            //
+            std::optional< vector<Tensor> > opt = dom_der;
+            return opt;
+        }
     };
     //
     // base_atom_ptr
