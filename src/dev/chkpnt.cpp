@@ -47,6 +47,13 @@ A call to get will wait until it can lock out any calls to store.
 #include <ad_tensor/dev/chkpnt.hpp>
 #include <ad_tensor/dev/move_swap.hpp>
 #include <ad_tensor/base_atom.hpp>
+#
+#define GET_ADFN \
+     size_t               chkpnt_id    = call_info; \
+     chkpnt_global_t&     global       = chkpnt_global_t::singleton(); \
+     const chkpnt_info_t& chkpnt_info  = global.get_chkpnt_info(chkpnt_id); \
+     const adfn_t&        adfn         = chkpnt_info.m_adfn;
+
 //
 //
 namespace ad_tensor { namespace dev { // BEGIN_AD_TENSOR_DEV_NAMESPACE
@@ -74,10 +81,7 @@ public:
     std::string long_name(size_t call_info) const override {
         //
         // adfn
-        size_t               chkpnt_id    = call_info;
-        chkpnt_global_t&     global       = chkpnt_global_t::singleton();
-        const chkpnt_info_t& chkpnt_info  = global.get_chkpnt_info(chkpnt_id);
-        const adfn_t&        adfn         = chkpnt_info.m_adfn;
+        GET_ADFN
         //
         return get_name() + "." + adfn.get_name();
     }
@@ -88,7 +92,7 @@ public:
         // depend
         size_t               chkpnt_id    = call_info;
         chkpnt_global_t&     global       = chkpnt_global_t::singleton();
-        const chkpnt_info_t& chkpnt_info  = global.get_chkpnt_info( chkpnt_id );
+        const chkpnt_info_t& chkpnt_info  = global.get_chkpnt_info(chkpnt_id);
         const sparsity_t&    depend       = chkpnt_info.m_depend;
         //
         std::optional<sparsity_t> opt = depend;
@@ -101,10 +105,7 @@ public:
         const vector<at::Tensor>&         domain    ) const override {
         //
         // adfn
-        size_t               chkpnt_id    = call_info;
-        chkpnt_global_t&     global       = chkpnt_global_t::singleton();
-        const chkpnt_info_t& chkpnt_info  = global.get_chkpnt_info( chkpnt_id );
-        const adfn_t&        adfn        = chkpnt_info.m_adfn;
+        GET_ADFN
         //
         vector<at::Tensor> var_all = adfn.forward_var(domain);
         vector<at::Tensor> range   = adfn.get_range(var_all);
@@ -120,10 +121,7 @@ public:
         const vector<at::Tensor>&         dom_der   ) const override {
         //
         // adfn
-        size_t               chkpnt_id    = call_info;
-        chkpnt_global_t&     global       = chkpnt_global_t::singleton();
-        const chkpnt_info_t& chkpnt_info  = global.get_chkpnt_info( chkpnt_id );
-        const adfn_t&        adfn        = chkpnt_info.m_adfn;
+        GET_ADFN
         //
         vector<at::Tensor> var_all = adfn.forward_var(domain);
         vector<at::Tensor> rng_der = adfn.forward_der(dom_der, var_all);
