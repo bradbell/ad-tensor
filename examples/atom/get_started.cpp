@@ -38,6 +38,19 @@ namespace {
             std::optional<ad_tensor::sparsity_t> opt = sparsity;
             return opt;
         }
+        // forward
+        std::optional< vector<Tensor> > forward(
+            size_t                call_info ,
+            const vector<bool>&   rng_used ,
+            const vector<Tensor>& domain ) const override {
+            //
+            // range
+            vector<Tensor> range;
+            range.push_back( domain[0] * domain[0] );
+            //
+            std::optional< vector<Tensor> > opt = range;
+            return opt;
+        }
     };
     //
     // base_atom_ptr

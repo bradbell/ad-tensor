@@ -69,9 +69,7 @@ variable result for this atomic function.
     size_t n_result  = agraph.m_arg_value[arg_start + 4]; \
     \
     atom_global_t&         atom_global   = atom_global_t::singleton(); \
-    const atom_callback_t& atom_callback = atom_global.get_callback(atom_id); \
     const base_atom_t&     base_atom = atom_global.get_base_atom(atom_id); \
-    const options_t&       options   = atom_callback.get_options(); \
     std::string            long_name = base_atom.long_name(call_info);
 //
 namespace ad_tensor { namespace dev { // BEGIN_AD_TENSOR_DEV_NAMESPACE
@@ -181,15 +179,9 @@ template<> void call_op_t<at::Tensor>::forward_par(
     thread_local vector<bool>       rng_used;
     thread_local vector<at::Tensor> domain;
     //
-    // forward_t
-    typedef atom_callback_t::forward_t forward_t;
-    //
     // arg_start. atom_id, call_info, n_domain, n_range, n_result
-    // atom_callback, options
+    // atom_callback, long_name, base_atom
     UNPACK
-    //
-    // forward
-    const forward_t& forward = atom_callback.get_forward(call_info);
     //
     // domain
     domain.resize(0);
@@ -210,8 +202,8 @@ template<> void call_op_t<at::Tensor>::forward_par(
     }
     //
     // range
-    std::optional< vector<at::Tensor> > opt = forward(
-        options, call_info, rng_used, domain
+    std::optional< vector<at::Tensor> > opt = base_atom.forward(
+        call_info, rng_used, domain
     );
     if( ! opt.has_value() ) {
         std::string msg = "atomic " + long_name;
@@ -255,6 +247,8 @@ template<> void call_op_t<at::Tensor>::forward_var(
     // arg_start. atom_id, call_info, n_domain, n_range, n_result
     // atom_callback, options
     UNPACK
+    const atom_callback_t& atom_callback = atom_global.get_callback(atom_id);
+    const options_t& options = atom_callback.get_options();
     //
     // forward
     const forward_t& forward = atom_callback.get_forward(call_info);
@@ -356,6 +350,8 @@ template<> void call_op_t<at::Tensor>::forward_der(
     // arg_start. atom_id, call_info, n_domain, n_range, n_result
     // atom_callback, options
     UNPACK
+    const atom_callback_t& atom_callback = atom_global.get_callback(atom_id);
+    const options_t& options = atom_callback.get_options();
     //
     // forward_der
     const forward_der_t& forward_der = atom_callback.get_forward_der(call_info);
@@ -440,6 +436,8 @@ template<> void call_op_t<adten_t>::forward_der(
     // arg_start. atom_id, call_info, n_domain, n_range, n_result
     // atom_callback, options
     UNPACK
+    const atom_callback_t& atom_callback = atom_global.get_callback(atom_id);
+    const options_t& options = atom_callback.get_options();
     //
     // forward_der
     const forward_der_t& forward_der =
@@ -531,6 +529,8 @@ template<> void call_op_t<at::Tensor>::reverse_der(
     // arg_start. atom_id, call_info, n_domain, n_range, n_result
     // atom_callback, options
     UNPACK
+    const atom_callback_t& atom_callback = atom_global.get_callback(atom_id);
+    const options_t& options = atom_callback.get_options();
     //
     // reverse_der
     const reverse_der_t& reverse_der = atom_callback.get_reverse_der(call_info);
@@ -598,6 +598,8 @@ template<> void call_op_t<adten_t>::reverse_der(
     // arg_start. atom_id, call_info, n_domain, n_range, n_result
     // atom_callback, options
     UNPACK
+    const atom_callback_t& atom_callback = atom_global.get_callback(atom_id);
+    const options_t& options = atom_callback.get_options();
     //
     // reverse_der
     const reverse_der_t& reverse_der

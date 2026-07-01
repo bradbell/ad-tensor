@@ -94,6 +94,24 @@ public:
         std::optional<sparsity_t> opt = depend;
         return opt;
     }
+    // forward
+    std::optional< vector<at::Tensor> > forward(
+        size_t                            call_info ,
+        const vector<bool>&               rng_used  ,
+        const vector<at::Tensor>&         domain    ) const override {
+        //
+        // adfn
+        size_t               chkpnt_id    = call_info;
+        chkpnt_global_t&     global       = chkpnt_global_t::singleton();
+        const chkpnt_info_t& chkpnt_info  = global.get_chkpnt_info( chkpnt_id );
+        const adfn_t&        adfn        = chkpnt_info.m_adfn;
+        //
+        vector<at::Tensor> var_all = adfn.forward_var(domain);
+        vector<at::Tensor> range   = adfn.get_range(var_all);
+        //
+        std::optional< vector<at::Tensor> > opt = range;
+        return opt;
+    }
 };
 
 // ------------------------------------------------------------------------

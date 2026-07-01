@@ -44,6 +44,25 @@ namespace {
             std::optional<ad_tensor::sparsity_t> opt = sparsity;
             return opt;
         }
+        // forward
+        std::optional< vector<Tensor> > forward(
+            size_t                call_info ,
+            const vector<bool>&   rng_used ,
+            const vector<Tensor>& domain ) const override {
+            //
+            Tensor x = domain[0];
+            //
+            // range
+            vector<Tensor> range;
+            range.push_back( x * x * x );
+            //
+            if( get_trace() ) {
+                cout << "forward_y: domain =\n" << to_string(domain);
+                cout << "forward_y: range =\n" << to_string(range);
+            }
+            std::optional< vector<Tensor> > opt = range;
+            return opt;
+        }
     };
     //
     // derive_atom_z
@@ -61,6 +80,25 @@ namespace {
             sparsity.push_back( {0, 1} );
             //
             std::optional<ad_tensor::sparsity_t> opt = sparsity;
+            return opt;
+        }
+        // forward
+        std::optional< vector<Tensor> > forward(
+            size_t                call_info ,
+            const vector<bool>&   rng_used ,
+            const vector<Tensor>& domain ) const override {
+            //
+            Tensor x  = domain[0];
+            Tensor dx = domain[1];
+            Tensor z  = 3.0 * x * x * dx;
+            // range
+            vector<Tensor> range;
+            range.push_back( z );
+            if( get_trace() ) {
+                cout << "forward_z: domain =\n" << to_string(domain);
+                cout << "forward_z: range =\n" << to_string(range);
+            }
+            std::optional< vector<Tensor> > opt = range;
             return opt;
         }
     };
