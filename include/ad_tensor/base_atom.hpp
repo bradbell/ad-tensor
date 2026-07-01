@@ -32,15 +32,21 @@ public:
     // END_LONG_NAME
     //
     // BEGIN_DEPEND
-    virtual std::optional<sparsity_t> depend(size_t call_info) const = 0;
+    // pure virtual with temporary definition during conversion
+    virtual std::optional<sparsity_t> depend(size_t call_info) const {
+        return std::optional<sparsity_t>();
+    }
     // END_DEPEND
     //
     // BEGIN_FORWARD
+    // pure virtual with temporary definition during conversion
     virtual std::optional< vector<at::Tensor> > forward(
         size_t                      call_info,
         const vector<bool>&         rng_used,
         const vector<at::Tensor>&   domain
-    ) const = 0;
+    ) const {
+        return std::optional< vector<at::Tensor> >();
+    }
     // END_FORWARD
     //
     // BEGIN_FORWARD_DER
