@@ -112,6 +112,25 @@ public:
         std::optional< vector<at::Tensor> > opt = range;
         return opt;
     }
+    // forward_der
+    std::optional< vector<at::Tensor> > forward_der(
+        size_t                            call_info ,
+        const vector<bool>&               rng_used  ,
+        const vector<at::Tensor>&         domain    ,
+        const vector<at::Tensor>&         dom_der   ) const override {
+        //
+        // adfn
+        size_t               chkpnt_id    = call_info;
+        chkpnt_global_t&     global       = chkpnt_global_t::singleton();
+        const chkpnt_info_t& chkpnt_info  = global.get_chkpnt_info( chkpnt_id );
+        const adfn_t&        adfn        = chkpnt_info.m_adfn;
+        //
+        vector<at::Tensor> var_all = adfn.forward_var(domain);
+        vector<at::Tensor> rng_der = adfn.forward_der(dom_der, var_all);
+        //
+        std::optional< vector<at::Tensor> > opt = rng_der;
+        return opt;
+    }
 };
 
 // ------------------------------------------------------------------------
