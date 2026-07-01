@@ -10,6 +10,7 @@
 #include <ad_tensor/atom.hpp>
 #include <ad_tensor/sparsity.hpp>
 #include <ad_tensor/options.hpp>
+#include <ad_tensor/base_atom.hpp>
 namespace {
     //
     // using
@@ -17,10 +18,15 @@ namespace {
     using ad_tensor::vector;
     using ad_tensor::adten_t;
     using ad_tensor::options_t;
+    using ad_tensor::base_atom_t;
     using at::Tensor;
     //
     // atom_id_z
     size_t atom_id_z;
+    //
+    // base_atom_ptr
+    std::unique_ptr<base_atom_t> base_atom_ptr =
+        std::make_unique<base_atom_t>();
     //
     // ----------------------------------------------------------------------
     // y(x) = x * x * x
@@ -167,7 +173,7 @@ TEST(examples_atom, ad_reverse_der)  {
     atom_callback_z.set_forward_der(forward_der_z);
     //
     // atom_id_z
-    atom_id_z = atom_global.store( atom_callback_z );
+    atom_id_z = atom_global.store(atom_callback_z, base_atom_ptr);
     //
     // atom_callback_y
     ad_tensor::atom_callback_t atom_callback_y;
@@ -178,7 +184,7 @@ TEST(examples_atom, ad_reverse_der)  {
     atom_callback_y.set_ad_reverse_der(ad_reverse_der_y);
     //
     // atom_id_y
-    size_t atom_id_y = atom_global.store( atom_callback_y );
+    size_t atom_id_y = atom_global.store(atom_callback_y, base_atom_ptr);
     //
     // x
     Tensor x = torch::tensor( {2.0, 3.0} );

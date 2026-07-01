@@ -10,6 +10,7 @@
 #include <ad_tensor/atom.hpp>
 #include <ad_tensor/sparsity.hpp>
 #include <ad_tensor/options.hpp>
+#include <ad_tensor/base_atom.hpp>
 //
 namespace {
     //
@@ -18,7 +19,12 @@ namespace {
     using ad_tensor::vector;
     using ad_tensor::adten_t;
     using ad_tensor::options_t;
+    using ad_tensor::base_atom_t;
     using at::Tensor;
+    //
+    // base_atom_ptr
+    std::unique_ptr<base_atom_t> base_atom_ptr =
+        std::make_unique<base_atom_t>();
     //
     // depend
     optional<ad_tensor::sparsity_t> depend(
@@ -98,7 +104,7 @@ TEST(examples_atom, get_started)  {
     // atom_id
     ad_tensor::atom_global_t& atom_global =
         ad_tensor::atom_global_t::singleton();
-    size_t atom_id = atom_global.store( atom_callback );
+    size_t atom_id = atom_global.store(atom_callback, base_atom_ptr);
     //
     // x
     // We use x for the adfn domain variables

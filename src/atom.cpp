@@ -30,7 +30,9 @@ namespace ad_tensor {
     // atom_global_t
     // -----------------------------------------------------------------------
     // atom_global_t::store
-    size_t atom_global_t::store(const atom_callback_t& atom_callback) {
+    size_t atom_global_t::store(
+        const atom_callback_t&          atom_callback,
+        std::unique_ptr<base_atom_t>&   base_atom_ptr) {
         //
         // lock, m_rw_mutex
         size_t count = 0;

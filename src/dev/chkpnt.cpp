@@ -46,6 +46,7 @@ A call to get will wait until it can lock out any calls to store.
 */
 #include <ad_tensor/dev/chkpnt.hpp>
 #include <ad_tensor/dev/move_swap.hpp>
+#include <ad_tensor/base_atom.hpp>
 //
 //
 namespace ad_tensor { namespace dev { // BEGIN_AD_TENSOR_DEV_NAMESPACE
@@ -171,7 +172,11 @@ chkpnt_global_t::chkpnt_global_t(void)
 {   //
     // atom_global
     atom_global_t& atom_global = atom_global_t::singleton();
-
+    //
+    // base_atom_ptr
+    std::unique_ptr<base_atom_t> base_atom_ptr =
+        std::make_unique<base_atom_t>();
+    //
     // atom_callback
     atom_callback_t atom_callback;
     atom_callback.set_name("chkpnt");
@@ -182,7 +187,7 @@ chkpnt_global_t::chkpnt_global_t(void)
     atom_callback.set_reverse_der(chkpnt_reverse_der);
     //
     // m_atom_id
-    m_atom_id = atom_global.store( atom_callback );
+    m_atom_id = atom_global.store(atom_callback, base_atom_ptr);
 }
 //
 // singleton

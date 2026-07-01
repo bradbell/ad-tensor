@@ -241,6 +241,7 @@ A call to get will wait until it can lock out any calls to store.
 #include <ad_tensor/sparsity.hpp>
 #include <ad_tensor/adfn.hpp>
 #include <ad_tensor/options.hpp>
+#include <ad_tensor/base_atom.hpp>
 //
 namespace ad_tensor {  // BEGIN_AD_TENSOR_NAMESPACE
 // --------------------------------------------------------------------------
@@ -388,7 +389,10 @@ public:
     //
     // BEGIN_STORE_GLOBAL
     // atom_id = atom_global.store(atom_callback)
-    size_t store(const atom_callback_t& atom_callback);
+    size_t store(
+        const atom_callback_t&        atom_callback,
+        std::unique_ptr<base_atom_t>& base_atom_ptr
+    );
     // END_STORE_GLOBAL
     //
     // BEGIN_GET_GLOBAL
