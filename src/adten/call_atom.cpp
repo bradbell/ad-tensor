@@ -117,7 +117,7 @@ vector<adten_t> adten_t::call_atom(
     //
     // callback
     atom_global_t&      atom_global = atom_global_t::singleton();
-    const atom_callback_t& callback = atom_global.get(atom_id);
+    const atom_callback_t& callback = atom_global.get_callback(atom_id);
     //
     // n_domain, domain
     size_t n_domain = adomain.size();

@@ -70,7 +70,7 @@ variable result for this atomic function.
     \
     typedef atom_callback_t::long_name_t long_name_t;\
     atom_global_t&         atom_global   = atom_global_t::singleton(); \
-    const atom_callback_t& atom_callback = atom_global.get( atom_id ); \
+    const atom_callback_t& atom_callback = atom_global.get_callback( atom_id ); \
     const options_t&       options   = atom_callback.get_options(); \
     const long_name_t&     long_name = atom_callback.get_long_name();
 //
@@ -109,7 +109,7 @@ void call_op_depend(
     //
     // options, long_name, depend
     atom_global_t&         atom_global   = atom_global_t::singleton();
-    const atom_callback_t& atom_callback = atom_global.get( atom_id );
+    const atom_callback_t& atom_callback = atom_global.get_callback( atom_id );
     const options_t&       options    = atom_callback.get_options();
     const long_name_t&     long_name  = atom_callback.get_long_name();
     const depend_t&        depend     = atom_callback.get_depend(call_info);

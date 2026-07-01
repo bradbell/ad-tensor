@@ -6,6 +6,7 @@
 #include<chrono>
 #include <ad_tensor/atom.hpp>
 #include <ad_tensor/dev/user_assert.hpp>
+#include <ad_tensor/dev/move_swap.hpp>
 //
 #define SETTER_AND_GETTER(name) \
     void atom_callback_t::set_ ## name(const name ## _t& name) { \
@@ -61,6 +62,10 @@ namespace ad_tensor {
         m_callback_vec.push_back( std::make_unique<atom_callback_t>() );
         *m_callback_vec[atom_id] = atom_callback;
         //
+        // m_base_vec
+        m_base_vec.push_back( std::make_unique<base_atom_t>() );
+        dev::move_swap(m_base_vec[atom_id], base_atom_ptr);
+        //
         // m_rw_mutex
         if( lock ) {
             m_rw_mutex.unlock();
@@ -69,11 +74,18 @@ namespace ad_tensor {
         return atom_id;
     }
     //
-    // atom_global_t::get
+    // get_callback
     // not const because m_rw_mutex is modified
-    const atom_callback_t& atom_global_t::get(size_t atom_id) {
+    const atom_callback_t& atom_global_t::get_callback(size_t atom_id) {
         std::shared_lock<std::shared_mutex> lock(m_rw_mutex);
         return *m_callback_vec[atom_id];
+    }
+    //
+    // get_base_atom
+    // not const because m_rw_mutex is modified
+    const base_atom_t& atom_global_t::get_base_atom(size_t atom_id) {
+        std::shared_lock<std::shared_mutex> lock(m_rw_mutex);
+        return *m_base_vec[atom_id];
     }
     //
     // atom_global_t::singleton

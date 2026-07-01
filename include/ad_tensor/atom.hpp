@@ -125,7 +125,7 @@ get
 ***
 All of the set functions have a corresponding get function:
 {xrst_literal ,
-    BEGIN_GET_CALLBACK, END_GET_CALLBACK
+    BEGIN_CALLBACK_GET, END_CALLBACK_GET
 }
 The values chosen by set_name and set_trace are in the get_options return.
 
@@ -213,7 +213,7 @@ atom_global
 store
 *****
 {xrst_literal ,
-    BEGIN_STORE_GLOBAL, END_STORE_GLOBAL
+    BEGIN_STORE, END_STORE
 }
 A call to store will wait until it can lock out any other calls to
 store or get.
@@ -226,10 +226,10 @@ atom_id
 =======
 Is the identifier for this atomic function.
 
-get
-***
+get_callback
+************
 {xrst_literal ,
-    BEGIN_GET_GLOBAL, END_GET_GLOBAL
+    BEGIN_GET_CALLBACK, END_GET_CALLBACK
 }
 A call to get will wait until it can lock out any calls to store.
 
@@ -354,7 +354,7 @@ public:
     void set_ad_reverse_der(const ad_reverse_der_t&    ad_reverse_der);
     // END_SET_FUNCTION
     //
-    // BEGIN_GET_CALLBACK
+    // BEGIN_CALLBACK_GET
     const options_t&        get_options(void) const;
     const long_name_t&      get_long_name(void) const;
     const depend_t&         get_depend(size_t call_info) const;
@@ -363,13 +363,14 @@ public:
     const reverse_der_t&    get_reverse_der(size_t call_info) const;
     const ad_forward_der_t& get_ad_forward_der(size_t call_info) const;
     const ad_reverse_der_t& get_ad_reverse_der(size_t call_info) const;
-    // END_GET_CALLBACK
+    // END_CALLBACK_GET
 };
 // atom_global_t
 class atom_global_t {
 private:
     std::shared_mutex                          m_rw_mutex;
     vector< std::unique_ptr<atom_callback_t> > m_callback_vec;
+    vector< std::unique_ptr<base_atom_t> >     m_base_vec;
     //
     // default constructor
     atom_global_t(void)
@@ -387,17 +388,21 @@ public:
     static atom_global_t& singleton(void);
     // END_SINGLETON
     //
-    // BEGIN_STORE_GLOBAL
+    // BEGIN_STORE
     // atom_id = atom_global.store(atom_callback)
     size_t store(
         const atom_callback_t&        atom_callback,
         std::unique_ptr<base_atom_t>& base_atom_ptr
     );
-    // END_STORE_GLOBAL
+    // END_STORE
     //
-    // BEGIN_GET_GLOBAL
-    const atom_callback_t& get(size_t atom_id);
-    // END_GET_GLOBAL
+    // BEGIN_GET_CALLBACK
+    const atom_callback_t& get_callback(size_t atom_id);
+    // END_GET_CALLBACK
+    //
+    // BEGIN_GET_BASE_ATOM
+    const base_atom_t& get_base_atom(size_t atom_id);
+    // END_GET_BASE_ATOM
 };
 
 } // END_AD_TENSOR_NAMESPACE
