@@ -23,7 +23,12 @@ namespace {
     using at::Tensor;
     //
     // derive_atom
-    class derive_atom_t : public base_atom_t {};
+    class derive_atom_t : public base_atom_t {
+    public:
+        derive_atom_t(void) {
+            set_name("square");
+        }
+    };
     //
     // base_atom_ptr
     std::unique_ptr<base_atom_t> base_atom_ptr =

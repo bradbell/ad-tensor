@@ -24,12 +24,27 @@ namespace {
     // atom_id_z
     size_t atom_id_z;
     //
-    // derive_atom
-    class derive_atom_t : public base_atom_t {};
+    // derive_atom_y
+    class derive_atom_y_t : public base_atom_t {
+    public:
+        derive_atom_y_t(void) {
+            set_name("y");
+        }
+    };
     //
-    // base_atom_ptr
-    std::unique_ptr<base_atom_t> base_atom_ptr =
-        std::make_unique<derive_atom_t>();
+    // derive_atom_z
+    class derive_atom_z_t : public base_atom_t {
+    public:
+        derive_atom_z_t(void) {
+            set_name("z");
+        }
+    };
+    //
+    // base_atom_y_ptr, base_atom_z
+    std::unique_ptr<base_atom_t> base_atom_y_ptr =
+        std::make_unique<derive_atom_y_t>();
+    std::unique_ptr<base_atom_t> base_atom_z_ptr =
+        std::make_unique<derive_atom_z_t>();
     //
     // ----------------------------------------------------------------------
     // y(x) = x * x * x
@@ -176,7 +191,7 @@ TEST(examples_atom, ad_reverse_der)  {
     atom_callback_z.set_forward_der(forward_der_z);
     //
     // atom_id_z
-    atom_id_z = atom_global.store(atom_callback_z, base_atom_ptr);
+    atom_id_z = atom_global.store(atom_callback_z, base_atom_z_ptr);
     //
     // atom_callback_y
     ad_tensor::atom_callback_t atom_callback_y;
@@ -187,7 +202,7 @@ TEST(examples_atom, ad_reverse_der)  {
     atom_callback_y.set_ad_reverse_der(ad_reverse_der_y);
     //
     // atom_id_y
-    size_t atom_id_y = atom_global.store(atom_callback_y, base_atom_ptr);
+    size_t atom_id_y = atom_global.store(atom_callback_y, base_atom_y_ptr);
     //
     // x
     Tensor x = torch::tensor( {2.0, 3.0} );

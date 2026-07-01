@@ -176,6 +176,7 @@ chkpnt_global_t::chkpnt_global_t(void)
     // base_atom_ptr
     std::unique_ptr<base_atom_t> base_atom_ptr =
         std::make_unique<base_atom_t>();
+    base_atom_ptr->set_name("ckhpnt");
     //
     // atom_callback
     atom_callback_t atom_callback;
