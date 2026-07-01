@@ -24,9 +24,12 @@ namespace {
     // atom_id_z
     size_t atom_id_z;
     //
+    // derive_atom
+    class derive_atom_t : public base_atom_t {};
+    //
     // base_atom_ptr
     std::unique_ptr<base_atom_t> base_atom_ptr =
-        std::make_unique<base_atom_t>();
+        std::make_unique<derive_atom_t>();
     //
     // ----------------------------------------------------------------------
     // y(x) = x * x * x

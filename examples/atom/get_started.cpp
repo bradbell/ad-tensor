@@ -22,9 +22,12 @@ namespace {
     using ad_tensor::base_atom_t;
     using at::Tensor;
     //
+    // derive_atom
+    class derive_atom_t : public base_atom_t {};
+    //
     // base_atom_ptr
     std::unique_ptr<base_atom_t> base_atom_ptr =
-        std::make_unique<base_atom_t>();
+        std::make_unique<derive_atom_t>();
     //
     // depend
     optional<ad_tensor::sparsity_t> depend(
