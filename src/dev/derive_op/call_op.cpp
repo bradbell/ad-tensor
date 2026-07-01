@@ -207,7 +207,7 @@ template<> void call_op_t<at::Tensor>::forward_par(
     );
     if( ! opt.has_value() ) {
         std::string msg = "atomic " + long_name;
-        msg += ".forward did not return a value\n";
+        msg += ".forward for Tensor did not return a value\n";
         user_assert(false, msg);
     }
     vector<at::Tensor> range = opt.value();
@@ -269,7 +269,7 @@ template<> void call_op_t<at::Tensor>::forward_var(
     );
     if( ! opt.has_value() ) {
         std::string msg = "atomic " + long_name;
-        msg += ".forward did not return a value\n";
+        msg += ".forward for Tensor did not return a value\n";
         user_assert(false, msg);
     }
     vector<at::Tensor> range = opt.value();
@@ -388,7 +388,7 @@ template<> void call_op_t<at::Tensor>::forward_der(
     );
     if( ! opt.has_value() ) {
         std::string msg = "atomic " + long_name;
-        msg += ".forward_der did not return a value\n";
+        msg += ".forward_der for Tensor did not return a value\n";
         user_assert(false, msg);
     }
     vector<at::Tensor> rng_der = opt.value();
@@ -414,18 +414,9 @@ template<> void call_op_t<adten_t>::forward_der(
     thread_local vector<adten_t> domain;
     thread_local vector<adten_t> dom_der;
     //
-    // forward_der_t
-    typedef atom_callback_t::ad_forward_der_t forward_der_t;
-    //
     // arg_start. atom_id, call_info, n_domain, n_range, n_result
-    // atom_callback, options
+    // long_name, base_atom
     UNPACK
-    const atom_callback_t& atom_callback = atom_global.get_callback(atom_id);
-    const options_t& options = atom_callback.get_options();
-    //
-    // forward_der
-    const forward_der_t& forward_der =
-        atom_callback.get_ad_forward_der(call_info);
     //
     // rng_used
     rng_used.resize(0);
@@ -472,12 +463,12 @@ template<> void call_op_t<adten_t>::forward_der(
     }
     //
     // rng_der
-    std::optional< vector<adten_t> > opt = forward_der(
-        options, call_info, rng_used, domain, dom_der
+    std::optional< vector<adten_t> > opt = base_atom.forward_der(
+        call_info, rng_used, domain, dom_der
     );
     if( ! opt.has_value() ) {
         std::string msg = "atomic " + long_name;
-        msg += ".ad_forward_der did not return a value\n";
+        msg += ".ad_forward_der for adten_t did not return a value\n";
         user_assert(false, msg);
     }
     vector<adten_t> rng_der = opt.value();
@@ -539,7 +530,7 @@ template<> void call_op_t<at::Tensor>::reverse_der(
     );
     if( ! opt.has_value() ) {
         std::string msg = "atomic " + long_name;
-        msg += ".reverse_der did not return a value\n";
+        msg += ".reverse_der for Tensor did not return a value\n";
         user_assert(false, msg);
     }
     vector<at::Tensor> dom_der = opt.value();
@@ -609,7 +600,7 @@ template<> void call_op_t<adten_t>::reverse_der(
     );
     if( ! opt.has_value() ) {
         std::string msg = "atomic " + long_name;
-        msg += ".ad_reverse_der did not return a value\n";
+        msg += ".ad_reverse_der for adten_t did not return a value\n";
         user_assert(false, msg);
     }
     vector<adten_t> dom_der = opt.value();

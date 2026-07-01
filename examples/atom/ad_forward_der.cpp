@@ -85,6 +85,30 @@ namespace {
             std::optional< vector<Tensor> > opt = rng_der;
             return opt;
         }
+        // AD forward_der
+        std::optional< vector<adten_t> > forward_der(
+            size_t                 call_info ,
+            const vector<bool>&    rng_used ,
+            const vector<adten_t>& domain   ,
+            const vector<adten_t>& dom_der ) const override {
+            //
+            vector<adten_t> domain_z;
+            domain_z.push_back( domain[0] );
+            domain_z.push_back( dom_der[0] );
+            //
+            // rng_der
+            vector<adten_t> rng_der = adten_t::call_atom(
+                atom_id_z, call_info, domain_z
+            );
+            if( get_trace() ) {
+                cout << "AD forward_der_y: domain =\n" << to_string(domain);
+                cout << "AD forward_der_y: dom_der =\n" << to_string(dom_der);
+                cout << "AD forward_der_y: rng_der =\n" << to_string(rng_der);
+            }
+            //
+            std::optional< vector<adten_t> > opt = rng_der;
+            return opt;
+        }
     };
     //
     // derive_atom_z
