@@ -96,9 +96,6 @@ void call_op_depend(
     // sub_sets
     thread_local vector<size_t>    sub_sets;
     //
-    // depend_t
-    typedef atom_callback_t::depend_t    depend_t;
-    //
     // arg_start. atom_id, call_info, n_domain, n_result
     size_t arg_start = agraph.m_arg_start[op_index];
     size_t atom_id   = agraph.m_arg_value[arg_start + 0];
@@ -106,16 +103,13 @@ void call_op_depend(
     size_t n_domain  = agraph.m_arg_value[arg_start + 2];
     size_t n_result  = agraph.m_arg_value[arg_start + 4];
     //
-    // options, long_name, depend
+    // long_name, base_atom
     atom_global_t&         atom_global   = atom_global_t::singleton();
-    const atom_callback_t& atom_callback = atom_global.get_callback( atom_id );
     const base_atom_t&     base_atom  = atom_global.get_base_atom(atom_id);
-    const options_t&       options    = atom_callback.get_options();
-    const depend_t&        depend     = atom_callback.get_depend(call_info);
     std::string            long_name  = base_atom.long_name(call_info);
     //
     // sparsity
-    std::optional<sparsity_t> opt = depend(options, call_info);
+    std::optional<sparsity_t> opt = base_atom.depend(call_info);
     if( ! opt.has_value() ) {
         std::string msg = "atomic " + long_name;
         msg += ".depend did not return a value\n";
