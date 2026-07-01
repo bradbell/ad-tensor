@@ -12,12 +12,20 @@
 namespace ad_tensor {
 class base_atom_t {
 private:
-    const std::string m_name;
-    bool         m_trace;
+    std::string m_name;
+    bool        m_trace;
 public:
     // BEGIN_CTOR
-    base_atom_t(const std::string& name);
+    base_atom_t(void);
     // END_CTOR
+    //
+    // BEGIN_SET_NAME
+    void set_name(const std::string& trace);
+    // END_SET_NAME
+    //
+    // BEGIN_GET_NAME
+    const std::string& get_name(void) const;
+    // END_GET_NAME
     //
     // BEGIN_SET_TRACE
     void set_trace(bool trace);

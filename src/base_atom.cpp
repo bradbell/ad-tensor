@@ -6,12 +6,22 @@
 #include <ad_tensor/dev/user_assert.hpp>
 
 namespace ad_tensor { // BEGIN_NAMESPACE_TENSOR
-
+//
 // ctor
-base_atom_t::base_atom_t(const std::string& name)
-: m_name(name)
+base_atom_t::base_atom_t(void)
+: m_name()
 , m_trace(false)
 { }
+//
+// set_name
+void base_atom_t::set_name(const std::string&  name) {
+    m_name = name;
+}
+//
+// get_name
+const std::string&  base_atom_t::get_name(void) const {
+    return m_name;
+}
 //
 // set_trace
 void base_atom_t::set_trace(bool trace) {
