@@ -228,9 +228,6 @@ Is the identifier for this atomic function.
 
 get_callback
 ************
-{xrst_literal ,
-    BEGIN_GET_CALLBACK, END_GET_CALLBACK
-}
 A call to get will wait until it can lock out any calls to store.
 
 
@@ -395,10 +392,6 @@ public:
         std::unique_ptr<base_atom_t>& base_atom_ptr
     );
     // END_STORE
-    //
-    // BEGIN_GET_CALLBACK
-    const atom_callback_t& get_callback(size_t atom_id);
-    // END_GET_CALLBACK
     //
     // BEGIN_GET_BASE_ATOM
     const base_atom_t& get_base_atom(size_t atom_id);

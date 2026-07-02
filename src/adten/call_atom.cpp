@@ -101,7 +101,7 @@ Only the first operation has entries in arg_value and arg_type.
 #include<ad_tensor/vector.hpp>
 #include<ad_tensor/adten.hpp>
 #include<ad_tensor/atom.hpp>
-#include<ad_tensor/options.hpp>
+#include<ad_tensor/base_atom.hpp>
 #include<ad_tensor/dev/tape.hpp>
 #include<ad_tensor/dev/agraph.hpp>
 #include<ad_tensor/dev/user_assert.hpp>
@@ -115,9 +115,10 @@ vector<adten_t> adten_t::call_atom(
 )
 {   // END_CALL_ATOM
     //
-    // callback
+    // base_atom, long_name
     atom_global_t&      atom_global = atom_global_t::singleton();
-    const atom_callback_t& callback = atom_global.get_callback(atom_id);
+    const base_atom_t&  base_atom   = atom_global.get_base_atom(atom_id);
+    std::string         long_name   = base_atom.long_name(call_info);
     //
     // n_domain, domain
     size_t n_domain = adomain.size();
@@ -126,16 +127,13 @@ vector<adten_t> adten_t::call_atom(
         domain.push_back( adomain[j].m_tensor );
     }
     //
-    // long_name, options, range, n_range
+    // range, n_range
     vector<bool> rng_used;
-    const options_t&             options   = callback.get_options();
-    atom_callback_t::long_name_t long_name = callback.get_long_name();
-    atom_callback_t::forward_t   forward   = callback.get_forward(call_info);
-    std::optional< vector<at::Tensor> > opt_forward = forward(
-        options, call_info, rng_used, domain
+    std::optional< vector<at::Tensor> > opt_forward = base_atom.forward(
+        call_info, rng_used, domain
     );
     if( ! opt_forward.has_value() ) {
-        std::string msg = "atomic " + long_name(options, call_info);
+        std::string msg = "atomic " + long_name;
         msg += ".forward did not return a value\n";
         dev::user_assert(false, msg);
     }
@@ -155,10 +153,9 @@ vector<adten_t> adten_t::call_atom(
     }
     //
     // pattern
-    atom_callback_t::depend_t   depend     = callback.get_depend(call_info);
-    std::optional<sparsity_t>   opt_depend = depend(options, call_info);
+    std::optional<sparsity_t>   opt_depend = base_atom.depend(call_info);
     if( ! opt_depend.has_value() ) {
-        std::string msg = "atomic " + long_name(options, call_info);
+        std::string msg = "atomic " + long_name;
         msg += ".depend did not return a value\n";
         dev::user_assert(false, msg);
     }
