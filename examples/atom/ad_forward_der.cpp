@@ -27,7 +27,11 @@ namespace {
     // atom_id_z
     size_t atom_id_z;
     //
-    // derive_atom_y
+    // ----------------------------------------------------------------------
+    // y(x) = x * x * x
+    // ----------------------------------------------------------------------
+    //
+    // derive_atom_y_t
     class derive_atom_y_t : public base_atom_t {
     public:
         // ctor
@@ -110,8 +114,11 @@ namespace {
             return opt;
         }
     };
+    // ----------------------------------------------------------------------
+    // z(x, dx) = 3 * x * x * dx
+    // ----------------------------------------------------------------------
     //
-    // derive_atom_z
+    // derive_atom_z_t
     class derive_atom_z_t : public base_atom_t {
     public:
         // ctor
@@ -173,160 +180,13 @@ namespace {
             return opt;
         }
     };
+    // -----------------------------------------------------------------------
     //
     // base_atom_y_ptr, base_atom_z
     std::unique_ptr<base_atom_t> base_atom_y_ptr =
         std::make_unique<derive_atom_y_t>();
     std::unique_ptr<base_atom_t> base_atom_z_ptr =
         std::make_unique<derive_atom_z_t>();
-    //
-    // ----------------------------------------------------------------------
-    // y(x) = x * x * x
-    // ----------------------------------------------------------------------
-    // depend_y
-    std::optional<ad_tensor::sparsity_t> depend_y(
-        const options_t& options,
-        size_t           call_info) {
-        ad_tensor::sparsity_t sparsity;
-        std::array<size_t, 2> pair = {0, 0};
-        sparsity.push_back( pair );
-        //
-        std::optional<ad_tensor::sparsity_t> opt = sparsity;
-        return opt;
-    }
-    //
-    // forward
-    std::optional< vector<Tensor> > forward_y(
-        const options_t&      options   ,
-        size_t                call_info ,
-        const vector<bool>&   rng_used ,
-        const vector<Tensor>& domain ) {
-        //
-        Tensor x = domain[0];
-        //
-        // range
-        vector<Tensor> range;
-        range.push_back( x * x * x );
-        //
-        if( options.get_trace() ) {
-            cout << "forward_y: domain =\n" << to_string(domain);
-            cout << "forward_y: range =\n" << to_string(range);
-        }
-        std::optional< vector<Tensor> > opt = range;
-        return opt;
-    }
-    //
-    // forward_der_y
-    std::optional< vector<Tensor> > forward_der_y(
-        const options_t&      options   ,
-        size_t                call_info ,
-        const vector<bool>&   rng_used  ,
-        const vector<Tensor>& domain    ,
-        const vector<Tensor>& dom_der   ) {
-        //
-        Tensor x  = domain[0];
-        Tensor dx = dom_der[0];
-        //
-        // range
-        vector<Tensor> rng_der;
-        rng_der.push_back( 3.0 * x * x * dx );
-        //
-        if( options.get_trace() ) {
-            cout << "forward_der_y: domain =\n" << to_string(domain);
-            cout << "forward_der_y: dom_der =\n" << to_string(dom_der);
-            cout << "forward_der_y: rng_der =\n" << to_string(rng_der);
-        }
-        std::optional< vector<Tensor> > opt = rng_der;
-        return opt;
-    }
-    //
-    // ad_forward_der_y
-    std::optional< vector<adten_t> > ad_forward_der_y(
-        const options_t&       options   ,
-        size_t                 call_info ,
-        const vector<bool>&    rng_used ,
-        const vector<adten_t>& domain   ,
-        const vector<adten_t>& dom_der ) {
-        //
-        vector<adten_t> domain_z;
-        domain_z.push_back( domain[0] );
-        domain_z.push_back( dom_der[0] );
-        //
-        // rng_der
-        vector<adten_t> rng_der = adten_t::call_atom(
-            atom_id_z, call_info, domain_z
-        );
-        if( options.get_trace() ) {
-            cout << "ad_forward_der_y: domain =\n" << to_string(domain);
-            cout << "ad_forward_der_y: dom_der =\n" << to_string(dom_der);
-            cout << "ad_forward_der_y: rng_der =\n" << to_string(rng_der);
-        }
-        //
-        std::optional< vector<adten_t> > opt = rng_der;
-        return opt;
-    }
-    // ----------------------------------------------------------------------
-    // z(x, dx) = 3 * x * x * dx
-    // ----------------------------------------------------------------------
-    // depend_z
-    std::optional<ad_tensor::sparsity_t> depend_z(
-        const options_t&      options  ,
-        size_t                call_info) {
-        ad_tensor::sparsity_t sparsity;
-        sparsity.push_back( {0, 0} );
-        sparsity.push_back( {0, 1} );
-        //
-        std::optional<ad_tensor::sparsity_t> opt = sparsity;
-        return opt;
-    }
-    //
-    // forward_z
-    std::optional< vector<Tensor> > forward_z(
-        const options_t&      options   ,
-        size_t                call_info ,
-        const vector<bool>&   rng_used ,
-        const vector<Tensor>& domain ) {
-        //
-        Tensor x  = domain[0];
-        Tensor dx = domain[1];
-        Tensor z  = 3.0 * x * x * dx;
-        // range
-        vector<Tensor> range;
-        range.push_back( z );
-        if( options.get_trace() ) {
-            cout << "forward_z: domain =\n" << to_string(domain);
-            cout << "forward_z: range =\n" << to_string(range);
-        }
-        std::optional< vector<Tensor> > opt = range;
-        return opt;
-    }
-    //
-    // forward_der_z
-    std::optional< vector<Tensor> > forward_der_z(
-        const options_t&      options   ,
-        size_t                call_info,
-        const vector<bool>&   rng_used,
-        const vector<Tensor>& domain,
-        const vector<Tensor>& dom_der) {
-        //
-        // dz
-        Tensor x    = domain[0];
-        Tensor dx   = domain[1];
-        Tensor d_x  = dom_der[0];
-        Tensor d_dx = dom_der[1];
-        Tensor dz   = 6.0 * x * dx * d_x + 3.0 * x * x * d_dx;
-        //
-        // rng_der
-        vector<Tensor> rng_der;
-        rng_der.push_back( dz );
-        if( options.get_trace() ) {
-            cout << "forward_der_z: domain =\n" << to_string(domain);
-            cout << "forward_der_z: dom_der =\n" << to_string(dom_der);
-            cout << "forward_der_z: rng_der =\n" << to_string(rng_der);
-        }
-        std::optional< vector<Tensor> > opt = rng_der;
-        return opt;
-    }
 }
 TEST(examples_atom, ad_forward_der)  {
     //
@@ -334,23 +194,8 @@ TEST(examples_atom, ad_forward_der)  {
     ad_tensor::atom_global_t& atom_global =
         ad_tensor::atom_global_t::singleton();
     //
-    // atom_callback_z
-    ad_tensor::atom_callback_t atom_callback_z;
-    atom_callback_z.set_name("z");
-    atom_callback_z.set_depend(depend_z);
-    atom_callback_z.set_forward(forward_z);
-    atom_callback_z.set_forward_der(forward_der_z);
-    //
     // atom_id_z
     atom_id_z = atom_global.store(base_atom_z_ptr);
-    //
-    // atom_callback_y
-    ad_tensor::atom_callback_t atom_callback_y;
-    atom_callback_y.set_name("y");
-    atom_callback_y.set_depend(depend_y);
-    atom_callback_y.set_forward(forward_y);
-    atom_callback_y.set_forward_der(forward_der_y);
-    atom_callback_y.set_ad_forward_der(ad_forward_der_y);
     //
     // atom_id_y
     size_t atom_id_y = atom_global.store(base_atom_y_ptr);
