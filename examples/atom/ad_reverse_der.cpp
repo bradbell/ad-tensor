@@ -11,6 +11,7 @@
 #include <ad_tensor/sparsity.hpp>
 #include <ad_tensor/options.hpp>
 #include <ad_tensor/base_atom.hpp>
+#include <ad_tensor/atom.hpp>
 namespace {
     //
     // using
@@ -171,15 +172,11 @@ namespace {
 }
 TEST(examples_atom, ad_reverse_der)  {
     //
-    // atom_global
-    ad_tensor::atom_global_t& atom_global =
-        ad_tensor::atom_global_t::singleton();
-    //
     // atom_id_z
-    atom_id_z = atom_global.store(base_atom_z_ptr);
+    atom_id_z = ad_tensor::make_atom(base_atom_z_ptr);
     //
     // atom_id_y
-    size_t atom_id_y = atom_global.store(base_atom_y_ptr);
+    size_t atom_id_y = ad_tensor::make_atom(base_atom_y_ptr);
     //
     // x
     Tensor x = torch::tensor( {2.0, 3.0} );

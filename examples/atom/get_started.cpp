@@ -11,6 +11,7 @@
 #include <ad_tensor/sparsity.hpp>
 #include <ad_tensor/options.hpp>
 #include <ad_tensor/base_atom.hpp>
+#include <ad_tensor/atom.hpp>
 //
 namespace {
     //
@@ -95,9 +96,7 @@ TEST(examples_atom, get_started)  {
     ad_tensor::options_t options;
     //
     // atom_id
-    ad_tensor::atom_global_t& atom_global =
-        ad_tensor::atom_global_t::singleton();
-    size_t atom_id = atom_global.store(base_atom_ptr);
+    size_t atom_id = ad_tensor::make_atom(base_atom_ptr);
     //
     // x
     // We use x for the adfn domain variables
