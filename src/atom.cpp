@@ -8,8 +8,8 @@ namespace ad_tensor {
     //
     // make_atom
     size_t make_atom(std::unique_ptr<base_atom_t>& base_atom_ptr) {
-        atom_global_t& global = atom_global_t::singleton();
-        size_t atom_id        = global.store(base_atom_ptr);
+        dev::atom_global_t& global = dev::atom_global_t::singleton();
+        size_t atom_id             = global.store(base_atom_ptr);
         return atom_id;
     }
 }

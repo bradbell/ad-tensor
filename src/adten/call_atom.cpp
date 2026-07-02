@@ -116,7 +116,7 @@ vector<adten_t> adten_t::call_atom(
 {   // END_CALL_ATOM
     //
     // base_atom, long_name
-    atom_global_t&      atom_global = atom_global_t::singleton();
+    dev::atom_global_t& atom_global = dev::atom_global_t::singleton();
     const base_atom_t&  base_atom   = atom_global.get_base_atom(atom_id);
     std::string         long_name   = base_atom.long_name(call_info);
     //

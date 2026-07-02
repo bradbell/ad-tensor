@@ -8,7 +8,7 @@
 #include <ad_tensor/dev/user_assert.hpp>
 #include <ad_tensor/dev/move_swap.hpp>
 //
-namespace ad_tensor {
+namespace ad_tensor { namespace dev {
     // -----------------------------------------------------------------------
     // atom_global_t
     // -----------------------------------------------------------------------
@@ -63,4 +63,4 @@ namespace ad_tensor {
         static atom_global_t atom_global;
         return atom_global;
     }
-}
+} }
