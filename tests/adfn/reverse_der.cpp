@@ -11,12 +11,8 @@
 TEST(tests, adfn_reverse_der)  {
     using ad_tensor::adten_t;
     using ad_tensor::adfn_t;
-    using ad_tensor::options_t;
     using at::Tensor;
     using ad_tensor::vector;
-    //
-    // options
-    options_t options;
     //
     // x
     // choose so 1.0 / x[1] does not have roundoff
