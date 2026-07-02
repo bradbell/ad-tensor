@@ -10,14 +10,10 @@
 namespace {
     using ad_tensor::adten_t;
     using ad_tensor::adfn_t;
-    using ad_tensor::options_t;
     using ad_tensor::vector;
     using at::Tensor;
     //
     adfn_t objective(size_t n_data) {
-        //
-        // options
-        options_t options;
         //
         // dom_par
         Tensor x               = torch::zeros(n_data);
@@ -54,9 +50,6 @@ namespace {
 //
 // get_started_first_derivative
 TEST(examples_adfn, get_started_first_derivative)  {
-    //
-    // options
-    options_t options;
     //
     // n_data
     size_t n_data = 3;
@@ -108,9 +101,6 @@ TEST(examples_adfn, get_started_first_derivative)  {
 //
 // get_started_second_derivative
 TEST(examples_adfn, get_started_second_derivative)  {
-    //
-    // options
-    options_t options;
     //
     // n_data
     size_t n_data = 3;

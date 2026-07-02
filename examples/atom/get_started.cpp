@@ -19,7 +19,6 @@ namespace {
     using std::optional;
     using ad_tensor::vector;
     using ad_tensor::adten_t;
-    using ad_tensor::options_t;
     using ad_tensor::base_atom_t;
     using at::Tensor;
     //
@@ -91,9 +90,6 @@ namespace {
         std::make_unique<derive_atom_t>();
 }
 TEST(examples_atom, get_started)  {
-    //
-    // options
-    ad_tensor::options_t options;
     //
     // atom_id
     size_t atom_id = ad_tensor::make_atom(base_atom_ptr);

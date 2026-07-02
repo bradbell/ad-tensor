@@ -11,12 +11,8 @@
 TEST(examples_adfn, forward_par)  {
     using ad_tensor::adten_t;
     using ad_tensor::adfn_t;
-    using ad_tensor::options_t;
     using at::Tensor;
     using ad_tensor::vector;
-    //
-    // options
-    options_t options;
     //
     // p
     // We use p for the domain parameters

@@ -18,7 +18,6 @@ namespace {
     using std::optional;
     using ad_tensor::vector;
     using ad_tensor::adten_t;
-    using ad_tensor::options_t;
     using ad_tensor::base_atom_t;
     using at::Tensor;
     //

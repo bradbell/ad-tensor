@@ -18,9 +18,6 @@ namespace {
 }
 TEST(examples_chkpnt, get_started)  {
     //
-    // options
-    ad_tensor::options_t options;
-    //
     // x
     vector<Tensor> x;
     x.push_back( torch::tensor( {1.0, 2.0} ) );
