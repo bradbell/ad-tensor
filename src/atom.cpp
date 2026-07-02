@@ -12,4 +12,12 @@ namespace ad_tensor {
         size_t atom_id             = global.store(base_atom_ptr);
         return atom_id;
     }
+    //
+    // call_atom
+    vector<adten_t> call_atom(
+    size_t                 atom_id   ,
+    size_t                 call_info ,
+    const vector<adten_t>& adomain   ) {
+        return adten_t::call_atom(atom_id, call_info, adomain);
+    }
 }

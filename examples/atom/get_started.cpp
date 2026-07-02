@@ -108,7 +108,7 @@ TEST(examples_atom, get_started)  {
     //
     // ay
     size_t call_info = 0;
-    vector<adten_t> ay = adten_t::call_atom(atom_id, call_info, ax);
+    vector<adten_t> ay = ad_tensor::call_atom(atom_id, call_info, ax);
     //
     // az
     vector<adten_t> az;

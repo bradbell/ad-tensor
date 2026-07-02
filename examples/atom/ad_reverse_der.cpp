@@ -94,7 +94,7 @@ namespace {
             domain_z.push_back( rng_der[0] );
             //
             // dom_der
-            vector<adten_t> dom_der = adten_t::call_atom(
+            vector<adten_t> dom_der = ad_tensor::call_atom(
                 atom_id_z, call_info, domain_z
             );
             //
@@ -190,7 +190,7 @@ TEST(examples_atom, ad_reverse_der)  {
     //
     // ay
     size_t call_info = 0;
-    vector<adten_t> ay = adten_t::call_atom(atom_id_y, call_info, adomain);
+    vector<adten_t> ay = ad_tensor::call_atom(atom_id_y, call_info, adomain);
     //
     adten_t asum;
     asum = ay[0].sum();

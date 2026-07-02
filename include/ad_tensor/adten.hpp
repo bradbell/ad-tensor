@@ -163,6 +163,13 @@ namespace ad_tensor { class adten_t
 // END_AD_CLASS
 {
 private:
+    // ad_tensor::call_atom
+    // is a link to the private function call_atom defined in this class
+    friend vector<adten_t> call_atom(
+        size_t                 atom_id   ,
+        size_t                 call_info ,
+        const vector<adten_t>& adomain
+    );
     //
     // BEGIN_MEMBER_DATA
     size_t        m_tape_id;
@@ -184,6 +191,13 @@ private:
     // binary
     static adten_t binary(
         dev::op_enum_t op_enum, const adten_t& lhs, const adten_t& rhs
+    );
+    //
+    // call_atom
+    static vector<adten_t> call_atom(
+        size_t                 atom_id   ,
+        size_t                 call_info ,
+        const vector<adten_t>& adomain
     );
 public:
     // BEGIN_PUBLIC_CTOR
@@ -248,13 +262,6 @@ public:
     //
     // solve
     adten_t solve(const adten_t& rhs, bool left) const;
-    //
-    // call_atom
-    static vector<adten_t> call_atom(
-        size_t                 atom_id   ,
-        size_t                 call_info ,
-        const vector<adten_t>& adomain
-    );
     //
     // BEGIN_CALL_CHKPNT
     static vector<adten_t> call_chkpnt(
