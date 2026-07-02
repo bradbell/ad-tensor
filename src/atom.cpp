@@ -32,7 +32,6 @@ namespace ad_tensor {
     // -----------------------------------------------------------------------
     // atom_global_t::store
     size_t atom_global_t::store(
-        const atom_callback_t&          atom_callback,
         std::unique_ptr<base_atom_t>&   base_atom_ptr) {
         //
         // lock, m_rw_mutex
@@ -56,11 +55,7 @@ namespace ad_tensor {
         }
         //
         // atom_id
-        size_t atom_id = m_callback_vec.size();
-        //
-        // m_callback_vec
-        m_callback_vec.push_back( std::make_unique<atom_callback_t>() );
-        *m_callback_vec[atom_id] = atom_callback;
+        size_t atom_id = m_base_vec.size();
         //
         // m_base_vec
         m_base_vec.push_back( std::make_unique<base_atom_t>() );

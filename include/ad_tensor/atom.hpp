@@ -366,7 +366,6 @@ public:
 class atom_global_t {
 private:
     std::shared_mutex                          m_rw_mutex;
-    vector< std::unique_ptr<atom_callback_t> > m_callback_vec;
     vector< std::unique_ptr<base_atom_t> >     m_base_vec;
     //
     // default constructor
@@ -386,11 +385,8 @@ public:
     // END_SINGLETON
     //
     // BEGIN_STORE
-    // atom_id = atom_global.store(atom_callback)
-    size_t store(
-        const atom_callback_t&        atom_callback,
-        std::unique_ptr<base_atom_t>& base_atom_ptr
-    );
+    // atom_id = atom_global.store(base_atom_ptr)
+    size_t store( std::unique_ptr<base_atom_t>& base_atom_ptr );
     // END_STORE
     //
     // BEGIN_GET_BASE_ATOM

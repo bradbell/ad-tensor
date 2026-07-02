@@ -342,7 +342,7 @@ TEST(examples_atom, ad_forward_der)  {
     atom_callback_z.set_forward_der(forward_der_z);
     //
     // atom_id_z
-    atom_id_z = atom_global.store(atom_callback_z, base_atom_z_ptr);
+    atom_id_z = atom_global.store(base_atom_z_ptr);
     //
     // atom_callback_y
     ad_tensor::atom_callback_t atom_callback_y;
@@ -353,7 +353,7 @@ TEST(examples_atom, ad_forward_der)  {
     atom_callback_y.set_ad_forward_der(ad_forward_der_y);
     //
     // atom_id_y
-    size_t atom_id_y = atom_global.store(atom_callback_y, base_atom_y_ptr);
+    size_t atom_id_y = atom_global.store(base_atom_y_ptr);
     //
     // x
     Tensor x = torch::tensor( {2.0, 3.0} );

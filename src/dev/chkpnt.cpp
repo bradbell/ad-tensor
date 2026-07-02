@@ -273,7 +273,7 @@ chkpnt_global_t::chkpnt_global_t(void)
     atom_callback.set_reverse_der(chkpnt_reverse_der);
     //
     // m_atom_id
-    m_atom_id = atom_global.store(atom_callback, base_atom_ptr);
+    m_atom_id = atom_global.store(base_atom_ptr);
 }
 //
 // singleton

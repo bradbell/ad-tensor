@@ -167,7 +167,7 @@ TEST(examples_atom, get_started)  {
     // atom_id
     ad_tensor::atom_global_t& atom_global =
         ad_tensor::atom_global_t::singleton();
-    size_t atom_id = atom_global.store(atom_callback, base_atom_ptr);
+    size_t atom_id = atom_global.store(base_atom_ptr);
     //
     // x
     // We use x for the adfn domain variables
