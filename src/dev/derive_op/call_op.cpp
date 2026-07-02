@@ -559,18 +559,9 @@ template<> void call_op_t<adten_t>::reverse_der(
     thread_local vector<adten_t> domain;
     thread_local vector<adten_t> rng_der;
     //
-    // reverse_der_t
-    typedef atom_callback_t::ad_reverse_der_t reverse_der_t;
-    //
     // arg_start. atom_id, call_info, n_domain, n_range, n_result
-    // atom_callback, options
+    // long_name, base_atom
     UNPACK
-    const atom_callback_t& atom_callback = atom_global.get_callback(atom_id);
-    const options_t& options = atom_callback.get_options();
-    //
-    // reverse_der
-    const reverse_der_t& reverse_der
-        = atom_callback.get_ad_reverse_der(call_info);
     //
     // rng_used, rng_der
     rng_der.resize(0);
@@ -595,12 +586,12 @@ template<> void call_op_t<adten_t>::reverse_der(
     };
     //
     // dom_der
-    std::optional< vector<adten_t> > opt = reverse_der(
-        options, call_info, rng_used, domain, rng_der
+    std::optional< vector<adten_t> > opt = base_atom.reverse_der(
+        call_info, rng_used, domain, rng_der
     );
     if( ! opt.has_value() ) {
         std::string msg = "atomic " + long_name;
-        msg += ".ad_reverse_der for adten_t did not return a value\n";
+        msg += ".reverse_der for adten_t did not return a value\n";
         user_assert(false, msg);
     }
     vector<adten_t> dom_der = opt.value();
