@@ -170,6 +170,12 @@ private:
         size_t                 call_info ,
         const vector<adten_t>& adomain
     );
+    // ad_tensor::call_chkpnt
+    // is a link to the private function call_chkpnt defined in this class
+    friend vector<adten_t> call_chkpnt(
+        size_t                 chkpnt_id ,
+        const vector<adten_t>& adomain
+    );
     //
     // BEGIN_MEMBER_DATA
     size_t        m_tape_id;
@@ -199,6 +205,13 @@ private:
         size_t                 call_info ,
         const vector<adten_t>& adomain
     );
+    //
+    // BEGIN_CALL_CHKPNT
+    static vector<adten_t> call_chkpnt(
+        size_t                 chkpnt_id ,
+        const vector<adten_t>& adomain
+    );
+    // END_CALL_CHKPNT
 public:
     // BEGIN_PUBLIC_CTOR
     adten_t(void);
@@ -262,13 +275,6 @@ public:
     //
     // solve
     adten_t solve(const adten_t& rhs, bool left) const;
-    //
-    // BEGIN_CALL_CHKPNT
-    static vector<adten_t> call_chkpnt(
-        size_t                 chkpnt_id ,
-        const vector<adten_t>& adomain
-    );
-    // END_CALL_CHKPNT
 }; }
 
 namespace ad_tensor {

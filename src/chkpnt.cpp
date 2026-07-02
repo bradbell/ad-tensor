@@ -70,4 +70,12 @@ size_t make_chkpnt(adfn_t& adfn) {
     //
     return chkpnt_id;
 }
+//
+// call_chkpnt
+vector<adten_t> call_chkpnt(
+    size_t                 chkpnt_id ,
+    const vector<adten_t>& adomain   ) {
+    return adten_t::call_chkpnt(chkpnt_id, adomain);
+}
+
 }  // END_AD_TENSOR_NAMESPACE

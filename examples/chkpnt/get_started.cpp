@@ -40,7 +40,7 @@ TEST(examples_chkpnt, get_started)  {
     //
     // ax, ay, az
     ax = adten_t::start_recording(x);
-    ay = adten_t::call_chkpnt(chkpnt_id, ax);
+    ay = ad_tensor::call_chkpnt(chkpnt_id, ax);
     vector<adten_t> az;
     az.push_back( ay[0] * ax[0] );
     //
