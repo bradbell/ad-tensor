@@ -63,8 +63,7 @@ std::tuple<sparsity_t, sparsity_t> adfn_t::forward_dep(void) const
     dev::vec_sets_t vec_sets;
     //
     // trace
-    bool trace = m_options.get_trace();
-    if( trace ) {
+    if( m_trace ) {
         cout << "Begin tracing " + get_name() + ".forward_dep\n";
     }
     //
@@ -120,7 +119,7 @@ std::tuple<sparsity_t, sparsity_t> adfn_t::forward_dep(void) const
             dev::call_op_depend(op_index, agraph, n_par, vec_sets);
             break;
         }
-        if( trace ) {
+        if( m_trace ) {
             const c10::ArrayRef<size_t> set = vec_sets.get_set(op_index);
             cout << "set(" << op_index << ") = " << to_string(set) << ", ";
             cout << dev::to_string(op_enum)  << "(";
@@ -133,7 +132,7 @@ std::tuple<sparsity_t, sparsity_t> adfn_t::forward_dep(void) const
             cout << ")\n";
         }
     }
-    if( trace ) {
+    if( m_trace ) {
         cout << "n_par = " << n_par << "\n";
     }
     // ------------------------------------------------------------------------
@@ -191,7 +190,7 @@ std::tuple<sparsity_t, sparsity_t> adfn_t::forward_dep(void) const
             dev::call_op_depend( op_index, agraph, n_par, vec_sets);
             break;
         }
-        if( trace ) {
+        if( m_trace ) {
             size_t set_id = op_index + n_par;
             const c10::ArrayRef<size_t> set = vec_sets.get_set(set_id);
             cout << "set(" << set_id << ") = " << to_string(set) << ", ";
@@ -246,7 +245,7 @@ std::tuple<sparsity_t, sparsity_t> adfn_t::forward_dep(void) const
             }
         }
     }
-    if( trace ) {
+    if( m_trace ) {
         cout << "End tracing " + get_name() + ".forward_dep\n";
     }
     return std::tuple<sparsity_t, sparsity_t>(depend_par, depend_var);

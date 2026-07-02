@@ -94,7 +94,6 @@ is the shape for each of the range tensors.
 */
 #include <ad_tensor/vector.hpp>
 #include <torch/torch.h>
-#include <ad_tensor/options.hpp>
 #include <ad_tensor/ad_type.hpp>
 #include <ad_tensor/sparsity.hpp>
 #include <ad_tensor/dev/agraph.hpp>
@@ -115,7 +114,8 @@ private:
     vector<size_t>            m_rng_index;
     vector<ad_type_t>         m_rng_ad_type;
     vector< vector<int64_t> > m_rng_shapes;
-    options_t                 m_options;
+    std::string               m_name;
+    bool                      m_trace;
 // END_PRIVATE
 public:
     //
@@ -128,7 +128,8 @@ public:
     , m_rng_index()
     , m_rng_ad_type()
     , m_rng_shapes()
-    , m_options()
+    , m_name()
+    , m_trace(false)
     { }
     //
     // BEGIN_IS_EMPTY
@@ -141,26 +142,26 @@ public:
         m_rng_index.empty() &&
         m_rng_ad_type.empty() &&
         m_rng_shapes.empty() &&
-        m_options.get_name().empty()
+        m_name.empty()
         ;
     }
     //
     // BEGIN_GET_NAME
     const std::string& get_name(void) const
     {   // END_GET_NAME
-        return m_options.get_name();
+        return m_name;
     }
     //
     // BEGIN_GET_TRACE
     bool get_trace(void) const
     {   // END_GET_TRACE
-        return m_options.get_trace();
+        return m_trace;
     }
     //
     // BEGIN_SET_TRACE
     void set_trace(bool trace)
     {   // END_SET_TRACE
-        m_options.set_trace(trace);
+        m_trace = trace;
     }
     //
     // BEGIN_FORWARD_DEP

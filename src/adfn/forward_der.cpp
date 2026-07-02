@@ -3,7 +3,6 @@
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
 #include <ad_tensor/adfn.hpp>
-#include <ad_tensor/options.hpp>
 #include <ad_tensor/ad_type.hpp>
 #include <ad_tensor/dev/base_op.hpp>
 #include <ad_tensor/dev/derive_op.hpp>
@@ -110,8 +109,7 @@ vector<TensorType> adfn_t::forward_der(
 # endif
     //
     // trace
-    bool trace = m_options.get_trace();
-    if( trace ) {
+    if( m_trace ) {
         cout << "Begin tracing " + get_name() + ".forward_der\n";
     }
     //
@@ -134,7 +132,7 @@ vector<TensorType> adfn_t::forward_der(
         // all_der
         base_op.forward_der(op_index, m_var, m_con, par_all, var_all, all_der);
         //
-        if( trace) {
+        if( m_trace) {
             string element = to_string( all_der[op_index] );
             cout << "all_der[" << op_index << "] = " << element;
             cout << ", " << to_string(op_enum)  << "(";
@@ -178,7 +176,7 @@ vector<TensorType> adfn_t::forward_der(
             );
         }
     }
-    if( trace ) {
+    if( m_trace ) {
         for(size_t i = 0; i < m_rng_index.size(); ++i) {
             string element = to_string( rng_der[i] );
             cout << "rng_der[" << i << "] = " << element << "\n";
