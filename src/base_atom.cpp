@@ -38,6 +38,20 @@ std::string base_atom_t::long_name(size_t call_info) const {
     return m_name;
 }
 //
+// depend
+std::optional<sparsity_t> base_atom_t::depend(size_t call_info) const {
+    return std::optional<sparsity_t>();
+};
+//
+// forward
+std::optional< vector<at::Tensor> > base_atom_t::forward(
+    size_t                      call_info,
+    const vector<bool>&         rng_used,
+    const vector<at::Tensor>&   domain
+) const {
+    return  std::optional< vector<at::Tensor> >();
+}
+//
 // forward_der
 std::optional< vector<at::Tensor> > base_atom_t::forward_der(
     size_t                      call_info,

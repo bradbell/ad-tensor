@@ -4,7 +4,7 @@
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
 /*
-{xrst_begin op_base dev}
+{xrst_begin base_op dev}
 {xrst_spell
     der
     numel
@@ -106,7 +106,7 @@ reverse_der
     cases where for_der[op_index] is empty; hence for_der[op_index]
     is never empty when this routine is called.
 
-{xrst_end op_base}
+{xrst_end base_op}
 */
 #include <cassert>
 #include <ad_tensor/vector.hpp>

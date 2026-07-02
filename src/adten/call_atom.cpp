@@ -25,7 +25,7 @@ is the atomic function identifier; see :ref:`atom_global@store@atom_id` .
 call_info
 *********
 is the call information passed from the atomic function call
-through to the callback functions; see :ref:`atom_callback@call_info` .
+through to its :ref:`base_atom@Virtual Functions` .
 
 adomain
 *******
