@@ -23,8 +23,8 @@ TODO
     include/ad_tensor/adten.hpp
     include/ad_tensor/ad_type.hpp
     include/ad_tensor/adfn.hpp
-    include/ad_tensor/dev/atom.hpp
     src/chkpnt.cpp
+    src/atom.cpp
     docs/bib.xrst
 }
 

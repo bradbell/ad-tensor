@@ -7,11 +7,12 @@
 
 Checkpoint Functions
 ####################
-If a function is used many times, making it an checkpoint
-may greatly reduce memory usage.
-because only on copy of its parameters and variables will be required.
-On the other hand, its dependent parameter and variable values will
-be recomputed for each derivative direction.
+If a function is used many times, making it a checkpoint
+may greatly reduce the amount of memory required to compute derivatives.
+This is because only one copy of the functions
+constants, parameters and variables are needed.
+On the other hand, a checkpoint function must recompute its dependent
+parameter and variable values for each derivative direction.
 
 {xrst_end chkpnt}
 -----------------------------------------------------------------------------
@@ -72,15 +73,15 @@ Prototype
 
 chkpnt_id
 *********
-is the atomic function identifier; see :ref:`make_chkpnt@chkpnt_id` .
+is the checkpoint function identifier; see :ref:`make_chkpnt@chkpnt_id` .
 
 adomain
 *******
-is the AD tensor version of the domain for this atomic function call.
+is the AD tensor version of the domain for this checkpoint function call.
 
 arange
 ******
-is the AD tensor version of the range for this atomic function call.
+is the AD tensor version of the range for this checkpoint function call.
 
 {xrst_end call_chkpnt}
 */

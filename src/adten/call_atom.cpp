@@ -3,40 +3,6 @@
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
 /*
-{xrst_begin call_atom usr}
-
-Calling An Atomic Function
-##########################
-{xrst_spell
-    adomain
-    arange
-}
-
-Prototype
-*********
-{xrst_literal ,
-    // BEGIN_CALL_ATOM, END_CALL_ATOM
-}
-
-atom_id
-*******
-is the atomic function identifier; see :ref:`atom_global@store@atom_id` .
-
-call_info
-*********
-is the call information passed from the atomic function call
-through to its :ref:`base_atom@Virtual Functions` .
-
-adomain
-*******
-is the AD tensor version of the domain for this atomic function call.
-
-arange
-******
-is the AD tensor version of the range for this atomic function call.
-
-{xrst_end call_atom}
-------------------------------------------------------------------------------
 {xrst_begin call_atom_dev dev}
 {xrst_spell
     enum

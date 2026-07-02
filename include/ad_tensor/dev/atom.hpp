@@ -4,17 +4,6 @@
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
 /*
-{xrst_begin_parent atom usr}
-
-Atomic Functions
-################
-
-{xrst_toc_table
-    src/adten/call_atom.cpp
-    include/ad_tensor/base_atom.hpp
-}
-
-{xrst_end atom}
 -------------------------------------------------------------------------------
 {xrst_begin atom_dev dev}
 
@@ -27,7 +16,7 @@ Atomic Functions Developer Documentation
 
 {xrst_end atom_dev}
 -------------------------------------------------------------------------------
-{xrst_begin atom_global usr}
+{xrst_begin atom_global dev}
 
 Global Object That holds All Atomic Callbacks
 #############################################
