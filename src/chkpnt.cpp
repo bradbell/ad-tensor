@@ -13,10 +13,6 @@ because only on copy of its parameters and variables will be required.
 On the other hand, its dependent parameter and variable values will
 be recomputed for each derivative direction.
 
-{xrst_toc_table after
-    src/adten/call_chkpnt.cpp
-}
-
 {xrst_end chkpnt}
 -----------------------------------------------------------------------------
 {xrst_begin make_chkpnt usr}
@@ -36,7 +32,6 @@ chkpnt_id = make_chkpnt(adfn)
 Prototype
 *********
 {xrst_literal ,
-    include/ad_tensor/chkpnt.hpp
     BEGIN_MAKE_CHKPNT, END_MAKE_CHKPNT
 }
 
@@ -53,6 +48,41 @@ is the identifier for this checkpoint function.
 
 
 {xrst_end make_chkpnt}
+-----------------------------------------------------------------------------
+{xrst_begin call_chkpnt usr}
+
+Calling A Checkpoint Function
+#############################
+{xrst_spell
+    adomain
+    arange
+}
+
+Syntax
+******
+{xrst_code cpp}
+arange = call_chkpnt(chkpnt_id, adomain)
+{xrst_code}
+
+Prototype
+*********
+{xrst_literal ,
+    // BEGIN_CALL_CHKPNT, END_CALL_CHKPNT
+}
+
+chkpnt_id
+*********
+is the atomic function identifier; see :ref:`make_chkpnt@chkpnt_id` .
+
+adomain
+*******
+is the AD tensor version of the domain for this atomic function call.
+
+arange
+******
+is the AD tensor version of the range for this atomic function call.
+
+{xrst_end call_chkpnt}
 */
 #include <ad_tensor/dev/chkpnt.hpp>
 #include <ad_tensor/dev/move_swap.hpp>
@@ -60,8 +90,9 @@ is the identifier for this checkpoint function.
 //
 namespace ad_tensor { // BEGIN_AD_TENSOR_NAMESPACE
 //
-// make_chkpnt
-size_t make_chkpnt(adfn_t& adfn) {
+// BEGIN_MAKE_CHKPNT
+size_t make_chkpnt(adfn_t& adfn)
+{   // END_MAKE_CHKPNT
     //
     // chkpnt_id
     dev::chkpnt_global_t& chkpnt_global = dev::chkpnt_global_t::singleton();
@@ -71,11 +102,18 @@ size_t make_chkpnt(adfn_t& adfn) {
     return chkpnt_id;
 }
 //
-// call_chkpnt
+// BEGIN_CALL_CHKPNT
 vector<adten_t> call_chkpnt(
     size_t                 chkpnt_id ,
-    const vector<adten_t>& adomain   ) {
-    return adten_t::call_chkpnt(chkpnt_id, adomain);
+    const vector<adten_t>& adomain   )
+{   // END_CALL_CHKPNT
+    //
+    // atom_id
+    dev::chkpnt_global_t&  global  = dev::chkpnt_global_t::singleton();
+    size_t                 atom_id = global.get_atom_id();
+    //
+    size_t call_info = chkpnt_id;
+    return call_atom(atom_id, call_info, adomain);
 }
 
 }  // END_AD_TENSOR_NAMESPACE
