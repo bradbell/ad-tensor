@@ -4,7 +4,7 @@
 // ----------------------------------------------------------------------------
 #include<thread>
 #include<chrono>
-#include <ad_tensor/atom.hpp>
+#include <ad_tensor/dev/atom.hpp>
 #include <ad_tensor/dev/user_assert.hpp>
 #include <ad_tensor/dev/move_swap.hpp>
 //

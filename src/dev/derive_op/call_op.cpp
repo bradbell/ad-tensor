@@ -53,7 +53,7 @@ variable result for this atomic function.
 {xrst_end call_op_depend}
 */
 #include <ad_tensor/adten.hpp>
-#include <ad_tensor/atom.hpp>
+#include <ad_tensor/dev/atom.hpp>
 #include <ad_tensor/options.hpp>
 #include <ad_tensor/dev/derive_op.hpp>
 #include <ad_tensor/dev/broadcast.hpp>

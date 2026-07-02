@@ -100,7 +100,7 @@ Only the first operation has entries in arg_value and arg_type.
 */
 #include<ad_tensor/vector.hpp>
 #include<ad_tensor/adten.hpp>
-#include<ad_tensor/atom.hpp>
+#include<ad_tensor/dev/atom.hpp>
 #include<ad_tensor/base_atom.hpp>
 #include<ad_tensor/dev/tape.hpp>
 #include<ad_tensor/dev/agraph.hpp>

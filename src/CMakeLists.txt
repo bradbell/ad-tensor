@@ -21,9 +21,9 @@ add_library(ad_tensor SHARED
     adten/sum.cpp
     adten/transpose.cpp
     adten/view.cpp
-    atom.cpp
     base_atom.cpp
     chkpnt.cpp
+    dev/atom.cpp
     dev/broadcast.cpp
     dev/chkpnt.cpp
     dev/derive_op/add_op.cpp
