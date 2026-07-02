@@ -88,81 +88,11 @@ namespace {
     // base_atom_ptr
     std::unique_ptr<base_atom_t> base_atom_ptr =
         std::make_unique<derive_atom_t>();
-    //
-    // depend
-    optional<ad_tensor::sparsity_t> depend(
-        const options_t&      options   ,
-        size_t                call_info ) {
-        ad_tensor::sparsity_t sparsity;
-        sparsity.push_back( {0, 0} );
-        //
-        std::optional<ad_tensor::sparsity_t> opt = sparsity;
-        return opt;
-    }
-    //
-    // forward
-    std::optional< vector<Tensor> > forward(
-        const options_t&      options   ,
-        size_t                call_info ,
-        const vector<bool>&   rng_used ,
-        const vector<Tensor>& domain ) {
-        //
-        // range
-        vector<Tensor> range;
-        range.push_back( domain[0] * domain[0] );
-        //
-        std::optional< vector<Tensor> > opt = range;
-        return opt;
-    }
-    //
-    // forward_der
-    std::optional< vector<Tensor> > forward_der(
-        const options_t&      options   ,
-        size_t                call_info ,
-        const vector<bool>&   rng_used ,
-        const vector<Tensor>& domain   ,
-        const vector<Tensor>& dom_der ) {
-        //
-        // rng_der
-        vector<Tensor> rng_der;
-        rng_der.push_back( 2.0 * domain[0] * dom_der[0] );
-        //
-        std::optional< vector<Tensor> > opt = rng_der;
-        return opt;
-    }
-    //
-    // reverse_der
-    std::optional< vector<Tensor> > reverse_der(
-        const options_t&      options   ,
-        size_t                call_info ,
-        const vector<bool>&   rng_used ,
-        const vector<Tensor>& domain   ,
-        const vector<Tensor>& rng_der ) {
-        //
-        // dom_der
-        vector<Tensor> dom_der;
-        if( rng_der[0].numel() == 0 ) {
-            dom_der.push_back( torch::empty( {0} ) );
-        } else {
-            dom_der.push_back( 2.0 * domain[0] * rng_der[0] );
-        }
-        //
-        std::optional< vector<Tensor> > opt = dom_der;
-        return opt;
-    }
 }
 TEST(examples_atom, get_started)  {
     //
     // options
     ad_tensor::options_t options;
-    //
-    // atom_callback
-    ad_tensor::atom_callback_t atom_callback;
-    atom_callback.set_name("square");
-    atom_callback.set_depend(depend);
-    atom_callback.set_forward(forward);
-    atom_callback.set_forward_der(forward_der);
-    atom_callback.set_reverse_der(reverse_der);
     //
     // atom_id
     ad_tensor::atom_global_t& atom_global =
