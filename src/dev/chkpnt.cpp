@@ -146,96 +146,6 @@ public:
         return opt;
     }
 };
-
-// ------------------------------------------------------------------------
-// atom_callbacks
-// ------------------------------------------------------------------------
-//
-// chkpnt_long_name
-std::string chkpnt_long_name(
-    const options_t&                  options   ,
-    size_t                            chkpnt_id ) {
-    //
-    // adfn
-    chkpnt_global_t&     global       = chkpnt_global_t::singleton();
-    const chkpnt_info_t& chkpnt_info  = global.get_chkpnt_info( chkpnt_id );
-    const adfn_t&        adfn         = chkpnt_info.m_adfn;
-    //
-    return options.get_name() + "." + adfn.get_name();
-}
-//
-// chkpnt_depend
-std::optional<sparsity_t> chkpnt_depend(
-    const options_t&                  options   ,
-    size_t                            chkpnt_id ) {
-    //
-    // depend
-    chkpnt_global_t&     global       = chkpnt_global_t::singleton();
-    const chkpnt_info_t& chkpnt_info  = global.get_chkpnt_info( chkpnt_id );
-    const sparsity_t&    depend       = chkpnt_info.m_depend;
-    //
-    std::optional<sparsity_t> opt = depend;
-    return opt;
-}
-//
-// chkpnt_forward
-std::optional< vector<at::Tensor> > chkpnt_forward(
-    const options_t&                  options   ,
-    size_t                            chkpnt_id ,
-    const vector<bool>&               rng_used  ,
-    const vector<at::Tensor>&         domain    ) {
-    //
-    // adfn
-    chkpnt_global_t&     global       = chkpnt_global_t::singleton();
-    const chkpnt_info_t& chkpnt_info  = global.get_chkpnt_info( chkpnt_id );
-    const adfn_t&        adfn        = chkpnt_info.m_adfn;
-    //
-    vector<at::Tensor> var_all = adfn.forward_var(domain);
-    vector<at::Tensor> range   = adfn.get_range(var_all);
-    //
-    std::optional< vector<at::Tensor> > opt = range;
-    return opt;
-}
-//
-// chkpnt_forward_der
-std::optional< vector<at::Tensor> > chkpnt_forward_der(
-    const options_t&                  options   ,
-    size_t                            chkpnt_id ,
-    const vector<bool>&               rng_used  ,
-    const vector<at::Tensor>&         domain    ,
-    const vector<at::Tensor>&         dom_der   ) {
-    //
-    // adfn
-    chkpnt_global_t&     global       = chkpnt_global_t::singleton();
-    const chkpnt_info_t& chkpnt_info  = global.get_chkpnt_info( chkpnt_id );
-    const adfn_t&        adfn        = chkpnt_info.m_adfn;
-    //
-    vector<at::Tensor> var_all = adfn.forward_var(domain);
-    vector<at::Tensor> rng_der = adfn.forward_der(dom_der, var_all);
-    //
-    std::optional< vector<at::Tensor> > opt = rng_der;
-    return opt;
-}
-//
-// chkpnt_reverse_der
-std::optional< vector<at::Tensor> > chkpnt_reverse_der(
-    const options_t&                  options   ,
-    size_t                            chkpnt_id ,
-    const vector<bool>&               rng_used  ,
-    const vector<at::Tensor>&         domain    ,
-    const vector<at::Tensor>&         rng_der   ) {
-    //
-    // adfn
-    chkpnt_global_t&     global       = chkpnt_global_t::singleton();
-    const chkpnt_info_t& chkpnt_info  = global.get_chkpnt_info( chkpnt_id );
-    const adfn_t&        adfn        = chkpnt_info.m_adfn;
-    //
-    vector<at::Tensor> var_all = adfn.forward_var(domain);
-    vector<at::Tensor> dom_der = adfn.reverse_der(rng_der, var_all);
-    //
-    std::optional< vector<at::Tensor> > opt = dom_der;
-    return opt;
-}
 // ------------------------------------------------------------------------
 // chkpnt_info_t
 // ------------------------------------------------------------------------
@@ -262,15 +172,6 @@ chkpnt_global_t::chkpnt_global_t(void)
     // base_atom_ptr
     std::unique_ptr<base_atom_t> base_atom_ptr =
         std::make_unique<derive_chkpnt_t>();
-    //
-    // atom_callback
-    atom_callback_t atom_callback;
-    atom_callback.set_name("chkpnt");
-    atom_callback.set_long_name(chkpnt_long_name);
-    atom_callback.set_depend(chkpnt_depend);
-    atom_callback.set_forward(chkpnt_forward);
-    atom_callback.set_forward_der(chkpnt_forward_der);
-    atom_callback.set_reverse_der(chkpnt_reverse_der);
     //
     // m_atom_id
     m_atom_id = atom_global.store(base_atom_ptr);
