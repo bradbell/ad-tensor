@@ -55,7 +55,6 @@ A call to get will wait until it can lock out any calls to store.
 #include <ad_tensor/vector.hpp>
 #include <ad_tensor/sparsity.hpp>
 #include <ad_tensor/adfn.hpp>
-#include <ad_tensor/options.hpp>
 #include <ad_tensor/base_atom.hpp>
 //
 namespace ad_tensor { namespace dev {  // BEGIN_AD_TENSOR_DEV_NAMESPACE

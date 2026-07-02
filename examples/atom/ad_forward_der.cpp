@@ -7,7 +7,6 @@
 #include <gtest/gtest.h>
 #include <torch/torch.h>
 #include <ad_tensor/adten.hpp>
-#include <ad_tensor/options.hpp>
 #include <ad_tensor/dev/atom.hpp>
 #include <ad_tensor/sparsity.hpp>
 #include <ad_tensor/to_string.hpp>

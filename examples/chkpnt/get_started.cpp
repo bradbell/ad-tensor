@@ -8,7 +8,6 @@
 #include <ad_tensor/adten.hpp>
 #include <ad_tensor/chkpnt.hpp>
 #include <ad_tensor/sparsity.hpp>
-#include <ad_tensor/options.hpp>
 #include <ad_tensor/vector.hpp>
 namespace {
     using at::Tensor;

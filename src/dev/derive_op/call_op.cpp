@@ -54,7 +54,6 @@ variable result for this atomic function.
 */
 #include <ad_tensor/adten.hpp>
 #include <ad_tensor/dev/atom.hpp>
-#include <ad_tensor/options.hpp>
 #include <ad_tensor/dev/derive_op.hpp>
 #include <ad_tensor/dev/broadcast.hpp>
 #include <ad_tensor/dev/plus_minus_equal.hpp>
