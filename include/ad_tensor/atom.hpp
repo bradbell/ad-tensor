@@ -79,23 +79,14 @@ name
 After the atom_callback_t constructor,
 the name for the atomic function is empty.
 It must set this with a call of the form
-{xrst_literal ,
-    BEGIN_SET_NAME, END_SET_NAME
-}
 
 trace
 =====
 After the atom_callback_t constructor, the trace flag is false.
 It can be changed with a call of the form
-{xrst_literal ,
-    BEGIN_SET_TRACE, END_SET_TRACE
-}
 
 Functions
 =========
-{xrst_literal ,
-    BEGIN_SET_FUNCTION, END_SET_FUNCTION
-}
 
 .. csv-table::
     :header-rows: 1
@@ -124,16 +115,10 @@ where function is the callback function; e.g.,
 get
 ***
 All of the set functions have a corresponding get function:
-{xrst_literal ,
-    BEGIN_CALLBACK_GET, END_CALLBACK_GET
-}
 The values chosen by set_name and set_trace are in the get_options return.
 
 long_name
 *********
-{xrst_literal ,
-    BEGIN_LONG_NAME, END_LONG_NAME
-}
 This returns a long name for this atomic function that can include
 information determined by the value of call_info.
 The default version of this callback just returns the name in its
@@ -141,9 +126,6 @@ options argument which is the same as :ref:`atom_callback@set@name` above.
 
 depend
 ******
-{xrst_literal ,
-    BEGIN_DEPEND, END_DEPEND
-}
 This returns a dependency :ref:`sparsity-name` pattern
 for this atomic function.
 If the tensor with range index i depends on the tensor with domain index j,
@@ -151,9 +133,6 @@ then (i,j) is in the sparsity pattern for this atomic function.
 
 forward
 *******
-{xrst_literal ,
-    BEGIN_FORWARD_T, END_FORWARD_T
-}
 This computes the atomic function range values
 as a function of its domain values; i.e.,
 
@@ -162,9 +141,6 @@ as a function of its domain values; i.e.,
 
 forward_der
 ***********
-{xrst_literal ,
-    BEGIN_FORWARD_DER_T, END_FORWARD_DER_T
-}
 This computes the atomic function range derivative tensors
 as a function of its domain tensors and domain derivative tensors; i.e
 
@@ -175,9 +151,6 @@ so the values for the calculations are not in the tape being recorded.
 
 reverse_der
 ***********
-{xrst_literal ,
-    BEGIN_REVERSE_DER_T, END_REVERSE_DER_T
-}
 This computes the atomic function domain derivative tensors
 as a function of its domain tensors and range derivative tensors; i.e
 
@@ -241,127 +214,7 @@ A call to get will wait until it can lock out any calls to store.
 #include <ad_tensor/base_atom.hpp>
 //
 namespace ad_tensor {  // BEGIN_AD_TENSOR_NAMESPACE
-// --------------------------------------------------------------------------
-// atom_callback_t
-class atom_callback_t {
-public:
-    //
-    // BEGIN_LONG_NAME
-    // name = long_name(options, call_info).value()
-    typedef std::string (*long_name_t)(
-        const options_t&                  options   ,
-        size_t                            call_info
-    );
-    // END_LONG_NAME
-    //
-    // BEGIN_DEPEND
-    // sparsity = depend(options, call_info).value()
-    typedef std::optional<sparsity_t> (*depend_t)(
-        const options_t&                  options   ,
-        size_t                            call_info
-    );
-    // END_DEPEND
-    //
-    // BEGIN_FORWARD_T
-    // range = forward(call_info, rng_used, domain).value()
-    typedef std::optional< vector<at::Tensor> > (*forward_t) (
-        const options_t&                  options   ,
-        size_t                            call_info ,
-        const vector<bool>&               rng_used  ,
-        const vector<at::Tensor>&         domain
-    );
-    // END_FORWARD_T
-    //
-    // BEGIN_FORWARD_DER_T
-    // rng_der = forward_der(call_info, rng_used, domain, dom_der).value()
-    typedef std::optional< vector<at::Tensor> > (*forward_der_t) (
-        const options_t&                  options   ,
-        size_t                            call_info ,
-        const vector<bool>&               rng_used  ,
-        const vector<at::Tensor>&         domain    ,
-        const vector<at::Tensor>&         dom_der
-    );
-    typedef std::optional< vector<adten_t> > (*ad_forward_der_t) (
-        const options_t&                  options   ,
-        size_t                            call_info ,
-        const vector<bool>&               rng_used  ,
-        const vector<adten_t>&            domain    ,
-        const vector<adten_t>&            dom_der
-    );
-    // END_FORWARD_DER_T
-    //
-    // BEGIN_REVERSE_DER_T
-    // dom_der = forward_der(call_info, rng_used, domain, rng_der).value()
-    typedef std::optional< vector<at::Tensor> > (*reverse_der_t) (
-        const options_t&                  options   ,
-        size_t                            call_info ,
-        const vector<bool>&               rng_used  ,
-        const vector<at::Tensor>&         domain    ,
-        const vector<at::Tensor>&         rng_der
-    );
-    typedef std::optional< vector<adten_t> > (*ad_reverse_der_t) (
-        const options_t&                  options   ,
-        size_t                            call_info ,
-        const vector<bool>&               rng_used  ,
-        const vector<adten_t>&            domain    ,
-        const vector<adten_t>&            rng_der
-    );
-    // END_REVERSE_DER_T
-
-private:
-    // m_options, m_long_name, m_depend
-    options_t         m_options;
-    long_name_t       m_long_name;
-    depend_t          m_depend;
-    //
-    // m_forward, m_forward_der, m_reverse_der
-    forward_t         m_forward;
-    forward_der_t     m_forward_der;
-    reverse_der_t     m_reverse_der;
-    //
-    // m_ad_forward_der, m_ad_reverse_der
-    ad_forward_der_t     m_ad_forward_der;
-    ad_reverse_der_t     m_ad_reverse_der;
-    //
-    // default_long_name
-    static std::string default_long_name(
-        const options_t&                  options   ,
-        size_t                            call_info
-    );
-public:
-    //
-    // ctor
-    atom_callback_t(void);
-    //
-    // BEGIN_SET_NAME
-    void set_name(const std::string& name);
-    // END_SET_NAME
-    //
-    // BEGIN_SET_TRACE
-    void set_trace(bool trace);
-    // END_SET_TRACE
-    //
-    // BEGIN_SET_FUNCTION
-    void set_long_name(const long_name_t&              long_name);
-    void set_depend(const depend_t&                    depend);
-    void set_forward(const forward_t&                  forward);
-    void set_forward_der(const forward_der_t&          forward_der);
-    void set_reverse_der(const reverse_der_t&          reverse_der);
-    void set_ad_forward_der(const ad_forward_der_t&    ad_forward_der);
-    void set_ad_reverse_der(const ad_reverse_der_t&    ad_reverse_der);
-    // END_SET_FUNCTION
-    //
-    // BEGIN_CALLBACK_GET
-    const options_t&        get_options(void) const;
-    const long_name_t&      get_long_name(void) const;
-    const depend_t&         get_depend(size_t call_info) const;
-    const forward_t&        get_forward(size_t call_info) const;
-    const forward_der_t&    get_forward_der(size_t call_info) const;
-    const reverse_der_t&    get_reverse_der(size_t call_info) const;
-    const ad_forward_der_t& get_ad_forward_der(size_t call_info) const;
-    const ad_reverse_der_t& get_ad_reverse_der(size_t call_info) const;
-    // END_CALLBACK_GET
-};
+//
 // atom_global_t
 class atom_global_t {
 private:

@@ -8,24 +8,6 @@
 #include <ad_tensor/dev/user_assert.hpp>
 #include <ad_tensor/dev/move_swap.hpp>
 //
-#define SETTER_AND_GETTER(name) \
-    void atom_callback_t::set_ ## name(const name ## _t& name) { \
-        dev::user_assert( name != nullptr, \
-            "atom_callback_t: " #name " is the nullptr in set_" #name  \
-        ); \
-        m_ ## name = name; \
-    } \
-    const atom_callback_t::name ## _t& \
-    atom_callback_t::get_ ## name(size_t call_info) const { \
-        if( m_ ## name == nullptr ) { \
-            std::string msg = "atom_callback: " + \
-                m_long_name(m_options, call_info) + \
-                    ": " #name " has not been set"; \
-            dev::user_assert(false, msg); \
-        } \
-        return m_ ## name; \
-    }
-//
 namespace ad_tensor {
     // -----------------------------------------------------------------------
     // atom_global_t
@@ -81,69 +63,4 @@ namespace ad_tensor {
         static atom_global_t atom_global;
         return atom_global;
     }
-    // -----------------------------------------------------------------------
-    // atom_callback_t
-    // -----------------------------------------------------------------------
-    //
-    // default_long_name
-    std::string atom_callback_t::default_long_name(
-        const options_t&                  options   ,
-        size_t                            call_info ) {
-        return options.get_name();
-    }
-    //
-    // ctor
-    atom_callback_t::atom_callback_t(void)
-    : m_options()
-    , m_long_name(default_long_name)
-    , m_depend(nullptr)
-    , m_forward(nullptr)
-    , m_forward_der(nullptr)
-    , m_reverse_der(nullptr)
-    , m_ad_forward_der(nullptr)
-    , m_ad_reverse_der(nullptr)
-    { }
-    //
-    // set_name
-    void atom_callback_t::set_name(const std::string& name) {
-        dev::user_assert( name != "",
-            "atom_callback set_name: name is the empty string"
-        );
-        m_options.set_name(name);
-    }
-    void atom_callback_t::set_trace(bool trace) {
-        m_options.set_trace(trace);
-    }
-    //
-    // get_options
-    const options_t& atom_callback_t::get_options(void) const {
-        return m_options;
-    }
-    //
-    // set_long_name, get_long_name
-    void atom_callback_t::set_long_name(const long_name_t& long_name) {
-        dev::user_assert( long_name != nullptr,
-            "atom_callback_t: long_name is nullptr in set_long_name"
-        );
-        m_long_name = long_name;
-    }
-    const atom_callback_t::long_name_t&
-    atom_callback_t::get_long_name(void) const {
-        assert( m_long_name != nullptr );
-        return m_long_name;
-    }
-    //
-    // set_depend, get_depend, set_forward, get_forward
-    SETTER_AND_GETTER(depend)
-    SETTER_AND_GETTER(forward)
-    //
-    // atom_callback_t::
-    // set_forward_der, get_forward_der, set_ad_forward_der, get_ad_forward_der
-    SETTER_AND_GETTER(forward_der)
-    SETTER_AND_GETTER(ad_forward_der)
-    //
-    // atom_callback_t::
-    // set_reverse_der, get_reverse_der, set_ad_reverse_der, get_ad_reverse_der
-    SETTER_AND_GETTER(reverse_der)
-    SETTER_AND_GETTER(ad_reverse_der)
 }
