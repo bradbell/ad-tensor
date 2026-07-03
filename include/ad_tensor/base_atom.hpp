@@ -4,44 +4,119 @@
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
 /*
-{xrst_begin base_atom usr}
-{xrst_spell
-    rng
-    adten
-    numel
-}
+{xrst_begin_parent base_atom usr}
 
 The Atomic Function Base Class
 ##############################
+An atomic function is defined by a derived class overrides of the
+virtual functions in base_atom_t.
 
-atom_f
-******
-We use atom_f below for the function corresponding to a class
-derived from this base class:
+{xrst_end base_atom}
+-------------------------------------------------------------------------------
+{xrst_begin atom_non_virtual usr}
 
-    range = atom_f(domain)
+The Non-Virtual Functions in base_atom_t
+########################################
 
-where domain and range are vectors of tensors.
+atom_base
+*********
+{xrst_literal ,
+    BEGIN_CTOR, END_CTOR
+}
+This initializes the name as empty and the trace flag as false.
 
 name
 ****
-After the base class constructor,
-the name for the atomic function is empty.
-This is used for error reporting an a derived class should
-set it to a useful value using set_name.
+{xrst_literal ,
+    BEGIN_NAME, END_NAME
+}
 
 trace
 *****
-After the base class constructor,
-the trace flag for the atomic function is false.
-It can be set using set_trace and a derived virtual function
-may use this flag as a signal to generate debugging output.
+{xrst_literal ,
+    BEGIN_TRACE, END_TRACE
+}
+
+{xrst_end atom_non_virtual}
+------------------------------------------------------------------------------
+{xrst_begin atom_long_name usr}
+
+The Long Name for a Derived Class
+#################################
+
+long_name
+*********
+{xrst_literal ,
+    BEGIN_LONG_NAME, END_LONG_NAME
+}
+The base_atom_t version of this function just returns
+the short :ref:`atom_non_virtual@name` .
+You can override this to get a more descriptive name that
+depends on call_info.
+
+{xrst_end atom_long_name}
+------------------------------------------------------------------------------
+{xrst_begin atom_depend usr}
+
+The Dependency Sparsity Pattern
+###############################
+
+Syntax
+******
+{xrst_code hpp}
+    depend = base_atom.depend(call_info).value()
+{xrst_code}
+
+Prototype
+*********
+{xrst_literal ,
+    BEGIN_DEPEND, END_DEPEND
+}
+This virtual function is first used when make a :ref:`call_atom-name`
+to this atomic function.
+If you do not over ride this virtual function its return
+will have has_value() equal to false.
+You should also use this case when an error occurs during
+the evaluation of the sparsity pattern.
+
+depend
+******
+If the i-th range tensor depends on the j-th domain tensor
+then the pair (i,j) must be in the depend sparsity pattern.
+
+{xrst_end atom_depend}
+------------------------------------------------------------------------------
+{xrst_begin atom_forward usr}
+{xrst_spell
+    rng
+}
+
+Forward Function Evaluation
+###########################
+
+Syntax
+******
+{xrst_code hpp}
+    range = base_atom.forward(call_info, rng_used, domain).value()
+{xrst_code}
+
+Prototype
+*********
+{xrst_literal ,
+    BEGIN_FORWARD_FUN, END_FORWARD_FUN
+}
+This virtual function is first used when you make a :ref:`call_atom-name`
+to this atomic function.
+If you do not over ride this virtual function its return
+will have has_value() equal to false.
+You should also use this case when an error occurs during
+the evaluation of the atomic function value.
 
 call_info
 *********
 This value is passed through to the virtual functions
-from :ref:`call_atom@call_info` in the call to this atomic function.
-Each derived version of the virtual functions
+from the call to this atomic function, :ref:`call_atom-name` .
+The derived version of forward (and the other virtual functions)
 can decided what to do based on the value of call_info.
 
 rng_used
@@ -62,6 +137,59 @@ range
 *****
 is the vector of the range tensors containing the range values.
 
+atom_f
+******
+We use the notation atom_f for the mathematical function defined by
+
+    range = atom_f(domain)
+
+{xrst_end atom_forward}
+------------------------------------------------------------------------------
+{xrst_begin atom_forward_der usr}
+{xrst_spell
+    rng
+    adten
+}
+
+Forward Derivative Evaluation
+#############################
+
+Syntax
+******
+{xrst_code hpp}
+    rng_der = base_atom.forward(call_info, rng_used, domain, dom_der).value()
+{xrst_code}
+
+Prototype
+*********
+{xrst_literal ,
+    BEGIN_FORWARD_DER, END_FORWARD_DER
+}
+This virtual function is used if:
+
+#.  You make a :ref:`call_atom-name` to this atomic function.
+#.  The call becomes part of an AD function.
+#.  The :ref:`forward derivative<adfn_forward_der-name>`
+    of the AD function is evaluated.
+
+If you do not over ride this virtual function its return
+will have has_value() equal to false.
+You should also use this case when an error occurs during
+the evaluation of this derivative of the atomic function.
+
+If domain in the AD function forward_der evaluation is a vector of at::Tensor
+(of adten_t), then the at::Tensor version (ad_ten_t version)
+of the virtual function should be over ridden.
+
+If the adten_t version is over ridden, it should be evaluated using
+a call_atom to a different atomic function for which the
+function values are the derivative of the original atomic function.
+
+See the previous documentation for
+:ref:`atom_forward@call_info` ,
+:ref:`atom_forward@rng_used` ,
+:ref:`atom_forward@domain` , and
+
 dom_der
 *******
 is the vector of the domain tensors containing the
@@ -72,80 +200,69 @@ rng_der
 is the vector of the range tensors containing the
 range directional derivative.
 
-Virtual Functions
-*****************
-
-.. csv-table::
-    :header-rows: 1
-
-    function,       Required when this atomic is used with
-    long_name       never
-    depend,         always
-    forward,        always
-    forward_der,    :ref:`adfn_forward_der-name` with TensorType at::Tensor
-    reverse_der,    :ref:`adfn_reverse_der-name` with TensorType at::Tensor
-    ad_forward_der, :ref:`adfn_forward_der-name` with TensorType adten
-    ad_reverse_der, :ref:`adfn_reverse_der-name` with TensorType adten
-
-Prototype
-=========
-{xrst_literal,
-    BEGIN_CLASS, END_CLASS
-}
-
-
-long_name
-*********
-The default version of this function returns the name described above.
-A derived long_name should be defined when a description of the function
-depends on to the value of call_info.
-
-depend
-******
-This returns a dependency :ref:`sparsity-name` pattern
-for this atomic function.
-If the tensor with range index i depends on the tensor with domain index j,
-then (i,j) is in the sparsity pattern for this atomic function.
-
-forward
-*******
-This computes the atomic function range values
-as a function of its domain values; i.e.,
-
-    range = atom_f(domain)
-
-
-forward_der
-***********
-This computes the atomic function range derivative tensors
-as a function of its domain tensors and domain derivative tensors; i.e
-
     rng_der = atom_f'(domain) * dom_der
 
-It is suggested that the AD version of forward_der call an atomic function
-so the values for the calculations are not in the tape being recorded.
+{xrst_end atom_forward_der}
+------------------------------------------------------------------------------
+{xrst_begin atom_reverse_der usr}
+{xrst_spell
+    rng
+    adten
+}
 
-reverse_der
-***********
-This computes the atomic function domain derivative tensors
-as a function of its domain tensors and range derivative tensors; i.e
+Reverse Derivative Evaluation
+#############################
+
+Syntax
+******
+{xrst_code hpp}
+    dom_der = base_atom.reverse(call_info, rng_used, domain, rng_der).value()
+{xrst_code}
+
+Prototype
+*********
+{xrst_literal ,
+    BEGIN_REVERSE_DER, END_REVERSE_DER
+}
+This virtual function is used if:
+
+#.  You make a :ref:`call_atom-name` to this atomic function.
+#.  The call becomes part of an AD function.
+#.  The :ref:`reverse derivative<adfn_reverse_der-name>`
+    of the AD function is evaluated.
+
+If you do not over ride this virtual function its return
+will have has_value() equal to false.
+You should also use this case when an error occurs during
+the evaluation of this derivative of the atomic function.
+
+If domain in the AD function forward_der evaluation is a vector of at::Tensor
+(of adten_t), then the at::Tensor version (ad_ten_t version)
+of the virtual function should be over ridden.
+
+If the adten_t version is over ridden, it should be evaluated using
+a call_atom to a different atomic function for which the
+function values are the derivative of the original atomic function.
+
+See the previous documentation for
+:ref:`atom_forward@call_info` ,
+:ref:`atom_forward@rng_used` ,
+:ref:`atom_forward@domain` , and
+
+dom_der
+*******
+is the vector of the domain tensors containing the
+domain directional derivative.
+
+rng_der
+*******
+is the vector of the range tensors containing the
+range directional derivative.
 
     dom_der = rng_der * atom_f'(domain)
 
-#.  If rng_der[i] is empty, rng_der[i].numel() is zero,
-    rng_der[i] should be treated as zero with the proper dimensions
-    for the i-th range component of the atomic function.
-
-#.  If you know dom_der[j] is zero based on the empty input tensors,
-    you can return an empty dom_der[j],
-    instead of zero with the proper dimensions for dom_der[j] .
-    This avoids the memory for the operations that use this return value.
-
-#.  It is suggested that the AD version of forward_der call a different
-    atomic function so the values for the calculations are not in the
-    tape being recorded.
-
-{xrst_end base_atom}
+{xrst_end atom_reverse_der}
+------------------------------------------------------------------------------
 */
 #include <torch/torch.h>
 #include <ad_tensor/vector.hpp>
@@ -158,31 +275,37 @@ private:
     std::string m_name;
     bool        m_trace;
 public:
-    // ctor
+    // BEGIN_CTOR
     base_atom_t(void);
+    // END_CTOR
     //
-    // name
+    // BEGIN_NAME
     void set_name(const std::string& trace);
     const std::string& get_name(void) const;
+    // END_NAME
     //
-    // trace
+    // BEGIN_TRACE
     void set_trace(bool trace);
     bool get_trace(void) const;
+    // END_TRACE
     //
-    // long_name
+    // BEGIN_LONG_NAME
     virtual std::string long_name(size_t call_info) const;
+    // END_LONG_NAME
     //
-    // depend
+    // BEGIN_DEPEND
     virtual std::optional<sparsity_t> depend(size_t call_info) const;
+    // END_DEPEND
     //
-    // forward
+    // BEGIN_FORWARD_FUN
     virtual std::optional< vector<at::Tensor> > forward(
         size_t                      call_info,
         const vector<bool>&         rng_used,
         const vector<at::Tensor>&   domain
     ) const;
+    // END_FORWARD_FUN
     //
-    // forward_der
+    // BEGIN_FORWARD_DER
     virtual std::optional< vector<at::Tensor> > forward_der(
         size_t                      call_info,
         const vector<bool>&         rng_used,
@@ -195,8 +318,9 @@ public:
         const vector<adten_t>&      domain,
         const vector<adten_t>&      dom_der
     ) const;
+    // END_FORWARD_DER
     //
-    // reverse_der
+    // BEGIN_REVERSE_DER
     virtual std::optional< vector<at::Tensor> > reverse_der(
         size_t                     call_info,
         const vector<bool>&        rng_used,
@@ -207,7 +331,8 @@ public:
         size_t                     call_info,
         const vector<bool>&        rng_used,
         const vector<adten_t>&     domain,
-        const vector<adten_t>&     dom_der
+        const vector<adten_t>&     rng_der
     ) const;
+    // END_REVERSE_DER
 }; }
 // END_CLASS

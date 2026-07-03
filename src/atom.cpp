@@ -80,7 +80,7 @@ is the atomic function identifier; see :ref:`make_atom@atom_id` .
 call_info
 *********
 is the call information that gets passed from the atomic function call
-through to its :ref:`base_atom@Virtual Functions` .
+through to its virtual functions; see :ref:`atom_forward@call_info` .
 
 adomain
 *******
