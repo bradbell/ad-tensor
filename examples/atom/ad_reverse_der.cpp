@@ -203,15 +203,12 @@ TEST(examples_atom, ad_reverse_der)  {
     // adomain
     adomain = adten_t::start_recording(domain);
     //
-    vector<adten_t> apar_all;
     vector<adten_t> avar_all = f.forward_var(adomain);
     //
     // adom_der
     vector<adten_t> arng_der;
     arng_der.push_back( adten_t( torch::tensor( 1.0 ) ) );
-    vector<adten_t> adom_der = f.reverse_der(
-        arng_der, avar_all, apar_all
-    );
+    vector<adten_t> adom_der = f.reverse_der(arng_der, avar_all);
     //
     // adom_der = g(domain) = f'(domain)
     ad_tensor::adfn_t g = adten_t::stop_recording(adom_der, "g");
