@@ -3,6 +3,7 @@
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
 #include <ad_tensor/adfn.hpp>
+#include <ad_tensor/dev/to_string.hpp>
 /*
 {xrst_begin adfn_get_range usr}
 
@@ -59,9 +60,16 @@ vector<TensorType> adfn_t::get_range(
     const vector<TensorType>& par_all
 ) const
 {   //
+    // cout
+    using std::cout;
+    //
     assert( m_rng_index.size() == m_rng_ad_type.size() &&
         "adfn: m_rng_index and m_rng_ad_type have different sizes"
     );
+    // trace
+    if( m_trace ) {
+        cout << "Begin tracing " + get_name() + ".get_range\n";
+    }
     //
     // range
     vector<TensorType> range;
@@ -87,6 +95,10 @@ vector<TensorType> adfn_t::get_range(
                 "a range type is not constant, parameter or variable"
             );
         }
+    }
+    if( m_trace ) {
+        cout << "range =\n" + dev::to_string(range);
+        cout << "End tracing " + get_name() + ".get_range\n";
     }
     return range;
 }

@@ -177,10 +177,7 @@ vector<TensorType> adfn_t::reverse_der(
         }
     }
     if( m_trace ) {
-        for(size_t j = 0; j < n_dom_var; ++j) {
-            string element = to_string( dom_der[j] );
-            cout << "dom_der[" << j << "] = " << element << "\n";
-        }
+        cout << "dom_der =\n" + to_string(dom_der);
         cout << "End tracing " + get_name() + ".reverse_der\n";
     }
     return dom_der;
