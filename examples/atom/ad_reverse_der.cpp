@@ -218,7 +218,6 @@ TEST(examples_atom, ad_reverse_der)  {
     domain[0] = x;
     //
     // dsum
-    vector<Tensor> par_all;
     vector<Tensor> var_all = g.forward_var(domain);
     vector<Tensor> range   = g.get_range(var_all);
     Tensor         dsum    = range[0];

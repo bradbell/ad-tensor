@@ -36,7 +36,6 @@ TEST(examples_adfn, forward_der)  {
     adfn_t f = adten_t::stop_recording(ay, "f");
     //
     // var_all
-    vector<Tensor> par_all;
     vector<Tensor> var_all = f.forward_var(x);
     //
     // y
@@ -53,9 +52,7 @@ TEST(examples_adfn, forward_der)  {
     dx.push_back( torch::tensor( {1.0} ) );
     //
     // dy
-    vector<Tensor> dy = f.forward_der(
-        dx, var_all, par_all
-    );
+    vector<Tensor> dy = f.forward_der(dx, var_all);
     //
     EXPECT_EQ( dy.size(), y.size() );
     //

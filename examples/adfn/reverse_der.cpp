@@ -32,7 +32,6 @@ TEST(examples_adfn, reverse_der)  {
     adfn_t f = adten_t::stop_recording(ay, "f");
     //
     // var_all
-    vector<Tensor> par_all;
     vector<Tensor> var_all = f.forward_var(x);
     //
     // y

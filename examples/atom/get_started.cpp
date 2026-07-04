@@ -116,7 +116,6 @@ TEST(examples_atom, get_started)  {
     x[0] = torch:: tensor( {3.0, 4.0} );
     //
     // z
-    vector<Tensor> par_all;
     vector<Tensor> var_all = f.forward_var(x);
     vector<Tensor> z       = f.get_range(var_all);
     //
