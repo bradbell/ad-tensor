@@ -43,6 +43,14 @@ return the result for the underlying at::Tensor.
     BEGIN_NUMEL, END_NUMEL
 }
 
+clone
+*****
+Create a new adten_t where the underlying at::Tensor
+has also been cloned.
+{xrst_literal ,
+    BEGIN_CLONE, END_CLONE
+}
+
 Binary Operators
 ****************
 For *op* equal ``+``, ``-``, ``*``, ``/`` :
@@ -213,6 +221,11 @@ public:
     int64_t numel(void) const
     // END_NUMEL
     {   return m_tensor.numel(); }
+    //
+    // BEGIN_CLONE
+    adten_t clone(void) const
+    // END_CLONE
+    {   return adten_t(m_tape_id, m_index,  m_tensor.clone(), m_ad_type ); }
     //
     // BEGIN_TO_TENSOR
     const at::Tensor& tensor(void) const

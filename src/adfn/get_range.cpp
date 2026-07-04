@@ -2,8 +2,6 @@
 // SPDX-FileCopyrightText: Bradley M. Bell <bradbell@seanet.com>
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
-#include <ad_tensor/adfn.hpp>
-#include <ad_tensor/dev/to_string.hpp>
 /*
 {xrst_begin adfn_get_range usr}
 
@@ -52,6 +50,8 @@ Example
 }
 {xrst_end adfn_get_range}
 */
+#include <ad_tensor/adfn.hpp>
+#include <ad_tensor/dev/to_string.hpp>
 namespace ad_tensor { // BEGIN_NAMESPACE_AD_TENSOR
 //
 template <class TensorType>

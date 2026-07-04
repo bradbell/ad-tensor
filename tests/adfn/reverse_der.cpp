@@ -2,13 +2,14 @@
 // SPDX-FileCopyrightText: Bradley M. Bell <bradbell@seanet.com>
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
-// BEGIN_CPP
 #include <ad_tensor/adfn.hpp>
 #include <gtest/gtest.h>
 #include <torch/torch.h>
 #include <ad_tensor/adten.hpp>
 //
-TEST(tests, adfn_reverse_der)  {
+namespace { // BEGIN_EMPTY_NAMESPACE
+
+void check_binary_operators() {
     using ad_tensor::adten_t;
     using ad_tensor::adfn_t;
     using at::Tensor;
@@ -34,11 +35,10 @@ TEST(tests, adfn_reverse_der)  {
     adfn_t f = adten_t::stop_recording(ay, "f");
     //
     // var_all
-    vector<Tensor> par_all;
-    vector<Tensor> var_all = f.forward_var(x, par_all);
+    vector<Tensor> var_all = f.forward_var(x);
     //
     // y
-    vector<Tensor> y = f.get_range(var_all, par_all);
+    vector<Tensor> y = f.get_range(var_all);
     //
     EXPECT_EQ( y.size(), ay.size() );
     //
@@ -59,7 +59,7 @@ TEST(tests, adfn_reverse_der)  {
     dy.push_back( torch::tensor( {7.0, 8.0} ) );
     //
     // dx
-    vector<Tensor> dx = f.reverse_der(dy, var_all, par_all);
+    vector<Tensor> dx = f.reverse_der(dy, var_all);
     //
     EXPECT_EQ( dx.size(), x.size() );
     //
@@ -69,4 +69,61 @@ TEST(tests, adfn_reverse_der)  {
     equal = dx[1].equal( dy[0] - dy[1] + dy[2] * x[0] - dy[3] * y[3] / x[1] );
     EXPECT_TRUE( equal );
 }
-// END_CPP
+
+void check_empty_derivative() {
+    using ad_tensor::adten_t;
+    using ad_tensor::adfn_t;
+    using at::Tensor;
+    using ad_tensor::vector;
+    //
+    // x
+    vector<Tensor> x;
+    x.push_back( torch::tensor( {1.0, 2.0} ) );
+    x.push_back( torch::tensor( {3.0, 4.0} ) );
+    //
+    // ax
+    vector<adten_t> ax = adten_t::start_recording(x);
+    //
+    // ay
+    vector<adten_t> ay;
+    ay.push_back(  ax[0] + ax[0] );
+    ay.push_back(  ax[1] * ax[1] );
+    //
+    // y = f(x)
+    adfn_t f = adten_t::stop_recording(ay, "f");
+    //
+    // var_all
+    vector<Tensor> var_all = f.forward_var(x);
+    //
+    // y
+    vector<Tensor> y = f.get_range(var_all);
+    //
+    EXPECT_EQ( y.size(), ay.size() );
+    //
+    bool equal = y[0].equal( x[0] + x[0] );
+    EXPECT_TRUE( equal );
+    //
+    equal = y[1].equal( x[1] * x[1] );
+    EXPECT_TRUE( equal );
+    //
+    // dy
+    vector<Tensor> dy;
+    dy.push_back( torch::tensor( {1.0, 2.0} ) );
+    dy.push_back( torch::empty( {0} ) );
+    //
+    // dx
+    vector<Tensor> dx = f.reverse_der(dy, var_all);
+    //
+    EXPECT_EQ( dx.size(), x.size() );
+    //
+    equal = dx[0].equal( dy[0] + dy[0] );
+    EXPECT_TRUE( equal );
+    //
+    EXPECT_EQ( dx[1].numel(), 0 );
+}
+
+} // END_EMPTY_NAMESPACE
+TEST(tests, adfn_reverse_der)  {
+    check_binary_operators();
+    check_empty_derivative();
+}

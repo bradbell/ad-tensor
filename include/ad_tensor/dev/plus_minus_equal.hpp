@@ -57,7 +57,7 @@ namespace ad_tensor { namespace dev {
         }
         if( dim.size() == 0 ) {
             if( target.numel() == 0 ) {
-                target = rhs;
+                target = rhs.clone();
             } else {
                 target += rhs;
                 }

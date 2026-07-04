@@ -12,6 +12,7 @@
 {xrst_begin adfn_reverse_der usr}
 {xrst_spell
     rng
+    numel
 }
 
 Compute Derivative of A Range Direction Summation
@@ -37,6 +38,8 @@ This is either at::Tensor or :ref:`adten-name` .
 rng_der
 *******
 This is the range direction that the derivative is computed with respect to.
+If rng_der[i].numel() is zero, then rng_der[i] will act like a zero tensor
+with the proper shape without having to do calculations with this value.
 
 var_all
 *******
@@ -62,6 +65,9 @@ is the domain derivative of the range space direction; i.e.
 
     dom_der =  (d / d dom_var) sum[ rng_der * adfn(dom_var, dom_par ) ]
 
+If dom_der[j].numel() is zero, then dom_der[j]
+is known to be zero with the same shape as domain[j] for this AD function
+(and has not been calculated).
 
 Example
 *******
@@ -99,10 +105,11 @@ vector<TensorType> adfn_t::reverse_der(
     }
     for(size_t i = 0; i < shapes.size(); ++i) {
         c10::IntArrayRef shape = shapes[i];
-        if( ! rng_der[i].sizes().equals( shape ) ) {
-            msg += "rng_der[" + std::to_string(i) + "] shape is ";
+        if( rng_der[i].numel() != 0 && ! rng_der[i].sizes().equals(shape) ) {
+            msg += "rng_der[" + std::to_string(i) + "]: numel is not zero ";
+            msg += "and shape is ";
             msg += dev::to_string( rng_der[i].sizes() );
-            msg += " and the range shape for this index and adfn is ";
+            msg += "\nThe expected range shape for this index and adfn is ";
             msg += dev::to_string( shape );
             dev::user_assert( false , msg );
         }
@@ -169,15 +176,13 @@ vector<TensorType> adfn_t::reverse_der(
     // dom_der
     vector<TensorType> dom_der;
     for(size_t j = 0; j < n_dom_var; ++j) {
-        if( all_der[j].numel() == 0 ) {
-            c10::IntArrayRef shape = var_all[j].sizes();
-            dom_der.push_back( TensorType( torch::zeros( shape ) ) );
-        } else {
-            dom_der.push_back( all_der[j] );
-        }
+        dom_der.push_back( all_der[j] );
     }
     if( m_trace ) {
-        cout << "dom_der =\n" + to_string(dom_der);
+        for(size_t j = 0; j < n_dom_var; ++j) {
+            string element = to_string( dom_der[j] );
+            cout << "dom_der[" << j << "] = " << element << "\n";
+        }
         cout << "End tracing " + get_name() + ".reverse_der\n";
     }
     return dom_der;
