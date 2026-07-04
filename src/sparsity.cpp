@@ -8,7 +8,7 @@
 namespace ad_tensor {
     //
     // size
-    size_t sparsity_t::size(void) {
+    size_t sparsity_t::size(void) const {
         return m_sparsity.size();
     }
     // sort

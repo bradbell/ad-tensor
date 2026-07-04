@@ -22,7 +22,7 @@ namespace ad_tensor { class sparsity_t {
 private:
     vector< std::array<size_t, 2> > m_sparsity;
 public:
-    size_t size(void);
+    size_t size(void) const;
     void sort(void);
     void push_back(const std::array<size_t, 2>& pair );
     const std::array<size_t, 2>& operator[](size_t index) const;

@@ -246,6 +246,8 @@ std::tuple<sparsity_t, sparsity_t> adfn_t::forward_dep(void) const
         }
     }
     if( m_trace ) {
+        cout << "depend_par = " << to_string( depend_par ) << "\n";;
+        cout << "depend_var = " << to_string( depend_var ) << "\n";;
         cout << "End tracing " + get_name() + ".forward_dep\n";
     }
     return std::tuple<sparsity_t, sparsity_t>(depend_par, depend_var);

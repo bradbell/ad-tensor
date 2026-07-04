@@ -5,6 +5,8 @@
 #include <ad_tensor/dev/to_string.hpp>
 //
 namespace ad_tensor { namespace dev {
+    //
+    // ad_type
     std::string to_string( ad_type_t ad_type)
     {   switch(ad_type) {
             case ad_type_t::constant:  return "con";
@@ -16,6 +18,8 @@ namespace ad_tensor { namespace dev {
         }
         return "";
     }
+    //
+    // op_enum
     std::string to_string( op_enum_t op_enum) {
         switch(op_enum) {
             // BEGIN_SORT_THIS_LINE_PLUS_1
@@ -36,6 +40,8 @@ namespace ad_tensor { namespace dev {
             assert( false && "to_string(op_enum): unexpected op_enum value");
         }
     }
+    //
+    // IntArrayRef
     std::string to_string(const c10::IntArrayRef& shape) {
         std::string res = "(";
         for(size_t i = 0; i < shape.size(); ++i) {
@@ -46,6 +52,8 @@ namespace ad_tensor { namespace dev {
         res += ")";
         return res;
     }
+    //
+    // ArrayRef<size_t>
     std::string to_string(const c10::ArrayRef<size_t>& vec) {
         std::string res = "(";
         for(size_t i = 0; i < vec.size(); ++i) {
@@ -56,6 +64,8 @@ namespace ad_tensor { namespace dev {
         res += ")";
         return res;
     }
+    //
+    // at::Tensor
     std::string to_string(const at::Tensor& tensor) {
         at::IntArrayRef shape  = tensor.sizes();
         std::string res = to_string(shape);
@@ -70,9 +80,13 @@ namespace ad_tensor { namespace dev {
         res += "]";
         return res;
     }
+    //
+    // adten_t
     std::string to_string(const adten_t& atensor) {
         return to_string( atensor.tensor() );
     }
+    //
+    // vector<at::Tensor>
     std::string to_string(const vector<at::Tensor>& vec) {
         std::string res;
         for(size_t i = 0; i < vec.size(); ++i) {
@@ -80,11 +94,29 @@ namespace ad_tensor { namespace dev {
         }
         return res;
     }
+    //
+    // vector<adten_t>
     std::string to_string(const vector<adten_t>& vec) {
         std::string res;
         for(size_t i = 0; i < vec.size(); ++i) {
             res += "[" + std::to_string(i) + "] = " + to_string(vec[i]) + "\n";
         }
+        return res;
+    }
+    //
+    // sparsity_t
+    std::string to_string(const sparsity_t& depend) {
+        //
+        std::string res;
+        res += "[";
+        for(size_t k = 0; k < depend.size(); ++k) {
+            auto [i, j] = depend[k];
+            res += "(" + std::to_string(i) + "," + std::to_string(j) + ")";
+            if( k + 1 < depend.size() ) {
+                res += ", ";
+            }
+        }
+        res += "]";
         return res;
     }
 } }
