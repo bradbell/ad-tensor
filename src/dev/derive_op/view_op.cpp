@@ -133,8 +133,10 @@ namespace ad_tensor { namespace dev {
         // for_der
         c10::IntArrayRef shape = var_vec[op_index].sizes();
         //
-        // var_vec
-        for_der[op_index] = for_der[operand_index].view(shape);
+        // for_der[op_index]
+        if( for_der[operand_index].numel() != 0 ) {
+            for_der[op_index] = for_der[operand_index].view(shape);
+        }
     }
     template void view_op_t<adten_t>::forward_der(
         size_t                       op_index    ,

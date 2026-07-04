@@ -39,7 +39,8 @@ rng_der
 *******
 This is the range direction that the derivative is computed with respect to.
 If rng_der[i].numel() is zero, then rng_der[i] will act like a zero tensor
-with the proper shape without having to do calculations with this value.
+with the same shape as range[i] and calculations that use this value will
+be skipped.
 
 var_all
 *******
@@ -65,9 +66,9 @@ is the domain derivative of the range space direction; i.e.
 
     dom_der =  (d / d dom_var) sum[ rng_der * adfn(dom_var, dom_par ) ]
 
-If dom_der[j].numel() is zero, then dom_der[j]
-is known to be zero with the same shape as domain[j] for this AD function
-(and has not been calculated).
+If dom_der[j].numel() is zero, then dom_der[j] has not been calculated
+because it is known to be zero with the same shape as domain[j]
+for this AD function
 
 Example
 *******

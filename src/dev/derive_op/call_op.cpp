@@ -101,9 +101,9 @@ void call_op_depend(
     size_t n_result  = agraph.m_arg_value[arg_start + 4];
     //
     // long_name, base_atom
-    atom_global_t&         atom_global   = atom_global_t::singleton();
-    const base_atom_t&     base_atom  = atom_global.get_base_atom(atom_id);
-    std::string            long_name  = base_atom.long_name(call_info);
+    atom_global_t&         atom_global  = atom_global_t::singleton();
+    const base_atom_t&     base_atom    = atom_global.get_base_atom(atom_id);
+    std::string            long_name    = base_atom.long_name(call_info);
     //
     // sparsity
     std::optional<sparsity_t> opt = base_atom.depend(call_info);

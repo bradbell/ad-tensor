@@ -132,14 +132,22 @@ namespace ad_tensor { namespace dev {
         assert( n_arg == 3 );
         assert( agraph.m_arg_type[arg_start+2] == ad_type_t::none );
 # endif
-        //
-        // square_type, rhs_type
-        ad_type_t square_type     = agraph.m_arg_type[arg_start];
-        ad_type_t rhs_type        = agraph.m_arg_type[arg_start + 1];
+        // variable
+        ad_type_t variable = ad_type_t::variable;
         //
         // square_index, rhs_index
         size_t square_index = agraph.m_arg_value[arg_start];
         size_t rhs_index = agraph.m_arg_value[arg_start + 1];
+        //
+        // square_type, rhs_type
+        ad_type_t square_type = agraph.m_arg_type[arg_start];
+        ad_type_t rhs_type = agraph.m_arg_type[arg_start + 1];
+        if( square_type == variable && for_der[square_index].numel() == 0 ) {
+            square_type = ad_type_t::constant;
+        }
+        if( rhs_type == variable && for_der[rhs_index].numel() == 0 ) {
+            rhs_type = ad_type_t::constant;
+        }
         //
         // square
         TensorType square = tensor_at_arg_index(

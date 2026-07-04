@@ -144,8 +144,10 @@ namespace ad_tensor { namespace dev {
         // operand_index
         size_t operand_index  = agraph.m_arg_value[arg_start];
         //
-        // for_der
-        for_der[op_index] = for_der[operand_index].transpose(dim1, dim2);
+        // for_der[op_index]
+        if( for_der[operand_index].numel() != 0 ) {
+            for_der[op_index] = for_der[operand_index].transpose(dim1, dim2);
+        }
     }
     template void transpose_op_t<adten_t>::forward_der(
         size_t                       op_index    ,

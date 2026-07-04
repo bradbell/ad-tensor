@@ -13,6 +13,7 @@
 {xrst_spell
     rng
     dt
+    numel
 }
 
 Compute A Domain Directional Derivative
@@ -38,6 +39,9 @@ This is either at::Tensor or :ref:`adten-name` .
 dom_der
 *******
 This is the domain direction that the derivative is computed with respect to.
+If dom_der[j].numel() is zero, then dom_der[j] will act like a zero tensor
+with the same shape as domain[j] and calculations that use this value will
+be skipped.
 
 var_all
 *******
@@ -62,6 +66,10 @@ rng_der
 is the directional derivative of the range in the dom_der direction; i.e.
 
     rng_der = d/dt adfn(dom_var + t * dom_der, dom_par)
+
+If rng_der[i].numel() is zero, then rng_der[i] has not been calculated
+because it is known to be zero with the same shape as range[i]
+for this AD function
 
 
 Example
@@ -155,14 +163,12 @@ vector<TensorType> adfn_t::forward_der(
         switch(ad_type) {
             //
             case ad_type_t::constant: {
-                c10::IntArrayRef shape = m_con[index].sizes();
-                rng_der.push_back( TensorType(torch::zeros( shape ) ) );
+                rng_der.push_back( TensorType(torch::empty( {0} )) );
             }
             break;
             //
             case ad_type_t::parameter: {
-                c10::IntArrayRef shape = par_all[index].sizes();
-                rng_der.push_back( TensorType( torch::zeros( shape ) ) );
+                rng_der.push_back( TensorType(torch::empty( {0} )) );
             }
             break;
             //

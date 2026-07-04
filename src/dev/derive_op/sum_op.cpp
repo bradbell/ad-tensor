@@ -156,6 +156,9 @@ namespace ad_tensor { namespace dev {
 #endif
         // operand_index
         size_t operand_index  = agraph.m_arg_value[arg_start];
+        if( for_der[operand_index].numel() == 0 ) {
+            return;
+        }
         //
         if( n_dim == 0 ) {
             // for_der

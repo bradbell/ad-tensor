@@ -62,8 +62,7 @@ TEST(tests, adten_sum_op)  {
     //
     EXPECT_EQ( dy.size(), y.size() );
     //
-    equal = dy[0].equal( torch::tensor( 0.0 ) );
-    EXPECT_TRUE( equal );
+    EXPECT_EQ( dy[0].numel(), 0);
     //
     equal = dy[1].equal( dx[0].sum(dim) );
     EXPECT_TRUE( equal );

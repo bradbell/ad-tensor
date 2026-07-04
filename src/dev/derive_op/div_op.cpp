@@ -113,15 +113,24 @@ namespace ad_tensor { namespace dev {
         size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
         assert( n_arg == 2 && "div: n_arg != 2" );
 # endif
-        //
-        // lhs_type, rhs_type
-        ad_type_t lhs_type = agraph.m_arg_type[arg_start];
-        ad_type_t rhs_type = agraph.m_arg_type[arg_start + 1];
+        // variable
+        ad_type_t variable = ad_type_t::variable;
         //
         // lhs_index, rhs_index
         size_t lhs_index = agraph.m_arg_value[arg_start];
         size_t rhs_index = agraph.m_arg_value[arg_start + 1];
         //
+        // lhs_type, rhs_type
+        ad_type_t lhs_type = agraph.m_arg_type[arg_start];
+        ad_type_t rhs_type = agraph.m_arg_type[arg_start + 1];
+        if( lhs_type == variable && for_der[lhs_index].numel() == 0 ) {
+            lhs_type = ad_type_t::constant;
+        }
+        if( rhs_type == variable && for_der[rhs_index].numel() == 0 ) {
+            rhs_type = ad_type_t::constant;
+        }
+        //
+        // for_der[op_index]
         if( lhs_type != ad_type_t::variable ) {
             assert( rhs_type == ad_type_t::variable );
             //
