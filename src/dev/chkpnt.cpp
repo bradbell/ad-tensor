@@ -46,28 +46,18 @@ A call to get will wait until it can lock out any calls to store.
 */
 #include <ad_tensor/dev/chkpnt.hpp>
 #include <ad_tensor/dev/move_swap.hpp>
+#include <ad_tensor/dev/user_assert.hpp>
 #include <ad_tensor/base_atom.hpp>
+#include <ad_tensor/chkpnt.hpp>
 #
-#define GET_ADFN \
+#define GET_CHKPNT_INFO \
      size_t               chkpnt_id    = call_info; \
      chkpnt_global_t&     global       = chkpnt_global_t::singleton(); \
-     const chkpnt_info_t& chkpnt_info  = global.get_chkpnt_info(chkpnt_id); \
-     const adfn_t&        adfn         = chkpnt_info.m_adfn;
+     const chkpnt_info_t& chkpnt_info  = global.get_chkpnt_info(chkpnt_id);
 
 //
 //
 namespace ad_tensor { namespace dev { // BEGIN_AD_TENSOR_DEV_NAMESPACE
-//
-// make_chkpnt
-size_t make_chkpnt(adfn_t& adfn) {
-    //
-    // chkpnt_id
-    chkpnt_global_t& chkpnt_global = chkpnt_global_t::singleton();
-    chkpnt_info_t    chkpnt_info   = chkpnt_info_t::from_adfn(adfn);
-    size_t chkpnt_id               = chkpnt_global.store(chkpnt_info);
-    //
-    return chkpnt_id;
-}
 // ------------------------------------------------------------------------
 // derive_chkpnt_t
 // ------------------------------------------------------------------------
@@ -81,7 +71,8 @@ public:
     std::string long_name(size_t call_info) const override {
         //
         // adfn
-        GET_ADFN
+        GET_CHKPNT_INFO
+        const adfn_t& adfn = chkpnt_info.m_adfn;
         //
         return get_name() + "." + adfn.get_name();
     }
@@ -105,7 +96,8 @@ public:
         const vector<at::Tensor>&         domain    ) const override {
         //
         // adfn
-        GET_ADFN
+        GET_CHKPNT_INFO
+        const adfn_t& adfn = chkpnt_info.m_adfn;
         //
         vector<at::Tensor> var_all = adfn.forward_var(domain);
         vector<at::Tensor> range   = adfn.get_range(var_all);
@@ -113,7 +105,7 @@ public:
         std::optional< vector<at::Tensor> > opt = range;
         return opt;
     }
-    // forward_der
+    // forward_der: at::Tensor
     std::optional< vector<at::Tensor> > forward_der(
         size_t                            call_info ,
         const vector<bool>&               rng_used  ,
@@ -121,7 +113,8 @@ public:
         const vector<at::Tensor>&         dom_der   ) const override {
         //
         // adfn
-        GET_ADFN
+        GET_CHKPNT_INFO
+        const adfn_t& adfn = chkpnt_info.m_adfn;
         //
         vector<at::Tensor> var_all = adfn.forward_var(domain);
         vector<at::Tensor> rng_der = adfn.forward_der(dom_der, var_all);
@@ -129,7 +122,7 @@ public:
         std::optional< vector<at::Tensor> > opt = rng_der;
         return opt;
     }
-    // reverse_der
+    // reverse_der: at::Tensor
     std::optional< vector<at::Tensor> > reverse_der(
         size_t                            call_info ,
         const vector<bool>&               rng_used  ,
@@ -137,7 +130,8 @@ public:
         const vector<at::Tensor>&         rng_der   ) const override {
         //
         // adfn
-        GET_ADFN
+        GET_CHKPNT_INFO
+        const adfn_t& adfn = chkpnt_info.m_adfn;
         //
         vector<at::Tensor> var_all = adfn.forward_var(domain);
         vector<at::Tensor> dom_der = adfn.reverse_der(rng_der, var_all);
@@ -145,20 +139,69 @@ public:
         std::optional< vector<at::Tensor> > opt = dom_der;
         return opt;
     }
+    // forward_der: adten_t
+    std::optional< vector<adten_t> >    forward_der(
+        size_t                            call_info ,
+        const vector<bool>&               rng_used  ,
+        const vector<adten_t>&            domain    ,
+        const vector<adten_t>&            dom_der   ) const override {
+        //
+        // for_chkpnt_id
+        GET_CHKPNT_INFO
+        std::optional<size_t> for_chkpnt_id = chkpnt_info.m_for_chkpnt_id;
+        if( ! for_chkpnt_id.has_value() ) {
+            const adfn_t& adfn = chkpnt_info.m_adfn;
+            dev::user_assert(false, adfn.get_name() + ".chkpnt: "
+                "forward_der for adten_t vectors not defined."
+            );
+        }
+        //
+        // dom_both
+        vector<adten_t> dom_both;
+        for(size_t k = 0; k < domain.size(); ++k) {
+            dom_both.push_back( domain[k] );
+        }
+        for(size_t k = 0; k < dom_der.size(); ++k) {
+            dom_both.push_back( dom_der[k] );
+        }
+        //
+        vector<adten_t> rng_der = call_chkpnt(for_chkpnt_id.value(), dom_both);
+        //
+        std::optional< vector<adten_t> > opt = rng_der;
+        return opt;
+    }
+    // reverse_der: adten_t
+    std::optional< vector<adten_t> >    reverse_der(
+        size_t                            call_info ,
+        const vector<bool>&               rng_used  ,
+        const vector<adten_t>&            domain    ,
+        const vector<adten_t>&            dom_der   ) const override {
+        //
+        // rev_chkpnt_id
+        GET_CHKPNT_INFO
+        std::optional<size_t> rev_chkpnt_id = chkpnt_info.m_rev_chkpnt_id;
+        if( ! rev_chkpnt_id.has_value() ) {
+            const adfn_t& adfn = chkpnt_info.m_adfn;
+            dev::user_assert(false, adfn.get_name() + ".chkpnt: "
+                "reverse_der for adten_t vectors not defined."
+            );
+        }
+        //
+        // dom_both
+        vector<adten_t> dom_both;
+        for(size_t k = 0; k < domain.size(); ++k) {
+            dom_both.push_back( domain[k] );
+        }
+        for(size_t k = 0; k < dom_der.size(); ++k) {
+            dom_both.push_back( dom_der[k] );
+        }
+        //
+        vector<adten_t> rng_der = call_chkpnt(rev_chkpnt_id.value(), dom_both);
+        //
+        std::optional< vector<adten_t> > opt = rng_der;
+        return opt;
+    }
 };
-// ------------------------------------------------------------------------
-// chkpnt_info_t
-// ------------------------------------------------------------------------
-//
-// from_adfn
-chkpnt_info_t chkpnt_info_t::from_adfn(adfn_t& adfn) {
-    chkpnt_info_t info;
-
-    auto [depend_par, depend_var] = adfn.forward_dep();
-    dev::move_swap( depend_var, info.m_depend );
-    dev::move_swap( adfn,       info.m_adfn );
-    return info;
-}
 // ------------------------------------------------------------------------
 // chkpnt_global_t
 // ------------------------------------------------------------------------

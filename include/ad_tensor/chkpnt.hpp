@@ -5,9 +5,23 @@
 // ----------------------------------------------------------------------------
 #include<ad_tensor/adfn.hpp>
 #include<ad_tensor/adten.hpp>
+//
 namespace ad_tensor {
-    // make_chkpnt
-    size_t make_chkpnt(adfn_t& adfn);
+    //
+    // BEGIN_DIRECTION
+    enum struct direction_t {
+        forward,
+        reverse,
+    };
+    // END_DIRECTION
+    //
+    // BEGIN_MAKE_CHKPNT
+    size_t make_chkpnt(
+        adfn_t&                      adfn,
+        c10::ArrayRef<direction_t>   directions = c10::ArrayRef<direction_t>()
+    );
+    // END_MAKE_CHKPNT
+    //
     // call_chkpnt
     vector<adten_t> call_chkpnt(
         size_t                 chkpnt_id ,

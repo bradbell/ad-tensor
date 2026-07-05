@@ -24,6 +24,13 @@ parameter and variable values for each derivative direction.
 Convert an AD Function to a Checkpoint Function
 ###############################################
 
+direction_t
+***********
+{xrst_literal ,
+    include/ad_tensor/chkpnt.hpp
+    BEGIN_DIRECTION, END_DIRECTION
+}
+
 Syntax
 ******
 {xrst_code cpp}
@@ -33,6 +40,7 @@ chkpnt_id = make_chkpnt(adfn)
 Prototype
 *********
 {xrst_literal ,
+    include/ad_tensor/chkpnt.hpp
     BEGIN_MAKE_CHKPNT, END_MAKE_CHKPNT
 }
 
@@ -87,18 +95,26 @@ is the AD tensor version of the range for this checkpoint function call.
 */
 #include <ad_tensor/dev/chkpnt.hpp>
 #include <ad_tensor/dev/move_swap.hpp>
+#include <ad_tensor/chkpnt.hpp>
 //
 //
 namespace ad_tensor { // BEGIN_AD_TENSOR_NAMESPACE
 //
 // BEGIN_MAKE_CHKPNT
-size_t make_chkpnt(adfn_t& adfn)
+size_t make_chkpnt(
+    adfn_t&                      adfn,
+    c10::ArrayRef<direction_t>   directions )
 {   // END_MAKE_CHKPNT
     //
+    // info
+    dev::chkpnt_info_t info;
+    auto [depend_par, depend_var] = adfn.forward_dep();
+    dev::move_swap( depend_var, info.m_depend );
+    dev::move_swap( adfn,       info.m_adfn );
+    //
     // chkpnt_id
-    dev::chkpnt_global_t& chkpnt_global = dev::chkpnt_global_t::singleton();
-    dev::chkpnt_info_t    chkpnt_info   = dev::chkpnt_info_t::from_adfn(adfn);
-    size_t chkpnt_id                    = chkpnt_global.store(chkpnt_info);
+    dev::chkpnt_global_t& global = dev::chkpnt_global_t::singleton();
+    size_t chkpnt_id             = global.store(info);
     //
     return chkpnt_id;
 }

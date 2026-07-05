@@ -17,11 +17,10 @@ namespace ad_tensor  { namespace dev {
     public:
         //
         // m_adfn, m_depend
-        adfn_t     m_adfn;
-        sparsity_t m_depend;
-        //
-        // from_adfn
-        static chkpnt_info_t from_adfn(adfn_t& adfn);
+        adfn_t                m_adfn;
+        sparsity_t            m_depend;
+        std::optional<size_t> m_for_chkpnt_id;
+        std::optional<size_t> m_rev_chkpnt_id;
     };
     // -----------------------------------------------------------------------
     // chkpnt_global_t
