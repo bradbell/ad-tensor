@@ -72,7 +72,7 @@ d
 EOF
 #
 # cxx_flags
-cxx_flags='-Wall -pedantic-errors -Wshadow -Wfloat-conversion -Wconversion'
+cxx_flags='-std=c++17 -Wall -pedantic-errors -Wshadow -Wfloat-conversion -Wconversion'
 
 #
 # cmake

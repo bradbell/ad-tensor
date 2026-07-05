@@ -34,10 +34,10 @@ namespace ad_tensor {
     template <class T> class vector : public std::vector<T>
     {
     public:
-        typedef std::vector<T>::size_type       size_type;
-        typedef std::vector<T>::value_type      value_type;
-        typedef std::vector<T>::reference       reference;
-        typedef std::vector<T>::const_reference const_reference;
+        typedef typename std::vector<T>::size_type       size_type;
+        typedef typename std::vector<T>::value_type      value_type;
+        typedef typename std::vector<T>::reference       reference;
+        typedef typename std::vector<T>::const_reference const_reference;
         // ...
         // constructors and assignment member functions here
         // ...

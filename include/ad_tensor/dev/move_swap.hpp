@@ -3,6 +3,7 @@
 // SPDX-FileCopyrightText: Bradley M. Bell <bradbell@seanet.com>
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
+#include <utility>
 /*
 {xrst_begin move_swap dev}
 {xrst_spell

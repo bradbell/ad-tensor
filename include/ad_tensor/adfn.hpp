@@ -94,6 +94,7 @@ is the shape for each of the range tensors.
 */
 #include <ad_tensor/vector.hpp>
 #include <torch/torch.h>
+#include <ad_tensor/direction.hpp>
 #include <ad_tensor/ad_type.hpp>
 #include <ad_tensor/sparsity.hpp>
 #include <ad_tensor/dev/agraph.hpp>
@@ -206,4 +207,12 @@ public:
         const vector<TensorType>& all_par = vector<TensorType>()
     ) const;
     // END_REVERSE_DER
+    //
+    // BEGIN_MAKE_CHKPNT
+    static size_t make_chkpnt(
+        adfn_t&                      adfn,
+        const vector<at::Tensor>&    domain     = vector<at::Tensor>(),
+        c10::ArrayRef<direction_t>   directions = c10::ArrayRef<direction_t>()
+    );
+    // END_MAKE_CHKPNT
 }; }

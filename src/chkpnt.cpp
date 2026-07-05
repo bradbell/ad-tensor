@@ -19,6 +19,9 @@ parameter and variable values for each derivative direction.
 {xrst_begin make_chkpnt usr}
 {xrst_spell
     adfn
+    dir
+    der
+    adten
 }
 
 Convert an AD Function to a Checkpoint Function
@@ -27,20 +30,20 @@ Convert an AD Function to a Checkpoint Function
 direction_t
 ***********
 {xrst_literal ,
-    include/ad_tensor/chkpnt.hpp
+    include/ad_tensor/direction.hpp
     BEGIN_DIRECTION, END_DIRECTION
 }
 
 Syntax
 ******
 {xrst_code cpp}
-chkpnt_id = make_chkpnt(adfn)
+chkpnt_id = adten_t::make_chkpnt(adfn, domain, directions)
 {xrst_code}
 
 Prototype
 *********
 {xrst_literal ,
-    include/ad_tensor/chkpnt.hpp
+    include/ad_tensor/adfn.hpp
     BEGIN_MAKE_CHKPNT, END_MAKE_CHKPNT
 }
 
@@ -54,6 +57,32 @@ and can be accessed using chkpnt_id.
 chkpnt_id
 *********
 is the identifier for this checkpoint function.
+
+domain
+******
+This is only used when directions.size() > 0.
+It is a vector of domain values used to record the forward the computation
+of the forward or reverse mode derivative of adfn.
+
+directions
+**********
+Let n_dir = directions.size().
+If g is an adfn recorded using calls to this chkpnt function.
+the calls will support all the g operations except possibly recording
+g.forward_der and g.reverse_der derivatives
+(using these functions  with vector<adten_t> arguments).
+The call to this checkpoint will enable recording up to order n_dir
+derivatives of g (enables evaluation of order n_dir+1 derivatives).
+
+forward
+=======
+If directions[0] == forward,
+this checkpoint call will support recording order n_dir
+derivatives of g that start a g.forward_der (for vector<adten_t>).
+This is accomplished by recording adfn_new where
+adfn_new.forward corresponds to adfn.forward_der.
+This new AD function is called using a new checkpoint that
+supports directions.slice(1) derivatives.
 
 
 {xrst_end make_chkpnt}
@@ -93,24 +122,57 @@ is the AD tensor version of the range for this checkpoint function call.
 
 {xrst_end call_chkpnt}
 */
-#include <ad_tensor/dev/chkpnt.hpp>
 #include <ad_tensor/dev/move_swap.hpp>
+#include <ad_tensor/dev/chkpnt.hpp>
 #include <ad_tensor/chkpnt.hpp>
 //
 //
 namespace ad_tensor { // BEGIN_AD_TENSOR_NAMESPACE
 //
-// BEGIN_MAKE_CHKPNT
-size_t make_chkpnt(
-    adfn_t&                      adfn,
-    c10::ArrayRef<direction_t>   directions )
-{   // END_MAKE_CHKPNT
+size_t adfn_t::make_chkpnt(
+    adfn_t&                          adfn,
+    const vector<at::Tensor>&        domain,
+    const c10::ArrayRef<direction_t> directions ) {
     //
     // info
     dev::chkpnt_info_t info;
     auto [depend_par, depend_var] = adfn.forward_dep();
     dev::move_swap( depend_var, info.m_depend );
     dev::move_swap( adfn,       info.m_adfn );
+    //
+    // info.m_for_chkpnt_id
+    if( directions.size() > 0 && directions[0] == direction_t::forward ) {
+        //
+        // n_domain
+        size_t n_domain = domain.size();
+        //
+        // adom_both
+        vector<at::Tensor> dom_both = domain;
+        for(size_t k = 0; k < n_domain; ++k) {
+            c10::IntArrayRef shape = domain[k].sizes();
+            dom_both.push_back( torch::ones( shape ) );
+        }
+        vector<adten_t> adom_both = adten_t::start_recording(dom_both);
+        //
+        // adomain, adom_der
+        vector<adten_t> adomain, adom_der;
+        for(size_t k = 0; k < n_domain; ++k) {
+            adomain.push_back( adom_both[k] );
+            adom_der.push_back( adom_both[n_domain + k] );
+        }
+        //
+        // arng_der
+        vector<adten_t> avar_all = adfn.forward_var(adomain);
+        vector<adten_t> arng_der = adfn.forward_der(adom_der, avar_all);
+        //
+        // adfn_forward
+        std::string name = adfn.get_name() + ".forward";
+        adfn_t adfn_forward = adten_t::stop_recording(arng_der, name);
+        //
+        info.m_for_chkpnt_id = make_chkpnt(
+            adfn_forward, dom_both, directions.slice(1)
+        );
+    }
     //
     // chkpnt_id
     dev::chkpnt_global_t& global = dev::chkpnt_global_t::singleton();
