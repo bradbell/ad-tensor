@@ -4,9 +4,7 @@
 // ----------------------------------------------------------------------------
 // BEGIN_CPP
 #include <gtest/gtest.h>
-#include <torch/torch.h>
-//
-#include <ad_tensor/adten.hpp>
+#include <ad_tensor/ad_tensor.hpp>
 //
 TEST(examples_adfn, forward_var)  {
     using ad_tensor::adten_t;

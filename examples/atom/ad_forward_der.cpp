@@ -3,15 +3,9 @@
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
 // BEGIN_CPP
-#include <ad_tensor/adfn.hpp>
 #include <gtest/gtest.h>
-#include <torch/torch.h>
-#include <ad_tensor/adten.hpp>
-#include <ad_tensor/dev/atom.hpp>
-#include <ad_tensor/sparsity.hpp>
-#include <ad_tensor/to_string.hpp>
-#include <ad_tensor/base_atom.hpp>
-#include <ad_tensor/atom.hpp>
+#include <ad_tensor/ad_tensor.hpp>
+//
 namespace {
     //
     // using

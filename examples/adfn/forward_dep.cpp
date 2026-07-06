@@ -4,11 +4,7 @@
 // ----------------------------------------------------------------------------
 // BEGIN_CPP
 #include <gtest/gtest.h>
-#include <torch/torch.h>
-//
-#include <ad_tensor/adten.hpp>
-#include <ad_tensor/sparsity.hpp>
-#include <ad_tensor/ad_type.hpp>
+#include <ad_tensor/ad_tensor.hpp>
 namespace {
     std::array<size_t, 2> pair(size_t row, size_t col) {
         return std::array<size_t, 2>({row, col});

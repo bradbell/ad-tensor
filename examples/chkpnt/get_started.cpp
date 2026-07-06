@@ -2,13 +2,9 @@
 // SPDX-FileCopyrightText: Bradley M. Bell <bradbell@seanet.com>
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
-#include <ad_tensor/adfn.hpp>
 #include <gtest/gtest.h>
-#include <torch/torch.h>
-#include <ad_tensor/adten.hpp>
-#include <ad_tensor/chkpnt.hpp>
-#include <ad_tensor/sparsity.hpp>
-#include <ad_tensor/vector.hpp>
+#include <ad_tensor/ad_tensor.hpp>
+//
 namespace {
     using at::Tensor;
     using ad_tensor::vector;
