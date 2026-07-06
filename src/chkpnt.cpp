@@ -137,8 +137,7 @@ size_t adfn_t::make_chkpnt(
     // info
     dev::chkpnt_info_t info;
     //
-    // info.mfor_chkpnt_id
-    std::optional<size_t> for_chkpnt_id;
+    // info.m_for_chkpnt_id
     if( directions.size() > 0 && directions[0] == direction_t::forward ) {
         //
         // n_domain
@@ -164,11 +163,50 @@ size_t adfn_t::make_chkpnt(
         vector<adten_t> arng_der = adfn.forward_der(adom_der, avar_all);
         //
         // adfn_forward
-        std::string name = adfn.get_name() + ".forward";
+        std::string name = adfn.get_name() + "_forward";
         adfn_t adfn_forward = adten_t::stop_recording(arng_der, name);
+        adfn_forward.set_trace( adfn.get_trace() );
         //
         info.m_for_chkpnt_id = make_chkpnt(
             adfn_forward, dom_both, directions.slice(1)
+        );
+    }
+    //
+    // info.m_rev_chkpnt_id
+    if( directions.size() > 0 && directions[0] == direction_t::reverse ) {
+        //
+        // n_domain, n_range
+        size_t n_domain = domain.size();
+        size_t n_range  = adfn.m_rng_shapes.size();
+        //
+        // adom_both
+        vector<at::Tensor> dom_both = domain;
+        for(size_t k = 0; k < n_range; ++k) {
+            c10::IntArrayRef shape = adfn.m_rng_shapes[k];
+            dom_both.push_back( torch::ones( shape ) );
+        }
+        vector<adten_t> adom_both = adten_t::start_recording(dom_both);
+        //
+        // adomain, arng_der
+        vector<adten_t> adomain, arng_der;
+        for(size_t k = 0; k < n_domain; ++k) {
+            adomain.push_back( adom_both[k] );
+        }
+        for(size_t k = 0; k < n_range; ++k) {
+            arng_der.push_back( adom_both[n_domain + k] );
+        }
+        //
+        // arng_der
+        vector<adten_t> avar_all = adfn.forward_var(adomain);
+        vector<adten_t> adom_der = adfn.reverse_der(arng_der, avar_all);
+        //
+        // adfn_reverse
+        std::string name = adfn.get_name() + "_reverse";
+        adfn_t adfn_reverse = adten_t::stop_recording(adom_der, name);
+        adfn_reverse.set_trace( adfn.get_trace() );
+        //
+        info.m_rev_chkpnt_id = make_chkpnt(
+            adfn_reverse, dom_both, directions.slice(1)
         );
     }
     //

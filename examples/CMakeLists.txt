@@ -18,6 +18,7 @@ add_executable(examples
     atom/ad_reverse_der.cpp
     atom/get_started.cpp
     chkpnt/ad_forward_der.cpp
+    chkpnt/ad_reverse_der.cpp
     chkpnt/get_started.cpp
 )
 # END_SORT_THIS_LINE_MINUS_2

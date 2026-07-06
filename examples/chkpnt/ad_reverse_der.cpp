@@ -12,11 +12,11 @@ namespace {
     using ad_tensor::adfn_t;
     using ad_tensor::direction_t;
 }
-TEST(examples_chkpnt, ad_forward_der)  {
+TEST(examples_chkpnt, ad_reverse_der)  {
     //
     // x
     vector<Tensor> x;
-    x.push_back( torch::tensor( {1.0, 2.0} ) );
+    x.push_back( torch::tensor( {3.0, 4.0} ) );
     //
     // ax
     vector<adten_t> ax = adten_t::start_recording(x);
@@ -29,7 +29,7 @@ TEST(examples_chkpnt, ad_forward_der)  {
     adfn_t f = adten_t::stop_recording(ay, "f");
     //
     // chkpnt_id
-    vector<direction_t> directions = { direction_t::forward };
+    vector<direction_t> directions = { direction_t::reverse };
     size_t chkpnt_id  = adfn_t::make_chkpnt(f, x, directions);
     //
     // z = g(x) = f(x) * x = x * x * x
@@ -43,27 +43,27 @@ TEST(examples_chkpnt, ad_forward_der)  {
     ax = adten_t::start_recording(x);
     vector<adten_t> avar_all = g.forward_var(ax);
     //
-    // adz = h(x) = g'(x) = 3.0 * x * x
-    vector<adten_t> adx;
-    adx.push_back( adten_t( torch::tensor( {1.0, 1.0} ) ) );
-    vector<adten_t> adz = g.forward_der(adx, avar_all);
-    adfn_t h = adten_t::stop_recording(adz, "h");
+    // h(x) = g'(x) = 3.0 * x * x
+    vector<adten_t> adz;
+    adz.push_back( adten_t( torch::tensor( {1.0, 1.0} ) ) );
+    vector<adten_t> adx = g.reverse_der(adz, avar_all);
+    adfn_t h = adten_t::stop_recording(adx, "h");
     //
-    // x, var_all, dz
+    // x, var_all, gp
     x[0]                   = torch::tensor( {3.0, 4.0} );
     vector<Tensor> var_all = h.forward_var(x);
-    vector<Tensor> dz      = h.get_range(var_all);
+    vector<Tensor> gp      = h.get_range(var_all);
     //
     // equal
-    bool equal =  dz[0].equal( 3.0 * x[0] * x[0] );
+    bool equal =  gp[0].equal( 3.0 * x[0] * x[0] );
     EXPECT_TRUE(equal);
     //
-    // ddz
-    vector<Tensor> dx;
-    dx.push_back( torch::tensor( {1.0, 1.0} ) );
-    vector<Tensor> ddz = h.forward_der(dx, var_all);
+    // gpp
+    vector<Tensor> dgp;
+    dgp.push_back( torch::tensor( {1.0, 1.0} ) );
+    vector<Tensor> gpp = h.reverse_der(dgp, var_all);
     //
     // equal
-    equal =  ddz[0].equal( 6.0 * x[0] );
+    equal =  gpp[0].equal( 6.0 * x[0] );
     EXPECT_TRUE(equal);
 }

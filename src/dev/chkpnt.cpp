@@ -175,7 +175,7 @@ public:
         size_t                            call_info ,
         const vector<bool>&               rng_used  ,
         const vector<adten_t>&            domain    ,
-        const vector<adten_t>&            dom_der   ) const override {
+        const vector<adten_t>&            rng_der   ) const override {
         //
         // rev_chkpnt_id
         GET_CHKPNT_INFO
@@ -192,13 +192,13 @@ public:
         for(size_t k = 0; k < domain.size(); ++k) {
             dom_both.push_back( domain[k] );
         }
-        for(size_t k = 0; k < dom_der.size(); ++k) {
-            dom_both.push_back( dom_der[k] );
+        for(size_t k = 0; k < rng_der.size(); ++k) {
+            dom_both.push_back( rng_der[k] );
         }
         //
-        vector<adten_t> rng_der = call_chkpnt(rev_chkpnt_id.value(), dom_both);
+        vector<adten_t> dom_der = call_chkpnt(rev_chkpnt_id.value(), dom_both);
         //
-        std::optional< vector<adten_t> > opt = rng_der;
+        std::optional< vector<adten_t> > opt = dom_der;
         return opt;
     }
 };
