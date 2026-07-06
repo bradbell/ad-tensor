@@ -42,6 +42,12 @@ depend_var
 If the index (i, j) is in depend_var,
 the value at range index i value depends on the domain variable with index j,
 
+Example
+*******
+{xrst_toc_table
+    examples/adfn/forward_dep.cpp
+}
+
 {xrst_end adfn_forward_dep}
 */
 namespace ad_tensor { // BEGIN_NAMESPACE_AD_TENSOR

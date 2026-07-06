@@ -67,22 +67,34 @@ of the forward or reverse mode derivative of adfn.
 directions
 **********
 Let n_dir = directions.size().
-If g is an adfn recorded using calls to this chkpnt function.
-the calls will support all the g operations except possibly recording
-g.forward_der and g.reverse_der derivatives
-(using these functions  with vector<adten_t> arguments).
-The call to this checkpoint will enable recording up to order n_dir
-derivatives of g (enables evaluation of order n_dir+1 derivatives).
+If g is an adfn recorded using calls to this chkpnt function,
+this checkpoint will support all the g operations except possibly that
+vector<adten_t> versions of g.forward_der and g.reverse_der.
+The this checkpoint will support recording up to order n_dir
+derivatives of g and evaluation of order n_dir+1 derivatives.
 
 forward
 =======
 If directions[0] == forward,
-this checkpoint call will support recording order n_dir
-derivatives of g that start a g.forward_der (for vector<adten_t>).
+this checkpoint call will support recording up to order n_dir
+derivatives of g that start a g.forward_der.
 This is accomplished by recording adfn_new where
-adfn_new.forward corresponds to adfn.forward_der.
-This new AD function is called using a new checkpoint that
-supports directions.slice(1) derivatives.
+adfn_new.forward_var corresponds to adfn.forward_der.
+
+#.  The new AD function is used to define a new checkpoint that
+    supports directions.slice(1) derivatives.
+
+#.  The name of the new AD function is adfn.get_name() + "_forward" .
+
+#.  The trace setting for the new AD function is adfn.get_trace()
+
+reverse
+=======
+If directions[0] == reverse,
+this checkpoint call will support recording order n_dir
+derivatives of g that start a g.reverse_der (for vector<adten_t>).
+This is accomplished in a similar way to the description above with
+forward replaced by reverse.
 
 
 {xrst_end make_chkpnt}
