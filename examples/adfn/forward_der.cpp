@@ -2,6 +2,59 @@
 // SPDX-FileCopyrightText: Bradley M. Bell <bradbell@seanet.com>
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
+/*
+{xrst_begin adfn_forward_der_example usr}
+{xrst_spell
+    cc
+    dv
+}
+
+Domain Directional Derivative Example
+#####################################
+
+Discussion
+**********
+For this example
+
+.. math::
+
+    f(v) = \left[ \begin{array}{c} \\
+        v_0 + v_1 \\
+        v_0 - v_1 \\
+        v_0 * v_1 \\
+        v_0 / v_1 \\
+    \end{array} \right ]
+
+It follows that the derivative f'(v) is given by
+
+.. math::
+
+    f'(v) = \left[ \begin{array}{cc} \\
+        1 & 1  \\
+        1 & - 1 \\
+        v_1 & v_0 \\
+        1 / v_1 & - v_0 / v_1^2 \\
+    \end{array} \right ]
+
+So the directional derivative in the direction dv is given by
+
+.. math::
+
+    f'(v) * dv = \left[ \begin{array}{cc} \\
+        dv_0 + dv_1  \\
+        dv_0 - dv_1   \\
+        v_1 * dv_0 + v_0 * dv_1 \\
+        dv_0 / v_1  - v_0 * dv_1 / v_1^2 \\
+    \end{array} \right ]
+
+Source Code
+***********
+{xrst_literal ,
+    BEGIN_CPP, END_CPP
+}
+
+{xrst_end adfn_forward_der_example}
+*/
 // BEGIN_CPP
 #include <gtest/gtest.h>
 #include <ad_tensor/ad_tensor.hpp>
@@ -12,58 +65,53 @@ TEST(examples_adfn, forward_der)  {
     using at::Tensor;
     using ad_tensor::vector;
     //
-    // x
-    // We use x for the domain variables
-    vector<Tensor> x;
-    x.push_back( torch::tensor( {4.0, 8.0} ) );
-    x.push_back( torch::tensor( {2.0} ) );
+    // v
+    // We use v for the domain variables
+    vector<Tensor> v;
+    v.push_back( torch::tensor( {1.0, 1.0} ) );
+    v.push_back( torch::tensor( {1.0, 1.0} ) );
     //
-    // ax
-    vector<adten_t> ax = adten_t::start_recording(x);
+    // av
+    vector<adten_t> av = adten_t::start_recording(v);
     //
-    // ay
-    // We use y for the range space
-    vector<adten_t> ay;
-    ay.push_back(  ax[0] + ax[1] );
-    ay.push_back(  ax[0] - ax[1] );
-    ay.push_back(  ax[0] * ax[1] );
-    ay.push_back(  ax[0] / ax[1] );
+    // ar
+    // We use r for the range space
+    vector<adten_t> ar;
+    ar.push_back(  av[0] + av[1] );
+    ar.push_back(  av[0] - av[1] );
+    ar.push_back(  av[0] * av[1] );
+    ar.push_back(  av[0] / av[1] );
     //
-    // y = f(x)
+    // r = f(v)
     // We use f for the adfn_t object.
-    adfn_t f = adten_t::stop_recording(ay, "f");
+    adfn_t f = adten_t::stop_recording(ar, "f");
     //
-    // var_all
-    vector<Tensor> var_all = f.forward_var(x);
+    // v, v_all
+    v[0] = torch::tensor( {1.0, 2.0} );
+    v[1] = torch::tensor( {3.0, 4.0} );
+    vector<Tensor> v_all = f.forward_var(v);
     //
-    // y
-    vector<Tensor> y = f.get_range(var_all);
+    // dv
+    vector<Tensor> dv;
+    dv.push_back( torch::tensor( {5.0, 6.0} ) );
+    dv.push_back( torch::tensor( {7.0, 8.0} ) );
     //
-    EXPECT_EQ( y.size(), ay.size() );
+    // dr
+    vector<Tensor> dr = f.forward_der(dv, v_all);
     //
-    bool equal = y[0].equal( torch::tensor({6.0, 10.0}) );
+    // equal, close
+    bool equal, close;
+    //
+    equal = dr[0].equal( dv[0] + dv[1] );
     EXPECT_TRUE( equal );
     //
-    // dx
-    vector<Tensor> dx;
-    dx.push_back( torch::tensor( {1.0, 1.0} ) );
-    dx.push_back( torch::tensor( {1.0} ) );
-    //
-    // dy
-    vector<Tensor> dy = f.forward_der(dx, var_all);
-    //
-    EXPECT_EQ( dy.size(), y.size() );
-    //
-    equal = dy[0].equal( torch::tensor({2.0, 2.0}) );
+    equal = dr[1].equal( dv[0] - dv[1] );
     EXPECT_TRUE( equal );
     //
-    equal = dy[1].equal( torch::tensor({0.0, 0.0}) );
+    equal = dr[2].equal( v[1] * dv[0] + v[0] * dv[1] );
     EXPECT_TRUE( equal );
     //
-    equal = dy[2].equal( torch::tensor({2.0 + 4.0, 2.0 + 8.0}) );
-    EXPECT_TRUE( equal );
-    //
-    equal = dy[3].equal( torch::tensor({ (2.0-4.0)/4.0, (2.0-8.0)/4.0 }) );
-    EXPECT_TRUE( equal );
+    close = dr[3].allclose( dv[0] / v[1] - v[0] * dv[1] /(v[1] * v[1]) );
+    EXPECT_TRUE( close );
 }
 // END_CPP

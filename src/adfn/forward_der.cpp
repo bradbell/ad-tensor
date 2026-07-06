@@ -12,7 +12,6 @@
 {xrst_begin adfn_forward_der usr}
 {xrst_spell
     rng
-    dt
     numel
 }
 
@@ -65,8 +64,9 @@ rng_der
 *******
 is the directional derivative of the range in the dom_der direction; i.e.
 
-    rng_der = d/dt adfn(dom_var + t * dom_der, dom_par)
+    rng_der = adfn_var (dom_var, dom_par) * dom_der
 
+where adfn_var denotes the partial of adfn w.r.t. to domain variables.
 If rng_der[i].numel() is zero, then rng_der[i] has not been calculated
 because it is known to be zero with the same shape as range[i]
 for this AD function
@@ -74,9 +74,8 @@ for this AD function
 
 Example
 *******
-{xrst_literal ,
+{xrst_toc_table
     examples/adfn/forward_der.cpp
-    BEGIN_CPP, END_CPP
 }
 {xrst_end adfn_forward_der}
 */
