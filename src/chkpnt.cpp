@@ -136,11 +136,9 @@ size_t adfn_t::make_chkpnt(
     //
     // info
     dev::chkpnt_info_t info;
-    auto [depend_par, depend_var] = adfn.forward_dep();
-    dev::move_swap( depend_var, info.m_depend );
-    dev::move_swap( adfn,       info.m_adfn );
     //
-    // info.m_for_chkpnt_id
+    // info.mfor_chkpnt_id
+    std::optional<size_t> for_chkpnt_id;
     if( directions.size() > 0 && directions[0] == direction_t::forward ) {
         //
         // n_domain
@@ -173,6 +171,11 @@ size_t adfn_t::make_chkpnt(
             adfn_forward, dom_both, directions.slice(1)
         );
     }
+    //
+    // info.adfn, info.m_adfn
+    auto [depend_par, depend_var] = adfn.forward_dep();
+    dev::move_swap( depend_var, info.m_depend );
+    dev::move_swap( adfn,       info.m_adfn );
     //
     // chkpnt_id
     dev::chkpnt_global_t& global = dev::chkpnt_global_t::singleton();
