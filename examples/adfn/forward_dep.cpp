@@ -17,31 +17,32 @@ For this example
 
 .. math::
 
-    f(x, p) = \left[ \begin{array}{l}
+    f(v, p) = \left[ \begin{array}{l}
         p_0 \\
-        p_0 + p_1 x_0^1 \\
-        p_0 + p_1 x_0^1 + p_2 x_0^2 \\
+        p_0 + p_1 v_0^1 \\
+        p_0 + p_1 v_0^1 + p_2 v_0^2 \\
     \end{array} \right]
 
-Using 1 for possibly non-zeros,
-the sparsity pattern with respect to the parameter vector p is
+The (row,col) indices for the possibly non-zeros,
+in the sparsity pattern for the dependency of f with respect to the
+parameter vector p:
 
 .. math::
 
     \left[ \begin{array}{ccc}
-        1 & 0 & 0 \\
-        1 & 1 & 0 \\
-        1 & 1 & 1 \\
+        (0,0) &       & \\
+        (1,0) & (1,1) & \\
+        (2,0) & (2,1) & (2,2) \\
     \end{array} \right]
 
-The sparsity pattern with respect to the variable vector x is
+The indices for the dependency of f  with respect to the variable vector v:
 
 .. math::
 
-    \left[ \begin{array}{ccc}
-        0 \\
-        1 \\
-        1 \\
+    \left[ \begin{array}{c}
+        \\
+        (1,0) \\
+        (2,0) \\
     \end{array} \right]
 
 Source Code
@@ -74,22 +75,22 @@ TEST(examples_adfn, forward_dep)  {
     p.push_back( torch::tensor( {1.0, 1.0} ) );
     p.push_back( torch::tensor( {1.0, 1.0} ) );
     //
-    // x
-    // We use x for the domain variables
-    vector<Tensor> x;
-    x.push_back( torch::tensor( {1.0, 1.0} ) );
+    // v
+    // We use v for the domain variables
+    vector<Tensor> v;
+    v.push_back( torch::tensor( {1.0, 1.0} ) );
     //
-    // ap, ax
-    auto [ax, ap] = adten_t::start_recording(x, p);
+    // ap, av
+    auto [av, ap] = adten_t::start_recording(v, p);
     //
-    // ay
-    vector<adten_t> ay;
-    ay.push_back( ap[0] );
-    ay.push_back( ap[0] + ap[1] * ax[0] );
-    ay.push_back( ap[0] + ap[1] * ax[0] + ap[2] * ax[0] * ax[0]);
+    // ar
+    vector<adten_t> ar;
+    ar.push_back( ap[0] );
+    ar.push_back( ap[0] + ap[1] * av[0] );
+    ar.push_back( ap[0] + ap[1] * av[0] + ap[2] * av[0] * av[0]);
     //
-    // y = f(x, p)
-    adfn_t f = adten_t::stop_recording(ay, "f");
+    // r = f(v, p)
+    adfn_t f = adten_t::stop_recording(ar, "f");
     //
     // depend_par, depend_var
     auto [depend_par, depend_var] = f.forward_dep();
