@@ -35,7 +35,7 @@ It follows that the derivative f'(v) is given by
         1 / v_1 & - v_0 / v_1^2 \\
     \end{array} \right ]
 
-So the range derivative in the direction dr is given by
+The range derivative in the direction dr is given by
 
 .. math::
 

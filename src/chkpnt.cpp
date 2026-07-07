@@ -16,6 +16,18 @@ parameters and variables values for each derivative direction.
 
 {xrst_end chkpnt}
 -----------------------------------------------------------------------------
+{xrst_begin chkpnt_examples usr}
+
+Checkpoint Examples
+###################
+{xrst_toc_table
+    examples/chkpnt/get_started.cpp
+    examples/chkpnt/ad_forward_der.cpp
+    examples/chkpnt/ad_reverse_der.cpp
+}
+
+{xrst_end chkpnt_examples}
+-----------------------------------------------------------------------------
 {xrst_begin make_chkpnt usr}
 {xrst_spell
     adfn
@@ -95,7 +107,6 @@ this checkpoint call will support recording order n_dir
 derivatives of g that start a g.reverse_der (for vector<adten_t>).
 This is accomplished in a similar way to the description above with
 forward replaced by reverse.
-
 
 {xrst_end make_chkpnt}
 -----------------------------------------------------------------------------

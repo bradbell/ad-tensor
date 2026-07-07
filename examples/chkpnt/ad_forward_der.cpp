@@ -2,6 +2,32 @@
 // SPDX-FileCopyrightText: Bradley M. Bell <bradbell@seanet.com>
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
+/*
+{xrst_begin chkpnt_ad_forward_der usr}
+
+Recording Forward Derivatives That Use Checkpoints
+##################################################
+
+Discussion
+**********
+For this example
+
+.. math::
+
+    f(v)  &= v^2 \\
+    g(v)  &= f(v) * v &= v^3  \\
+    h(v)  &= g'(v)    &= 3 * v^2 \\
+    h'(v) &= 6 * v
+
+
+Source Code
+***********
+{xrst_literal ,
+    BEGIN_CPP, END_CPP
+}
+{xrst_end chkpnt_ad_forward_der}
+*/
+// BEGIN_CPP
 #include <gtest/gtest.h>
 #include <ad_tensor/ad_tensor.hpp>
 //
@@ -14,56 +40,57 @@ namespace {
 }
 TEST(examples_chkpnt, ad_forward_der)  {
     //
-    // x
-    vector<Tensor> x;
-    x.push_back( torch::tensor( {1.0, 2.0} ) );
+    // v
+    vector<Tensor> v;
+    v.push_back( torch::tensor( {0.0, 0.0} ) );
     //
-    // ax
-    vector<adten_t> ax = adten_t::start_recording(x);
+    // av
+    vector<adten_t> av = adten_t::start_recording(v);
     //
-    // ay
-    vector<adten_t> ay;
-    ay.push_back( ax[0] * ax[0] );
+    // ar
+    vector<adten_t> ar;
+    ar.push_back( av[0] * av[0] );
     //
-    // y = f(x) = x * x
-    adfn_t f = adten_t::stop_recording(ay, "f");
+    // r = f(v) = v * v
+    adfn_t f = adten_t::stop_recording(ar, "f");
     //
     // chkpnt_id
     vector<direction_t> directions = { direction_t::forward };
-    size_t chkpnt_id  = ad_tensor::make_chkpnt(f, x, directions);
+    size_t chkpnt_id  = ad_tensor::make_chkpnt(f, v, directions);
     //
-    // z = g(x) = f(x) * x = x * x * x
-    ax = adten_t::start_recording(x);
-    ay = ad_tensor::call_chkpnt(chkpnt_id, ax);
-    vector<adten_t> az;
-    az.push_back( ay[0] * ax[0] );
-    adfn_t g  = adten_t::stop_recording(az, "g");
+    // s = g(v) = f(v) * v = v * v * v
+    av = adten_t::start_recording(v);
+    ar = ad_tensor::call_chkpnt(chkpnt_id, av);
+    vector<adten_t> as;
+    as.push_back( ar[0] * av[0] );
+    adfn_t g  = adten_t::stop_recording(as, "g");
     //
-    // ax, avar_all;;
-    ax = adten_t::start_recording(x);
-    vector<adten_t> avar_all = g.forward_var(ax);
+    // av, av_all;;
+    av = adten_t::start_recording(v);
+    vector<adten_t> av_all = g.forward_var(av);
     //
-    // adz = h(x) = g'(x) = 3.0 * x * x
-    vector<adten_t> adx;
-    adx.push_back( adten_t( torch::tensor( {1.0, 1.0} ) ) );
-    vector<adten_t> adz = g.forward_der(adx, avar_all);
-    adfn_t h = adten_t::stop_recording(adz, "h");
+    // gp = h(v) = g'(v) = 3.0 * v * v
+    vector<adten_t> adv;
+    adv.push_back( adten_t( torch::tensor( {1.0, 1.0} ) ) );
+    vector<adten_t> agp = g.forward_der(adv, av_all);
+    adfn_t h = adten_t::stop_recording(agp, "h");
     //
-    // x, var_all, dz
-    x[0]                   = torch::tensor( {3.0, 4.0} );
-    vector<Tensor> var_all = h.forward_var(x);
-    vector<Tensor> dz      = h.get_range(var_all);
+    // v, v_all, gp
+    v[0]                 = torch::tensor( {3.0, 4.0} );
+    vector<Tensor> v_all = h.forward_var(v);
+    vector<Tensor> gp    = h.get_range(v_all);
     //
     // equal
-    bool equal =  dz[0].equal( 3.0 * x[0] * x[0] );
+    bool equal =  gp[0].equal( 3.0 * v[0] * v[0] );
     EXPECT_TRUE(equal);
     //
-    // ddz
-    vector<Tensor> dx;
-    dx.push_back( torch::tensor( {1.0, 1.0} ) );
-    vector<Tensor> ddz = h.forward_der(dx, var_all);
+    // hp
+    vector<Tensor> dv;
+    dv.push_back( torch::tensor( {1.0, 1.0} ) );
+    vector<Tensor> hp = h.forward_der(dv, v_all);
     //
     // equal
-    equal =  ddz[0].equal( 6.0 * x[0] );
+    equal =  hp[0].equal( 6.0 * v[0] );
     EXPECT_TRUE(equal);
 }
+// END_CPP

@@ -18,7 +18,7 @@ For this example
 
 .. math::
 
-    f(v) = \left[ \begin{array}{c} \\
+    f(v) = \left[ \begin{array}{c}
         v_0 + v_1 \\
         v_0 - v_1 \\
         v_0 * v_1 \\
@@ -29,18 +29,18 @@ It follows that the derivative f'(v) is given by
 
 .. math::
 
-    f'(v) = \left[ \begin{array}{cc} \\
+    f'(v) = \left[ \begin{array}{cc}
         1 & 1  \\
         1 & - 1 \\
         v_1 & v_0 \\
         1 / v_1 & - v_0 / v_1^2 \\
     \end{array} \right ]
 
-So the domain derivative in the direction dv is given by
+The domain derivative in the direction dv is given by
 
 .. math::
 
-    f'(v) * dv = \left[ \begin{array}{cc} \\
+    f'(v) * dv = \left[ \begin{array}{cc}
         dv_0 + dv_1  \\
         dv_0 - dv_1   \\
         v_1 * dv_0 + v_0 * dv_1 \\
