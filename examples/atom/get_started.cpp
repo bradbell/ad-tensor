@@ -5,10 +5,63 @@
 // BEGIN_CPP
 #include <gtest/gtest.h>
 #include <ad_tensor/ad_tensor.hpp>
+/*
+{xrst_begin atom_get_started usr}
+{xrst_spell
+    der
+    rng
+}
+
+Get Started Using Atomic Functions
+##################################
+
+For this example, the atomic function is
+
+.. math::
+
+    f(x) &= x * x
+    g(x) &= f(x).sum = (x * x).sum()
+
+i.e., g(x) is the sum of the elements of the tensor that is the square of x.
+
+derive_atom_t
+*************
+
+constructor
+===========
+The constructor sets the short name for this atomic function to square.
+
+forward
+=======
+There is only one domain and range tensor for this atomic function
+and the range value is given by f(domain[0])
+
+depend
+======
+The range value depends on the domain value so (0,0) is in the
+depend sparsity pattern.
+
+forward_der
+===========
+The domain direction derivative is
+
+    f'(domain[0]) * dom_der[0] = 2 * domain[0] * dom_der[0]
+
+reverse_der
+===========
+The range direction derivative is
+
+    f'(domain[0]) * rng_der[0] = 2 * domain[0] * rng_der[0]
+
+There is no real difference between the domain and range direction derivatives
+because both the domain and range have only one tensor.
+
+
+{xrst_end atom_get_started}
+*/
 //
 namespace {
     //
-    // vector
     using std::optional;
     using ad_tensor::vector;
     using ad_tensor::adten_t;
@@ -18,7 +71,7 @@ namespace {
     // derive_atom
     class derive_atom_t : public base_atom_t {
     public:
-        // ctor
+        // constructor
         derive_atom_t(void) {
             set_name("square");
         }
@@ -53,7 +106,11 @@ namespace {
             //
             // rng_der
             vector<Tensor> rng_der;
-            rng_der.push_back( 2.0 * domain[0] * dom_der[0] );
+            if( dom_der[0].numel() == 0 ) {
+                rng_der.push_back( torch::empty( {0} ) );
+            } else {
+                rng_der.push_back( 2.0 * domain[0] * dom_der[0] );
+            }
             //
             std::optional< vector<Tensor> > opt = rng_der;
             return opt;
@@ -87,52 +144,50 @@ TEST(examples_atom, get_started)  {
     // atom_id
     size_t atom_id = ad_tensor::make_atom(base_atom_ptr);
     //
-    // x
+    // v
     // We use x for the adfn domain variables
-    vector<Tensor> x;
-    x.push_back( torch::tensor( {2.0, 3.0} ) );
+    vector<Tensor> v;
+    v.push_back( torch::tensor( {0.0, 0.0} ) );
     //
-    // ax
-    vector<adten_t> ax = adten_t::start_recording(x);
+    // av
+    vector<adten_t> av = adten_t::start_recording(v);
     //
-    // ay
+    // ar
     size_t call_info = 0;
-    vector<adten_t> ay = ad_tensor::call_atom(atom_id, call_info, ax);
+    vector<adten_t> ay = ad_tensor::call_atom(atom_id, call_info, av);
+    vector<adten_t> ar;
+    ar.push_back( ay[0].sum() );
     //
-    // az
-    vector<adten_t> az;
-    az.push_back( ay[0].sum() );
+    // r = g(x) = f(x).sum()
+    ad_tensor::adfn_t g = adten_t::stop_recording(ar, "g");
     //
-    // z = f(x)
-    ad_tensor::adfn_t f = adten_t::stop_recording(az, "f");
+    // v
+    v[0] = torch:: tensor( {3.0, 4.0} );
     //
-    // x
-    x[0] = torch:: tensor( {3.0, 4.0} );
-    //
-    // z
-    vector<Tensor> var_all = f.forward_var(x);
-    vector<Tensor> z       = f.get_range(var_all);
+    // r
+    vector<Tensor> v_all = g.forward_var(v);
+    vector<Tensor> r     = g.get_range(v_all);
     //
     // check
-    EXPECT_EQ( z[0].item<float>(), (x[0] * x[0]).sum().item<float>() );
+    EXPECT_EQ( r[0].item<float>(), (v[0] * v[0]).sum().item<float>() );
     //
-    // dx, dz
-    // forward mode derivative
-    vector<Tensor> dx;
-    dx.push_back( torch::tensor( {4.0, 5.0} ) );
-    vector<Tensor> dz = f.forward_der(dx, var_all);
+    // dv, dr
+    // domain direction derivative
+    vector<Tensor> dv;
+    dv.push_back( torch::tensor( {5.0, 6.0} ) );
+    vector<Tensor> dr = g.forward_der(dv, v_all);
     //
     // check
-    EXPECT_EQ( dz[0].item<float>(), (2.0 * x[0] * dx[0]).sum().item<float>() );
+    EXPECT_EQ( dr[0].item<float>(), (2.0 * v[0] * dv[0]).sum().item<float>() );
     //
-    // dz, dx
-    // reverse mode derivative
-    dz[0] = torch::tensor( 6.0 );
-    dx = f.reverse_der(dz, var_all);
+    // dr, dv
+    // range direction derivative
+    dr[0] = torch::tensor( 6.0 );
+    dv = g.reverse_der(dr, v_all);
     //
     // check
     bool equal;
-    equal = dx[0].equal( dz[0] * 2.0 * x[0] );
+    equal = dv[0].equal( dr[0] * 2.0 * v[0] );
     EXPECT_TRUE( equal );
 }
 // END_CPP

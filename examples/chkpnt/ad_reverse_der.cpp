@@ -84,7 +84,7 @@ TEST(examples_chkpnt, ad_reverse_der)  {
     bool equal =  gp[0].equal( 3.0 * v[0] * v[0] );
     EXPECT_TRUE(equal);
     //
-    // dds
+    // hp
     vector<Tensor> dv;
     dv.push_back( torch::tensor( {1.0, 1.0} ) );
     vector<Tensor> hp = h.forward_der(dv, v_all);

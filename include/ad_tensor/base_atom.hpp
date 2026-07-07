@@ -72,12 +72,12 @@ Prototype
 {xrst_literal ,
     BEGIN_DEPEND, END_DEPEND
 }
-This virtual function is first used when make a :ref:`call_atom-name`
-to this atomic function.
+This virtual function is first used during make a :ref:`call_atom-name`
+for a derived atomic function.
 If you do not over ride this virtual function its return
 will have has_value() equal to false.
-You should also use this case when an error occurs during
-the evaluation of the sparsity pattern.
+You should also use this return when an error occurs during
+the evaluation of the sparsity pattern for the derived atomic function.
 
 depend
 ******
@@ -105,12 +105,12 @@ Prototype
 {xrst_literal ,
     BEGIN_FORWARD_FUN, END_FORWARD_FUN
 }
-This virtual function is first used when you make a :ref:`call_atom-name`
-to this atomic function.
+This virtual function is first used during make a :ref:`call_atom-name`
+for a derived atomic function.
 If you do not over ride this virtual function its return
 will have has_value() equal to false.
-You should also use this case when an error occurs during
-the evaluation of the atomic function value.
+You should also use this return when an error occurs during
+the evaluation of the sparsity pattern for the derived atomic function.
 
 call_info
 *********
