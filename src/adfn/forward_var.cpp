@@ -55,9 +55,8 @@ The vector dom_var is a sub-vector at the beginning of par_all.
 
 Example
 *******
-{xrst_literal ,
+{xrst_toc_table
     examples/adfn/forward_var.cpp
-    BEGIN_CPP, END_CPP
 }
 {xrst_end adfn_forward_var}
 */

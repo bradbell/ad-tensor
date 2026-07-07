@@ -2,6 +2,31 @@
 // SPDX-FileCopyrightText: Bradley M. Bell <bradbell@seanet.com>
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
+/*
+{xrst_begin adfn_forward_var_example usr}
+
+Dependent Variable Example
+##########################
+
+Discussion
+**********
+For this example
+
+.. math::
+
+        f(v) = \left[ \begin{array}{c}
+            v_0 * v_1 - 1.0 \\
+            v_0 + v_1 + 2.0 \\
+        \end{array} \right]
+
+Source Code
+***********
+{xrst_literal ,
+    BEGIN_CPP, END_CPP
+}
+
+{xrst_end adfn_forward_var_example}
+*/
 // BEGIN_CPP
 #include <gtest/gtest.h>
 #include <ad_tensor/ad_tensor.hpp>
@@ -12,50 +37,51 @@ TEST(examples_adfn, forward_var)  {
     using at::Tensor;
     using ad_tensor::vector;
     //
-    // x
-    // We use x for the domain variables
-    vector<Tensor> x;
-    x.push_back( torch::tensor( {2.0, 3.0} ) );
-    x.push_back( torch::tensor( {4.0, 5.0} ) );
+    // v
+    // We use v for the domain variables
+    vector<Tensor> v;
+    v.push_back( torch::tensor( {0.0, 0.0} ) );
+    v.push_back( torch::tensor( {0.0, 0.0} ) );
     //
-    // ax
-    vector<adten_t> ax = adten_t::start_recording(x);
+    // av
+    vector<adten_t> av = adten_t::start_recording(v);
     //
-    // acon
-    // create a constant after start_recording so can use it in the recording
-    adten_t acon( torch::tensor( {-1} ) );
+    // ar
+    // We use r for the range space.
+    vector<adten_t> ar;
+    ar.push_back( av[0] * av[1] - adten_t( torch::tensor(1.0) ) );
+    ar.push_back( av[0] + av[1] + adten_t( torch::tensor(2.0) ) );
     //
-    // aprod
-    adten_t aprod = ax[0] * ax[1];
+    // r = f(x)
+    adfn_t f = adten_t::stop_recording(ar, "f");
     //
-    // ay
-    // We use y for the range space.
-    vector<adten_t> ay;
-    ay.push_back( acon + aprod);
+    // v
+    v[0] = torch::tensor( {5.0, 4.0} );
+    v[1] = torch::tensor( {3.0, 2.0} );
     //
-    // y = f(x)
-    adfn_t f = adten_t::stop_recording(ay, "f");
+    // v_all
+    vector<Tensor> v_all = f.forward_var(v);
     //
-    // x
-    x.resize(0);
-    x.push_back( torch::tensor( {6.0, 7.0} ) );
-    x.push_back( torch::tensor( {8.0, 9.0} ) );
-    //
-    // var_all
-    vector<Tensor> var_all = f.forward_var(x);
-    //
-    EXPECT_EQ( var_all.size(), 4 );
-    //
-    bool equal = var_all[0].equal( torch::tensor({6.0, 7.0}) );
+    bool equal = v_all[0].equal( v[0] );
     EXPECT_TRUE( equal );
     //
-    equal = var_all[1].equal( torch::tensor({8.0, 9.0}) );
+    equal = v_all[1].equal( v[1] );
     EXPECT_TRUE( equal );
     //
-    equal = var_all[2].equal( torch::tensor({48.0 , 63.0}) );
+    //
+    // The checks below are not part of the ad_tensor api.
+    // They are only meant to give you an idea of what is stored in v_all.
+    //
+    equal = v_all[2].equal( v[0] * v[1] );
     EXPECT_TRUE( equal );
     //
-    equal = var_all[3].equal( torch::tensor({47.0 , 62.0}) );
+    equal = v_all[3].equal( v[0] * v[1] - 1.0 );
+    EXPECT_TRUE( equal );
+    //
+    equal = v_all[4].equal( v[0] + v[1] );
+    EXPECT_TRUE( equal );
+    //
+    equal = v_all[5].equal( v[0] + v[1] + 2.0 );
     EXPECT_TRUE( equal );
 }
 // END_CPP

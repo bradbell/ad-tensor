@@ -68,9 +68,8 @@ TEST(examples_adfn, forward_par)  {
     equal = p_all[1].equal( p[1] );
     EXPECT_TRUE( equal );
     //
-    // The checks below are not part of the ad_tensor api
-    // and may change in the future. They are only meant to give you an idea
-    // of what is stored in p_all.
+    // The checks below are not part of the ad_tensor api.
+    // They are only meant to give you an idea of what is stored in p_all.
     //
     equal = p_all[2].equal( p[0] * p[1] );
     EXPECT_TRUE( equal );
