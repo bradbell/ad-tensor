@@ -9,8 +9,8 @@
     dv
 }
 
-Domain Directional Derivative Example
-#####################################
+Domain Direction Derivative Example
+###################################
 
 Discussion
 **********
@@ -36,7 +36,7 @@ It follows that the derivative f'(v) is given by
         1 / v_1 & - v_0 / v_1^2 \\
     \end{array} \right ]
 
-So the directional derivative in the direction dv is given by
+So the domain derivative in the direction dv is given by
 
 .. math::
 

@@ -72,9 +72,8 @@ for this AD function
 
 Example
 *******
-{xrst_literal ,
+{xrst_toc_table
     examples/adfn/reverse_der.cpp
-    BEGIN_CPP, END_CPP
 }
 {xrst_end adfn_reverse_der}
 */
