@@ -19,10 +19,10 @@ For this example, the atomic function is
 
 .. math::
 
-    f(x) &= x * x
-    g(x) &= f(x).sum = (x * x).sum()
+    f(x) &= x * x \\
+    g(v) &= f(v).\texttt{sum}() = (v * v).\texttt{sum}()
 
-i.e., g(x) is the sum of the elements of the tensor that is the square of x.
+where sum above sums the elements of the corresponding tensor.
 
 derive_atom_t
 *************

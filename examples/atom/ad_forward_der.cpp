@@ -2,10 +2,83 @@
 // SPDX-FileCopyrightText: Bradley M. Bell <bradbell@seanet.com>
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
+/*
+{xrst_begin atom_ad_forward_der usr}
+{xrst_spell
+    dx
+    adten
+    nowrap
+    lll
+}
+
+
+Recording Forward Derivatives That Use Atomic Functions
+#######################################################
+
+
+
+where sum above sums the elements of the corresponding tensor.
+
+
+Derived Classes
+***************
+This example defines an atomic function for y and z.
+The atomic function for y uses z when it is recording forward derivatives.
+
+Tracing
+*******
+If :ref:`atom_non_virtual@trace` is true,
+this derived class prints some information about its internal calculations.
+
+derive_atom_y_t
+***************
+This derived atomic class implements the following function
+and domain direction derivative:
+
+.. math::
+
+    y(x)        &= x^3 \\
+    y'(x) * dx  &= 3 * x^2 * dx \\
+
+In addition, it uses the z(x, dx) atomic function for the
+domain direction derivative when the argument type is vector<adten_t>.
+
+derive_atom_z_t
+***************
+This derived atomic class implements the following function
+and domain direction derivative where u represents dx above:
+
+.. math::
+
+    z(x, u)                          &= 3 * x^2 * u  \\
+    z_x(x, u) * dx + z_u(x, u) * du  &= 6 * x * u * dx + 3 * x^2 * du
+
+
+AD Functions
+************
+
+.. math::
+    :nowrap:
+
+    \begin{array}{lll}
+    f(v)     &= {\rm sum} ( y(v) )  &= {\rm sum} ( v^3 ) \\
+    g(v)     &= f'(v)               &= {\rm sum} (3 * v^2 ) \\
+    g'(v)    &= f^{(2)} (v)         &= {\rm sum} (6 * v ) \\
+    \end{array}
+
+where sum above sums the elements of the corresponding tensor.
+
+
+Source Code
+***********
+{xrst_literal ,
+    BEGIN_CPP, END_CPP
+}
+{xrst_end atom_ad_forward_der}
+*/
 // BEGIN_CPP
 #include <gtest/gtest.h>
 #include <ad_tensor/ad_tensor.hpp>
-//
 namespace {
     //
     // using
@@ -18,6 +91,7 @@ namespace {
     using std::cout;
     //
     // atom_id_z
+    // declare this here so it can be used by the atomic function for y(x)
     size_t atom_id_z;
     //
     // ----------------------------------------------------------------------
@@ -35,8 +109,7 @@ namespace {
         std::optional<ad_tensor::sparsity_t> depend(
             size_t           call_info) const override {
             ad_tensor::sparsity_t sparsity;
-            std::array<size_t, 2> pair = {0, 0};
-            sparsity.push_back( pair );
+            sparsity.push_back( {0, 0} );
             //
             std::optional<ad_tensor::sparsity_t> opt = sparsity;
             return opt;
@@ -108,7 +181,7 @@ namespace {
         }
     };
     // ----------------------------------------------------------------------
-    // z(x, dx) = 3 * x * x * dx
+    // z(x, u) = 3 * x * x * u
     // ----------------------------------------------------------------------
     //
     // derive_atom_z_t
@@ -135,8 +208,8 @@ namespace {
             const vector<Tensor>& domain ) const override {
             //
             Tensor x  = domain[0];
-            Tensor dx = domain[1];
-            Tensor z  = 3.0 * x * x * dx;
+            Tensor u  = domain[1];
+            Tensor z  = 3.0 * x * x * u;
             // range
             vector<Tensor> range;
             range.push_back( z );
@@ -156,10 +229,10 @@ namespace {
             //
             // dz
             Tensor x    = domain[0];
-            Tensor dx   = domain[1];
-            Tensor d_x  = dom_der[0];
-            Tensor d_dx = dom_der[1];
-            Tensor dz   = 6.0 * x * dx * d_x + 3.0 * x * x * d_dx;
+            Tensor u    = domain[1];
+            Tensor dx   = dom_der[0];
+            Tensor du   = dom_der[1];
+            Tensor dz   = 6.0 * x * u * dx + 3.0 * x * x * du;
             //
             // rng_der
             vector<Tensor> rng_der;
@@ -189,65 +262,46 @@ TEST(examples_atom, ad_forward_der)  {
     // atom_id_y
     size_t atom_id_y = ad_tensor::make_atom(base_atom_y_ptr);
     //
-    // x
-    Tensor x = torch::tensor( {2.0, 3.0} );
-    //
-    // domain
-    vector<Tensor> domain;
-    domain.push_back(x);
-    //
-    // adomain
-    vector<adten_t> adomain = adten_t::start_recording(domain);
+    // v, av
+    vector<Tensor> v;
+    v.push_back( torch::tensor( {0.0, 0.0} ) );
+    vector<adten_t> av = adten_t::start_recording(v);
     //
     // ay
     size_t call_info = 0;
-    vector<adten_t> ay = ad_tensor::call_atom(atom_id_y, call_info, adomain);
+    vector<adten_t> ay = ad_tensor::call_atom(atom_id_y, call_info, av);
     //
-    adten_t asum;
-    asum = ay[0].sum();
+    // ar
+    vector<adten_t> ar;
+    ar.push_back( ay[0].sum() );
     //
-    // arange
-    vector<adten_t> arange;
-    arange.push_back( asum );
+    // r = f(v) = (v * v * v).sum()
+    ad_tensor::adfn_t f = adten_t::stop_recording(ar, "f");
     //
-    // range = f(domain) = (x * x * x).sum()
-    ad_tensor::adfn_t f = adten_t::stop_recording(arange, "f");
+    // av, av_all
+    av = adten_t::start_recording(v);
+    vector<adten_t> av_all = f.forward_var(av);
     //
-    // adomain
-    adomain = adten_t::start_recording(domain);
+    // fp = g(v) = f'(v) = (3 * v * v).sum()
+    vector<adten_t> adv;
+    adv.push_back( adten_t( torch::tensor( {1.0, 1.0} ) ) );
+    vector<adten_t>   afp = f.forward_der(adv, av_all);
+    ad_tensor::adfn_t g   = adten_t::stop_recording(afp, "g");
     //
-    vector<adten_t> avar_all = f.forward_var(adomain);
-    //
-    // arng_der
-    vector<adten_t> adom_der;
-    adom_der.push_back( adten_t( torch::tensor( {1.0, 1.0} ) ) );
-    vector<adten_t> arng_der = f.forward_der(adom_der, avar_all);
-    //
-    // arng_der = g(domain) = f'(domain) = (3 * x * x).sum()
-    ad_tensor::adfn_t g = adten_t::stop_recording(arng_der, "g");
-    //
-    // x, domain
-    x = torch::tensor( {3.0, 4.0} );
-    domain[0] = x;
-    //
-    // dsum
-    vector<Tensor> var_all = g.forward_var(domain);
-    vector<Tensor> range   = g.get_range(var_all);
-    Tensor         dsum    = range[0];
+    // v, v_all, fp
+    v[0] = torch::tensor( {3.0, 4.0} );
+    vector<Tensor> v_all = g.forward_var(v);
+    vector<Tensor> fp    = g.get_range(v_all);
     //
     // check
-    EXPECT_EQ(dsum.item<float>(), (3.0 * x * x).sum().item<float>() );
+    EXPECT_EQ(fp[0].item<float>(), (3.0 * v[0] * v[0]).sum().item<float>() );
     //
-    // dx, dom_der
-    Tensor dx = torch::tensor( {1.0, 1.0} );
-    vector<Tensor> dom_der;
-    dom_der.push_back( dx );
-    //
-    // ddsum
-    vector<Tensor> rng_der = g.forward_der(dom_der, var_all);
-    Tensor ddsum           = rng_der[0];
+    // dv, gp
+    vector<Tensor> dv;
+    dv.push_back( torch::tensor( {1.0, 1.0} ) );
+    vector<Tensor> gp = g.forward_der(dv, v_all);
     //
     // check
-    EXPECT_EQ(ddsum.item<float>(), (6.0 * x).sum().item<float>() );
+    EXPECT_EQ(gp[0].item<float>(), (6.0 * v[0]).sum().item<float>() );
 }
 // END_CPP

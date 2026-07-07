@@ -19,10 +19,11 @@ defines the derivative computations; see :ref:`base_atom-name` .
 -----------------------------------------------------------------------------
 {xrst_begin atom_examples usr}
 
-Checkpoint Examples
-###################
+Atomic Function Examples
+########################
 {xrst_toc_table
     examples/atom/get_started.cpp
+    examples/atom/ad_forward_der.cpp
 }
 
 {xrst_end atom_examples}
