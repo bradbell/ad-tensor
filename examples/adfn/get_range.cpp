@@ -2,6 +2,33 @@
 // SPDX-FileCopyrightText: Bradley M. Bell <bradbell@seanet.com>
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
+/*
+{xrst_begin adfn_get_range_example usr}
+
+Get Ranger Tensor Example
+#########################
+
+
+Discussion
+**********
+For this example
+
+.. math::
+
+        f(v, p) = \left[ \begin{array}{c}
+            c \\
+            p_0 + c \\
+            v_0 + c \\
+        \end{array} \right]
+
+Source Code
+***********
+{xrst_literal ,
+    BEGIN_CPP, END_CPP
+}
+
+{xrst_end adfn_get_range_example}
+*/
 // BEGIN_CPP
 #include <gtest/gtest.h>
 #include <ad_tensor/ad_tensor.hpp>
@@ -12,56 +39,54 @@ TEST(examples_adfn, get_range)  {
     using at::Tensor;
     using ad_tensor::vector;
     //
+    // c
+    Tensor c = torch::tensor( {1.0, 2.0} );
+    //
     // p
     vector<Tensor> p;
-    p.push_back( torch::tensor( {2.0, 3.0} ) );
+    p.push_back( torch::tensor( {0.0, 0.0} ) );
     //
-    // x
-    vector<Tensor> x;
-    x.push_back( torch::tensor( {4.0, 5.0} ) );
+    // v
+    vector<Tensor> v;
+    v.push_back( torch::tensor( {0.0, 0.0} ) );
     //
-    // ap, ax
-    auto [ax, ap] = adten_t::start_recording(x, p);
+    // av, ap
+    auto [av, ap] = adten_t::start_recording(v, p);
     //
-    // acon
-    // create a constant after start_recording so can use it in the recording
-    adten_t acon( torch::tensor( {6} ) );
+    // ac
+    adten_t ac = adten_t( c );
     //
     // create a parameter and variable that are not used
-    ap[0] - acon;
-    ax[0] / acon;
+    ap[0] - ac;
+    av[0] / ac;
     //
-    // ay
-    vector<adten_t> ay;
-    ay.push_back( acon );            // a constant
-    ay.push_back( ap[0] + acon );    // a parameter
-    ay.push_back( ax[0] * acon );    // a variable
+    // ar
+    vector<adten_t> ar;
+    ar.push_back( ac );            // a constant
+    ar.push_back( ap[0] + ac );    // a parameter
+    ar.push_back( av[0] + ac );    // a variable
     //
-    // y = f(p, x)
-    adfn_t f = adten_t::stop_recording(ay, "f");
+    // r = f(v, p)
+    adfn_t f = adten_t::stop_recording(ar, "f");
     //
-    // p
-    p.resize(0);
-    p.push_back( torch::tensor( {7.0, 8.0} ) );
+    // p, v
+    p[0] = torch::tensor( {7.0, 8.0} );
+    v[0] = torch::tensor( {9.0, 10.0} );
     //
-    // x
-    x.resize(0);
-    x.push_back( torch::tensor( {9.0, 10.0} ) );
+    // r
+    vector<Tensor> p_all = f.forward_par(p);
+    vector<Tensor> v_all = f.forward_var(v, p_all);
+    vector<Tensor> r     = f.get_range(v_all, p_all);
     //
-    // y
-    vector<Tensor> par_all = f.forward_par(p);
-    vector<Tensor> var_all = f.forward_var(x, par_all);
-    vector<Tensor> y       = f.get_range(var_all, par_all);
+    EXPECT_EQ( r.size(), 3 );
     //
-    EXPECT_EQ( y.size(), 3 );
-    //
-    bool equal = y[0].equal( torch::tensor({6.0}) );
+    bool equal = r[0].equal( c );
     EXPECT_TRUE( equal );
     //
-    equal = y[1].equal( torch::tensor({13.0, 14.0}) );
+    equal = r[1].equal( p[0] + c );
     EXPECT_TRUE( equal );
     //
-    equal = y[2].equal( torch::tensor({54.0 , 60.0}) );
+    equal = r[2].equal( v[0] + c );
     EXPECT_TRUE( equal );
 }
 // END_CPP

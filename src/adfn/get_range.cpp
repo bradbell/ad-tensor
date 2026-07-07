@@ -11,7 +11,7 @@ Get The Range Tensors
 Syntax
 ******
 {xrst_code cpp}
-range = adfn.get_range(par_all, var_all)
+range = adfn.get_range(var_all, par_all)
 {xrst_code}
 
 Prototype
@@ -22,31 +22,30 @@ Prototype
 }
 This returns the range tensors for
 
-    range = adfn(dom_par, dom_var)
+    range = adfn(dom_var, dom_par)
 
 TensorType
 **********
 This is either at::Tensor or :ref:`adten-name` .
 
-par_all
-*******
-is the value of all the parameters as a function of dom_par.
-
 var_all
 *******
 is the value of all the variables as a function of dom_par and dom_var.
 
+par_all
+*******
+is the value of all the parameters as a function of dom_par.
+
 range
 *****
-is the value of the range vector as function of dom_par and dom_var.
+is the value of the range vector as function of dom_var and dom_par.
 
     range = adfn(dom_var, dom_par)
 
 Example
 *******
-{xrst_literal ,
+{xrst_toc_table
     examples/adfn/get_range.cpp
-    BEGIN_CPP, END_CPP
 }
 {xrst_end adfn_get_range}
 */
