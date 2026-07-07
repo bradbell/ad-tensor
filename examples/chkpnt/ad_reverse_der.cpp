@@ -30,7 +30,7 @@ TEST(examples_chkpnt, ad_reverse_der)  {
     //
     // chkpnt_id
     vector<direction_t> directions = { direction_t::reverse };
-    size_t chkpnt_id  = adfn_t::make_chkpnt(f, x, directions);
+    size_t chkpnt_id  = ad_tensor::make_chkpnt(f, x, directions);
     //
     // z = g(x) = f(x) * x = x * x * x
     ax = adten_t::start_recording(x);

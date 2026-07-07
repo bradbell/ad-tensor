@@ -9,6 +9,14 @@
 //
 namespace ad_tensor {
     //
+    // BEGIN_MAKE_CHKPNT
+    size_t make_chkpnt(
+        adfn_t&                      adfn,
+        const vector<at::Tensor>&    domain     = vector<at::Tensor>(),
+        c10::ArrayRef<direction_t>   directions = c10::ArrayRef<direction_t>()
+    );
+    // END_MAKE_CHKPNT
+    //
     // call_chkpnt
     vector<adten_t> call_chkpnt(
         size_t                 chkpnt_id ,

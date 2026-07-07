@@ -62,7 +62,7 @@ Other Public Members
 The AD Function Class Private Members
 #####################################
 {xrst_literal ,
-    // BEGIN_PRIVATE, // END_PRIVATE
+    BEGIN_MEMBER_DATA, END_MEMBER_DATA
 }
 
 m_par
@@ -108,7 +108,14 @@ namespace ad_tensor { class adfn_t
 {
     friend class adten_t;
 private:
-// BEGIN_PRIVATE
+    // ad_tensor::make_chkpnt
+    // is a link to the private function make_chkpnt defined in this class
+    friend size_t make_chkpnt(
+        adfn_t&                      adfn,
+        const vector<at::Tensor>&    domain,
+        c10::ArrayRef<direction_t>   directions
+    );
+// BEGIN_MEMBER_DATA
     dev::agraph_t             m_par;
     dev::agraph_t             m_var;
     vector<at::Tensor>        m_con;
@@ -117,7 +124,13 @@ private:
     vector< vector<int64_t> > m_rng_shapes;
     std::string               m_name;
     bool                      m_trace;
-// END_PRIVATE
+// END_MEMBER_DATA
+    //
+    static size_t make_chkpnt(
+        adfn_t&                      adfn,
+        const vector<at::Tensor>&    domain,
+        c10::ArrayRef<direction_t>   directions
+    );
 public:
     //
     // BEGIN_DEFAULT_CTOR
@@ -207,12 +220,4 @@ public:
         const vector<TensorType>& all_par = vector<TensorType>()
     ) const;
     // END_REVERSE_DER
-    //
-    // BEGIN_MAKE_CHKPNT
-    static size_t make_chkpnt(
-        adfn_t&                      adfn,
-        const vector<at::Tensor>&    domain     = vector<at::Tensor>(),
-        c10::ArrayRef<direction_t>   directions = c10::ArrayRef<direction_t>()
-    );
-    // END_MAKE_CHKPNT
 }; }

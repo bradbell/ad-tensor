@@ -28,7 +28,7 @@ TEST(examples_chkpnt, get_started)  {
     adfn_t f = adten_t::stop_recording(ay, "f");
     //
     // chkpnt_id
-    size_t chkpnt_id  = adfn_t::make_chkpnt(f);
+    size_t chkpnt_id  = ad_tensor::make_chkpnt(f);
     //
     // z = g(x) = f(x) * x = x * x * x
     ax = adten_t::start_recording(x);

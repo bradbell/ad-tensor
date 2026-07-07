@@ -12,7 +12,7 @@ may greatly reduce the amount of memory required to compute derivatives.
 This is because only one copy of the functions
 constants, parameters and variables are needed.
 On the other hand, a checkpoint function must recompute its dependent
-parameter and variable values for each derivative direction.
+parameters and variables values for each derivative direction.
 
 {xrst_end chkpnt}
 -----------------------------------------------------------------------------
@@ -43,7 +43,7 @@ chkpnt_id = adten_t::make_chkpnt(adfn, domain, directions)
 Prototype
 *********
 {xrst_literal ,
-    include/ad_tensor/adfn.hpp
+    include/ad_tensor/chkpnt.hpp
     BEGIN_MAKE_CHKPNT, END_MAKE_CHKPNT
 }
 
@@ -51,7 +51,7 @@ adfn
 ****
 On input, this as an AD function representation of the checkpoint function.
 Upon return, this AD function is empty.
-The representation was moved to global data
+The representation is moved to global data
 and can be accessed using chkpnt_id.
 
 chkpnt_id
@@ -141,6 +141,13 @@ is the AD tensor version of the range for this checkpoint function call.
 //
 namespace ad_tensor { // BEGIN_AD_TENSOR_NAMESPACE
 //
+// make_chkpnt
+size_t make_chkpnt(
+    adfn_t&                          adfn,
+    const vector<at::Tensor>&        domain,
+    const c10::ArrayRef<direction_t> directions ) {
+    return adfn_t::make_chkpnt(adfn, domain, directions );
+}
 size_t adfn_t::make_chkpnt(
     adfn_t&                          adfn,
     const vector<at::Tensor>&        domain,
