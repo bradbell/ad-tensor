@@ -253,20 +253,17 @@ namespace {
             return opt;
         }
     };
-    // -----------------------------------------------------------------------
-    //
-    // base_atom_y_ptr, base_atom_z
-    std::unique_ptr<base_atom_t> base_atom_y_ptr =
-        std::make_unique<derive_atom_y_t>();
-    std::unique_ptr<base_atom_t> base_atom_z_ptr =
-        std::make_unique<derive_atom_z_t>();
 }
 TEST(examples_atom, ad_forward_der)  {
     //
     // atom_id_z
+    std::unique_ptr<base_atom_t> base_atom_z_ptr =
+        std::make_unique<derive_atom_z_t>();
     atom_id_z = ad_tensor::make_atom(base_atom_z_ptr);
     //
     // atom_id_y
+    std::unique_ptr<base_atom_t> base_atom_y_ptr =
+        std::make_unique<derive_atom_y_t>();
     size_t atom_id_y = ad_tensor::make_atom(base_atom_y_ptr);
     //
     // v, av
