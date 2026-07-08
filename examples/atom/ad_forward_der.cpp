@@ -82,27 +82,23 @@ Source Code
 namespace {
     //
     // using
-    using std::optional;
     using ad_tensor::vector;
     using ad_tensor::adten_t;
-    using ad_tensor::base_atom_t;
-    //
     using at::Tensor;
     using std::cout;
-    //
-    // atom_id_z
-    // declare this here so it can be used by the atomic function for y(x)
-    size_t atom_id_z;
     //
     // ----------------------------------------------------------------------
     // y(x) = x * x * x
     // ----------------------------------------------------------------------
     //
     // derive_atom_y_t
-    class derive_atom_y_t : public base_atom_t {
+    class derive_atom_y_t : public ad_tensor::base_atom_t {
+    private:
+        size_t m_atom_id_z;
     public:
         // ctor
-        derive_atom_y_t(void) {
+        derive_atom_y_t(size_t atom_id_z) {
+            m_atom_id_z = atom_id_z;
             set_name("y");
         }
         // depend
@@ -174,7 +170,7 @@ namespace {
                 domain_z.push_back( dom_der[0] );
                 //
                 rng_der = ad_tensor::call_atom(
-                    atom_id_z, call_info, domain_z
+                    m_atom_id_z, call_info, domain_z
                 );
             }
             if( get_trace() ) {
@@ -192,7 +188,7 @@ namespace {
     // ----------------------------------------------------------------------
     //
     // derive_atom_z_t
-    class derive_atom_z_t : public base_atom_t {
+    class derive_atom_z_t : public ad_tensor::base_atom_t {
     public:
         // ctor
         derive_atom_z_t(void) {
@@ -257,13 +253,13 @@ namespace {
 TEST(examples_atom, ad_forward_der)  {
     //
     // atom_id_z
-    std::unique_ptr<base_atom_t> base_atom_z_ptr =
+    std::unique_ptr<ad_tensor::base_atom_t> base_atom_z_ptr =
         std::make_unique<derive_atom_z_t>();
-    atom_id_z = ad_tensor::make_atom(base_atom_z_ptr);
+    size_t atom_id_z = ad_tensor::make_atom(base_atom_z_ptr);
     //
     // atom_id_y
-    std::unique_ptr<base_atom_t> base_atom_y_ptr =
-        std::make_unique<derive_atom_y_t>();
+    std::unique_ptr<ad_tensor::base_atom_t> base_atom_y_ptr =
+        std::make_unique<derive_atom_y_t>(atom_id_z);
     size_t atom_id_y = ad_tensor::make_atom(base_atom_y_ptr);
     //
     // v, av
