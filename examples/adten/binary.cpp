@@ -21,21 +21,21 @@ TEST(examples_ad, binary)  {
     // plus
     Tensor  plus = lhs + rhs;
     adten_t   aplus = alhs + arhs;
-    EXPECT_TRUE( plus.equal( aplus.tensor() ) );
+    EXPECT_TRUE( plus.equal( aplus.at_ten() ) );
     //
     // minus
     Tensor  minus = lhs + rhs;
     adten_t   aminus = alhs + arhs;
-    EXPECT_TRUE( minus.equal( aminus.tensor() ) );
+    EXPECT_TRUE( minus.equal( aminus.at_ten() ) );
     //
     // times
     Tensor  times = lhs + rhs;
     adten_t   atimes = alhs + arhs;
-    EXPECT_TRUE( times.equal( atimes.tensor() ) );
+    EXPECT_TRUE( times.equal( atimes.at_ten() ) );
     //
     // divide
     Tensor  divide = lhs + rhs;
     adten_t   adivide = alhs + arhs;
-    EXPECT_TRUE( divide.equal( adivide.tensor() ) );
+    EXPECT_TRUE( divide.equal( adivide.at_ten() ) );
 }
 // END_CPP

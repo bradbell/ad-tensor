@@ -31,10 +31,10 @@ TEST(examples_ad, record)  {
     // stop_recording
     adten_t::stop_recording(arange, "" );
     //
-    bool equal = adom_par[0].tensor().equal( torch::tensor( {2.0, 3.0} ) );
+    bool equal = adom_par[0].at_ten().equal( torch::tensor( {2.0, 3.0} ) );
     EXPECT_TRUE(equal);
     //
-    equal = adom_var[0].tensor().equal( torch::tensor( {4.0, 5.0} ) );
+    equal = adom_var[0].at_ten().equal( torch::tensor( {4.0, 5.0} ) );
     EXPECT_TRUE(equal);
 }
 // END_CPP

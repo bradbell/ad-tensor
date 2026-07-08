@@ -61,22 +61,22 @@ adten_t adten_t::binary(
         //
         // add
         case dev::op_enum_t::add:
-        res_tensor = lhs.tensor() + rhs.tensor();
+        res_tensor = lhs.at_ten() + rhs.at_ten();
         break;
         //
         // sub
         case dev::op_enum_t::sub:
-        res_tensor = lhs.tensor() - rhs.tensor();
+        res_tensor = lhs.at_ten() - rhs.at_ten();
         break;
         //
         // mul
         case dev::op_enum_t::mul:
-        res_tensor = lhs.tensor() * rhs.tensor();
+        res_tensor = lhs.at_ten() * rhs.at_ten();
         break;
         //
         // div
         case dev::op_enum_t::div:
-        res_tensor = lhs.tensor() / rhs.tensor();
+        res_tensor = lhs.at_ten() / rhs.at_ten();
         break;
         //
         default:

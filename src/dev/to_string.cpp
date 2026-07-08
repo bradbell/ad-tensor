@@ -86,7 +86,7 @@ namespace ad_tensor { namespace dev {
     //
     // adten_t
     std::string to_string(const adten_t& atensor) {
-        return to_string( atensor.tensor() );
+        return to_string( atensor.at_ten() );
     }
     //
     // vector<at::Tensor>

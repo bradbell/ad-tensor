@@ -23,15 +23,16 @@ Constructor
 {xrst_literal ,
     BEGIN_PUBLIC_CTOR, END_PUBLIC_CTOR
 }
-The default constructor uses an empty tensor.
+The default constructor uses an empty tensor with no elements.
 If the tensor used in the construction is non-empty,
 and a tape is currently being recorded,
 the AD tensor is linked to a new constant in the current tape.
 
-To Tensor
-*********
+at_ten
+******
+This returns the at:Tensor corresponding to this object.
 {xrst_literal ,
-    BEGIN_TO_TENSOR, END_TO_TENSOR
+    BEGIN_AT_TEN, END_AT_TEN
 }
 
 sizes, numel
@@ -227,9 +228,9 @@ public:
     // END_CLONE
     {   return adten_t(m_tape_id, m_index,  m_tensor.clone(), m_ad_type ); }
     //
-    // BEGIN_TO_TENSOR
-    const at::Tensor& tensor(void) const
-    // END_TO_TENSOR
+    // BEGIN_AT_TEN
+    const at::Tensor& at_ten(void) const
+    // END_AT_TEN
     {   return m_tensor; }
     //
     // BEGIN_START_RECORDING_1
