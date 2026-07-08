@@ -23,7 +23,7 @@ Atomic Function Examples
 ########################
 {xrst_toc_table
     examples/atom/get_started.cpp
-    examples/atom/ad_forward_der.cpp
+    examples/atom/ad_atom.hpp
 }
 
 {xrst_end atom_examples}
