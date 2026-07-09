@@ -73,11 +73,16 @@ fi
 check_list=$(ls tools/check_* | $sed \
     -e '/^tools[/]check_all.sh/d' \
     -e '/^tools[/]check_copy.sh/d' \
+    -e '/^tools[/]check_gtest.sh/d' \
 )
 for check in $check_list
 do
     echo_eval $check
 done
+#
+# check_gtest.sh
+# Do last because other tests may change things that require this to re-run.
+echo_eval check_gtest.sh
 #
 echo "$script_path: OK"
 exit 0

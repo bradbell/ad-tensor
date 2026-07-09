@@ -40,6 +40,14 @@ trace
 get_trace returns the previous value chosen by set_trace.
 The default value, when trace has not been set, is false.
 
+print_con
+*********
+{xrst_literal ,
+    BEGIN_PRINT_CON, END_PRINT_CON
+}
+print the constants stored in an AD function object.
+This may be useful for understanding the trace output.
+
 Other Public Members
 ********************
 {xrst_toc_table
@@ -194,6 +202,10 @@ public:
     {   // END_SET_TRACE
         m_trace = trace;
     }
+    //
+    // BEGIN_PRINT_CON
+    void print_con(void) const;
+    // END_PRINT_CON
     //
     // BEGIN_FORWARD_DEP
     std::tuple<sparsity_t, sparsity_t> forward_dep(void) const;

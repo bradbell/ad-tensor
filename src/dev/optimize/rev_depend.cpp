@@ -15,8 +15,8 @@ void atom_depend(
     size_t          op_index    ,
     bool            var_op      ,
     const agraph_t& agraph      ,
-    vector<bool>&   con_depend  , 
-    vector<bool>&   par_depend  ,  
+    vector<bool>&   con_depend  ,
+    vector<bool>&   par_depend  ,
     vector<bool>&   var_depend  ) {
     //
     assert( agraph.m_op_seq[op_index] == op_enum_t::call );
@@ -82,8 +82,8 @@ void atom_depend(
 void op_depend(
     bool            var_op      ,
     const agraph_t& agraph      ,
-    vector<bool>&   con_depend  , 
-    vector<bool>&   par_depend  ,  
+    vector<bool>&   con_depend  ,
+    vector<bool>&   par_depend  ,
     vector<bool>&   var_depend  ) {
     //
     // res_depend
@@ -97,7 +97,7 @@ void op_depend(
     // is_call_op
     auto is_call_op = [&](size_t op_index) {
         op_enum_t op_enum = agraph.m_op_seq[op_index];
-        return op_enum == op_enum_t::call || op_enum == op_enum_t::call_result; 
+        return op_enum == op_enum_t::call || op_enum == op_enum_t::call_result;
     };
     //
     // n_op
@@ -125,16 +125,16 @@ void op_depend(
                     //
                     case ad_type_t::constant:
                     con_depend[value] = true;
-                    ;;
+                    break;
                     //
                     case ad_type_t::parameter:
                     par_depend[value] = true;
-                    ;;
+                    break;
                     //
                     case ad_type_t::variable:
                     assert( var_op );
                     var_depend[value] = true;
-                    ;;
+                    break;
                     //
                     default:
                     assert(false);
@@ -146,7 +146,7 @@ void op_depend(
 }
 //
 // rev_depend
-std::tuple< vector<bool>, vector<bool>, vector<bool> > 
+std::tuple< vector<bool>, vector<bool>, vector<bool> >
 rev_depend(const adfn_t* adfn) {
     return adfn->rev_depend();
 }
@@ -158,7 +158,7 @@ namespace ad_tensor {
     std::tuple< vector<bool>, vector<bool>, vector<bool> > adfn_t::rev_depend(
         void
     ) const {
-        // 
+        //
         // con_depend, par_depend, var_depend
         vector<bool> con_depend, par_depend, var_depend;
         //
@@ -194,14 +194,14 @@ namespace ad_tensor {
         //
         // con_depend, par_depend, var_depend
         bool var_op = true;
-        op_depend(var_op, m_var, var_depend, par_depend, con_depend);
+        op_depend(var_op, m_var, con_depend, par_depend, var_depend);
         //
         // con_depend, par_depend
         var_op = false;
-        op_depend(var_op, m_var, var_depend, par_depend, con_depend);
+        op_depend(var_op, m_par, con_depend, par_depend, var_depend);
         //
         return std::tuple< vector<bool>, vector<bool>, vector<bool> > (
-            var_depend, par_depend, con_depend
+            con_depend, par_depend, var_depend
         );
     }
 }

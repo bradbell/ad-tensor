@@ -89,6 +89,23 @@ namespace ad_tensor { namespace dev {
         return to_string( atensor.at_ten() );
     }
     //
+    // vector<bool>
+    std::string to_string(const vector<bool>& vec) {
+        std::string res = "[ ";
+        for(size_t i = 0; i < vec.size(); ++i) {
+            if( vec[i] ) {
+                res += "T";
+            } else {
+                res += "F";
+            }
+            if( i + 1 < vec.size() ) {
+                res += ", ";
+            }
+        }
+        res += " ]";
+        return res;
+    }
+    //
     // vector<at::Tensor>
     std::string to_string(const vector<at::Tensor>& vec) {
         std::string res;

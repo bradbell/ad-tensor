@@ -11,13 +11,16 @@
 #include <ad_tensor/vector.hpp>
 #include <ad_tensor/sparsity.hpp>
 namespace ad_tensor { namespace dev {
+    // BEGIN_SORT_THIS_LINE_PLUS_1
     std::string to_string(ad_type_t ad_type);
-    std::string to_string(op_enum_t op_enum);
-    std::string to_string(const c10::IntArrayRef& shape);
-    std::string to_string(const c10::ArrayRef<size_t>& vec);
-    std::string to_string(const at::Tensor& tensor);
     std::string to_string(const adten_t& atensor);
-    std::string to_string(const vector<at::Tensor>& vec);
-    std::string to_string(const vector<adten_t>& avec);
+    std::string to_string(const at::Tensor& tensor);
+    std::string to_string(const c10::ArrayRef<size_t>& vec);
+    std::string to_string(const c10::IntArrayRef& shape);
     std::string to_string(const sparsity_t& depend);
+    std::string to_string(const vector<adten_t>& avec);
+    std::string to_string(const vector<at::Tensor>& vec);
+    std::string to_string(const vector<bool>& vec);
+    std::string to_string(op_enum_t op_enum);
+    // END_SORT_THIS_LINE_MINUS_1
 } }

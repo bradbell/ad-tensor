@@ -9,6 +9,7 @@ add_library(ad_tensor SHARED
     adfn/forward_par.cpp
     adfn/forward_var.cpp
     adfn/get_range.cpp
+    adfn/print_con.cpp
     adfn/reverse_der.cpp
     adten/binary.cpp
     adten/call_atom.cpp
