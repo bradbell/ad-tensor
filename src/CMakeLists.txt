@@ -40,6 +40,7 @@ add_library(ad_tensor SHARED
     dev/derive_op/sum_op.cpp
     dev/derive_op/transpose_op.cpp
     dev/derive_op/view_op.cpp
+    dev/optimize/rev_depend.cpp
     dev/rev_sum_view.cpp
     dev/tape.cpp
     dev/tensor_at_index.cpp

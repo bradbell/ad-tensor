@@ -47,11 +47,16 @@ is he value of the i_arg argument for the op_index operator usage.
 
 m_arg_type
 **********
-This vector has the same length as m_arg_value.
+This vector has the same length as m_arg_value. If
 
     m_arg_type[ m_arg_start[op_index] + i_arg ]
 
-is the AD type for the i_arg argument for the op_index operator usage.
+is constant (parameter) [variable] then
+
+    m_arg_value[ m_arg_start[op_index] + i_arg ]
+
+is the index value in the array of all the
+constants (parameters) [variables] where the tensor for this argument resides.
 
 m_int64
 *******

@@ -100,14 +100,22 @@ is the shape for each of the range tensors.
 #include <ad_tensor/dev/agraph.hpp>
 #include <ad_tensor/dev/call_op_depend.hpp>
 //
-namespace ad_tensor { class adten_t; }
+// adten_t, adfn_t
+namespace ad_tensor { class adten_t; class adfn_t; }
+//
+// dev::rev_depend
+// cannot use include/dev/optimize.hpp because it includes this file
+namespace ad_tensor { namespace dev {
+    std::tuple< vector<bool>, vector<bool>, vector<bool> > rev_depend(
+        const adfn_t* adfn
+    );
+} }
 //
 // BEGIN_ADFN_T
 namespace ad_tensor { class adfn_t
 // END_ADFN_T
 {
     friend class adten_t;
-private:
     // ad_tensor::make_chkpnt
     // is a link to the private function make_chkpnt defined in this class
     friend size_t make_chkpnt(
@@ -115,6 +123,12 @@ private:
         const vector<at::Tensor>&    domain,
         c10::ArrayRef<direction_t>   directions
     );
+    // ad_tensor::rev_depend
+    // is a link to the private function rev_depend defined in this class
+    friend std::tuple< vector<bool>, vector<bool>, vector<bool> >
+    dev::rev_depend(const adfn_t* adfn);
+    //
+private:
 // BEGIN_MEMBER_DATA
     dev::agraph_t             m_par;
     dev::agraph_t             m_var;
@@ -131,6 +145,9 @@ private:
         const vector<at::Tensor>&    domain,
         c10::ArrayRef<direction_t>   directions
     );
+    //
+    std::tuple< vector<bool>, vector<bool>, vector<bool> > rev_depend
+    (void) const;
 public:
     //
     // BEGIN_DEFAULT_CTOR

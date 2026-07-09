@@ -52,7 +52,7 @@ acyclic graph:
 
 The result range result indices are strictly increasing; i.e.,
 
-    arg_value[start + 5 + n_domain] < ... < arg_value[start + 4 + n_result]
+    arg_value[start+5+n_domain] < ... < arg_value[start+4+n_domain+n_result]
 
 op_seq
 ******
@@ -60,7 +60,8 @@ A callback has n_result operations in the tape so that operator
 indices are the same as result indices.
 The first operation is an ``op_enum_t::call`` and the next
 n_result - 1 operations are ``op_enum_t::call_result``.
-Only the first operation has entries in arg_value and arg_type.
+Only the first operation has entries in arg_value and arg_type
+(so start is the same as for the corresponding call).
 
 {xrst_end call_atom_dev}
 */
