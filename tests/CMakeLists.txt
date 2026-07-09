@@ -13,7 +13,7 @@ add_executable(tests
     adten/view_op.cpp
     dev/base_op.cpp
     dev/op_enum.cpp
-    dev/optimize.cpp
+    dev/rng_depend.cpp
     dev/tape.cpp
     dev/vec_sets.cpp
 )
