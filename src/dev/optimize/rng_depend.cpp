@@ -2,6 +2,54 @@
 // SPDX-FileCopyrightText: Bradley M. Bell <bradbell@seanet.com>
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
+/*
+{xrst_begin rng_depend dev}
+{xrst_spell
+    dev
+    adfn
+}
+
+Determine Which Values the Range Depends on
+###########################################
+
+Syntax
+******
+{xrst_code cpp}
+auto [depend_con, depend_par, depend_var] = dev::rng_depend(adfn)
+{xrst_code}
+
+Prototype
+*********
+{xrst_literal ,
+    BEGIN_RNG_DEPEND, END_RNG_DEPEND
+}
+
+adfn
+****
+is the AD function object we are computing the dependencies for.
+
+depend_con
+**********
+The length of this vector is the number of constants stored in adfn.
+If depend_con[k] is true (false), the adfn :ref:`adfn_get_range@range`
+depends (does not depend) in the k-th constant in adfn.
+
+depend_par
+**********
+The length of this vector is the number of parameter in
+:ref:`adfn_forward_par@par_all` for this adfn.
+If depend_par[k] is true (false), the range
+depends (does not depend) in the k-th parameter in par_all.
+
+depend_var
+**********
+The length of this vector is the number of variables in
+:ref:`adfn_forward_var@var_all` for this adfn.
+If depend_var[k] is true (false), the range
+depends (does not depend) in the k-th variable in var_all.
+
+{xrst_end rng_depend}
+*/
 #include <ad_tensor/adfn.hpp>
 #include <ad_tensor/sparsity.hpp>
 #include <ad_tensor/dev/agraph.hpp>
@@ -145,9 +193,10 @@ void op_depend(
     return;
 }
 //
-// rng_depend
+// BEGIN_RNG_DEPEND
 std::tuple< vector<bool>, vector<bool>, vector<bool> >
-rng_depend(const adfn_t* adfn) {
+rng_depend(const adfn_t* adfn)
+{   // END_RNG_DEPEND
     return adfn->rng_depend();
 }
 } } // BEGIN_AD_TENSOR_DEV_NAMESPACE

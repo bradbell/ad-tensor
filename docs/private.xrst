@@ -24,6 +24,7 @@ Contents
     src/dev/broadcast.cpp
     src/dev/chkpnt.cpp
     src/dev/derive_op/call_op.cpp
+    src/dev/optimize/rng_depend.cpp
     src/dev/rev_sum_view.cpp
     src/dev/tensor_at_index.cpp
     src/dev/vec_sets.cpp
