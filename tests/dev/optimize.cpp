@@ -7,7 +7,7 @@
 #include <ad_tensor/adten.hpp>
 #include <ad_tensor/dev/to_string.hpp>
 //
-TEST(tests_optimize, rev_depend) {
+TEST(tests_optimize, rng_depend) {
     using ad_tensor::adten_t;
     using ad_tensor::adfn_t;
     using at::Tensor;
@@ -65,20 +65,20 @@ TEST(tests_optimize, rev_depend) {
     bool equal = r[0].equal( v[1] + p[0] + c_used );
     EXPECT_TRUE( equal );
     //
-    auto [con_depend, par_depend, var_depend] = ad_tensor::dev::rev_depend(&f);
+    auto [depend_con, depend_par, depend_var] = ad_tensor::dev::rng_depend(&f);
     //
-    // con_depend
-    EXPECT_EQ( con_depend[0], true);
-    EXPECT_EQ( con_depend[1], false);
+    // depend_con
+    EXPECT_EQ( depend_con[0], true);
+    EXPECT_EQ( depend_con[1], false);
     //
-    // par_depend
-    EXPECT_EQ( par_depend[0], true);
-    EXPECT_EQ( par_depend[1], true);
-    EXPECT_EQ( par_depend[2], false);
+    // depend_par
+    EXPECT_EQ( depend_par[0], true);
+    EXPECT_EQ( depend_par[1], true);
+    EXPECT_EQ( depend_par[2], false);
     //
-    // var_depend
-    EXPECT_EQ( var_depend[0], false);
-    EXPECT_EQ( var_depend[1], true);
-    EXPECT_EQ( var_depend[2], true);
-    EXPECT_EQ( var_depend[3], false);
+    // depend_var
+    EXPECT_EQ( depend_var[0], false);
+    EXPECT_EQ( depend_var[1], true);
+    EXPECT_EQ( depend_var[2], true);
+    EXPECT_EQ( depend_var[3], false);
 }

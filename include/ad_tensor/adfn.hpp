@@ -111,10 +111,10 @@ is the shape for each of the range tensors.
 // adten_t, adfn_t
 namespace ad_tensor { class adten_t; class adfn_t; }
 //
-// dev::rev_depend
+// dev::rng_depend
 // cannot use include/dev/optimize.hpp because it includes this file
 namespace ad_tensor { namespace dev {
-    std::tuple< vector<bool>, vector<bool>, vector<bool> > rev_depend(
+    std::tuple< vector<bool>, vector<bool>, vector<bool> > rng_depend(
         const adfn_t* adfn
     );
 } }
@@ -131,10 +131,10 @@ namespace ad_tensor { class adfn_t
         const vector<at::Tensor>&    domain,
         c10::ArrayRef<direction_t>   directions
     );
-    // ad_tensor::rev_depend
-    // is a link to the private function rev_depend defined in this class
+    // ad_tensor::rng_depend
+    // is a link to the private function rng_depend defined in this class
     friend std::tuple< vector<bool>, vector<bool>, vector<bool> >
-    dev::rev_depend(const adfn_t* adfn);
+    dev::rng_depend(const adfn_t* adfn);
     //
 private:
 // BEGIN_MEMBER_DATA
@@ -154,7 +154,7 @@ private:
         c10::ArrayRef<direction_t>   directions
     );
     //
-    std::tuple< vector<bool>, vector<bool>, vector<bool> > rev_depend
+    std::tuple< vector<bool>, vector<bool>, vector<bool> > rng_depend
     (void) const;
 public:
     //

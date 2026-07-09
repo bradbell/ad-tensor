@@ -15,9 +15,9 @@ void atom_depend(
     size_t          op_index    ,
     bool            var_op      ,
     const agraph_t& agraph      ,
-    vector<bool>&   con_depend  ,
-    vector<bool>&   par_depend  ,
-    vector<bool>&   var_depend  ) {
+    vector<bool>&   depend_con  ,
+    vector<bool>&   depend_par  ,
+    vector<bool>&   depend_var  ) {
     //
     assert( agraph.m_op_seq[op_index] == op_enum_t::call );
     //
@@ -42,7 +42,7 @@ void atom_depend(
     sparsity_t sparsity = opt.value();
     sparsity.sort();
     //
-    // con_depend, par_depend, var_depend
+    // depend_con, depend_par, depend_var
     size_t r_index = 0;
     size_t s_index = 0;
     for( r_index = 0; r_index < n_result; ++r_index) {
@@ -58,16 +58,16 @@ void atom_depend(
             switch( ad_type ) {
                 //
                 case ad_type_t::constant:
-                con_depend[value] = true;
+                depend_con[value] = true;
                 break;
                 //
                 case ad_type_t::parameter:
-                par_depend[value] = true;
+                depend_par[value] = true;
                 break;
                 //
                 case ad_type_t::variable:
                 assert( var_op );
-                var_depend[value] = true;
+                depend_var[value] = true;
                 break;
                 //
                 default:
@@ -82,16 +82,16 @@ void atom_depend(
 void op_depend(
     bool            var_op      ,
     const agraph_t& agraph      ,
-    vector<bool>&   con_depend  ,
-    vector<bool>&   par_depend  ,
-    vector<bool>&   var_depend  ) {
+    vector<bool>&   depend_con  ,
+    vector<bool>&   depend_par  ,
+    vector<bool>&   depend_var  ) {
     //
     // res_depend
     auto res_depend = [&](size_t op_index) {
         if( var_op ) {
-            return var_depend[op_index];
+            return depend_var[op_index];
         }
-        return par_depend[op_index];
+        return depend_par[op_index];
     };
     //
     // is_call_op
@@ -114,7 +114,7 @@ void op_depend(
                 --op_index;
             }
             atom_depend(
-                op_index, var_op, agraph, con_depend, par_depend, var_depend
+                op_index, var_op, agraph, depend_con, depend_par, depend_var
             );
         } else if( res_depend(op_index) ) {
             size_t start = agraph.m_arg_start[op_index];
@@ -124,16 +124,16 @@ void op_depend(
                 switch( agraph.m_arg_type[arg_index] ) {
                     //
                     case ad_type_t::constant:
-                    con_depend[value] = true;
+                    depend_con[value] = true;
                     break;
                     //
                     case ad_type_t::parameter:
-                    par_depend[value] = true;
+                    depend_par[value] = true;
                     break;
                     //
                     case ad_type_t::variable:
                     assert( var_op );
-                    var_depend[value] = true;
+                    depend_var[value] = true;
                     break;
                     //
                     default:
@@ -145,22 +145,22 @@ void op_depend(
     return;
 }
 //
-// rev_depend
+// rng_depend
 std::tuple< vector<bool>, vector<bool>, vector<bool> >
-rev_depend(const adfn_t* adfn) {
-    return adfn->rev_depend();
+rng_depend(const adfn_t* adfn) {
+    return adfn->rng_depend();
 }
 } } // BEGIN_AD_TENSOR_DEV_NAMESPACE
 //
 namespace ad_tensor {
     //
     // adfn::depend
-    std::tuple< vector<bool>, vector<bool>, vector<bool> > adfn_t::rev_depend(
+    std::tuple< vector<bool>, vector<bool>, vector<bool> > adfn_t::rng_depend(
         void
     ) const {
         //
-        // con_depend, par_depend, var_depend
-        vector<bool> con_depend, par_depend, var_depend;
+        // depend_con, depend_par, depend_var
+        vector<bool> depend_con, depend_par, depend_var;
         //
         // n_con, n_par, n_var, n_rng
         size_t n_con = m_con.size();
@@ -168,40 +168,40 @@ namespace ad_tensor {
         size_t n_var = m_var.m_op_seq.size();
         size_t n_rng = m_rng_index.size();
         //
-        // con_depend, par_depend, var_depend
-        con_depend.resize(n_con, false);
-        par_depend.resize(n_par, false);
-        var_depend.resize(n_var, false);
+        // depend_con, depend_par, depend_var
+        depend_con.resize(n_con, false);
+        depend_par.resize(n_par, false);
+        depend_var.resize(n_var, false);
         //
-        // con_depend, par_depend, var_depend
+        // depend_con, depend_par, depend_var
         for(size_t i = 0; i < n_rng; ++i) { switch( m_rng_ad_type[i] ) {
             //
             case ad_type_t::constant:
-            con_depend[ m_rng_index[i] ] = true;
+            depend_con[ m_rng_index[i] ] = true;
             break;
             //
             case ad_type_t::parameter:
-            par_depend[ m_rng_index[i] ] = true;
+            depend_par[ m_rng_index[i] ] = true;
             break;
             //
             case ad_type_t::variable:
-            var_depend[ m_rng_index[i] ] = true;
+            depend_var[ m_rng_index[i] ] = true;
             break;
             //
             default:
             assert(false);
         } }
         //
-        // con_depend, par_depend, var_depend
+        // depend_con, depend_par, depend_var
         bool var_op = true;
-        op_depend(var_op, m_var, con_depend, par_depend, var_depend);
+        op_depend(var_op, m_var, depend_con, depend_par, depend_var);
         //
-        // con_depend, par_depend
+        // depend_con, depend_par
         var_op = false;
-        op_depend(var_op, m_par, con_depend, par_depend, var_depend);
+        op_depend(var_op, m_par, depend_con, depend_par, depend_var);
         //
         return std::tuple< vector<bool>, vector<bool>, vector<bool> > (
-            con_depend, par_depend, var_depend
+            depend_con, depend_par, depend_var
         );
     }
 }

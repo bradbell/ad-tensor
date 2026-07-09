@@ -7,8 +7,8 @@
 //
 namespace ad_tensor { namespace dev {
     //
-    // rev_depend
-    std::tuple< vector<bool>, vector<bool>, vector<bool> > rev_depend(
+    // rng_depend
+    std::tuple< vector<bool>, vector<bool>, vector<bool> > rng_depend(
         const adfn_t* adfn
     );
 } }
