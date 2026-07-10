@@ -107,15 +107,15 @@ vector<adten_t> adten_t::call_atom(
     vector<at::Tensor> range = opt_forward.value();
     size_t n_range  = range.size();
     //
-    // arange
-    vector<adten_t> arange;
-    for(size_t i = 0; i < n_range; ++i) {
-        arange.push_back( adten_t(range[i]) );
-    }
-    //
     // tape
     dev::tape_t& tape = dev::this_threads_tape();
     if( ! tape.m_recording ) {
+        //
+        // arange
+        vector<adten_t> arange;
+        for(size_t i = 0; i < n_range; ++i) {
+            arange.push_back( adten_t(range[i]) );
+        }
         return arange;
     }
     //
@@ -128,39 +128,47 @@ vector<adten_t> adten_t::call_atom(
     }
     sparsity_t pattern = opt_depend.value();
     //
-    // arange[i].m_ad_type
-    for(size_t i = 0; i < n_range; ++i) {
-        arange[i].m_ad_type = ad_type_t::constant;
-    }
+    // rng_ad_type
+    vector<ad_type_t> rng_ad_type(n_range, ad_type_t::constant);
     for(size_t k = 0; k < pattern.size(); ++k) {
-        size_t row            = pattern[k][0];
-        size_t col            = pattern[k][1];
-        ad_type_t ad_type     = arange[row].m_ad_type;
-        arange[row].m_ad_type = std::max( ad_type, adomain[col].m_ad_type );
+        size_t row       = pattern[k][0];
+        size_t col       = pattern[k][1];
+        rng_ad_type[row] = std::max(rng_ad_type[row],  adomain[col].m_ad_type);
     }
     //
-    // tape.m_con, arange[i]: m_index, par_rng_index, var_rng_index
+    // arange, tape.m_con, m_index, par_rng_index, var_rng_index
+    vector<adten_t> arange;
     vector<size_t> par_rng_index, var_rng_index;
     size_t par_index = tape.m_par.m_op_seq.size();
     size_t var_index = tape.m_var.m_op_seq.size();
-    for(size_t i = 0; i < n_range; ++i) switch( arange[i].m_ad_type ) {
+    for(size_t i = 0; i < n_range; ++i) switch( rng_ad_type[i] ) {
         //
         // ad_type_t::constant
+        // This adds the constant to tape.m_con.
         case ad_type_t::constant:
-        arange[i].m_index = tape.m_con.size();
-        tape.m_con.push_back( range[i] );
+        arange.push_back( adten_t( range[i] ) );
         break;
         //
         // ad_type_t::parameter
         case ad_type_t::parameter:
-        arange[i].m_index = par_index;
+        arange.push_back( adten_t(
+            tape.m_tape_id,
+            par_index,
+            range[i],
+            ad_type_t::parameter
+        ) );
         ++par_index;
         par_rng_index.push_back(i);
         break;
         //
         // ad_type_t::variable
         case ad_type_t::variable:
-        arange[i].m_index = var_index;
+        arange.push_back( adten_t(
+            tape.m_tape_id,
+            var_index,
+            range[i],
+            ad_type_t::variable
+        ) );
         ++var_index;
         var_rng_index.push_back(i);
         break;

@@ -60,17 +60,25 @@ namespace ad_tensor { namespace dev { // BEGIN_AD_TENSOR_DEV_NAMESPACE
 //
 // atom_depend
 void atom_depend(
-    size_t          op_index    ,
-    bool            var_op      ,
-    const agraph_t& agraph      ,
-    vector<bool>&   depend_con  ,
-    vector<bool>&   depend_par  ,
-    vector<bool>&   depend_var  ) {
+    size_t          call_op_index    ,
+    bool            var_op           ,
+    const agraph_t& agraph           ,
+    vector<bool>&   depend_con       ,
+    vector<bool>&   depend_par       ,
+    vector<bool>&   depend_var       ) {
     //
-    assert( agraph.m_op_seq[op_index] == op_enum_t::call );
+    assert( agraph.m_op_seq[call_op_index] == op_enum_t::call );
+    //
+    // res_depend
+    auto res_depend = [&](size_t op_index) {
+        if( var_op ) {
+            return depend_var[op_index];
+        }
+        return depend_par[op_index];
+    };
     //
     // arg_start, n_domain, n_range, n_result
-    size_t arg_start = agraph.m_arg_start[op_index];
+    size_t arg_start = agraph.m_arg_start[call_op_index];
     size_t atom_id   = agraph.m_arg_value[arg_start + 0];
     size_t call_info = agraph.m_arg_value[arg_start + 1];
     size_t n_result  = agraph.m_arg_value[arg_start + 4];
@@ -80,27 +88,27 @@ void atom_depend(
     const base_atom_t&  base_atom   = atom_global.get_base_atom(atom_id);
     std::string         long_name   = base_atom.long_name(call_info);
     //
-    // sparsity
+    // pattern
     std::optional<sparsity_t> opt = base_atom.depend(call_info);
     if( ! opt.has_value() ) {
         std::string msg = "atomic " + long_name;
         msg += ".depend did not return a value\n";
         dev::user_assert(false, msg);
     }
-    sparsity_t sparsity = opt.value();
-    sparsity.sort();
+    sparsity_t pattern = opt.value();
+    pattern.sort();
     //
     // depend_con, depend_par, depend_var
-    size_t r_index = 0;
     size_t s_index = 0;
-    for( r_index = 0; r_index < n_result; ++r_index) {
+    for(size_t r_index = 0; r_index < n_result; ++r_index) {
+    if( res_depend(call_op_index + r_index) ) {
         //
         // spa_index
-        while(s_index < sparsity.size() && sparsity[s_index][0] < r_index ) {
+        while(s_index < pattern.size() && pattern[s_index][0] < r_index ) {
             ++s_index;
         }
-        while(s_index < sparsity.size() && sparsity[s_index][0] == r_index ) {
-            size_t d_index    = sparsity[s_index][1];
+        while(s_index < pattern.size() && pattern[s_index][0] == r_index ) {
+            size_t d_index    = pattern[s_index][1];
             size_t value      = agraph.m_arg_value[arg_start + 5 + d_index];
             ad_type_t ad_type = agraph.m_arg_type[arg_start + 5 + d_index];
             switch( ad_type ) {
@@ -123,7 +131,7 @@ void atom_depend(
             }
             ++s_index;
         }
-    }
+    } }
 }
 //
 // op_depend
@@ -159,7 +167,9 @@ void op_depend(
         if( is_call_op(op_index) ) {
             op_enum_t op_enum = agraph.m_op_seq[op_index];
             while( op_enum == op_enum_t::call_result ) {
+                assert( 0 < op_index );
                 --op_index;
+                op_enum = agraph.m_op_seq[op_index];
             }
             atom_depend(
                 op_index, var_op, agraph, depend_con, depend_par, depend_var
