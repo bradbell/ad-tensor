@@ -23,6 +23,58 @@ namespace ad_tensor  { namespace dev {
         std::optional<size_t> m_rev_chkpnt_id;
     };
     // -----------------------------------------------------------------------
+    // derive_chkpnt_t
+    class derive_chkpnt_t : public base_atom_t {
+    public:
+        // ctor
+        derive_chkpnt_t(void);
+        //
+        // long_name
+        std::string long_name(size_t call_info) const override;
+        //
+        // depend
+        std::optional<sparsity_t> depend(size_t call_info ) const override;
+        //
+        // forward
+        std::optional< vector<at::Tensor> > forward(
+            size_t                            call_info ,
+            const vector<bool>&               rng_used  ,
+            const vector<at::Tensor>&         domain
+        ) const override;
+        //
+        // forward_der: at::Tensor
+        std::optional< vector<at::Tensor> > forward_der(
+            size_t                            call_info ,
+            const vector<bool>&               rng_used  ,
+            const vector<at::Tensor>&         domain    ,
+            const vector<at::Tensor>&         dom_der
+        ) const override;
+        //
+        // reverse_der: at::Tensor
+        std::optional< vector<at::Tensor> > reverse_der(
+            size_t                            call_info ,
+            const vector<bool>&               rng_used  ,
+            const vector<at::Tensor>&         domain    ,
+            const vector<at::Tensor>&         rng_der
+        ) const override;
+        //
+        // forward_der: adten_t
+        std::optional< vector<adten_t> >    forward_der(
+            size_t                            call_info ,
+            const vector<bool>&               rng_used  ,
+            const vector<adten_t>&            domain    ,
+            const vector<adten_t>&            dom_der
+        ) const override;
+        //
+        // reverse_der: adten_t
+        std::optional< vector<adten_t> >    reverse_der(
+            size_t                            call_info ,
+            const vector<bool>&               rng_used  ,
+            const vector<adten_t>&            domain    ,
+            const vector<adten_t>&            rng_der
+        ) const override;
+    };
+    // -----------------------------------------------------------------------
     // chkpnt_global_t
     class chkpnt_global_t {
     private:
