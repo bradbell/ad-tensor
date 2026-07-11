@@ -167,6 +167,12 @@ size_t adfn_t::make_chkpnt(
     // info
     dev::chkpnt_info_t info;
     //
+    // info.m_atom_id
+    dev::atom_global_t& atom_global = dev::atom_global_t::singleton();
+    std::unique_ptr<base_atom_t> base_atom_ptr =
+        std::make_unique<dev::derive_chkpnt_t>();
+    info.m_atom_id = atom_global.store(base_atom_ptr);
+    //
     // info.m_for_chkpnt_id
     if( directions.size() > 0 && directions[0] == direction_t::forward ) {
         //
@@ -259,8 +265,9 @@ vector<adten_t> call_chkpnt(
 {   // END_CALL_CHKPNT
     //
     // atom_id
-    dev::chkpnt_global_t&  global  = dev::chkpnt_global_t::singleton();
-    size_t                 atom_id = global.get_atom_id();
+    dev::chkpnt_global_t&      global  = dev::chkpnt_global_t::singleton();
+    const dev::chkpnt_info_t&  info    = global.get_chkpnt_info(chkpnt_id);
+    size_t                     atom_id = info.m_atom_id;
     //
     size_t call_info = chkpnt_id;
     return call_atom(atom_id, adomain, call_info);
