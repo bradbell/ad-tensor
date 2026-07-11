@@ -60,8 +60,7 @@ TEST(examples_atom, ad_reverse_der)  {
     vector<adten_t> av = adten_t::start_recording(v);
     //
     // ay
-    size_t call_info = 0;
-    vector<adten_t> ay = ad_tensor::call_atom(atom_id_y, call_info, av);
+    vector<adten_t> ay = ad_tensor::call_atom(atom_id_y, av);
     //
     // ar
     vector<adten_t> ar;

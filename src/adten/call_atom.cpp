@@ -75,12 +75,10 @@ Only the first operation has entries in arg_value and arg_type
 
 namespace ad_tensor { // BEGIN_AD_TENSOR_NAMESPACE
 
-// BEGIN_CALL_ATOM
-// arange = call_atom(atom_id, call_info, adomain)
+// call_atom
 vector<adten_t> adten_t::call_atom(
-    size_t atom_id, size_t call_info, const vector<adten_t>& adomain
-)
-{   // END_CALL_ATOM
+    size_t atom_id, const vector<adten_t>& adomain, size_t call_info
+) {
     //
     // base_atom, long_name
     dev::atom_global_t& atom_global = dev::atom_global_t::singleton();

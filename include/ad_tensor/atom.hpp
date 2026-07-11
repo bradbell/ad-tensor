@@ -7,9 +7,11 @@
 #include <ad_tensor/adten.hpp>
 namespace ad_tensor {
     size_t make_atom(std::unique_ptr<base_atom_t>& base_atom_ptr);
+    // BEGIN_CALL_ATOM
     vector<adten_t> call_atom(
         size_t                 atom_id   ,
-        size_t                 call_info ,
-        const vector<adten_t>& adomain
+        const vector<adten_t>& adomain   ,
+        size_t                 call_info = 0
     );
+    // END_CALL_ATOM
 }

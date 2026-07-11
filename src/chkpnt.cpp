@@ -263,7 +263,7 @@ vector<adten_t> call_chkpnt(
     size_t                 atom_id = global.get_atom_id();
     //
     size_t call_info = chkpnt_id;
-    return call_atom(atom_id, call_info, adomain);
+    return call_atom(atom_id, adomain, call_info);
 }
 
 }  // END_AD_TENSOR_NAMESPACE

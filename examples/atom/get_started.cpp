@@ -2,9 +2,6 @@
 // SPDX-FileCopyrightText: Bradley M. Bell <bradbell@seanet.com>
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
-// BEGIN_CPP
-#include <gtest/gtest.h>
-#include <ad_tensor/ad_tensor.hpp>
 /*
 {xrst_begin atom_get_started usr}
 {xrst_spell
@@ -56,10 +53,18 @@ The range direction derivative is
 There is no real difference between the domain and range direction derivatives
 because both the domain and range have only one tensor.
 
+Source Code
+***********
+{xrst_literal ,
+    BEGIN_CPP, END_CPP
+}
+
 
 {xrst_end atom_get_started}
 */
-//
+// BEGIN_CPP
+#include <gtest/gtest.h>
+#include <ad_tensor/ad_tensor.hpp>
 namespace {
     //
     using std::optional;
@@ -153,8 +158,7 @@ TEST(examples_atom, get_started)  {
     vector<adten_t> av = adten_t::start_recording(v);
     //
     // ar
-    size_t call_info = 0;
-    vector<adten_t> ay = ad_tensor::call_atom(atom_id, call_info, av);
+    vector<adten_t> ay = ad_tensor::call_atom(atom_id, av);
     vector<adten_t> ar;
     ar.push_back( ay[0].sum() );
     //

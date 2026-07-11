@@ -74,7 +74,7 @@ public:
         GET_CHKPNT_INFO
         const adfn_t& adfn = chkpnt_info.m_adfn;
         //
-        return get_name() + "." + adfn.get_name();
+        return get_name() + "_" + adfn.get_name();
     }
     // depend
     std::optional<sparsity_t> depend(

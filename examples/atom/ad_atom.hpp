@@ -171,9 +171,7 @@ namespace {
                 domain_z.push_back( domain[0] );
                 domain_z.push_back( dom_der[0] );
                 //
-                rng_der = ad_tensor::call_atom(
-                    m_atom_id_z, call_info, domain_z
-                );
+                rng_der = ad_tensor::call_atom(m_atom_id_z, domain_z);
             }
             if( get_trace() ) {
                 cout << "AD forward_der_y: domain =\n" << to_string(domain);
@@ -203,9 +201,7 @@ namespace {
                 domain_z.push_back( domain[0] );
                 domain_z.push_back( rng_der[0] );
                 //
-                dom_der = ad_tensor::call_atom(
-                    m_atom_id_z, call_info, domain_z
-                );
+                dom_der = ad_tensor::call_atom(m_atom_id_z, domain_z);
             }
             if( get_trace() ) {
                 cout << "AD reverse_der_y: domain =\n" << to_string(domain);

@@ -75,12 +75,13 @@ Calling An Atomic Function
 Syntax
 ******
 {xrst_code cpp}
-arange = call_atom(atom_id, call_info, adomain)
+arange = call_atom(atom_id, adomain, call_info)
 {xrst_code}
 
 Prototype
 *********
 {xrst_literal ,
+    include/ad_tensor/atom.hpp
     // BEGIN_CALL_ATOM, END_CALL_ATOM
 }
 
@@ -88,14 +89,14 @@ atom_id
 *******
 is the atomic function identifier; see :ref:`make_atom@atom_id` .
 
+adomain
+*******
+is the AD tensor version of the domain for this atomic function call.
+
 call_info
 *********
 is the call information that gets passed from the atomic function call
 through to its virtual functions; see :ref:`atom_forward@call_info` .
-
-adomain
-*******
-is the AD tensor version of the domain for this atomic function call.
 
 arange
 ******
@@ -116,12 +117,11 @@ namespace ad_tensor {
         return atom_id;
     }
     //
-    // BEGIN_CALL_ATOM
+    // call_atom
     vector<adten_t> call_atom(
     size_t                 atom_id   ,
-    size_t                 call_info ,
-    const vector<adten_t>& adomain   )
-    {   // END_CALL_ATOM
-        return adten_t::call_atom(atom_id, call_info, adomain);
+    const vector<adten_t>& adomain   ,
+    size_t                 call_info ) {
+        return adten_t::call_atom(atom_id, adomain, call_info);
     }
 }
