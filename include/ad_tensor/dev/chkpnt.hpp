@@ -26,9 +26,14 @@ namespace ad_tensor  { namespace dev {
     // -----------------------------------------------------------------------
     // derive_chkpnt_t
     class derive_chkpnt_t : public base_atom_t {
+        chkpnt_info_t m_info;
     public:
         // ctor
-        derive_chkpnt_t(void);
+        derive_chkpnt_t(chkpnt_info_t& info);
+        //
+        // TODO: remove this funciton
+        derive_chkpnt_t(void)
+        { }
         //
         // long_name
         std::string long_name(size_t call_info) const override;

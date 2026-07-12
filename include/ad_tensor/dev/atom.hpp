@@ -89,6 +89,11 @@ public:
     // BEGIN_GET_BASE_ATOM
     const base_atom_t& get_base_atom(size_t atom_id);
     // END_GET_BASE_ATOM
+    //
+    // TODO: remove this
+    size_t number_atom(void) const {
+        return m_base_vec.size();
+    }
 };
 
 } } // END_AD_TENSOR_DEV_NAMESPACE

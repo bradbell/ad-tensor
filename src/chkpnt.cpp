@@ -167,12 +167,6 @@ size_t adfn_t::make_chkpnt(
     // info
     dev::chkpnt_info_t info;
     //
-    // info.m_atom_id
-    dev::atom_global_t& atom_global = dev::atom_global_t::singleton();
-    std::unique_ptr<base_atom_t> base_atom_ptr =
-        std::make_unique<dev::derive_chkpnt_t>();
-    info.m_atom_id = atom_global.store(base_atom_ptr);
-    //
     // info.m_for_chkpnt_id
     if( directions.size() > 0 && directions[0] == direction_t::forward ) {
         //
@@ -250,6 +244,13 @@ size_t adfn_t::make_chkpnt(
     auto [depend_par, depend_var] = adfn.forward_dep();
     dev::move_swap( depend_var, info.m_depend );
     dev::move_swap( adfn,       info.m_adfn );
+    //
+    // info.m_atom_id
+    dev::atom_global_t& atom_global = dev::atom_global_t::singleton();
+    info.m_atom_id                  = atom_global.number_atom();
+    std::unique_ptr<base_atom_t> base_atom_ptr =
+        std::make_unique<dev::derive_chkpnt_t>(info);
+    atom_global.store(base_atom_ptr);
     //
     // chkpnt_id
     dev::chkpnt_global_t& global = dev::chkpnt_global_t::singleton();

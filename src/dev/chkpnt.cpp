@@ -62,7 +62,8 @@ namespace ad_tensor { namespace dev { // BEGIN_AD_TENSOR_DEV_NAMESPACE
 // derive_chkpnt_t
 // ------------------------------------------------------------------------
 // ctor
-derive_chkpnt_t::derive_chkpnt_t(void) {
+derive_chkpnt_t::derive_chkpnt_t(chkpnt_info_t& info) 
+: m_info(info) {
     set_name("ckhpnt");
 }
 // long_name
