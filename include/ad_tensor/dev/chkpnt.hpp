@@ -81,40 +81,4 @@ namespace ad_tensor  { namespace dev {
         ) const override;
     };
     // -----------------------------------------------------------------------
-    // chkpnt_global_t
-    class chkpnt_global_t {
-    private:
-        std::shared_mutex                        m_rw_mutex;
-        vector< std::unique_ptr<chkpnt_info_t> > m_info_vec;
-        size_t                                   m_atom_id;
-        //
-        // default constructor
-        chkpnt_global_t(void);
-    public:
-        //
-        // automatic copy constructor
-        chkpnt_global_t(const chkpnt_global_t&) = delete;
-        //
-        //  automatic assignment operator
-        void operator=(const chkpnt_global_t&) = delete;
-        //
-        // BEGIN_SINGLETON
-        // chkpnt_global = chkpnt_global_t::singleton()
-        static chkpnt_global_t& singleton(void);
-        // END_SINGLETON
-        //
-        // BEGIN_STORE
-        // chkpnt_id = store(chkpnt_info)
-        size_t store(chkpnt_info_t& chkpnt_info);
-        // END_STORE
-        //
-        // get_atom_id
-        size_t get_atom_id(void) const;
-        //
-        // BEGIN_GET_INFO
-        // chkpnt_info = get_chkpnt_info(chkpnt_id)
-        const chkpnt_info_t& get_chkpnt_info(size_t chkpnt_id);
-        // END_GET_INFO
-    };
-    // -----------------------------------------------------------------------
 } }

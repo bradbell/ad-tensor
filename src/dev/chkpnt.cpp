@@ -2,48 +2,6 @@
 // SPDX-FileCopyrightText: Bradley M. Bell <bradbell@seanet.com>
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
-/*
-{xrst_begin chkpnt_global dev}
-
-Global Object That holds The Checkpoint Functions
-#################################################
-
-chkpnt_global
-*************
-{xrst_literal ,
-    include/ad_tensor/dev/chkpnt.hpp
-    BEGIN_SINGLETON, END_SINGLETON
-}
-
-store
-*****
-{xrst_literal ,
-    include/ad_tensor/dev/chkpnt.hpp
-    BEGIN_STORE, END_STORE
-}
-A call to store will wait until it can lock out any other calls to
-store or get.
-
-chkpnt_info
-===========
-This chkpnt information will be moved to global data
-and chkpnt_info will be empty upon return.
-
-chkpnt_id
-=========
-is the identifier for this checkpoint function.
-
-get_chkpnt_info
-***************
-{xrst_literal ,
-    include/ad_tensor/dev/chkpnt.hpp
-    BEGIN_GET_INFO, END_GET_INFO
-}
-A call to get will wait until it can lock out any calls to store.
-
-
-{xrst_end chkpnt_global}
-*/
 #include <ad_tensor/dev/chkpnt.hpp>
 #include <ad_tensor/dev/move_swap.hpp>
 #include <ad_tensor/dev/user_assert.hpp>
@@ -184,78 +142,6 @@ std::optional< vector<adten_t> > derive_chkpnt_t::reverse_der(
     //
     std::optional< vector<adten_t> > opt = dom_der;
     return opt;
-}
-// ------------------------------------------------------------------------
-// chkpnt_global_t
-// ------------------------------------------------------------------------
-//
-// chkpnt_global_t
-chkpnt_global_t::chkpnt_global_t(void)
-{   //
-    // atom_global
-    atom_global_t& atom_global = atom_global_t::singleton();
-    //
-    // base_atom_ptr
-    std::unique_ptr<base_atom_t> base_atom_ptr =
-        std::make_unique<derive_chkpnt_t>();
-    //
-    // m_atom_id
-    m_atom_id = atom_global.store(base_atom_ptr);
-}
-//
-// singleton
-chkpnt_global_t& chkpnt_global_t::singleton(void) {
-    static chkpnt_global_t chkpnt_global;
-    return chkpnt_global;
-}
-//
-// atom_id
-size_t chkpnt_global_t::get_atom_id(void) const {
-    return m_atom_id;
-}
-//
-// get_chkpnt_info
-const chkpnt_info_t& chkpnt_global_t::get_chkpnt_info(size_t chkpnt_id) {
-    std::shared_lock<std::shared_mutex> lock(m_rw_mutex);
-    return *m_info_vec[chkpnt_id];
-}
-//
-// store
-size_t chkpnt_global_t::store(chkpnt_info_t& chkpnt_info) {
-    //
-    // lock, m_rw_mutex
-    size_t count = 0;
-    bool   lock  = false;
-    while( count < 100 && ! lock ) {
-        lock = m_rw_mutex.try_lock();
-        if( ! lock )
-        {   ++count;
-            std::this_thread::sleep_for( std::chrono::milliseconds(10) );
-        }
-    }
-    if( ! lock ) {
-        std::cerr << "chkpnt_global::store: "
-            " tried for 1 second to get a lock\n";
-#ifndef NDEBUG
-        std::exit(1);
-#else
-        assert(lock);
-#endif
-    }
-    //
-    // chkpnt_id
-    size_t chkpnt_id = m_info_vec.size();
-    //
-    // m_info_vec
-    m_info_vec.push_back( std::make_unique<chkpnt_info_t>() );
-    dev::move_swap( *m_info_vec[chkpnt_id], chkpnt_info );
-    //
-    // m_rw_mutex
-    if( lock ) {
-        m_rw_mutex.unlock();
-    }
-    //
-    return chkpnt_id;
 }
 // ------------------------------------------------------------------------
 } }  // END_AD_TENSOR_DEV_NAMESPACE

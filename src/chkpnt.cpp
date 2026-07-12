@@ -252,10 +252,6 @@ size_t adfn_t::make_chkpnt(
         std::make_unique<dev::derive_chkpnt_t>(info);
     size_t atom_id = atom_global.store(base_atom_ptr);
     //
-    // chkpnt_id
-    dev::chkpnt_global_t& global = dev::chkpnt_global_t::singleton();
-    size_t chkpnt_id             = global.store(info);
-    //
     return atom_id;
 }
 //
