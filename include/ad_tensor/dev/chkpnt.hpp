@@ -30,10 +30,6 @@ namespace ad_tensor  { namespace dev {
         // ctor
         derive_chkpnt_t(chkpnt_info_t& info);
         //
-        // TODO: remove this funciton
-        derive_chkpnt_t(void)
-        { }
-        //
         // long_name
         std::string long_name(size_t call_info) const override;
         //
