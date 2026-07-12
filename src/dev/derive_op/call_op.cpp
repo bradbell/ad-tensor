@@ -62,10 +62,10 @@ variable result for this atomic function.
 #define UNPACK \
     size_t arg_start = agraph.m_arg_start[op_index];\
     size_t atom_id   = agraph.m_arg_value[arg_start + 0]; \
-    size_t call_info = agraph.m_arg_value[arg_start + 1]; \
-    size_t n_domain  = agraph.m_arg_value[arg_start + 2]; \
-    size_t n_range   = agraph.m_arg_value[arg_start + 3]; \
-    size_t n_result  = agraph.m_arg_value[arg_start + 4]; \
+    size_t call_info = 0; \
+    size_t n_domain  = agraph.m_arg_value[arg_start + 1]; \
+    size_t n_range   = agraph.m_arg_value[arg_start + 2]; \
+    size_t n_result  = agraph.m_arg_value[arg_start + 3]; \
     \
     atom_global_t&         atom_global   = atom_global_t::singleton(); \
     const base_atom_t&     base_atom = atom_global.get_base_atom(atom_id); \
@@ -96,9 +96,9 @@ void call_op_depend(
     // arg_start. atom_id, call_info, n_domain, n_result
     size_t arg_start = agraph.m_arg_start[op_index];
     size_t atom_id   = agraph.m_arg_value[arg_start + 0];
-    size_t call_info = agraph.m_arg_value[arg_start + 1];
-    size_t n_domain  = agraph.m_arg_value[arg_start + 2];
-    size_t n_result  = agraph.m_arg_value[arg_start + 4];
+    size_t call_info = 0;
+    size_t n_domain  = agraph.m_arg_value[arg_start + 1];
+    size_t n_result  = agraph.m_arg_value[arg_start + 3];
     //
     // long_name, base_atom
     atom_global_t&         atom_global  = atom_global_t::singleton();
@@ -118,7 +118,7 @@ void call_op_depend(
     size_t sparsity_index = 0;
     size_t sparsity_row   = sparsity[0][0];
     for(size_t k = 0; k < n_result; ++k) {
-        size_t arg_index    = arg_start + 5 + n_domain + k;
+        size_t arg_index    = arg_start + 4 + n_domain + k;
         size_t rng_index    = agraph.m_arg_value[arg_index];
         bool   more         = sparsity_index < sparsity.size();
         while(more && sparsity_row < rng_index) {
@@ -137,7 +137,7 @@ void call_op_depend(
                     ".depend: sparsity column index is to large"
                 );
             }
-            arg_index           = arg_start + 5 + dom_index;
+            arg_index           = arg_start + 4 + dom_index;
             ad_type_t arg_type  = agraph.m_arg_type[arg_index];
             size_t    arg_value = agraph.m_arg_value[arg_index];
             if( arg_type == parameter ) {
@@ -185,7 +185,7 @@ template<> void call_op_t<at::Tensor>::forward_par(
     // domain
     domain.resize(0);
     for(size_t j = 0; j < n_domain; ++j) {
-        size_t arg_index = arg_start + 5 + j;
+        size_t arg_index = arg_start + 4 + j;
         domain.push_back( tensor_at_arg_index(
             arg_index, agraph, con_vec, par_vec
         ) );
@@ -195,7 +195,7 @@ template<> void call_op_t<at::Tensor>::forward_par(
     rng_used.resize(0);
     rng_used.resize(n_range, false);
     for(size_t k = 0; k < n_result; ++k) {
-        size_t arg_index    = arg_start + 5 + n_domain + k;
+        size_t arg_index    = arg_start + 4 + n_domain + k;
         size_t rng_index    = agraph.m_arg_value[arg_index];
         rng_used[rng_index] = true;
     }
@@ -213,7 +213,7 @@ template<> void call_op_t<at::Tensor>::forward_par(
     //
     // par_vec
     for(size_t k = 0; k < n_result; ++k) {
-        size_t arg_index      = arg_start + 5 + n_domain + k;
+        size_t arg_index      = arg_start + 4 + n_domain + k;
         size_t rng_index      = agraph.m_arg_value[arg_index];
         par_vec[op_index + k] = range[ rng_index ];
     }
@@ -247,7 +247,7 @@ template<> void call_op_t<at::Tensor>::forward_var(
     // domain
     domain.resize(0);
     for(size_t j = 0; j < n_domain; ++j) {
-        size_t arg_index = arg_start + 5 + j;
+        size_t arg_index = arg_start + 4 + j;
         domain.push_back( tensor_at_arg_index(
             arg_index, agraph, con_vec, par_vec, var_vec
         ) );
@@ -257,7 +257,7 @@ template<> void call_op_t<at::Tensor>::forward_var(
     rng_used.resize(0);
     rng_used.resize(n_range, false);
     for(size_t k = 0; k < n_result; ++k) {
-        size_t arg_index    = arg_start + 5 + n_domain + k;
+        size_t arg_index    = arg_start + 4 + n_domain + k;
         size_t rng_index    = agraph.m_arg_value[arg_index];
         rng_used[rng_index] = true;
     }
@@ -275,7 +275,7 @@ template<> void call_op_t<at::Tensor>::forward_var(
     //
     // par_vec
     for(size_t k = 0; k < n_result; ++k) {
-        size_t arg_index      = arg_start + 5 + n_domain + k;
+        size_t arg_index      = arg_start + 4 + n_domain + k;
         size_t rng_index      = agraph.m_arg_value[arg_index];
         var_vec[op_index + k] = range[ rng_index ];
     }
@@ -294,14 +294,14 @@ template<> void call_op_t<adten_t>::forward_var(
     // arg_start. atom_id, call_info, n_domain, n_result
     size_t arg_start = agraph.m_arg_start[op_index];
     size_t atom_id   = agraph.m_arg_value[arg_start + 0];
-    size_t call_info = agraph.m_arg_value[arg_start + 1];
-    size_t n_domain  = agraph.m_arg_value[arg_start + 2];
-    size_t n_result  = agraph.m_arg_value[arg_start + 4];
+    size_t call_info = 0;
+    size_t n_domain  = agraph.m_arg_value[arg_start + 1];
+    size_t n_result  = agraph.m_arg_value[arg_start + 3];
     //
     // domain
     domain.resize(0);
     for(size_t j = 0; j < n_domain; ++j) {
-        size_t arg_index = arg_start + 5 + j;
+        size_t arg_index = arg_start + 4 + j;
         domain.push_back( tensor_at_arg_index(
             arg_index, agraph, con_vec, par_vec, var_vec
         ) );
@@ -312,7 +312,7 @@ template<> void call_op_t<adten_t>::forward_var(
     //
     // par_vec
     for(size_t k = 0; k < n_result; ++k) {
-        size_t arg_index      = arg_start + 5 + n_domain + k;
+        size_t arg_index      = arg_start + 4 + n_domain + k;
         size_t rng_index      = agraph.m_arg_value[arg_index];
         var_vec[op_index + k] = range[ rng_index ];
     }
@@ -343,7 +343,7 @@ template<> void call_op_t<at::Tensor>::forward_der(
     rng_used.resize(0);
     rng_used.resize(n_range, false);
     for(size_t k = 0; k < n_result; ++k) {
-        size_t arg_index    = arg_start + 5 + n_domain + k;
+        size_t arg_index    = arg_start + 4 + n_domain + k;
         size_t rng_index    = agraph.m_arg_value[arg_index];
         rng_used[rng_index] = true;
     }
@@ -352,7 +352,7 @@ template<> void call_op_t<at::Tensor>::forward_der(
     domain.resize(0);
     dom_der.resize(0);
     for(size_t j = 0; j < n_domain; ++j) {
-        size_t    arg_index = arg_start + 5 + j;
+        size_t    arg_index = arg_start + 4 + j;
         size_t    vec_index = agraph.m_arg_value[arg_index];
         ad_type_t arg_type  = agraph.m_arg_type[arg_index];
         switch( arg_type ) {
@@ -394,7 +394,7 @@ template<> void call_op_t<at::Tensor>::forward_der(
     //
     // for_der
     for(size_t k = 0; k < n_result; ++k) {
-        size_t arg_index      = arg_start + 5 + n_domain + k;
+        size_t arg_index      = arg_start + 4 + n_domain + k;
         size_t rng_index      = agraph.m_arg_value[arg_index];
         for_der[op_index + k] = rng_der[ rng_index ];
     }
@@ -421,7 +421,7 @@ template<> void call_op_t<adten_t>::forward_der(
     rng_used.resize(0);
     rng_used.resize(n_range, false);
     for(size_t k = 0; k < n_result; ++k) {
-        size_t arg_index    = arg_start + 5 + n_domain + k;
+        size_t arg_index    = arg_start + 4 + n_domain + k;
         size_t rng_index    = agraph.m_arg_value[arg_index];
         rng_used[rng_index] = true;
     }
@@ -430,7 +430,7 @@ template<> void call_op_t<adten_t>::forward_der(
     domain.resize(0);
     dom_der.resize(0);
     for(size_t j = 0; j < n_domain; ++j) {
-        size_t    arg_index = arg_start + 5 + j;
+        size_t    arg_index = arg_start + 4 + j;
         size_t    vec_index = agraph.m_arg_value[arg_index];
         ad_type_t arg_type  = agraph.m_arg_type[arg_index];
         switch( arg_type ) {
@@ -474,7 +474,7 @@ template<> void call_op_t<adten_t>::forward_der(
     //
     // for_der
     for(size_t k = 0; k < n_result; ++k) {
-        size_t arg_index      = arg_start + 5 + n_domain + k;
+        size_t arg_index      = arg_start + 4 + n_domain + k;
         size_t rng_index      = agraph.m_arg_value[arg_index];
         for_der[op_index + k] = rng_der[ rng_index ];
     }
@@ -508,7 +508,7 @@ template<> void call_op_t<at::Tensor>::reverse_der(
     rng_der.resize( n_range, torch::empty( {0} ) );
     for(size_t k = 0; k < n_result; ++k) {
         size_t rev_index    = op_index + k;
-        size_t arg_index    = arg_start + 5 + n_domain + k;
+        size_t arg_index    = arg_start + 4 + n_domain + k;
         size_t rng_index    = agraph.m_arg_value[arg_index];
         rng_used[rng_index] = true;
         rng_der[rng_index]  = rev_der[rev_index];
@@ -517,7 +517,7 @@ template<> void call_op_t<at::Tensor>::reverse_der(
     // domain
     domain.resize(0);
     for(size_t j = 0; j < n_domain; ++j) {
-        size_t arg_index = arg_start + 5 + j;
+        size_t arg_index = arg_start + 4 + j;
         domain.push_back( tensor_at_arg_index(
             arg_index, agraph, con_vec, par_vec, var_vec
         ) );
@@ -536,7 +536,7 @@ template<> void call_op_t<at::Tensor>::reverse_der(
     //
     // rev_der
     for(size_t j = 0; j < n_domain; ++j) {
-        size_t    arg_index  = arg_start + 5 + j;
+        size_t    arg_index  = arg_start + 4 + j;
         ad_type_t ad_type    = agraph.m_arg_type[arg_index];
         if( ad_type == ad_type_t::variable ) {
             size_t rev_index = agraph.m_arg_value[arg_index];
@@ -569,7 +569,7 @@ template<> void call_op_t<adten_t>::reverse_der(
     rng_der.resize( n_range, adten_t( torch::empty( {0} ) ) );
     for(size_t k = 0; k < n_result; ++k) {
         size_t rev_index    = op_index + k;
-        size_t arg_index    = arg_start + 5 + n_domain + k;
+        size_t arg_index    = arg_start + 4 + n_domain + k;
         size_t rng_index    = agraph.m_arg_value[arg_index];
         rng_used[rng_index] = true;
         rng_der[rng_index]  = rev_der[rev_index];
@@ -578,7 +578,7 @@ template<> void call_op_t<adten_t>::reverse_der(
     // domain
     domain.resize(0);
     for(size_t j = 0; j < n_domain; ++j) {
-        size_t arg_index = arg_start + 5 + j;
+        size_t arg_index = arg_start + 4 + j;
         domain.push_back( tensor_at_arg_index(
             arg_index, agraph, con_vec, par_vec, var_vec
         ) );
@@ -597,7 +597,7 @@ template<> void call_op_t<adten_t>::reverse_der(
     //
     // rev_der
     for(size_t j = 0; j < n_domain; ++j) {
-        size_t    arg_index  = arg_start + 5 + j;
+        size_t    arg_index  = arg_start + 4 + j;
         ad_type_t ad_type    = agraph.m_arg_type[arg_index];
         if( ad_type == ad_type_t::variable ) {
             size_t rev_index = agraph.m_arg_value[arg_index];

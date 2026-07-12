@@ -80,8 +80,8 @@ void atom_depend(
     // arg_start, n_domain, n_range, n_result
     size_t arg_start = agraph.m_arg_start[call_op_index];
     size_t atom_id   = agraph.m_arg_value[arg_start + 0];
-    size_t call_info = agraph.m_arg_value[arg_start + 1];
-    size_t n_result  = agraph.m_arg_value[arg_start + 4];
+    size_t call_info = 0;
+    size_t n_result  = agraph.m_arg_value[arg_start + 3];
     //
     // base_atom, long_name
     dev::atom_global_t& atom_global = dev::atom_global_t::singleton();
@@ -109,8 +109,8 @@ void atom_depend(
         }
         while(s_index < pattern.size() && pattern[s_index][0] == r_index ) {
             size_t d_index    = pattern[s_index][1];
-            size_t value      = agraph.m_arg_value[arg_start + 5 + d_index];
-            ad_type_t ad_type = agraph.m_arg_type[arg_start + 5 + d_index];
+            size_t value      = agraph.m_arg_value[arg_start + 4 + d_index];
+            ad_type_t ad_type = agraph.m_arg_type[arg_start + 4 + d_index];
             switch( ad_type ) {
                 //
                 case ad_type_t::constant:
