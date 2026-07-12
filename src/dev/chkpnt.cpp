@@ -73,10 +73,7 @@ std::optional<sparsity_t> derive_chkpnt_t::depend(
     size_t              call_info ) const {
     //
     // depend
-    size_t               chkpnt_id    = call_info;
-    chkpnt_global_t&     global       = chkpnt_global_t::singleton();
-    const chkpnt_info_t& chkpnt_info  = global.get_chkpnt_info(chkpnt_id);
-    const sparsity_t&    depend       = chkpnt_info.m_depend;
+    const sparsity_t& depend  = m_info.m_depend;
     //
     std::optional<sparsity_t> opt = depend;
     return opt;

@@ -250,13 +250,13 @@ size_t adfn_t::make_chkpnt(
     info.m_atom_id                  = atom_global.number_atom();
     std::unique_ptr<base_atom_t> base_atom_ptr =
         std::make_unique<dev::derive_chkpnt_t>(info);
-    atom_global.store(base_atom_ptr);
+    size_t atom_id = atom_global.store(base_atom_ptr);
     //
     // chkpnt_id
     dev::chkpnt_global_t& global = dev::chkpnt_global_t::singleton();
     size_t chkpnt_id             = global.store(info);
     //
-    return chkpnt_id;
+    return atom_id;
 }
 //
 // BEGIN_CALL_CHKPNT
@@ -265,11 +265,7 @@ vector<adten_t> call_chkpnt(
     const vector<adten_t>& adomain   )
 {   // END_CALL_CHKPNT
     //
-    // atom_id
-    dev::chkpnt_global_t&      global  = dev::chkpnt_global_t::singleton();
-    const dev::chkpnt_info_t&  info    = global.get_chkpnt_info(chkpnt_id);
-    size_t                     atom_id = info.m_atom_id;
-    //
+    size_t atom_id   = chkpnt_id;
     size_t call_info = chkpnt_id;
     return call_atom(atom_id, adomain, call_info);
 }
