@@ -102,7 +102,6 @@ namespace {
         }
         // forward_der
         std::optional< vector<Tensor> > forward_der(
-            size_t                call_info ,
             const vector<bool>&   rng_used ,
             const vector<Tensor>& domain   ,
             const vector<Tensor>& dom_der ) const override {

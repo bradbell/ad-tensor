@@ -44,7 +44,6 @@ namespace ad_tensor  { namespace dev {
         //
         // forward_der: at::Tensor
         std::optional< vector<at::Tensor> > forward_der(
-            size_t                            call_info ,
             const vector<bool>&               rng_used  ,
             const vector<at::Tensor>&         domain    ,
             const vector<at::Tensor>&         dom_der
@@ -60,7 +59,6 @@ namespace ad_tensor  { namespace dev {
         //
         // forward_der: adten_t
         std::optional< vector<adten_t> >    forward_der(
-            size_t                            call_info ,
             const vector<bool>&               rng_used  ,
             const vector<adten_t>&            domain    ,
             const vector<adten_t>&            dom_der

@@ -130,7 +130,6 @@ namespace {
         }
         // forward_der
         std::optional< vector<Tensor> > forward_der(
-            size_t                call_info ,
             const vector<bool>&   rng_used  ,
             const vector<Tensor>& domain    ,
             const vector<Tensor>& dom_der   ) const override {
@@ -153,7 +152,6 @@ namespace {
         // AD forward_der
         // This is used when recording domain direction derivatives
         std::optional< vector<adten_t> > forward_der(
-            size_t                 call_info ,
             const vector<bool>&    rng_used ,
             const vector<adten_t>& domain   ,
             const vector<adten_t>& dom_der ) const override {
@@ -251,7 +249,6 @@ namespace {
         }
         // forward_der
         std::optional< vector<Tensor> > forward_der(
-            size_t                call_info,
             const vector<bool>&   rng_used,
             const vector<Tensor>& domain,
             const vector<Tensor>& dom_der) const override {

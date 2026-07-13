@@ -157,7 +157,7 @@ Forward Derivative Evaluation
 Syntax
 ******
 {xrst_code hpp}
-    rng_der = base_atom.forward_der(call_info, rng_used, domain, dom_der).value()
+    rng_der = base_atom.forward_der(rng_used, domain, dom_der).value()
 {xrst_code}
 
 Prototype
@@ -306,13 +306,11 @@ public:
     //
     // BEGIN_FORWARD_DER
     virtual std::optional< vector<at::Tensor> > forward_der(
-        size_t                      call_info,
         const vector<bool>&         rng_used,
         const vector<at::Tensor>&   domain,
         const vector<at::Tensor>&   dom_der
     ) const;
     virtual std::optional< vector<adten_t> > forward_der(
-        size_t                      call_info,
         const vector<bool>&         rng_used,
         const vector<adten_t>&      domain,
         const vector<adten_t>&      dom_der

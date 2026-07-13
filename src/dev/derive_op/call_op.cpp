@@ -383,7 +383,7 @@ template<> void call_op_t<at::Tensor>::forward_der(
     //
     // rng_der
     std::optional< vector<at::Tensor> > opt = base_atom.forward_der(
-        call_info, rng_used, domain, dom_der
+        rng_used, domain, dom_der
     );
     if( ! opt.has_value() ) {
         std::string msg = "atomic " + long_name;
@@ -463,7 +463,7 @@ template<> void call_op_t<adten_t>::forward_der(
     //
     // rng_der
     std::optional< vector<adten_t> > opt = base_atom.forward_der(
-        call_info, rng_used, domain, dom_der
+        rng_used, domain, dom_der
     );
     if( ! opt.has_value() ) {
         std::string msg = "atomic " + long_name;
