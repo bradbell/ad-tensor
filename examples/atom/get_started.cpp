@@ -119,7 +119,6 @@ namespace {
         }
         // reverse_der
         std::optional< vector<Tensor> > reverse_der(
-            size_t                call_info ,
             const vector<bool>&   rng_used ,
             const vector<Tensor>& domain   ,
             const vector<Tensor>& rng_der ) const override {

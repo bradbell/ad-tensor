@@ -216,7 +216,7 @@ Reverse Derivative Evaluation
 Syntax
 ******
 {xrst_code hpp}
-    dom_der = base_atom.reverse_der(call_info, rng_used, domain, rng_der).value()
+    dom_der = base_atom.reverse_der(rng_used, domain, rng_der).value()
 {xrst_code}
 
 Prototype
@@ -319,13 +319,11 @@ public:
     //
     // BEGIN_REVERSE_DER
     virtual std::optional< vector<at::Tensor> > reverse_der(
-        size_t                     call_info,
         const vector<bool>&        rng_used,
         const vector<at::Tensor>&  domain,
         const vector<at::Tensor>&  dom_der
     ) const;
     virtual std::optional< vector<adten_t> > reverse_der(
-        size_t                     call_info,
         const vector<bool>&        rng_used,
         const vector<adten_t>&     domain,
         const vector<adten_t>&     rng_der

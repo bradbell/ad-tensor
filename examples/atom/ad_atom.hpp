@@ -181,7 +181,6 @@ namespace {
         // AD reverse_der
         // This is used when recording range direction derivatives
         std::optional< vector<adten_t> > reverse_der(
-            size_t                 call_info ,
             const vector<bool>&    rng_used ,
             const vector<adten_t>& domain   ,
             const vector<adten_t>& rng_der ) const override {

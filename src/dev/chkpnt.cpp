@@ -66,7 +66,6 @@ std::optional< vector<at::Tensor> > derive_chkpnt_t::forward_der(
 }
 // reverse_der: at::Tensor
 std::optional< vector<at::Tensor> > derive_chkpnt_t::reverse_der(
-    size_t                            call_info ,
     const vector<bool>&               rng_used  ,
     const vector<at::Tensor>&         domain    ,
     const vector<at::Tensor>&         rng_der   ) const {
@@ -111,7 +110,6 @@ std::optional< vector<adten_t> > derive_chkpnt_t::forward_der(
 }
 // reverse_der: adten_t
 std::optional< vector<adten_t> > derive_chkpnt_t::reverse_der(
-    size_t                            call_info ,
     const vector<bool>&               rng_used  ,
     const vector<adten_t>&            domain    ,
     const vector<adten_t>&            rng_der   ) const {

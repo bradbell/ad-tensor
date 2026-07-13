@@ -69,7 +69,6 @@ std::optional< vector<adten_t> > base_atom_t::forward_der(
 //
 // reverse_der
 std::optional< vector<at::Tensor> > base_atom_t::reverse_der(
-    size_t                      call_info,
     const vector<bool>&         rng_used,
     const vector<at::Tensor>&   domain,
     const vector<at::Tensor>&   rng_der
@@ -77,7 +76,6 @@ std::optional< vector<at::Tensor> > base_atom_t::reverse_der(
     return  std::optional< vector<at::Tensor> >();
 }
 std::optional< vector<adten_t> > base_atom_t::reverse_der(
-    size_t                      call_info,
     const vector<bool>&         rng_used,
     const vector<adten_t>&      domain,
     const vector<adten_t>&      rng_der

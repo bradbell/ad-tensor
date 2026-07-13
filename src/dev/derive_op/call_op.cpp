@@ -525,7 +525,7 @@ template<> void call_op_t<at::Tensor>::reverse_der(
     //
     // dom_der
     std::optional< vector<at::Tensor> > opt = base_atom.reverse_der(
-        call_info, rng_used, domain, rng_der
+        rng_used, domain, rng_der
     );
     if( ! opt.has_value() ) {
         std::string msg = "atomic " + long_name;
@@ -586,7 +586,7 @@ template<> void call_op_t<adten_t>::reverse_der(
     //
     // dom_der
     std::optional< vector<adten_t> > opt = base_atom.reverse_der(
-        call_info, rng_used, domain, rng_der
+        rng_used, domain, rng_der
     );
     if( ! opt.has_value() ) {
         std::string msg = "atomic " + long_name;
