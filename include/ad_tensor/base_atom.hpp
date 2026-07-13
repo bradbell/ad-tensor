@@ -95,13 +95,6 @@ will have has_value() equal to false.
 You should also use this return when an error occurs during
 the evaluation of the sparsity pattern for the derived atomic function.
 
-call_info
-*********
-This value is passed through to the virtual functions
-from the call to this atomic function, :ref:`call_atom-name` .
-The derived version of forward (and the other virtual functions)
-can decided what to do based on the value of call_info.
-
 rng_used
 ********
 If rng_used is the empty vector, all of the range values are used.
@@ -169,7 +162,6 @@ a call_atom to a different atomic function for which the
 function values are the derivative of the original atomic function.
 
 See the previous documentation for
-:ref:`atom_forward@call_info` ,
 :ref:`atom_forward@rng_used` ,
 :ref:`atom_forward@domain` , and
 
@@ -228,7 +220,6 @@ a call_atom to a different atomic function for which the
 function values are the derivative of the original atomic function.
 
 See the previous documentation for
-:ref:`atom_forward@call_info` ,
 :ref:`atom_forward@rng_used` ,
 :ref:`atom_forward@domain` , and
 

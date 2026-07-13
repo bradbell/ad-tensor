@@ -91,7 +91,7 @@ void call_op_depend(
     // sub_sets
     thread_local vector<size_t>    sub_sets;
     //
-    // arg_start. atom_id, call_info, n_domain, n_result
+    // arg_start. atom_id, n_domain, n_result
     size_t arg_start = agraph.m_arg_start[op_index];
     size_t atom_id   = agraph.m_arg_value[arg_start + 0];
     size_t n_domain  = agraph.m_arg_value[arg_start + 1];
@@ -174,8 +174,7 @@ template<> void call_op_t<at::Tensor>::forward_par(
     thread_local vector<bool>       rng_used;
     thread_local vector<at::Tensor> domain;
     //
-    // arg_start. atom_id, call_info, n_domain, n_range, n_result
-    // base_atom
+    // arg_start. atom_id, n_domain, n_range, n_result, base_atom
     UNPACK
     //
     // domain
@@ -236,8 +235,7 @@ template<> void call_op_t<at::Tensor>::forward_var(
     thread_local vector<bool>       rng_used;
     thread_local vector<at::Tensor> domain;
     //
-    // arg_start. atom_id, call_info, n_domain, n_range, n_result
-    // base_atom
+    // arg_start. atom_id, n_domain, n_range, n_result, base_atom
     UNPACK
     //
     // domain
@@ -287,7 +285,7 @@ template<> void call_op_t<adten_t>::forward_var(
     // domain
     thread_local vector<adten_t>    domain;
     //
-    // arg_start. atom_id, call_info, n_domain, n_result
+    // arg_start. atom_id, n_domain, n_result
     size_t arg_start = agraph.m_arg_start[op_index];
     size_t atom_id   = agraph.m_arg_value[arg_start + 0];
     size_t n_domain  = agraph.m_arg_value[arg_start + 1];
@@ -330,8 +328,7 @@ template<> void call_op_t<at::Tensor>::forward_der(
     thread_local vector<at::Tensor> domain;
     thread_local vector<at::Tensor> dom_der;
     //
-    // arg_start. atom_id, call_info, n_domain, n_range, n_result
-    // base_atom
+    // arg_start. atom_id, n_domain, n_range, n_result, base_atom
     UNPACK
     //
     // rng_used
@@ -408,8 +405,7 @@ template<> void call_op_t<adten_t>::forward_der(
     thread_local vector<adten_t> domain;
     thread_local vector<adten_t> dom_der;
     //
-    // arg_start. atom_id, call_info, n_domain, n_range, n_result
-    // base_atom
+    // arg_start. atom_id, n_domain, n_range, n_result, base_atom
     UNPACK
     //
     // rng_used
@@ -492,8 +488,7 @@ template<> void call_op_t<at::Tensor>::reverse_der(
     thread_local vector<at::Tensor> domain;
     thread_local vector<at::Tensor> rng_der;
     //
-    // arg_start. atom_id, call_info, n_domain, n_range, n_result
-    // base_atom
+    // arg_start. atom_id, n_domain, n_range, n_result, base_atom
     UNPACK
     //
     // rng_used, rng_der
@@ -553,8 +548,7 @@ template<> void call_op_t<adten_t>::reverse_der(
     thread_local vector<adten_t> domain;
     thread_local vector<adten_t> rng_der;
     //
-    // arg_start. atom_id, call_info, n_domain, n_range, n_result
-    // base_atom
+    // arg_start. atom_id, n_domain, n_range, n_result, base_atom
     UNPACK
     //
     // rng_used, rng_der
