@@ -30,9 +30,6 @@ namespace ad_tensor  { namespace dev {
         // ctor
         derive_chkpnt_t(chkpnt_info_t& info);
         //
-        // long_name
-        std::string long_name(size_t call_info) const override;
-        //
         // depend
         std::optional<sparsity_t> depend(void) const override;
         //

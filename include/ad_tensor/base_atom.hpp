@@ -39,23 +39,6 @@ trace
 
 {xrst_end atom_non_virtual}
 ------------------------------------------------------------------------------
-{xrst_begin atom_long_name usr}
-
-The Long Name for a Derived Class
-#################################
-
-long_name
-*********
-{xrst_literal ,
-    BEGIN_LONG_NAME, END_LONG_NAME
-}
-The base_atom_t version of this function just returns
-the short :ref:`atom_non_virtual@name` .
-You can override this to get a more descriptive name that
-depends on call_info.
-
-{xrst_end atom_long_name}
-------------------------------------------------------------------------------
 {xrst_begin atom_depend usr}
 
 The Dependency Sparsity Pattern
@@ -288,10 +271,6 @@ public:
     void set_trace(bool trace);
     bool get_trace(void) const;
     // END_TRACE
-    //
-    // BEGIN_LONG_NAME
-    virtual std::string long_name(size_t call_info) const;
-    // END_LONG_NAME
     //
     // BEGIN_DEPEND
     virtual std::optional<sparsity_t> depend(void) const;

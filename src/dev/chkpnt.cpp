@@ -16,15 +16,7 @@ namespace ad_tensor { namespace dev { // BEGIN_AD_TENSOR_DEV_NAMESPACE
 // ctor
 derive_chkpnt_t::derive_chkpnt_t(chkpnt_info_t& info)
 : m_info(info) {
-    set_name("ckhpnt");
-}
-// long_name
-std::string derive_chkpnt_t::long_name(size_t call_info) const {
-    //
-    // adfn
-    const adfn_t& adfn = m_info.m_adfn;
-    //
-    return get_name() + "_" + adfn.get_name();
+    set_name( "chkpnt_" + info.m_adfn.get_name() );
 }
 // depend
 std::optional<sparsity_t> derive_chkpnt_t::depend(void) const {

@@ -33,11 +33,6 @@ bool base_atom_t::get_trace(void) const {
     return m_trace;
 }
 //
-// long_name
-std::string base_atom_t::long_name(size_t call_info) const {
-    return m_name;
-}
-//
 // depend
 std::optional<sparsity_t> base_atom_t::depend(void) const {
     return std::optional<sparsity_t>();
