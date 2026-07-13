@@ -80,18 +80,16 @@ void atom_depend(
     // arg_start, n_domain, n_range, n_result
     size_t arg_start = agraph.m_arg_start[call_op_index];
     size_t atom_id   = agraph.m_arg_value[arg_start + 0];
-    size_t call_info = 0;
     size_t n_result  = agraph.m_arg_value[arg_start + 3];
     //
-    // base_atom, long_name
+    // base_atom
     dev::atom_global_t& atom_global = dev::atom_global_t::singleton();
     const base_atom_t&  base_atom   = atom_global.get_base_atom(atom_id);
-    std::string         long_name   = base_atom.long_name(call_info);
     //
     // pattern
     std::optional<sparsity_t> opt = base_atom.depend();
     if( ! opt.has_value() ) {
-        std::string msg = "atomic " + long_name;
+        std::string msg = "atomic " + base_atom.get_name();
         msg += ".depend did not return a value\n";
         dev::user_assert(false, msg);
     }
