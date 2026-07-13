@@ -34,7 +34,7 @@ namespace ad_tensor  { namespace dev {
         std::string long_name(size_t call_info) const override;
         //
         // depend
-        std::optional<sparsity_t> depend(size_t call_info ) const override;
+        std::optional<sparsity_t> depend(void) const override;
         //
         // forward
         std::optional< vector<at::Tensor> > forward(

@@ -106,7 +106,7 @@ void call_op_depend(
     std::string            long_name    = base_atom.long_name(call_info);
     //
     // sparsity
-    std::optional<sparsity_t> opt = base_atom.depend(call_info);
+    std::optional<sparsity_t> opt = base_atom.depend();
     if( ! opt.has_value() ) {
         std::string msg = "atomic " + long_name;
         msg += ".depend did not return a value\n";

@@ -81,8 +81,7 @@ namespace {
             set_name("square");
         }
         // depend
-        optional<ad_tensor::sparsity_t> depend(
-            size_t                call_info ) const override {
+        optional<ad_tensor::sparsity_t> depend(void) const override {
             ad_tensor::sparsity_t sparsity;
             sparsity.push_back( {0, 0} );
             //

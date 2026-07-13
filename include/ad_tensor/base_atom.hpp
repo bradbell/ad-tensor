@@ -294,7 +294,7 @@ public:
     // END_LONG_NAME
     //
     // BEGIN_DEPEND
-    virtual std::optional<sparsity_t> depend(size_t call_info) const;
+    virtual std::optional<sparsity_t> depend(void) const;
     // END_DEPEND
     //
     // BEGIN_FORWARD_FUN

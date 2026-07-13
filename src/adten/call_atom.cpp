@@ -117,7 +117,7 @@ vector<adten_t> adten_t::call_atom(
     }
     //
     // pattern
-    std::optional<sparsity_t>   opt_depend = base_atom.depend(call_info);
+    std::optional<sparsity_t>   opt_depend = base_atom.depend();
     if( ! opt_depend.has_value() ) {
         std::string msg = "atomic " + long_name;
         msg += ".depend did not return a value\n";

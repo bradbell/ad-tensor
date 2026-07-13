@@ -39,7 +39,7 @@ std::string base_atom_t::long_name(size_t call_info) const {
 }
 //
 // depend
-std::optional<sparsity_t> base_atom_t::depend(size_t call_info) const {
+std::optional<sparsity_t> base_atom_t::depend(void) const {
     return std::optional<sparsity_t>();
 };
 //

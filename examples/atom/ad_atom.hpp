@@ -103,8 +103,7 @@ namespace {
             set_name("y");
         }
         // depend
-        std::optional<ad_tensor::sparsity_t> depend(
-            size_t           call_info) const override {
+        std::optional<ad_tensor::sparsity_t> depend(void) const override {
             ad_tensor::sparsity_t sparsity;
             sparsity.push_back( {0, 0} );
             //
@@ -225,8 +224,7 @@ namespace {
             set_name("z");
         }
         // depend
-        std::optional<ad_tensor::sparsity_t> depend(
-            size_t                call_info) const override {
+        std::optional<ad_tensor::sparsity_t> depend(void) const override {
             ad_tensor::sparsity_t sparsity;
             sparsity.push_back( {0, 0} );
             sparsity.push_back( {0, 1} );
