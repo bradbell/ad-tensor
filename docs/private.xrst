@@ -19,11 +19,11 @@ Contents
     include/ad_tensor/dev/base_op.hpp
     include/ad_tensor/dev/move_swap.hpp
     include/ad_tensor/dev/op_enum.hpp
+    include/ad_tensor/dev/optimize.hpp
     include/ad_tensor/dev/plus_minus_equal.hpp
     include/ad_tensor/dev/tape.hpp
     src/dev/broadcast.cpp
     src/dev/derive_op/call_op.cpp
-    src/dev/optimize/rng_depend.cpp
     src/dev/rev_sum_view.cpp
     src/dev/tensor_at_index.cpp
     src/dev/vec_sets.cpp

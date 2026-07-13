@@ -41,6 +41,7 @@ add_library(ad_tensor SHARED
     dev/derive_op/sum_op.cpp
     dev/derive_op/transpose_op.cpp
     dev/derive_op/view_op.cpp
+    dev/optimize/old2new.cpp
     dev/optimize/rng_depend.cpp
     dev/rev_sum_view.cpp
     dev/tape.cpp
