@@ -176,8 +176,7 @@ private:
     // is a link to the private function call_atom defined in this class
     friend vector<adten_t> call_atom(
         size_t                 atom_id   ,
-        const vector<adten_t>& adomain   ,
-        size_t                 call_info
+        const vector<adten_t>& adomain
     );
     // BEGIN_MEMBER_DATA
     size_t        m_tape_id;
@@ -204,8 +203,7 @@ private:
     // call_atom
     static vector<adten_t> call_atom(
         size_t                 atom_id   ,
-        const vector<adten_t>& adomain   ,
-        size_t                 call_info
+        const vector<adten_t>& adomain
     );
 public:
     // BEGIN_PUBLIC_CTOR

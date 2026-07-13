@@ -303,8 +303,7 @@ template<> void call_op_t<adten_t>::forward_var(
     };
     //
     // range
-    size_t call_info = 0;
-    vector<adten_t>  range = call_atom(atom_id, domain, call_info);
+    vector<adten_t>  range = call_atom(atom_id, domain);
     //
     // par_vec
     for(size_t k = 0; k < n_result; ++k) {

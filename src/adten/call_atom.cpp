@@ -76,7 +76,7 @@ namespace ad_tensor { // BEGIN_AD_TENSOR_NAMESPACE
 
 // call_atom
 vector<adten_t> adten_t::call_atom(
-    size_t atom_id, const vector<adten_t>& adomain, size_t call_info
+    size_t atom_id, const vector<adten_t>& adomain
 ) {
     //
     // base_atom

@@ -261,8 +261,7 @@ vector<adten_t> call_chkpnt(
 {   // END_CALL_CHKPNT
     //
     size_t atom_id   = chkpnt_id;
-    size_t call_info = chkpnt_id;
-    return call_atom(atom_id, adomain, call_info);
+    return call_atom(atom_id, adomain);
 }
 
 }  // END_AD_TENSOR_NAMESPACE

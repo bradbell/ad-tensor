@@ -10,8 +10,7 @@ namespace ad_tensor {
     // BEGIN_CALL_ATOM
     vector<adten_t> call_atom(
         size_t                 atom_id   ,
-        const vector<adten_t>& adomain   ,
-        size_t                 call_info = 0
+        const vector<adten_t>& adomain
     );
     // END_CALL_ATOM
 }
