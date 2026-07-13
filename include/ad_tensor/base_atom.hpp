@@ -97,7 +97,7 @@ Forward Function Evaluation
 Syntax
 ******
 {xrst_code hpp}
-    range = base_atom.forward(call_info, rng_used, domain).value()
+    range = base_atom.forward(rng_used, domain).value()
 {xrst_code}
 
 Prototype
@@ -299,7 +299,6 @@ public:
     //
     // BEGIN_FORWARD_FUN
     virtual std::optional< vector<at::Tensor> > forward(
-        size_t                      call_info,
         const vector<bool>&         rng_used,
         const vector<at::Tensor>&   domain
     ) const;

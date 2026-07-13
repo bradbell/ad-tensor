@@ -38,7 +38,6 @@ namespace ad_tensor  { namespace dev {
         //
         // forward
         std::optional< vector<at::Tensor> > forward(
-            size_t                            call_info ,
             const vector<bool>&               rng_used  ,
             const vector<at::Tensor>&         domain
         ) const override;

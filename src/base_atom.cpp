@@ -45,7 +45,6 @@ std::optional<sparsity_t> base_atom_t::depend(void) const {
 //
 // forward
 std::optional< vector<at::Tensor> > base_atom_t::forward(
-    size_t                      call_info,
     const vector<bool>&         rng_used,
     const vector<at::Tensor>&   domain
 ) const {

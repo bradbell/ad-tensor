@@ -94,7 +94,7 @@ vector<adten_t> adten_t::call_atom(
     // range, n_range
     vector<bool> rng_used;
     std::optional< vector<at::Tensor> > opt_forward = base_atom.forward(
-        call_info, rng_used, domain
+        rng_used, domain
     );
     if( ! opt_forward.has_value() ) {
         std::string msg = "atomic " + long_name;

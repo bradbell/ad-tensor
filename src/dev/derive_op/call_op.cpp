@@ -202,7 +202,7 @@ template<> void call_op_t<at::Tensor>::forward_par(
     //
     // range
     std::optional< vector<at::Tensor> > opt = base_atom.forward(
-        call_info, rng_used, domain
+        rng_used, domain
     );
     if( ! opt.has_value() ) {
         std::string msg = "atomic " + long_name;
@@ -264,7 +264,7 @@ template<> void call_op_t<at::Tensor>::forward_var(
     //
     // range
     std::optional< vector<at::Tensor> > opt = base_atom.forward(
-         call_info, rng_used, domain
+         rng_used, domain
     );
     if( ! opt.has_value() ) {
         std::string msg = "atomic " + long_name;

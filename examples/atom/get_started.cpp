@@ -90,7 +90,6 @@ namespace {
         }
         // forward
         std::optional< vector<Tensor> > forward(
-            size_t                call_info ,
             const vector<bool>&   rng_used ,
             const vector<Tensor>& domain ) const override {
             //
