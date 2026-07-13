@@ -64,7 +64,7 @@ The Dependency Sparsity Pattern
 Syntax
 ******
 {xrst_code hpp}
-    depend = base_atom.depend(call_info).value()
+    depend = base_atom.depend().value()
 {xrst_code}
 
 Prototype
@@ -157,7 +157,7 @@ Forward Derivative Evaluation
 Syntax
 ******
 {xrst_code hpp}
-    rng_der = base_atom.forward(call_info, rng_used, domain, dom_der).value()
+    rng_der = base_atom.forward_der(call_info, rng_used, domain, dom_der).value()
 {xrst_code}
 
 Prototype
@@ -216,7 +216,7 @@ Reverse Derivative Evaluation
 Syntax
 ******
 {xrst_code hpp}
-    dom_der = base_atom.reverse(call_info, rng_used, domain, rng_der).value()
+    dom_der = base_atom.reverse_der(call_info, rng_used, domain, rng_der).value()
 {xrst_code}
 
 Prototype
