@@ -138,9 +138,9 @@ namespace ad_tensor { class adfn_t
     //
 private:
 // BEGIN_MEMBER_DATA
+    vector<at::Tensor>        m_con;
     dev::agraph_t             m_par;
     dev::agraph_t             m_var;
-    vector<at::Tensor>        m_con;
     vector<size_t>            m_rng_index;
     vector<ad_type_t>         m_rng_ad_type;
     vector< vector<int64_t> > m_rng_shapes;
@@ -161,9 +161,9 @@ public:
     // BEGIN_DEFAULT_CTOR
     adfn_t()
     // END_DEFAULT_CTOR
-    : m_par()
+    : m_con()
+    , m_par()
     , m_var()
-    , m_con()
     , m_rng_index()
     , m_rng_ad_type()
     , m_rng_shapes()
