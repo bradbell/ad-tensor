@@ -157,6 +157,8 @@ private:
     std::array< vector<bool>, 3 > rng_depend
     (void) const;
 public:
+    // optimize
+    adfn_t static optimize(const adfn_t& adfn);
     //
     // BEGIN_DEFAULT_CTOR
     adfn_t()
