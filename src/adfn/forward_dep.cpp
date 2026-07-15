@@ -52,7 +52,7 @@ Example
 */
 namespace ad_tensor { // BEGIN_NAMESPACE_AD_TENSOR
 //
-std::tuple<sparsity_t, sparsity_t> adfn_t::forward_dep(void) const
+std::array<sparsity_t, 2> adfn_t::forward_dep(void) const
 {   //
     // cout, to_string
     using std::cout;
@@ -256,6 +256,6 @@ std::tuple<sparsity_t, sparsity_t> adfn_t::forward_dep(void) const
         cout << "depend_var = " << to_string( depend_var ) << "\n";;
         cout << "End tracing " + get_name() + ".forward_dep\n";
     }
-    return std::tuple<sparsity_t, sparsity_t>(depend_par, depend_var);
+    return std::array<sparsity_t, 2>( {depend_par, depend_var} );
 }
 } // END_NAMESPACE_AD_TENSOR

@@ -208,7 +208,7 @@ public:
     // END_PRINT_CON
     //
     // BEGIN_FORWARD_DEP
-    std::tuple<sparsity_t, sparsity_t> forward_dep(void) const;
+    std::array<sparsity_t, 2> forward_dep(void) const;
     // END_FORWARD_DEP
     //
     // BEGIN_FORWARD_PAR
