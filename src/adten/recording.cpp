@@ -73,7 +73,7 @@ vector<adten_t> adten_t::start_recording(const vector<at::Tensor>& dom_var)
     auto [ adom_var, adom_par] = start_recording(dom_var, dom_par);
     return adom_var;
 }
-std::tuple< vector<adten_t>, vector<adten_t> >
+std::array< vector<adten_t>,2 >
 adten_t::start_recording(
         const vector<at::Tensor>& dom_var ,
         const vector<at::Tensor>& dom_par )
@@ -152,7 +152,7 @@ adten_t::start_recording(
             adten_t( tape_id, index, dom_var[index], variable)
         );
     }
-    return std::tuple< vector<adten_t>, vector<adten_t> >(adom_var, adom_par);
+    return std::array< vector<adten_t>, 2>( {adom_var, adom_par } );
 }
 /*
 ------------------------------------------------------------------------------

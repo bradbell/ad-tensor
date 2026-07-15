@@ -150,6 +150,7 @@ The adten_t Private Constructor
 {xrst_end adten_ctor_dev}
 ------------------------------------------------------------------------------
 */
+#include <array>
 #include <torch/torch.h>
 //
 #include <ad_tensor/adfn.hpp>
@@ -239,7 +240,7 @@ public:
     // END_START_RECORDING_1
     // BEGIN_START_RECORDING_2
     // auto [adom_var  adom_par] = adten_t::start_recording(dom_var, dom_par)
-    static std::tuple< vector<adten_t>, vector<adten_t> > start_recording(
+    static std::array< vector<adten_t>, 2> start_recording(
         const vector<at::Tensor>& dom_var ,
         const vector<at::Tensor>& dom_par
     );
