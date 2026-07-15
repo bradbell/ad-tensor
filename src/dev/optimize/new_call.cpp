@@ -2,11 +2,78 @@
 // SPDX-FileCopyrightText: Bradley M. Bell <bradbell@seanet.com>
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
+/*
+{xrst_begin new_call dev}
+{xrst_spell
+    op
+    agraph
+    std
+}
+
+Add an Atomic Function Call to a New AD Function
+################################################
+
+Syntax
+******
+{xrst_code cpp}
+    op_index_old = new_call(
+        agraph_new,
+        agraph_old,
+        op_index_old,
+        var_op,
+        old2new_con,
+        old2new_par,
+        old2new_var
+    )
+{xrst_code}
+
+Prototype
+*********
+{xrst_literal ,
+    BEGIN_NEW_CALL, END_NEW_CALL
+}
+
+not_used
+********
+We use the notation
+{xrst_code cpp}
+    not_used = std::numeric_limits<size_t>::max()
+{xrst_code}
+
+agraph_new
+**********
+The new graph up to but not including the call the an atomic function.
+
+agraph_old
+**********
+The old graph that contains the call to an atomic function.
+
+op_index_old
+************
+On input op_index_old is the old graph index for a call, or a call result,
+that is used in the new graph.
+Upon return, is op_index_old is the next operator index,
+after this call,  in the old graph.
+
+var_op
+******
+If this is true (false) the is a variable (parameter) graph.
+
+old2new_con, old2new_par, old2par_var
+*************************************
+is the mapping from indices in the old graph to indices in the new graph
+for constants, parameters and variables (in that order).
+If not_used is equal (not equal) to an old to new index,
+the corresponding result is (is not) in the new graph.
+
+{xrst_end new_call}
+*/
 #include <ad_tensor/dev/optimize.hpp>
 #include <ad_tensor/dev/unpack_call.hpp>
 //
 namespace ad_tensor { namespace dev { // BEGIN_AD_TENSOR_DEV_NAMESPACE
 //
+// BEGIN_NEW_CALL
 size_t new_call(
     agraph_t&             agraph_new,
     const agraph_t&       agraph_old,
@@ -14,7 +81,8 @@ size_t new_call(
     bool                  var_op,
     const vector<size_t>& old2new_con,
     const vector<size_t>& old2new_par,
-    const vector<size_t>& old2new_var) {
+    const vector<size_t>& old2new_var)
+{   // END_NEW_CALL
     //
     // not_used
     size_t not_used = std::numeric_limits<size_t>::max();
