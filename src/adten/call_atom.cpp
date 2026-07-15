@@ -190,7 +190,7 @@ vector<adten_t> adten_t::call_atom(
             agraph    = &tape.m_var;
             rng_index = &var_rng_index;
         }
-        assert( n_result[1] == rng_index->size() );
+        assert( n_result[ig] == rng_index->size() );
         //
         // agraph: m_op_seq, m_arg_start
         agraph->m_op_seq.push_back( dev::op_enum_t::call );
