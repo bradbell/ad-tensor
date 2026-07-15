@@ -100,6 +100,7 @@ is the shape for each of the range tensors.
 {xrst_end adfn_dev}
 ------------------------------------------------------------------------------
 */
+#include <array>
 #include <ad_tensor/vector.hpp>
 #include <torch/torch.h>
 #include <ad_tensor/direction.hpp>
@@ -114,7 +115,7 @@ namespace ad_tensor { class adten_t; class adfn_t; }
 // dev::rng_depend
 // cannot use include/dev/optimize.hpp because it includes this file
 namespace ad_tensor { namespace dev {
-    std::tuple< vector<bool>, vector<bool>, vector<bool> > rng_depend(
+    std::array< vector<bool>, 3> rng_depend(
         const adfn_t* adfn
     );
 } }
@@ -133,8 +134,7 @@ namespace ad_tensor { class adfn_t
     );
     // ad_tensor::rng_depend
     // is a link to the private function rng_depend defined in this class
-    friend std::tuple< vector<bool>, vector<bool>, vector<bool> >
-    dev::rng_depend(const adfn_t* adfn);
+    friend std::array< vector<bool>, 3 > dev::rng_depend(const adfn_t* adfn);
     //
 private:
 // BEGIN_MEMBER_DATA
@@ -154,7 +154,7 @@ private:
         c10::ArrayRef<direction_t>   directions
     );
     //
-    std::tuple< vector<bool>, vector<bool>, vector<bool> > rng_depend
+    std::array< vector<bool>, 3 > rng_depend
     (void) const;
 public:
     //

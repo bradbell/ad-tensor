@@ -203,7 +203,7 @@ void op_depend(
 }
 //
 // BEGIN_RNG_DEPEND
-std::tuple< vector<bool>, vector<bool>, vector<bool> >
+std::array< vector<bool>, 3 >
 rng_depend(const adfn_t* adfn)
 {   // END_RNG_DEPEND
     return adfn->rng_depend();
@@ -213,7 +213,7 @@ rng_depend(const adfn_t* adfn)
 namespace ad_tensor {
     //
     // adfn::depend
-    std::tuple< vector<bool>, vector<bool>, vector<bool> > adfn_t::rng_depend(
+    std::array< vector<bool>, 3 > adfn_t::rng_depend(
         void
     ) const {
         //
@@ -258,8 +258,8 @@ namespace ad_tensor {
         var_op = false;
         op_depend(var_op, m_par, depend_con, depend_par, depend_var);
         //
-        return std::tuple< vector<bool>, vector<bool>, vector<bool> > (
-            depend_con, depend_par, depend_var
+        return std::array< vector<bool>, 3 > (
+            { depend_con, depend_par, depend_var }
         );
     }
 }
