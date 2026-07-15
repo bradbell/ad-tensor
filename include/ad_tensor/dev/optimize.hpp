@@ -17,7 +17,6 @@ The Optimizer Implementation
 {xrst_end optimize_dev}
 */
 #include <array>
-#include <tuple>
 #include <ad_tensor/adfn.hpp>
 //
 namespace ad_tensor { namespace dev {
@@ -26,7 +25,7 @@ namespace ad_tensor { namespace dev {
     std::array< vector<bool>, 3 > rng_depend(const adfn_t* adfn);
     //
     // old2new
-    std::tuple< vector<size_t>, vector<size_t>, vector<size_t> > old2new(
+    std::array< vector<size_t>, 3 > old2new(
         size_t              n_dom_par,
         size_t              n_dom_var,
         const vector<bool>& depend_con,

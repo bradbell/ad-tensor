@@ -93,12 +93,13 @@ old2new_var[k] == not_used.
 {xrst_end old2new}
 */
 #include <limits>
+#include <array>
 #include <ad_tensor/dev/optimize.hpp>
 //
 namespace ad_tensor { namespace dev { // BEGIN_AD_TENSOR_DEV_NAMESPACE
 //
 // BEGIN_OLD2NEW
-std::tuple< vector<size_t>, vector<size_t>, vector<size_t> > old2new(
+std::array< vector<size_t>, 3 > old2new(
     size_t              n_dom_par,
     size_t              n_dom_var,
     const vector<bool>& depend_con,
@@ -147,8 +148,8 @@ std::tuple< vector<size_t>, vector<size_t>, vector<size_t> > old2new(
             ++i_new;
         }
     }
-    return std::tuple< vector<size_t>, vector<size_t>, vector<size_t> >(
-        old2new_con, old2new_par, old2new_var
+    return std::array< vector<size_t>, 3 >(
+       { old2new_con, old2new_par, old2new_var }
     );
 }
 //
