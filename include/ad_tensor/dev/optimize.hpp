@@ -32,4 +32,15 @@ namespace ad_tensor { namespace dev {
         const vector<bool>& depend_par,
         const vector<bool>& depend_var
     );
+    //
+    // new_call
+    size_t new_call(
+        agraph_t&             agraph_new,
+        const agraph_t&       agraph_old,
+        size_t                op_index_old,
+        bool                  var_op,
+        const vector<size_t>& old2new_con,
+        const vector<size_t>& old2new_par,
+        const vector<size_t>& old2new_var
+    );
 } }
