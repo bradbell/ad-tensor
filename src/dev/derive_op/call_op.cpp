@@ -58,16 +58,7 @@ variable result for this atomic function.
 #include <ad_tensor/dev/broadcast.hpp>
 #include <ad_tensor/dev/plus_minus_equal.hpp>
 #include <ad_tensor/dev/tensor_at_index.hpp>
-//
-#define UNPACK \
-    size_t arg_start = agraph.m_arg_start[op_index];\
-    size_t atom_id   = agraph.m_arg_value[arg_start + 0]; \
-    size_t n_domain  = agraph.m_arg_value[arg_start + 1]; \
-    size_t n_range   = agraph.m_arg_value[arg_start + 2]; \
-    size_t n_result  = agraph.m_arg_value[arg_start + 3]; \
-    \
-    atom_global_t&         atom_global   = atom_global_t::singleton(); \
-    const base_atom_t&     base_atom = atom_global.get_base_atom(atom_id); \
+#include <ad_tensor/dev/unpack_call.hpp>
 //
 namespace ad_tensor { namespace dev { // BEGIN_AD_TENSOR_DEV_NAMESPACE
 // ------------------------------------------------------------------------
@@ -91,11 +82,10 @@ void call_op_depend(
     // sub_sets
     thread_local vector<size_t>    sub_sets;
     //
-    // arg_start. atom_id, n_domain, n_result
-    size_t arg_start = agraph.m_arg_start[op_index];
-    size_t atom_id   = agraph.m_arg_value[arg_start + 0];
-    size_t n_domain  = agraph.m_arg_value[arg_start + 1];
-    size_t n_result  = agraph.m_arg_value[arg_start + 3];
+    // arg_start, atom_id, n_domain, n_result
+    auto [arg_start, atom_id, n_domain, n_range, n_result] = unpack_call(
+        op_index, agraph
+    );
     //
     // base_atom
     atom_global_t&         atom_global  = atom_global_t::singleton();
@@ -174,8 +164,14 @@ template<> void call_op_t<at::Tensor>::forward_par(
     thread_local vector<bool>       rng_used;
     thread_local vector<at::Tensor> domain;
     //
-    // arg_start. atom_id, n_domain, n_range, n_result, base_atom
-    UNPACK
+    // arg_start, atom_id, n_domain, n_range, n_result, base_atom
+    auto [arg_start, atom_id, n_domain, n_range, n_result] = unpack_call(
+        op_index, agraph
+    );
+    //
+    // base_atom
+    atom_global_t&         atom_global   = atom_global_t::singleton();
+    const base_atom_t&     base_atom = atom_global.get_base_atom(atom_id);
     //
     // domain
     domain.resize(0);
@@ -235,8 +231,14 @@ template<> void call_op_t<at::Tensor>::forward_var(
     thread_local vector<bool>       rng_used;
     thread_local vector<at::Tensor> domain;
     //
-    // arg_start. atom_id, n_domain, n_range, n_result, base_atom
-    UNPACK
+    // arg_start, atom_id, n_domain, n_range, n_result, base_atom
+    auto [arg_start, atom_id, n_domain, n_range, n_result] = unpack_call(
+        op_index, agraph
+    );
+    //
+    // base_atom
+    atom_global_t&         atom_global   = atom_global_t::singleton();
+    const base_atom_t&     base_atom = atom_global.get_base_atom(atom_id);
     //
     // domain
     domain.resize(0);
@@ -285,11 +287,10 @@ template<> void call_op_t<adten_t>::forward_var(
     // domain
     thread_local vector<adten_t>    domain;
     //
-    // arg_start. atom_id, n_domain, n_result
-    size_t arg_start = agraph.m_arg_start[op_index];
-    size_t atom_id   = agraph.m_arg_value[arg_start + 0];
-    size_t n_domain  = agraph.m_arg_value[arg_start + 1];
-    size_t n_result  = agraph.m_arg_value[arg_start + 3];
+    // arg_start, atom_id, n_domain, n_result
+    auto [arg_start, atom_id, n_domain, n_range, n_result] = unpack_call(
+        op_index, agraph
+    );
     //
     // domain
     domain.resize(0);
@@ -328,8 +329,14 @@ template<> void call_op_t<at::Tensor>::forward_der(
     thread_local vector<at::Tensor> domain;
     thread_local vector<at::Tensor> dom_der;
     //
-    // arg_start. atom_id, n_domain, n_range, n_result, base_atom
-    UNPACK
+    // arg_start, atom_id, n_domain, n_range, n_result, base_atom
+    auto [arg_start, atom_id, n_domain, n_range, n_result] = unpack_call(
+        op_index, agraph
+    );
+    //
+    // base_atom
+    atom_global_t&         atom_global   = atom_global_t::singleton();
+    const base_atom_t&     base_atom = atom_global.get_base_atom(atom_id);
     //
     // rng_used
     rng_used.resize(0);
@@ -405,8 +412,14 @@ template<> void call_op_t<adten_t>::forward_der(
     thread_local vector<adten_t> domain;
     thread_local vector<adten_t> dom_der;
     //
-    // arg_start. atom_id, n_domain, n_range, n_result, base_atom
-    UNPACK
+    // arg_start, atom_id, n_domain, n_range, n_result, base_atom
+    auto [arg_start, atom_id, n_domain, n_range, n_result] = unpack_call(
+        op_index, agraph
+    );
+    //
+    // base_atom
+    atom_global_t&         atom_global   = atom_global_t::singleton();
+    const base_atom_t&     base_atom = atom_global.get_base_atom(atom_id);
     //
     // rng_used
     rng_used.resize(0);
@@ -488,8 +501,14 @@ template<> void call_op_t<at::Tensor>::reverse_der(
     thread_local vector<at::Tensor> domain;
     thread_local vector<at::Tensor> rng_der;
     //
-    // arg_start. atom_id, n_domain, n_range, n_result, base_atom
-    UNPACK
+    // arg_start, atom_id, n_domain, n_range, n_result, base_atom
+    auto [arg_start, atom_id, n_domain, n_range, n_result] = unpack_call(
+        op_index, agraph
+    );
+    //
+    // base_atom
+    atom_global_t&         atom_global   = atom_global_t::singleton();
+    const base_atom_t&     base_atom = atom_global.get_base_atom(atom_id);
     //
     // rng_used, rng_der
     rng_used.resize(0);
@@ -548,8 +567,14 @@ template<> void call_op_t<adten_t>::reverse_der(
     thread_local vector<adten_t> domain;
     thread_local vector<adten_t> rng_der;
     //
-    // arg_start. atom_id, n_domain, n_range, n_result, base_atom
-    UNPACK
+    // arg_start, atom_id, n_domain, n_range, n_result, base_atom
+    auto [arg_start, atom_id, n_domain, n_range, n_result] = unpack_call(
+        op_index, agraph
+    );
+    //
+    // base_atom
+    atom_global_t&         atom_global   = atom_global_t::singleton();
+    const base_atom_t&     base_atom = atom_global.get_base_atom(atom_id);
     //
     // rng_used, rng_der
     rng_der.resize(0);

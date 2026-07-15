@@ -52,6 +52,7 @@ depends (does not depend) in the k-th variable in var_all.
 */
 #include <ad_tensor/adfn.hpp>
 #include <ad_tensor/sparsity.hpp>
+#include <ad_tensor/dev/unpack_call.hpp>
 #include <ad_tensor/dev/agraph.hpp>
 #include <ad_tensor/dev/atom.hpp>
 #include <ad_tensor/dev/user_assert.hpp>
@@ -77,10 +78,10 @@ void atom_depend(
         return depend_par[op_index];
     };
     //
-    // arg_start, n_domain, n_range, n_result
-    size_t arg_start = agraph.m_arg_start[call_op_index];
-    size_t atom_id   = agraph.m_arg_value[arg_start + 0];
-    size_t n_result  = agraph.m_arg_value[arg_start + 3];
+    // arg_start, atom-id, n_result
+    auto [arg_start, atom_id, n_domain, n_range, n_result] = unpack_call(
+        call_op_index, agraph
+    );
     //
     // base_atom
     dev::atom_global_t& atom_global = dev::atom_global_t::singleton();
