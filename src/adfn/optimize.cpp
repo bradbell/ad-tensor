@@ -47,6 +47,40 @@ adfn_t adfn_t::optimize(const adfn_t& adfn_old) {
         adfn_old.m_var, var_op, old2new_con, old2new_par, old2new_var
     );
     //
+    // adfn_new: m_rng_index, m_rng_ad_type, m_rng_shapes
+    size_t n_range = adfn_old.m_rng_index.size();
+    for(size_t i = 0; i < n_range; ++i) {
+        const vector<int64_t>& shape     = adfn_old.m_rng_shapes[i];
+        ad_type_t              ad_type   = adfn_old.m_rng_ad_type[i];
+        size_t                 index_old = adfn_old.m_rng_index[i];
+        size_t                 index_new = not_used;
+        switch( ad_type ) {
+            //
+            case ad_type_t::constant:
+            index_new = old2new_con[index_old];
+            break;
+            //
+            case ad_type_t::parameter:
+            index_new = old2new_par[index_old];
+            break;
+            //
+            case ad_type_t::variable:
+            index_new = old2new_var[index_old];
+            break;
+            //
+            default:
+            break;
+        }
+        assert( index_new != not_used );
+        //
+        adfn_new.m_rng_shapes.push_back( shape );
+        adfn_new.m_rng_index.push_back( index_new );
+        adfn_new.m_rng_ad_type.push_back( ad_type );
+    }
+    // m_name, trash
+    adfn_new.m_name = adfn_old.m_name + "_optimize";
+    adfn_new.set_trace( adfn_old.get_trace() );
+    //
     return adfn_new;
 }
 
