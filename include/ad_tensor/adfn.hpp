@@ -40,6 +40,15 @@ trace
 get_trace returns the previous value chosen by set_trace.
 The default value, when trace has not been set, is false.
 
+n_con, n_par, n_var
+*******************
+{xrst_literal ,
+    BEGIN_N_CON, END_N_CON
+    BEGIN_N_PAR, END_N_PAR
+    BEGIN_N_VAR, END_N_VAR
+}
+Returns the number of constants, parameters, and variables in the AD function.
+
 print_con
 *********
 {xrst_literal ,
@@ -185,6 +194,24 @@ public:
         m_rng_shapes.empty() &&
         m_name.empty()
         ;
+    }
+    //
+    // BEGIN_N_CON
+    size_t n_con(void) const
+    {   // END_N_CON
+        return m_con.size();
+    }
+    //
+    // BEGIN_N_PAR
+    size_t n_par(void) const
+    {   // END_N_PAR
+        return m_par.m_op_seq.size();
+    }
+    //
+    // BEGIN_N_VAR
+    size_t n_var(void) const
+    {   // END_N_VAR
+        return m_var.m_op_seq.size();
     }
     //
     // BEGIN_GET_NAME

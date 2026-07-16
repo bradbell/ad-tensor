@@ -80,20 +80,37 @@ agraph_t new_agraph(
         old2new_res = &old2new_par;
     }
     //
+    // op_seq_old
+    const vector<op_enum_t> op_seq_old = agraph_old.m_op_seq;
+    //
     // agraph_new
     agraph_t agraph_new;
+    //
+    // agraph_new.m_dom_shapes
+    for(size_t j = 0; j < agraph_old.m_dom_shapes.size(); ++j) {
+        agraph_new.m_dom_shapes.push_back( agraph_old.m_dom_shapes[j] );
+    }
+    //
+    // n_old, op_index_old
     size_t n_old = agraph_old.m_op_seq.size();
     size_t op_index_old = 0;
     while(op_index_old < n_old ) {
         size_t op_index_new = (*old2new_res)[op_index_old];
-        if( op_index_new != not_used ) {
-            op_enum_t op_enum = agraph_old.m_op_seq[op_index_old];
-            if(op_enum==op_enum_t::call || op_enum==op_enum_t::call_result) {
-                op_index_old = new_call(
-                    agraph_new, agraph_old, op_index_old, var_op,
-                    old2new_con, old2new_par, old2new_var
-                );
-            } else {
+        if( op_index_new == not_used ) {
+            ++op_index_old;
+        }
+        if( op_index_new != not_used ) switch( op_seq_old[op_index_old] ) {
+            //
+            // agraph_new
+            case op_enum_t::call:
+            case op_enum_t::call_result:
+            op_index_old = new_call(
+                agraph_new, agraph_old, op_index_old, var_op,
+                old2new_con, old2new_par, old2new_var
+            );
+            break;
+            //
+            default: {
                 assert( op_index_new == agraph_new.m_op_seq.size() );
                 //
                 // agraph_new: m_op_seq, m_arg_start
@@ -134,10 +151,15 @@ agraph_t new_agraph(
                     assert( value_new != not_used );
                     agraph_new.m_arg_value.push_back( value_new );
                 }
-                ++op_index_old;
             }
+            // op_index_old
+            ++op_index_old;
         }
     }
+    //
+    // agraph_new.m_arg_start
+    agraph_new.m_arg_start.push_back( agraph_new.m_arg_value.size() );
+    //
     return agraph_new;
 }
 //
