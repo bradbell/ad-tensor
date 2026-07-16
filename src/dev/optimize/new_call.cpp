@@ -134,6 +134,8 @@ size_t new_call(
         agraph_new.m_arg_type.push_back( ad_type_t::none );
     }
     // agraph_new: m_arg_value, m_arg_type
+    // TODO: if an argument has old2new equal not_used, change its type to
+    // constant and its value to empty tensor tensor.
     for(size_t j = 0; j < n_domain; ++j) {
         size_t    arg_index     = arg_start + 4 + j;
         size_t    arg_value_old = agraph_old.m_arg_value[arg_index];

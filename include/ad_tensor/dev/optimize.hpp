@@ -13,6 +13,7 @@ The Optimizer Implementation
     src/dev/optimize/rng_depend.cpp
     src/dev/optimize/old2new.cpp
     src/dev/optimize/new_call.cpp
+    src/dev/optimize/new_agraph.cpp
 }
 
 {xrst_end optimize_dev}
