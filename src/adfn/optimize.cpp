@@ -24,17 +24,30 @@ adfn_t adfn_t::optimize(const adfn_t& adfn_old) {
         n_dom_par, n_dom_var, depend_con, depend_par, depend_var
     );
     //
-    // new_adfn
-    adfn_t new_adfn;
+    // adfn_new
+    adfn_t adfn_new;
     //
-    // new_adfn.m_con
+    // adfn_new.m_con
     for(size_t i_old = 0; i_old < adfn_old.m_con.size(); ++i_old) {
         if( old2new_con[i_old] != not_used ) {
-            assert( old2new_con[i_old] == new_adfn.m_con.size() );
-            new_adfn.m_con.push_back( adfn_old.m_con[i_old] );
+            assert( old2new_con[i_old] == adfn_new.m_con.size() );
+            adfn_new.m_con.push_back( adfn_old.m_con[i_old] );
         }
     }
-    return new_adfn;
+    //
+    // adfn_new.m_par
+    bool var_op = false;
+    adfn_new.m_par = new_agraph(
+        adfn_old.m_par, var_op, old2new_con, old2new_par, old2new_var
+    );
+    //
+    // adfn_new.m_var
+    var_op = true;
+    adfn_new.m_var = new_agraph(
+        adfn_old.m_var, var_op, old2new_con, old2new_par, old2new_var
+    );
+    //
+    return adfn_new;
 }
 
 } // END_AD_TENSOR_NAMESPACE

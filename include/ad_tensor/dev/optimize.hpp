@@ -45,4 +45,13 @@ namespace ad_tensor { namespace dev {
         const vector<size_t>& old2new_par,
         const vector<size_t>& old2new_var
     );
+    //
+    // new_agraph
+    agraph_t new_agraph(
+        const agraph_t&       agraph_old,
+        bool                  var_op,
+        const vector<size_t>& old2new_con,
+        const vector<size_t>& old2new_par,
+        const vector<size_t>& old2new_var
+    );
 } }
