@@ -11,6 +11,7 @@ add_executable(examples
     adfn/forward_var.cpp
     adfn/get_range.cpp
     adfn/get_started.cpp
+    adfn/optimize.cpp
     adfn/reverse_der.cpp
     adten/binary.cpp
     adten/recording.cpp
