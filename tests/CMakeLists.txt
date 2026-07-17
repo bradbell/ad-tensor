@@ -4,6 +4,7 @@
 # -----------------------------------------------------------------------------
 # BEGIN_SORT_THIS_LINE_PLUS_2
 add_executable(tests
+    adfn/optimize.cpp
     adfn/reverse_der.cpp
     adten/matmul_op.cpp
     adten/minus_op.cpp
