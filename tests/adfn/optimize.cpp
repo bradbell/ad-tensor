@@ -6,7 +6,7 @@
 #include <gtest/gtest.h>
 #include <ad_tensor/ad_tensor.hpp>
 //
-TEST(examples_adfn, optimize)  {
+TEST(tests_adfn, optimize)  {
     using ad_tensor::adten_t;
     using ad_tensor::adfn_t;
     using at::Tensor;
@@ -34,7 +34,7 @@ TEST(examples_adfn, optimize)  {
     //
     // p
     vector<Tensor> p;
-    p.push_back( torch::tensor( {0.0, 0.0} ) );
+    p.push_back( torch::tensor( {2.0, 2.0} ) );
     //
     // av, ap
     vector<adten_t> ap;
@@ -45,7 +45,6 @@ TEST(examples_adfn, optimize)  {
     vector<adten_t> ay = ad_tensor::call_chkpnt(f_chkpnt_id, ax);
     vector<adten_t> az = { ay[0], ay[1] };
     adfn_t          g  = adten_t::stop_recording(az, "g");
-    g.set_trace(true);
     //
     // z
     vector<Tensor> p_all = g.forward_par(p);
@@ -59,7 +58,6 @@ TEST(examples_adfn, optimize)  {
     EXPECT_TRUE( equal );
     //
     // z = g(v, p)
-    /* TODO: get the code below to work
     g  = g.optimize();
     //
     // z
@@ -72,6 +70,5 @@ TEST(examples_adfn, optimize)  {
     //
     equal = z[1].equal( v[0] + v[1] );
     EXPECT_TRUE( equal );
-    */
 }
 // END_CPP

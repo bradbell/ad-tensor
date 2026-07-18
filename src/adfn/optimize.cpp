@@ -4,6 +4,30 @@
 // ----------------------------------------------------------------------------
 #include <ad_tensor/adfn.hpp>
 #include <ad_tensor/dev/optimize.hpp>
+#include <ad_tensor/dev/to_string.hpp>
+
+namespace {
+    using std::cout;
+    //
+    void print_old2new(
+        const std::string&               name,
+        const ad_tensor::vector<size_t>& old2new) {
+        size_t not_used = std::numeric_limits<size_t>::max();
+        cout <<  name << " = [";
+        for(size_t i = 0; i < old2new.size(); ++i) {
+            if( old2new[i] == not_used ) {
+                cout << "not_used";
+            } else {
+                cout << old2new[i];
+            }
+            if( i + 1 < old2new.size() ) {
+                cout << ", ";
+            }
+        }
+        cout << "]\n";
+        return;
+    }
+}
 
 namespace ad_tensor { // BEGIN_AD_TENSOR_NAMESPACE
 
@@ -26,6 +50,16 @@ adfn_t adfn_t::optimize(void) const {
     auto [old2new_con, old2new_par, old2new_var] = dev::old2new(
         n_dom_par, n_dom_var, depend_con, depend_par, depend_var
     );
+    //
+    if( adfn_old.get_trace() ) {
+        cout << "Begin tracing " + adfn_old.get_name() + ".optimize\n";
+        print_old2new( "old2new_con", old2new_con );
+        print_old2new( "old2new_par", old2new_par );
+        print_old2new( "old2new_var", old2new_var );
+        cout << "End tracing " + adfn_old.get_name() + ".optimize\n";
+    }
+
+
     //
     // adfn_new
     adfn_t adfn_new;

@@ -114,9 +114,15 @@ size_t new_call(
     );
     //
     // n_result_new
-    size_t n_result_new = 0;
+    size_t n_result_new  = 0;
+#ifndef NDEBUG
+    size_t first_old2new = 0;
+#endif
     for(size_t k = 0; k < n_result_old; ++k) {
         if( (*old2new_res)[op_index_old + k] != not_used ) {
+#ifndef NDEBUG
+            first_old2new = (*old2new_res)[op_index_old + k];
+#endif
             ++n_result_new;
         }
     }
@@ -124,7 +130,7 @@ size_t new_call(
     //
 #ifndef NDEBUG
     size_t op_index_new = agraph_new.m_op_seq.size();
-    assert( (*old2new_res)[op_index_old] == op_index_new );
+    assert( first_old2new == op_index_new );
 #endif
     //
     // agraph_new: m_op_seq, m_arg_start
@@ -140,8 +146,6 @@ size_t new_call(
         agraph_new.m_arg_type.push_back( ad_type_t::none );
     }
     // agraph_new: m_arg_value, m_arg_type
-    // TODO: if an argument has old2new equal not_used, change its type to
-    // constant and its value to empty tensor tensor.
     for(size_t j = 0; j < n_domain; ++j) {
         size_t    arg_index     = arg_start + 4 + j;
         size_t    arg_value_old = agraph_old.m_arg_value[arg_index];

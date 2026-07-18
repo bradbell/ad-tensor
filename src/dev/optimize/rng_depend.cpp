@@ -99,14 +99,19 @@ void atom_depend(
     //
     // depend_con, depend_par, depend_var
     size_t s_index = 0;
-    for(size_t r_index = 0; r_index < n_result; ++r_index) {
-    if( res_depend(call_op_index + r_index) ) {
+    for(size_t res_index = 0; res_index < n_result; ++res_index) {
+    if( res_depend(call_op_index + res_index) ) {
         //
-        // spa_index
-        while(s_index < pattern.size() && pattern[s_index][0] < r_index ) {
+        // rng_index
+        // This assumes that rng_index is increasing w.r.t. res_index
+        size_t arg_index = arg_start + 4 + n_domain + res_index;
+        size_t rng_index = agraph.m_arg_value[arg_index];
+        //
+        // s_index
+        while(s_index < pattern.size() && pattern[s_index][0] < rng_index ) {
             ++s_index;
         }
-        while(s_index < pattern.size() && pattern[s_index][0] == r_index ) {
+        while(s_index < pattern.size() && pattern[s_index][0] == rng_index ) {
             size_t d_index    = pattern[s_index][1];
             size_t value      = agraph.m_arg_value[arg_start + 4 + d_index];
             ad_type_t ad_type = agraph.m_arg_type[arg_start + 4 + d_index];
