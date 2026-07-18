@@ -111,10 +111,12 @@ std::array< vector<size_t>, 3 > old2new(
     size_t not_used = std::numeric_limits<size_t>::max();
     //
     // old2new_con
+    // The first constant is a nan which we keep even if it is not used.
     vector<size_t> old2new_con(depend_con.size(), not_used);
-    size_t i_new    = 0;
     size_t n_con    = depend_con.size();
-    for(size_t i_old = 0; i_old < n_con; ++i_old) {
+    old2new_con[0]  = 0;
+    size_t i_new    = 1;
+    for(size_t i_old = 1; i_old < n_con; ++i_old) {
         if(depend_con[i_old]) {
             old2new_con[i_old] = i_new;
             ++i_new;

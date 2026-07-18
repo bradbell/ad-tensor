@@ -31,8 +31,9 @@ TEST(tests_optimize, rng_depend_simple) {
     auto [av, ap] = adten_t::start_recording(v, p);  // p[0], v[0], v[1]
     //
     // ac_used, ac_not_used
-    adten_t ac_used     = adten_t( c_used );                        // c[0]
-    adten_t ac_not_used = adten_t( torch::tensor( {3.0, 4.0} ) );   // c[1]
+    // c[0] is always the constant nan
+    adten_t ac_used     = adten_t( c_used );                        // c[1]
+    adten_t ac_not_used = adten_t( torch::tensor( {3.0, 4.0} ) );   // c[2]
     //
     // ap_used, ap_not_used
     adten_t ap_used     = ap[0] + ac_used;      // p[1]
@@ -67,8 +68,9 @@ TEST(tests_optimize, rng_depend_simple) {
     auto [depend_con, depend_par, depend_var] = ad_tensor::dev::rng_depend(&f);
     //
     // depend_con
-    EXPECT_EQ( depend_con[0], true);
-    EXPECT_EQ( depend_con[1], false);
+    EXPECT_EQ( depend_con[0], false);
+    EXPECT_EQ( depend_con[1], true);
+    EXPECT_EQ( depend_con[2], false);
     //
     // depend_par
     EXPECT_EQ( depend_par[0], true);
@@ -118,8 +120,9 @@ TEST(tests_optimize, rng_depend_chkpnt) {
     auto [av, ap] = adten_t::start_recording(v, p);  // p[0], v[0], v[1]
     //
     // ac_used, ac_not_used
-    adten_t ac_used     = adten_t( c_used );                        // c[0]
-    adten_t ac_not_used = adten_t( torch::tensor( {3.0, 4.0} ) );   // c[1]
+    // c[0] is always the constant nan
+    adten_t ac_used     = adten_t( c_used );                        // c[1]
+    adten_t ac_not_used = adten_t( torch::tensor( {3.0, 4.0} ) );   // c[2]
     //
     // ap_used, ap_not_used
     adten_t ap_used     = ap[0] + ac_used;      // p[1]
@@ -174,7 +177,8 @@ TEST(tests_optimize, rng_depend_chkpnt) {
     EXPECT_EQ( depend_par[0], true);
     //
     // depend_con
-    EXPECT_EQ( depend_con.size(), 2);
-    EXPECT_EQ( depend_con[1], false);
-    EXPECT_EQ( depend_con[0], true);
+    EXPECT_EQ( depend_con.size(), 3);
+    EXPECT_EQ( depend_con[2], false);
+    EXPECT_EQ( depend_con[1], true);
+    EXPECT_EQ( depend_con[0], false);
 }

@@ -49,8 +49,8 @@ TEST(examples_adfn, optimize)  {
     adfn_t g = f.optimize();
     //
     // n_con
-    EXPECT_EQ( f.n_con(), 2 );
-    EXPECT_EQ( g.n_con(), 1 );
+    EXPECT_EQ( f.n_con(), 3 );
+    EXPECT_EQ( g.n_con(), 2 );
     //
     // n_par
     EXPECT_EQ( f.n_par(), 4);

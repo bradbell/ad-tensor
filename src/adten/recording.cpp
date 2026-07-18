@@ -107,6 +107,11 @@ adten_t::start_recording(
     tape.m_tape_id   = tape_id;
     tape.m_recording = true;
     //
+    // tape.m_con
+    // The constant at index zero is always a single element nan
+    double nan = std::numeric_limits<double>::quiet_NaN();
+    tape.m_con.push_back( torch::tensor(nan) );
+    //
     // tape.m_par.m_dom_shapes
     tape.m_par.m_dom_shapes.resize( dom_par.size() );
     for(size_t index = 0; index < dom_par.size(); ++index) {
