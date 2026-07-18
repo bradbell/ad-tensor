@@ -66,6 +66,11 @@ for constants, parameters and variables (in that order).
 If not_used is equal (not equal) to an old to new index,
 the corresponding result is (is not) in the new graph.
 
+Constants
+*********
+It is assumed that the constant with index zero and empty shape,
+in the AD function that contains agraph, is nan.
+
 {xrst_end new_call}
 */
 #include <ad_tensor/dev/optimize.hpp>
@@ -83,6 +88,7 @@ size_t new_call(
     const vector<size_t>& old2new_par,
     const vector<size_t>& old2new_var)
 {   // END_NEW_CALL
+    //
     //
     // not_used
     size_t not_used = std::numeric_limits<size_t>::max();
@@ -140,24 +146,41 @@ size_t new_call(
         size_t    arg_index     = arg_start + 4 + j;
         size_t    arg_value_old = agraph_old.m_arg_value[arg_index];
         ad_type_t arg_type      = agraph_old.m_arg_type[arg_index];
-        agraph_new.m_arg_type.push_back( arg_type );
         switch( arg_type ) {
             //
             case ad_type_t::constant:
-            agraph_new.m_arg_value.push_back( old2new_con[arg_value_old] );
+            if( old2new_con[arg_value_old] == not_used ) {
+                // nan
+                agraph_new.m_arg_value.push_back( 0 );
+            } else {
+                agraph_new.m_arg_value.push_back( old2new_con[arg_value_old] );
+            }
             break;
             //
             case ad_type_t::parameter:
-            agraph_new.m_arg_value.push_back( old2new_par[arg_value_old] );
+            if( old2new_par[arg_value_old] == not_used ) {
+                // nan
+                agraph_new.m_arg_value.push_back( 0 );
+                arg_type = ad_type_t::constant;
+            } else {
+                agraph_new.m_arg_value.push_back( old2new_par[arg_value_old] );
+            }
             break;
             //
             case ad_type_t::variable:
-            agraph_new.m_arg_value.push_back( old2new_var[arg_value_old] );
+            if( old2new_var[arg_value_old] == not_used ) {
+                // nan
+                agraph_new.m_arg_value.push_back( 0 );
+                arg_type = ad_type_t::constant;
+            } else {
+                agraph_new.m_arg_value.push_back( old2new_var[arg_value_old] );
+            }
             break;
             //
             default:
             assert( false );
         }
+        agraph_new.m_arg_type.push_back( arg_type );
     }
     // agraph_new: m_arg_value, m_arg_type
     for(size_t k = 0; k < n_result_old; ++k) {

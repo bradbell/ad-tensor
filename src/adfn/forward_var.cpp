@@ -85,12 +85,14 @@ vector<TensorType> adfn_t::forward_var(
     }
     for(size_t i = 0; i < shapes.size(); ++i) {
         c10::IntArrayRef shape = shapes[i];
-        if( ! dom_var[i].sizes().equals( shape ) ) {
-            msg += "dom_var[" + std::to_string(i) + "] shape is ";
-            msg += dev::to_string( dom_var[i].sizes() );
-            msg += " and its shape for this adfn is ";
-            msg += dev::to_string( shape );
-            dev::user_assert( false , msg );
+        if( dom_var[i].numel() != 1 || dom_var[i].sizes().size() != 0 ) {
+            if( ! dom_var[i].sizes().equals( shape ) ) {
+                msg += "dom_var[" + std::to_string(i) + "] shape is ";
+                msg += dev::to_string( dom_var[i].sizes() );
+                msg += " and its expected shape for this adfn is ";
+                msg += dev::to_string( shape );
+                dev::user_assert( false , msg );
+            }
         }
     }
 # endif

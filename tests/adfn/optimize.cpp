@@ -60,7 +60,7 @@ TEST(examples_adfn, optimize)  {
     //
     // z = g(v, p)
     /* TODO: get the code below to work
-    g                  = adfn_t::optimize(g);
+    g  = g.optimize();
     //
     // z
     p_all = g.forward_par(p);

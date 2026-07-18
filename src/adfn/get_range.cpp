@@ -94,9 +94,12 @@ vector<TensorType> adfn_t::get_range(
                 "a range type is not constant, parameter or variable"
             );
         }
+        if( m_trace ) {
+            cout << "range[" << i << "] = " << dev::to_string(range[i]);
+            cout << ", [" << index << ", " << dev::to_string(ad_type) << "]\n";
+        }
     }
     if( m_trace ) {
-        cout << "range =\n" + dev::to_string(range);
         cout << "End tracing " + get_name() + ".get_range\n";
     }
     return range;
