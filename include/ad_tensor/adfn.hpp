@@ -167,7 +167,7 @@ private:
     (void) const;
 public:
     // optimize
-    adfn_t static optimize(const adfn_t& adfn);
+    adfn_t optimize(void) const;
     //
     // BEGIN_DEFAULT_CTOR
     adfn_t()

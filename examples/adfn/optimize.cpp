@@ -46,7 +46,7 @@ TEST(examples_adfn, optimize)  {
     //
     // r = f(v, p)
     adfn_t f = adten_t::stop_recording(ar, "f");
-    adfn_t g = adfn_t::optimize(f);
+    adfn_t g = f.optimize();
     //
     // n_con
     EXPECT_EQ( f.n_con(), 2 );

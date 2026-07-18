@@ -7,7 +7,10 @@
 
 namespace ad_tensor { // BEGIN_AD_TENSOR_NAMESPACE
 
-adfn_t adfn_t::optimize(const adfn_t& adfn_old) {
+adfn_t adfn_t::optimize(void) const {
+    //
+    // adfn_old
+    const adfn_t& adfn_old = *this;
     //
     // not_used
     size_t not_used = std::numeric_limits<size_t>::max();
