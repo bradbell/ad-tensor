@@ -48,7 +48,6 @@ TEST(examples_adfn, optimize)  {
     g.set_trace(true);
     //
     // z
-    /* TODO: get the code below to work
     vector<Tensor> p_all = g.forward_par(p);
     vector<Tensor> v_all = g.forward_var(v, p_all);
     vector<Tensor> z     = g.get_range(v_all, p_all);
@@ -60,6 +59,7 @@ TEST(examples_adfn, optimize)  {
     EXPECT_TRUE( equal );
     //
     // z = g(v, p)
+    /* TODO: get the code below to work
     g                  = adfn_t::optimize(g);
     //
     // z
