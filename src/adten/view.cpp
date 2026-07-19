@@ -86,7 +86,7 @@ adten_t adten_t::view(const c10::IntArrayRef& shape) const
 {
     //
     // res_tensor
-    at::Tensor res_tensor = m_tensor.view(shape);
+    at::Tensor res_tensor = m_at_ten.view(shape);
     //
     // tape
     dev::tape_t& tape = dev::this_threads_tape();

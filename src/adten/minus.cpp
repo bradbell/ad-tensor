@@ -74,7 +74,7 @@ adten_t adten_t::operator-(void) const
 {
     //
     // res_tensor
-    at::Tensor res_tensor = - m_tensor;
+    at::Tensor res_tensor = - m_at_ten;
     //
     // tape
     dev::tape_t& tape = dev::this_threads_tape();

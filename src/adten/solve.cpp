@@ -125,7 +125,7 @@ adten_t adten_t::solve(const adten_t& rhs, bool left) const
     );
 # endif
     // res_tensor
-    at::Tensor res_tensor = at::linalg_solve(m_tensor, rhs.m_tensor, left);
+    at::Tensor res_tensor = at::linalg_solve(m_at_ten, rhs.m_at_ten, left);
     //
     // tape
     dev::tape_t& tape = dev::this_threads_tape();

@@ -80,7 +80,7 @@ adten_t adten_t::transpose(int64_t dim1, int64_t dim2) const
 {
     //
     // res_tensor
-    at::Tensor res_tensor = m_tensor.transpose(dim1, dim2);
+    at::Tensor res_tensor = m_at_ten.transpose(dim1, dim2);
     //
     // tape
     dev::tape_t& tape = dev::this_threads_tape();

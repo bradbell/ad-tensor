@@ -87,7 +87,7 @@ vector<adten_t> adten_t::call_atom(
     size_t n_domain = adomain.size();
     vector<at::Tensor> domain;
     for(size_t j = 0; j < n_domain; ++j) {
-        domain.push_back( adomain[j].m_tensor );
+        domain.push_back( adomain[j].m_at_ten );
     }
     //
     // range, n_range
@@ -207,7 +207,7 @@ vector<adten_t> adten_t::call_atom(
         for(size_t j = 0; j < n_domain; ++j) {
             ad_type_t ad_type = adomain[j].m_ad_type;
             if( ig == 0 && ad_type == ad_type_t::variable ) {
-                adten_t acon = adten_t( adomain[j].m_tensor );
+                adten_t acon = adten_t( adomain[j].m_at_ten );
                 assert( acon.m_ad_type == ad_type_t::constant );
                 agraph->m_arg_value.push_back( acon.m_index );
                 agraph->m_arg_type.push_back( acon.m_ad_type );

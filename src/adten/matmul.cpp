@@ -112,7 +112,7 @@ adten_t adten_t::matmul(const adten_t& rhs) const
 # endif
     //
     // res_tensor
-    at::Tensor res_tensor = at::matmul(m_tensor, rhs.m_tensor);
+    at::Tensor res_tensor = at::matmul(m_at_ten, rhs.m_at_ten);
     //
     // tape
     dev::tape_t& tape = dev::this_threads_tape();

@@ -133,9 +133,9 @@ m_ad_type
 If this thread matches the current recording,
 m_ad_type is the :ref:`ad_type-name` in this threads tape for this AD tensor.
 
-m_tensor
+m_at_ten
 ********
-is the tensor corresponding to this AD tensor.
+is the at::Tensor corresponding to this AD tensor.
 
 {xrst_end adten_member}
 ------------------------------------------------------------------------------
@@ -182,7 +182,7 @@ private:
     // BEGIN_MEMBER_DATA
     size_t        m_tape_id;
     size_t        m_index;
-    at::Tensor    m_tensor;
+    at::Tensor    m_at_ten;
     ad_type_t     m_ad_type;
     // END_MEMBER_DATA
     //
@@ -192,7 +192,7 @@ private:
         size_t index,
         const at::Tensor& tensor,
         ad_type_t ad_type )
-    : m_tape_id(tape_id), m_index(index), m_tensor(tensor), m_ad_type(ad_type)
+    : m_tape_id(tape_id), m_index(index), m_at_ten(tensor), m_ad_type(ad_type)
     { }
     // END_PRIVATE_CTOR
     //
@@ -215,22 +215,22 @@ public:
     // BEGIN_SIZES
     c10::IntArrayRef sizes(void) const
     // END_SIZES
-    {   return m_tensor.sizes(); }
+    {   return m_at_ten.sizes(); }
     //
     // BEGIN_NUMEL
     int64_t numel(void) const
     // END_NUMEL
-    {   return m_tensor.numel(); }
+    {   return m_at_ten.numel(); }
     //
     // BEGIN_CLONE
     adten_t clone(void) const
     // END_CLONE
-    {   return adten_t(m_tape_id, m_index,  m_tensor.clone(), m_ad_type ); }
+    {   return adten_t(m_tape_id, m_index,  m_at_ten.clone(), m_ad_type ); }
     //
     // BEGIN_AT_TEN
     const at::Tensor& at_ten(void) const
     // END_AT_TEN
-    {   return m_tensor; }
+    {   return m_at_ten; }
     //
     // BEGIN_START_RECORDING_1
     // adom_var = adten_t::start_recording(dom_var)

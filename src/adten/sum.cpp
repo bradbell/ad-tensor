@@ -97,9 +97,9 @@ adten_t adten_t::sum(const c10::IntArrayRef&    dim) const
     // res_tensor
     at::Tensor res_tensor = torch::empty( {0} );
     if( dim.size() == 0 ) {
-        res_tensor = m_tensor.sum();
+        res_tensor = m_at_ten.sum();
     } else {
-        res_tensor = m_tensor.sum(dim);
+        res_tensor = m_at_ten.sum(dim);
     }
     //
     // tape

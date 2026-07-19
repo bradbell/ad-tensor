@@ -13,13 +13,13 @@ namespace ad_tensor { // BEGIN_NAMESPACE_AD_TENSOR
 adten_t::adten_t(void)
 : m_tape_id(0)
 , m_index(0)
-, m_tensor( torch::empty({0}) )
+, m_at_ten( torch::empty({0}) )
 , m_ad_type(ad_type_t::constant)
 { }
 adten_t::adten_t( const at::Tensor& tensor )
 : m_tape_id(0)
 , m_index(0)
-, m_tensor(tensor)
+, m_at_ten(tensor)
 , m_ad_type(ad_type_t::constant)
 {   //
     if( tensor.numel() != 0 ) {
