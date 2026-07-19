@@ -3,6 +3,7 @@
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
 #include <ad_tensor/adten.hpp>
+#include <ad_tensor/at_ten_nan.hpp>
 #include <ad_tensor/dev/tape.hpp>
 #include <ad_tensor/dev/op_enum.hpp>
 #include <ad_tensor/dev/agraph.hpp>
@@ -55,6 +56,14 @@ adom_var
 ********
 This is the domain variable vectors of AD tensors.
 The recording can be used to compute derivatives with respect to these tensors.
+
+First Constant
+**************
+Each recording starts with a scalar nan as its first constant;
+see :ref:`at_ten_nan-name` .
+This is used as a place holder for values that are not needed; e.g.,
+see the heading :ref:`atom_forward@domain` in the documentation
+for atomic functions.
 
 Example
 *******
@@ -109,8 +118,7 @@ adten_t::start_recording(
     //
     // tape.m_con
     // The constant at index zero is always a single element nan
-    double nan = std::numeric_limits<double>::quiet_NaN();
-    tape.m_con.push_back( torch::tensor(nan) );
+    tape.m_con.push_back( at_ten_nan() );
     //
     // tape.m_par.m_dom_shapes
     tape.m_par.m_dom_shapes.resize( dom_par.size() );

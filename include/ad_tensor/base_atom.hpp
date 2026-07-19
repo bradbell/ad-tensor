@@ -72,6 +72,7 @@ then the pair (i,j) must be in the depend sparsity pattern.
 {xrst_begin atom_forward usr}
 {xrst_spell
     rng
+    adten
 }
 
 Forward Function Evaluation
@@ -109,6 +110,11 @@ domain
 ******
 is the vector of the domain tensors containing the domain values.
 
+Given rng_used and :ref:`atom_depend-name` it is possible to determine
+that some domain values are not needed.
+These domain values may be changed to :ref:`at_ten_nan-name`
+or adten_t version of at_ten_nan.
+
 range
 *****
 is the vector of the range tensors containing the range values.
@@ -133,7 +139,7 @@ Forward Derivative Evaluation
 Syntax
 ******
 {xrst_code hpp}
-    rng_der = base_atom.forward_der(rng_used, domain, dom_der).value()
+rng_der = base_atom.forward_der(rng_used, domain, dom_der).value()
 {xrst_code}
 
 Prototype

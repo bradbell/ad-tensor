@@ -48,6 +48,7 @@ n_con, n_par, n_var
     BEGIN_N_VAR, END_N_VAR
 }
 Returns the number of constants, parameters, and variables in the AD function.
+See the discussion about the :ref:`start_recording@First Constant`.
 
 print_con
 *********
