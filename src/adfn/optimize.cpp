@@ -2,10 +2,56 @@
 // SPDX-FileCopyrightText: Bradley M. Bell <bradbell@seanet.com>
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
+/*
+{xrst_begin adfn_optimize usr}
+
+Reduce The Operations and Memory Used by an AD Function
+#######################################################
+
+Syntax
+******
+{xrst_code cpp}
+    adfn_new  = adfn_old.optimize()
+{xrst_code}
+
+Prototype
+*********
+{xrst_literal ,
+    BEGIN_OPTIMIZE, END_OPTIMIZE
+}
+
+adfn_old
+********
+This is the original adfn_t representation of a function:
+
+    range = adfn(dom_par, dom_var)
+
+adfn_new
+********
+This is the new adfn_t representation of a function:
+
+    range = adfn(dom_par, dom_var)
+
+The optimization will remove unnecessary constants, parameters, and variables;
+see :ref:`adfn@n_con` ,
+see :ref:`adfn@n_par` ,
+see :ref:`adfn@n_var` .
+
+name
+****
+The name for adfn_new will be the name for adfn_old plus "_optimize" .
+
+trace
+*****
+The trace setting for adfn_new (directly after the optimization)
+will be the same as adfn_old.
+
+{xrst_end adfn_optimize}
+*/
 #include <ad_tensor/adfn.hpp>
 #include <ad_tensor/dev/optimize.hpp>
 #include <ad_tensor/dev/to_string.hpp>
-
+//
 namespace {
     using std::cout;
     //
@@ -31,7 +77,9 @@ namespace {
 
 namespace ad_tensor { // BEGIN_AD_TENSOR_NAMESPACE
 
-adfn_t adfn_t::optimize(void) const {
+// BEGIN_OPTIMIZE
+adfn_t adfn_t::optimize(void) const
+{   // END_OPTIMIZE
     //
     // adfn_old
     const adfn_t& adfn_old = *this;

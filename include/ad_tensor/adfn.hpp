@@ -40,15 +40,29 @@ trace
 get_trace returns the previous value chosen by set_trace.
 The default value, when trace has not been set, is false.
 
-n_con, n_par, n_var
-*******************
+n_con
+*****
 {xrst_literal ,
     BEGIN_N_CON, END_N_CON
+}
+Returns the number of constants in the AD function.
+See the discussion about the :ref:`start_recording@First Constant`.
+
+n_par
+*****
+{xrst_literal ,
     BEGIN_N_PAR, END_N_PAR
+}
+Returns the number of parameters in the AD function; i.e.,
+the length of the vector :ref:`adfn_forward_par@par_all` .
+
+n_var
+*****
+{xrst_literal ,
     BEGIN_N_VAR, END_N_VAR
 }
-Returns the number of constants, parameters, and variables in the AD function.
-See the discussion about the :ref:`start_recording@First Constant`.
+Returns the number of variables in the AD function; i.e.,
+the length of the vector :ref:`adfn_forward_var@var_all` .
 
 print_con
 *********
@@ -67,6 +81,7 @@ Other Public Members
     src/adfn/get_range.cpp
     src/adfn/forward_der.cpp
     src/adfn/reverse_der.cpp
+    src/adfn/optimize.cpp
 }
 
 
