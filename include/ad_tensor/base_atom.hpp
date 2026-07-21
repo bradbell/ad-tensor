@@ -131,6 +131,7 @@ We use the notation atom_f for the mathematical function defined by
 {xrst_spell
     rng
     adten
+    numel
 }
 
 Forward Derivative Evaluation
@@ -158,6 +159,10 @@ If you do not over ride this virtual function its return
 will have has_value() equal to false.
 You should also use this case when an error occurs during
 the evaluation of this derivative of the atomic function.
+
+If dom_der[j].numel() is zero, then dom_der[j] represents a zero tensor
+with the same shape as domain[j] and calculations that use this value
+can be skipped.
 
 If domain in the AD function forward_der evaluation is a vector of at::Tensor
 (of adten_t), then the at::Tensor version (ad_ten_t version)
@@ -189,6 +194,7 @@ range directional derivative.
 {xrst_spell
     rng
     adten
+    numel
 }
 
 Reverse Derivative Evaluation
@@ -216,6 +222,10 @@ If you do not over ride this virtual function its return
 will have has_value() equal to false.
 You should also use this case when an error occurs during
 the evaluation of this derivative of the atomic function.
+
+If rng_der[i].numel() is zero, then rng_der[i] represents a zero tensor
+with the same shape as range[i] and calculations that use this value
+can be skipped.
 
 If domain in the AD function forward_der evaluation is a vector of at::Tensor
 (of adten_t), then the at::Tensor version (ad_ten_t version)
