@@ -16,8 +16,8 @@ TEST(tests_adfn, optimize)  {
     // We use v for the domain variables
     vector<Tensor> v;
     v.push_back( torch::tensor( {1.0, 1.0} ) );
-    v.push_back( torch::tensor( {1.0, 1.0} ) );
-    v.push_back( torch::tensor( {1.0, 1.0} ) );
+    v.push_back( torch::tensor( {2.0, 2.0} ) );
+    v.push_back( torch::tensor( {3.0, 3.0} ) );
     //
     // av
     vector<adten_t> av = adten_t::start_recording(v);
@@ -41,7 +41,7 @@ TEST(tests_adfn, optimize)  {
     std::tie(av, ap) = adten_t::start_recording(v, p);
     //
     // z = g(v, p)
-    vector<adten_t> ax = { ap[0], av[0] + av[1], av[1] + av[2] };
+    vector<adten_t> ax = { ap[0], av[0] * av[1], av[1] + av[2] };
     vector<adten_t> ay = ad_tensor::call_chkpnt(f_chkpnt_id, ax);
     vector<adten_t> az = { ay[0], ay[1] };
     adfn_t          g  = adten_t::stop_recording(az, "g");
@@ -54,7 +54,7 @@ TEST(tests_adfn, optimize)  {
     bool equal = z[0].equal( p[0] );
     EXPECT_TRUE( equal );
     //
-    equal = z[1].equal( v[0] + v[1] );
+    equal = z[1].equal( v[0] * v[1] );
     EXPECT_TRUE( equal );
     //
     // z = g(v, p)
@@ -68,7 +68,22 @@ TEST(tests_adfn, optimize)  {
     equal = z[0].equal( p[0] );
     EXPECT_TRUE( equal );
     //
-    equal = z[1].equal( v[0] + v[1] );
+    equal = z[1].equal( v[0] * v[1] );
     EXPECT_TRUE( equal );
+    //
+    // dv
+    vector<Tensor> dv;
+    dv.push_back( torch::tensor( {1.0, 2.0} ) );
+    dv.push_back( torch::tensor( {3.0, 4.0} ) );
+    dv.push_back( torch::tensor( {5.0, 6.0} ) );
+    //
+    // dz
+    vector<Tensor> dz = g.forward_der(dv, v_all, p_all);
+    //
+    equal = dz[0].equal( torch::empty( {0} ) );
+    EXPECT_TRUE(equal);
+    //
+    equal = dz[1].equal( dv[0] * v[1] + v[0] * dv[1] );
+    EXPECT_TRUE(equal);
 }
 // END_CPP

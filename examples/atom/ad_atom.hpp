@@ -257,7 +257,14 @@ namespace {
             Tensor u    = domain[1];
             Tensor dx   = dom_der[0];
             Tensor du   = dom_der[1];
-            Tensor dz   = 6.0 * x * u * dx + 3.0 * x * x * du;
+            Tensor dz   = torch::empty( {0} );
+            if( dx.numel() != 0 && du.numel() != 0 ) {
+                dz   = 6.0 * x * u * dx + 3.0 * x * x * du;
+            } else if( dx.numel() != 0 ) {
+                dz   = 6.0 * x * u * dx;
+            } else if( du.numel() != 0 ) {
+                dz   = 3.0 * x * x * du;
+            }
             //
             // rng_der
             vector<Tensor> rng_der;

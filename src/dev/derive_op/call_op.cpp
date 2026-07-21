@@ -358,13 +358,13 @@ template<> void call_op_t<at::Tensor>::forward_der(
             case ad_type_t::constant: {
                 const at::Tensor& domain_j = con_vec[vec_index];
                 domain.push_back( domain_j );
-                dom_der.push_back( torch::zeros( domain_j.sizes() ) );
+                dom_der.push_back( torch::empty( {0} ) );
             }
             break;
             case ad_type_t::parameter: {
                 const at::Tensor& domain_j = par_vec[vec_index];
                 domain.push_back( domain_j );
-                dom_der.push_back( torch::zeros( domain_j.sizes() ) );
+                dom_der.push_back( torch::empty( {0} ) );
             }
             break;
             case ad_type_t::variable: {

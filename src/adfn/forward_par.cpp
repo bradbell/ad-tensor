@@ -75,12 +75,14 @@ vector<TensorType> adfn_t::forward_par(const vector<TensorType>& dom_par) const
     }
     for(size_t i = 0; i < shapes.size(); ++i) {
         c10::IntArrayRef shape = shapes[i];
-        if( ! dom_par[i].sizes().equals( shape ) ) {
-            msg += "dom_par[" + std::to_string(i) + "] shape is ";
-            msg += dev::to_string( dom_par[i].sizes() );
-            msg += " and its shape for this adfn is ";
-            msg += dev::to_string( shape );
-            dev::user_assert( false , msg );
+        if( dom_par[i].numel() != 1 || dom_par[i].sizes().size() != 0 ) {
+            if( ! dom_par[i].sizes().equals( shape ) ) {
+                msg += "dom_par[" + std::to_string(i) + "] shape is ";
+                msg += dev::to_string( dom_par[i].sizes() );
+                msg += " and its shape for this adfn is ";
+                msg += dev::to_string( shape );
+                dev::user_assert( false , msg );
+            }
         }
     }
 # endif
