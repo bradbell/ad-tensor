@@ -33,5 +33,6 @@ namespace ad_tensor { namespace dev { enum struct op_enum_t {
     sum,         // unary summation
     transpose,   // unary transpose
     view,        // unary view
+    where,       // where function
 }; } }
 // END_SORT_THIS_LINE_MINUS_2

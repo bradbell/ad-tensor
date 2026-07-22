@@ -104,6 +104,7 @@ The adten_t Class Developer Documentation
     src/adten/sum.cpp
     src/adten/transpose.cpp
     src/adten/view.cpp
+    src/adten/where.cpp
 }
 {xrst_comment END_SORT_THIS_LINE_MINUS_2}
 
@@ -250,6 +251,14 @@ public:
         const vector<adten_t>& arange ,
         const std::string&     name
     );
+    //
+    // BEGIN_WHERE
+    static adten_t where(
+        const adten_t& cond      ,
+        const adten_t& true_case ,
+        const adten_t& false_case
+    );
+    // END_WHERE
     //
     // Binary operators
     AD_TENSOR_BINARY_OP(+, add)

@@ -8,7 +8,6 @@
 #include <ad_tensor/dev/agraph.hpp>
 #include <ad_tensor/dev/user_assert.hpp>
 //
-namespace ad_tensor { // BEGIN_NAMESPACE_AD_TENSOR
 /*
 -------------------------------------------------------------------------------
 {xrst_begin adten_view usr}
@@ -79,6 +78,8 @@ where start is the length of arg_value and arg_type before this call to
 
 {xrst_end adten_view_dev}
 */
+namespace ad_tensor { // BEGIN_NAMESPACE_AD_TENSOR
+//
 // BEGIN_VIEW BEGIN_DEV_VIEW
 // aview = adten.view(shape)
 adten_t adten_t::view(const c10::IntArrayRef& shape) const
