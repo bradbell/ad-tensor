@@ -42,6 +42,12 @@ is the solution of the linear equation
 
 where x denotes matrix multiplication.
 
+Example
+*******
+{xrst_literal ,
+    examples/adten/solve.cpp
+    BEGIN_CPP, END_CPP
+}
 {xrst_end adten_solve}
 -------------------------------------------------------------------------------
 {xrst_begin adten_solve_dev dev}

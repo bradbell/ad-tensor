@@ -17,6 +17,7 @@ add_executable(examples
     adten/matmul.cpp
     adten/minus.cpp
     adten/recording.cpp
+    adten/solve.cpp
     atom/ad_forward_der.cpp
     atom/ad_reverse_der.cpp
     atom/get_started.cpp

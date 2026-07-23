@@ -6,7 +6,6 @@
 add_executable(tests
     adfn/optimize.cpp
     adfn/reverse_der.cpp
-    adten/solve_op.cpp
     adten/sum_op.cpp
     adten/transpose_op.cpp
     adten/view_op.cpp
