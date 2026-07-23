@@ -39,6 +39,12 @@ asum
 ****
 is the result of the summation.
 
+Example
+*******
+{xrst_literal ,
+    examples/adten/sum.cpp
+    BEGIN_CPP, END_CPP
+}
 {xrst_end adten_sum}
 -------------------------------------------------------------------------------
 {xrst_begin adten_sum_dev dev}
