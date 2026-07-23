@@ -35,6 +35,12 @@ prod
 ****
 is the result of the summation.
 
+Example
+*******
+{xrst_literal ,
+    examples/adten/matmul.cpp
+    BEGIN_CPP, END_CPP
+}
 {xrst_end adten_matmul}
 -------------------------------------------------------------------------------
 {xrst_begin adten_matmul_dev dev}

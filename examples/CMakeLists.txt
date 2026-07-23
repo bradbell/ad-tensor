@@ -14,6 +14,7 @@ add_executable(examples
     adfn/optimize.cpp
     adfn/reverse_der.cpp
     adten/binary.cpp
+    adten/matmul.cpp
     adten/recording.cpp
     atom/ad_forward_der.cpp
     atom/ad_reverse_der.cpp
