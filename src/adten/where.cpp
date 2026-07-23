@@ -2,13 +2,6 @@
 // SPDX-FileCopyrightText: Bradley M. Bell <bradbell@seanet.com>
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
-#include <ad_tensor/adten.hpp>
-#include <ad_tensor/dev/tape.hpp>
-#include <ad_tensor/dev/op_enum.hpp>
-#include <ad_tensor/dev/agraph.hpp>
-#include <ad_tensor/dev/user_assert.hpp>
-//
-namespace ad_tensor { // BEGIN_NAMESPACE_AD_TENSOR
 /*
 -------------------------------------------------------------------------------
 {xrst_begin adten_where usr}
@@ -48,7 +41,7 @@ It must have the same shape as cond.
 
 result
 ******
-is the result of the elementwise conditional assignment
+is the result of the element-wise conditional assignment
 
     result = true_case if cond else false_case
 
@@ -87,30 +80,36 @@ where start is the length of arg_value and arg_type before this call to
 
 {xrst_end adten_where_dev}
 */
-namespace ad_tensor { // BEGIN_AD_TENSOR_NAMESPACE
+#include <ad_tensor/adten.hpp>
+#include <ad_tensor/dev/tape.hpp>
+#include <ad_tensor/dev/op_enum.hpp>
+#include <ad_tensor/dev/agraph.hpp>
+#include <ad_tensor/dev/user_assert.hpp>
 //
+namespace ad_tensor { // BEGIN_AD_TENSOR_NAMESPACE
 adten_t adten_t::where(
     const adten_t& cond,
     const adten_t& true_case,
     const adten_t& false_case ) {
     //
     // res_at_ten
-    at::Tensor res_aten = at::where(
+    at::Tensor res_at_ten = at::where(
         cond.m_at_ten, true_case.m_at_ten, false_case.m_at_ten
     );
     //
     // tape
     dev::tape_t& tape = dev::this_threads_tape();
     if( ! tape.m_recording )
-        return adten_t( res_at );
+        return adten_t( res_at_ten );
     dev::user_assert( cond.m_tape_id == tape.m_tape_id ,
-        "AD tensor where: cond does not match tape that is recording"
+        "AD tensor where: cond tape is not tape that is recording"
     );
     dev::user_assert( true_case.m_tape_id == tape.m_tape_id ,
-        "AD tensor where: true_case does not match tape that is recording"
+        "AD tensor where: true_case tape does is not tape that is recording"
     );
     dev::user_assert( false_case.m_tape_id == tape.m_tape_id ,
-        "AD tensor where: false_case does not match tape that is recording"
+        "AD tensor where: false_case tape does is not tape that is recording"
+    );
     //
     // res_ad_type
     ad_type_t res_ad_type = cond.m_ad_type;
@@ -152,7 +151,7 @@ adten_t adten_t::where(
         agraph->m_arg_value.push_back( false_case.m_index );
         agraph->m_arg_type.push_back( false_case.m_ad_type );
     }
-    return adten_t(res_tape_id, res_index, res_tensor, res_ad_type);
+    return adten_t(res_tape_id, res_index, res_at_ten, res_ad_type);
 }
 // ---------------------------------------------------------------------------
 } // END_NAMESPACE_AD_TENSOR

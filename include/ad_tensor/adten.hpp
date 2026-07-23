@@ -79,6 +79,7 @@ Other Member Functions
     src/adten/sum.cpp
     src/adten/transpose.cpp
     src/adten/view.cpp
+    src/adten/where.cpp
 }
 {xrst_comment END_SORT_THIS_LINE_MINUS_2}
 
