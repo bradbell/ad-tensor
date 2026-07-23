@@ -36,6 +36,12 @@ aview
 *****
 is the AD tensor corresponding the new view.
 
+Example
+*******
+{xrst_literal ,
+    examples/adten/view.cpp
+    BEGIN_CPP, END_CPP
+}
 {xrst_end adten_view}
 -------------------------------------------------------------------------------
 {xrst_begin adten_view_dev dev}
