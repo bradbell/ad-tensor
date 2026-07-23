@@ -3,13 +3,11 @@
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
 // BEGIN_CPP
-#include <ad_tensor/adfn.hpp>
 #include <gtest/gtest.h>
+#include <ad_tensor/ad_tensor.hpp>
 #include <torch/torch.h>
-#include <ad_tensor/adten.hpp>
-#include <ad_tensor/dev/to_string.hpp>
 //
-TEST(tests, adten_transpose_op)  {
+TEST(examples_adten, transpose)  {
     using ad_tensor::adten_t;
     using ad_tensor::adfn_t;
     using at::Tensor;

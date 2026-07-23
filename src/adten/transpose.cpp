@@ -42,6 +42,12 @@ atranspose
 is the AD tensor corresponding the transpose
 (where dim1 and dim2 have been switched).
 
+Example
+*******
+{xrst_literal ,
+    examples/adten/transpose.cpp
+    BEGIN_CPP, END_CPP
+}
 {xrst_end adten_transpose}
 -------------------------------------------------------------------------------
 {xrst_begin adten_transpose_dev dev}
