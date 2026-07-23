@@ -7,7 +7,7 @@
 #include <torch/torch.h>
 #include <ad_tensor/ad_tensor.hpp>
 //
-TEST(tests, adten_matmul_op)  {
+TEST(examples_adten, matmul)  {
     using ad_tensor::adten_t;
     using ad_tensor::adfn_t;
     using at::Tensor;

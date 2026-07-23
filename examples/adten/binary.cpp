@@ -6,7 +6,7 @@
 #include <gtest/gtest.h>
 #include <ad_tensor/ad_tensor.hpp>
 //
-TEST(examples_ad, binary)  {
+TEST(examples_adten, binary)  {
     using ad_tensor::adten_t;
     using at::Tensor;
     //

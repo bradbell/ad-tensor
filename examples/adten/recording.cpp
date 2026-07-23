@@ -6,7 +6,7 @@
 #include <gtest/gtest.h>
 #include <ad_tensor/ad_tensor.hpp>
 //
-TEST(examples_ad, record)  {
+TEST(examples_adten, record)  {
     using ad_tensor::adten_t;
     using at::Tensor;
     using ad_tensor::vector;
