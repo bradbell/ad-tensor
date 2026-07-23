@@ -33,6 +33,12 @@ aminus
 ******
 is the negative of the aten.
 
+Example
+*******
+{xrst_literal ,
+    examples/adten/minus.cpp
+    BEGIN_CPP, END_CPP
+}
 {xrst_end adten_minus}
 -------------------------------------------------------------------------------
 {xrst_begin adten_minus_dev dev}
