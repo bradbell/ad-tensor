@@ -6,9 +6,6 @@
 ------------------------------------------------------------------------------
 {xrst_begin_parent adten usr}
 {xrst_spell
-    op
-    lhs
-    rhs
     numel
 }
 
@@ -51,14 +48,6 @@ has also been cloned.
 {xrst_literal ,
     BEGIN_CLONE, END_CLONE
 }
-
-Compound Assignment Operators
-*****************************
-For *op* equal ``+=``, ``-=``, ``*=``, ``/=`` :
-{xrst_code cpp}
-    lhs op rhs
-{xrst_code}
-where lhs and rhs are adten_t references and rhs is.
 
 Other Member Functions
 **********************
@@ -103,6 +92,35 @@ Example
 }
 
 {xrst_end adten_binary}
+------------------------------------------------------------------------------
+{xrst_begin adten_compound usr}
+{xrst_spell
+    lhs
+    rhs
+    op
+}
+
+
+AD Tensor Compound Assignment Operators
+#######################################
+
+Syntax
+******
+{xrst_code cpp}
+    lhs op rhs
+{xrst_code}
+where lhs is an ``adten_t&`` , rhs is a ``const adten_t&`` , and
+op is one of the following: ``+=``, ``-=``, ``*=``, ``/=`` .
+
+
+Example
+*******
+{xrst_literal ,
+    examples/adten/compound.cpp
+    BEGIN_CPP, // END_CPP
+}
+
+{xrst_end adten_compound}
 ------------------------------------------------------------------------------
 {xrst_begin_parent adten_dev dev}
 
@@ -175,8 +193,10 @@ The adten_t Private Constructor
 # define AD_TENSOR_BINARY_OP(op, op_enum) \
     \
     adten_t operator op (const adten_t& rhs) const \
-    { return binary( dev::op_enum_t:: op_enum, *this, rhs ); } \
-    \
+    { return binary( dev::op_enum_t:: op_enum, *this, rhs ); }
+//
+// AD_TENSOR_COMPOUND_ASSIGNMENT
+# define AD_TENSOR_COMPOUND_ASSIGNMENT(op) \
     adten_t& operator op ## = (const adten_t& rhs) { \
         *this = *this op rhs; \
         return *this; \
@@ -272,6 +292,12 @@ public:
         const adten_t& false_case
     );
     // END_WHERE
+    //
+    // Compound Assignment operators
+    AD_TENSOR_COMPOUND_ASSIGNMENT(+)
+    AD_TENSOR_COMPOUND_ASSIGNMENT(-)
+    AD_TENSOR_COMPOUND_ASSIGNMENT(*)
+    AD_TENSOR_COMPOUND_ASSIGNMENT(/)
     //
     // Binary operators
     AD_TENSOR_BINARY_OP(+, add)
