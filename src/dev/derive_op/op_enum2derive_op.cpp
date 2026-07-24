@@ -23,6 +23,7 @@ namespace ad_tensor { namespace dev {
         static const sum_op_t<TensorType>         sum_op;
         static const transpose_op_t<TensorType>   transpose_op;
         static const view_op_t<TensorType>        view_op;
+        static const where_op_t<TensorType>       where_op;
         // END_SORT_THIS_LINE_MINUS_1
         //
         switch(op_enum) {
@@ -40,6 +41,7 @@ namespace ad_tensor { namespace dev {
             case op_enum_t::sum:         return sum_op;
             case op_enum_t::transpose:   return transpose_op;
             case op_enum_t::view:        return view_op;
+            case op_enum_t::where:       return where_op;
             // END_SORT_THIS_LINE_MINUS_1
             //
             default:

@@ -17,7 +17,7 @@ TEST(examples_adten, view)  {
     vector<Tensor> x;
     x.push_back( torch::tensor( {1.0, 2.0, 3.0, 4.0} ) );
     //
-    // ap, ax
+    // ax
     vector<adten_t> ax = adten_t::start_recording(x);
     //
     // shape
