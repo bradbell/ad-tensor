@@ -37,5 +37,35 @@ TEST(examples_adten, binary)  {
     Tensor  divide  = lhs / rhs;
     adten_t adivide = alhs / arhs;
     EXPECT_TRUE( divide.equal( adivide.at_ten() ) );
+    //
+    // less_than
+    Tensor  less_than  = lhs < rhs;
+    adten_t aless_than = alhs < arhs;
+    EXPECT_TRUE( less_than.equal( aless_than.at_ten() ) );
+    //
+    // less_equal
+    Tensor  less_equal  = lhs <= rhs;
+    adten_t aless_equal = alhs <= arhs;
+    EXPECT_TRUE( less_equal.equal( aless_equal.at_ten() ) );
+    //
+    // greater_than
+    Tensor  greater_than  = lhs > rhs;
+    adten_t agreater_than = alhs > arhs;
+    EXPECT_TRUE( greater_than.equal( agreater_than.at_ten() ) );
+    //
+    // greater_equal
+    Tensor  greater_equal  = lhs >= rhs;
+    adten_t agreater_equal = alhs >= arhs;
+    EXPECT_TRUE( greater_equal.equal( agreater_equal.at_ten() ) );
+    //
+    // equalty
+    Tensor  equalty  = lhs == rhs;
+    adten_t aequalty = alhs == arhs;
+    EXPECT_TRUE( equalty.equal( aequalty.at_ten() ) );
+    //
+    // not_equal
+    Tensor  not_equal  = lhs != rhs;
+    adten_t anot_equal = alhs != arhs;
+    EXPECT_TRUE( not_equal.equal( anot_equal.at_ten() ) );
 }
 // END_CPP

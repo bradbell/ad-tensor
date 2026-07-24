@@ -82,7 +82,22 @@ Syntax
     lhs op rhs
 {xrst_code}
 where lhs and rhs are ``const adten_t&`` and
-op is one of the following: ``+``, ``-``, ``*``, ``/`` .
+op is one of the following:
+
+.. csv-table::
+    :header-rows: 1
+
+    operator, description
+    +,  addition
+    -,  subtraction
+    *,  multiplication
+    /,  division
+    <,  less than
+    <=, less than or equal
+    ==, equal
+    !=, not equal
+    >=, greater than or equal
+    >,  greater than
 
 Example
 *******
