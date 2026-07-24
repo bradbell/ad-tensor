@@ -299,11 +299,19 @@ public:
     AD_TENSOR_COMPOUND_ASSIGNMENT(*)
     AD_TENSOR_COMPOUND_ASSIGNMENT(/)
     //
-    // Binary operators
+    // Numeric binary operators
     AD_TENSOR_BINARY_OP(+, add)
     AD_TENSOR_BINARY_OP(-, sub)
     AD_TENSOR_BINARY_OP(*, mul)
     AD_TENSOR_BINARY_OP(/, div)
+    //
+    // Compare binary operators
+    AD_TENSOR_BINARY_OP(<,  lt)
+    AD_TENSOR_BINARY_OP(<=, le)
+    AD_TENSOR_BINARY_OP(==, eq)
+    AD_TENSOR_BINARY_OP(!=, ne)
+    AD_TENSOR_BINARY_OP(>=, ge)
+    AD_TENSOR_BINARY_OP(>,  gt)
     //
     // minus
     adten_t operator -(void) const;

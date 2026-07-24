@@ -15,6 +15,7 @@ namespace ad_tensor { namespace dev {
         static const call_result_op_t<TensorType> call_result_op;
         static const div_op_t<TensorType>         div_op;
         static const dom_op_t<TensorType>         dom_op;
+        static const gt_op_t<TensorType>          gt_op;
         static const matmul_op_t<TensorType>      matmul_op;
         static const minus_op_t<TensorType>       minus_op;
         static const mul_op_t<TensorType>         mul_op;
@@ -33,6 +34,7 @@ namespace ad_tensor { namespace dev {
             case op_enum_t::call_result: return call_result_op;
             case op_enum_t::div:         return div_op;
             case op_enum_t::dom:         return dom_op;
+            case op_enum_t::gt:          return gt_op;
             case op_enum_t::matmul:      return matmul_op;
             case op_enum_t::minus:       return minus_op;
             case op_enum_t::mul:         return mul_op;

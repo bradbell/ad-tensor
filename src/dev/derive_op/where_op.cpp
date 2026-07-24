@@ -99,7 +99,7 @@ namespace ad_tensor { namespace dev {
             arg_start + 1, agraph, con_vec, par_vec, var_vec
         );
         TensorType false_case  = tensor_at_arg_index(
-            arg_start + 2, agraph, con_vec, par_vec
+            arg_start + 2, agraph, con_vec, par_vec, var_vec
         );
         //
         // var_vec
@@ -141,7 +141,7 @@ namespace ad_tensor { namespace dev {
 # endif
         // cond
         TensorType cond  = tensor_at_arg_index(
-            arg_start, agraph, con_vec, par_vec
+            arg_start, agraph, con_vec, par_vec, var_vec
         );
         //
         // true_type, false_type
@@ -207,7 +207,7 @@ namespace ad_tensor { namespace dev {
 # endif
         // cond
         TensorType cond  = tensor_at_arg_index(
-            arg_start, agraph, con_vec, par_vec
+            arg_start, agraph, con_vec, par_vec, var_vec
         );
         //
         // true_type, false_type

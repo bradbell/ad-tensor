@@ -9,30 +9,53 @@
 The Operator Scoped Enum Type
 #############################
 
-Enum Values
-***********
+op_enum_t
+*********
 {xrst_literal ,
-    BEGIN_SORT, END_SORT
+    BEGIN_OP_ENUM_T, END_OP_ENUM_T
+}
+
+Binary Operators
+****************
+{xrst_literal ,
+    BEGIN_BINARY, END_BINARY
+}
+
+Other Operators
+***************
+{xrst_literal ,
+    BEGIN_OTHER, END_OTHER
 }
 
 {xrst_end op_enum}
 */
-// op_enum
-// BEGIN_SORT_THIS_LINE_PLUS_2
-namespace ad_tensor { namespace dev { enum struct op_enum_t {
-    add,         // binary addition
+// BEGIN_OP_ENUM_T
+namespace ad_tensor { namespace dev { enum struct op_enum_t
+{   // END_OP_ENUM_T
+    //
+    // BEGIN_BINARY BEGIN_SORT_THIS_LINE_PLUS_1
+    add,         // addition
+    div,         // division
+    eq,          // equal
+    ge,          // greater than or equal
+    gt,          // greater than
+    le,          // less than or equal
+    lt,          // less than
+    mul,         // multiplication
+    ne,          // not equal
+    sub,         // subtraction
+    // END_BINARY  END_SORT_THIS_LINE_MINUS_1
+    //
+    // BEGIN_OTHER  BEGIN_SORT_THIS_LINE_PLUS_1
     call,        // call atomic function
     call_result, // place holder when more than one result for a call
-    div,         // binary division
     dom,         // domain tensor
-    matmul,      // binary matrix multiplication
+    matmul,      // matrix multiplication
     minus,       // unary minus
-    mul,         // binary multiplication
-    solve,       // solve binary matrix equation
-    sub,         // binary subtraction
-    sum,         // unary summation
-    transpose,   // unary transpose
-    view,        // unary view
+    solve,       // solve matrix equation
+    sum,         // summation
+    transpose,   // transpose
+    view,        // view
     where,       // where function
+    // END_OTHER END_SORT_THIS_LINE_MINUS_1
 }; } }
-// END_SORT_THIS_LINE_MINUS_2

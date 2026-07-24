@@ -40,8 +40,8 @@ the following is added to the parameter (variable) acyclic graph:
     :header-rows: 1
 
     arg_index, arg_value, arg_type
-    start + 0, index for lhs, type for lhs
-    start + 1, index for rhs, type for rhs
+    start + 0, index for lhs,                    type for lhs
+    start + 1, index for rhs,                    type for rhs
 
 where start is the length of arg_value and arg_type before this call to
 ``adten_t::binary`` .
@@ -55,28 +55,58 @@ adten_t adten_t::binary(
 // END_BINARY
 {
     //
-    // res_tensor
-    at::Tensor res_tensor;
+    // res_at_ten
+    at::Tensor res_at_ten;
     switch(op_enum) {
         //
         // add
         case dev::op_enum_t::add:
-        res_tensor = lhs.at_ten() + rhs.at_ten();
+        res_at_ten = lhs.at_ten() + rhs.at_ten();
         break;
         //
         // sub
         case dev::op_enum_t::sub:
-        res_tensor = lhs.at_ten() - rhs.at_ten();
+        res_at_ten = lhs.at_ten() - rhs.at_ten();
         break;
         //
         // mul
         case dev::op_enum_t::mul:
-        res_tensor = lhs.at_ten() * rhs.at_ten();
+        res_at_ten = lhs.at_ten() * rhs.at_ten();
         break;
         //
         // div
         case dev::op_enum_t::div:
-        res_tensor = lhs.at_ten() / rhs.at_ten();
+        res_at_ten = lhs.at_ten() / rhs.at_ten();
+        break;
+        //
+        // lt
+        case dev::op_enum_t::lt:
+        res_at_ten = lhs.at_ten() < rhs.at_ten();
+        break;
+        //
+        // le
+        case dev::op_enum_t::le:
+        res_at_ten = lhs.at_ten() <= rhs.at_ten();
+        break;
+        //
+        // eq
+        case dev::op_enum_t::eq:
+        res_at_ten = lhs.at_ten() == rhs.at_ten();
+        break;
+        //
+        // ne
+        case dev::op_enum_t::ne:
+        res_at_ten = lhs.at_ten() != rhs.at_ten();
+        break;
+        //
+        // ge
+        case dev::op_enum_t::ge:
+        res_at_ten = lhs.at_ten() >= rhs.at_ten();
+        break;
+        //
+        // gt
+        case dev::op_enum_t::gt:
+        res_at_ten = lhs.at_ten() > rhs.at_ten();
         break;
         //
         default:
@@ -86,7 +116,7 @@ adten_t adten_t::binary(
     // tape
     dev::tape_t& tape = dev::this_threads_tape();
     if( ! tape.m_recording )
-        return adten_t( res_tensor );
+        return adten_t( res_at_ten );
     dev::user_assert( lhs.m_tape_id == tape.m_tape_id ,
         "binary left operand does not match tape that is recording"
     );
@@ -106,7 +136,7 @@ adten_t adten_t::binary(
     if(res_ad_type == ad_type_t::constant ) {
         // res_index, tape.m_con
         res_index = tape.m_con.size();
-        tape.m_con.push_back( res_tensor.clone() );
+        tape.m_con.push_back( res_at_ten.clone() );
     } else {
         //
         // agraph
@@ -131,7 +161,7 @@ adten_t adten_t::binary(
         agraph->m_arg_value.push_back( rhs.m_index );
         agraph->m_arg_type.push_back( rhs.m_ad_type );
     }
-    return adten_t(res_tape_id, res_index, res_tensor, res_ad_type);
+    return adten_t(res_tape_id, res_index, res_at_ten, res_ad_type);
 }
 // ---------------------------------------------------------------------------
 } // END_NAMESPACE_AD_TENSOR

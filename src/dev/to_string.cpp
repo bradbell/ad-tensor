@@ -28,6 +28,7 @@ namespace ad_tensor { namespace dev {
             case op_enum_t::call_result:  return "call_result";
             case op_enum_t::div:          return "div";
             case op_enum_t::dom:          return "dom";
+            case op_enum_t::gt:           return "gt";
             case op_enum_t::matmul:       return "matmul";
             case op_enum_t::minus:        return "minus";
             case op_enum_t::mul:          return "mul";

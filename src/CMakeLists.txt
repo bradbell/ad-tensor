@@ -34,6 +34,7 @@ add_library(ad_tensor SHARED
     dev/derive_op/call_result_op.cpp
     dev/derive_op/div_op.cpp
     dev/derive_op/dom_op.cpp
+    dev/derive_op/gt_op.cpp
     dev/derive_op/matmul_op.cpp
     dev/derive_op/minus_op.cpp
     dev/derive_op/mul_op.cpp
