@@ -13,9 +13,6 @@ TEST(examples_adten, matmul)  {
     using at::Tensor;
     using ad_tensor::vector;
     //
-    // p
-    vector<Tensor> p;
-    //
     double x00 = 1.0, x01 = 2.0, x10 = 3.0, x11 = 4.0;
     //
     // x
@@ -26,7 +23,7 @@ TEST(examples_adten, matmul)  {
     } ) );
     //
     // ap, ax
-    auto [ax, ap] = adten_t::start_recording(x, p);
+    vector<adten_t> ax = adten_t::start_recording(x);
     //
     // ay
     vector<adten_t> ay;
@@ -35,12 +32,11 @@ TEST(examples_adten, matmul)  {
     // y = f(p)
     adfn_t f = adten_t::stop_recording(ay, "f");
     //
-    // par_all, var_all
-    vector<Tensor> par_all = f.forward_par(p);
-    vector<Tensor> var_all = f.forward_var(x, par_all);
+    // var_all
+    vector<Tensor> var_all = f.forward_var(x);
     //
     // y
-    vector<Tensor> y = f.get_range(var_all, par_all);
+    vector<Tensor> y = f.get_range(var_all);
     //
     EXPECT_EQ( y.size(), ay.size() );
     //
@@ -59,7 +55,7 @@ TEST(examples_adten, matmul)  {
     } ) );
     //
     // dy
-    vector<Tensor> dy = f.forward_der(dx, var_all, par_all);
+    vector<Tensor> dy = f.forward_der(dx, var_all);
     check = torch::tensor( {
             {0.0,       x01},
             {x10, 2.0 * x11}
@@ -70,7 +66,7 @@ TEST(examples_adten, matmul)  {
     dy[0] = torch::tensor( {
         {1.0, 0.0}, {0.0, 0.0}
     } );
-    dx    = f.reverse_der(dy, var_all, par_all);
+    dx    = f.reverse_der(dy, var_all);
     check = torch::tensor( {
         {2.0 * x00, x10},
         {x01,       0.0}
