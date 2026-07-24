@@ -30,7 +30,7 @@ TEST(examples_adten, transpose)  {
     vector<adten_t> ay;
     ay.push_back( ax[0].transpose(0, 1) );
     //
-    // y = f(p)
+    // y = f(x)
     adfn_t f = adten_t::stop_recording(ay, "f");
     //
     // par_all, var_all

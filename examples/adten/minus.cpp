@@ -29,7 +29,7 @@ TEST(examples_adten, minus)  {
     ay.push_back( - ap[0] );
     ay.push_back( - ax[0] );
     //
-    // y = f(p)
+    // y = f(x, p)
     adfn_t f = adten_t::stop_recording(ay, "f");
     //
     // par_all, var_all

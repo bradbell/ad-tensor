@@ -29,7 +29,7 @@ TEST(examples_adten, matmul)  {
     vector<adten_t> ay;
     ay.push_back( ax[0].matmul( ax[0] ) );
     //
-    // y = f(p)
+    // y = f(x)
     adfn_t f = adten_t::stop_recording(ay, "f");
     //
     // var_all

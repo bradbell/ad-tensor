@@ -27,7 +27,7 @@ TEST(examples_adten, view)  {
     vector<adten_t> ay;
     ay.push_back( ax[0].view( shape ) );
     //
-    // y = f(p)
+    // y = f(x)
     adfn_t f = adten_t::stop_recording(ay, "f");
     //
     // var_all

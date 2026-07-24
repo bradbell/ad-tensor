@@ -43,7 +43,7 @@ TEST(examples_adten, solve)  {
     left = false;
     ay.push_back( ad_tensor::linalg_solve(ax[0], ap[0], left) );
     //
-    // y = f(p)
+    // y = f(x, p)
     adfn_t f = adten_t::stop_recording(ay, "f");
     //
     // par_all, var_all
