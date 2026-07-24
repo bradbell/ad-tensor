@@ -87,17 +87,17 @@ op is one of the following:
 .. csv-table::
     :header-rows: 1
 
-    operator, description
-    +,  addition
-    -,  subtraction
-    *,  multiplication
-    /,  division
-    <,  less than
-    <=, less than or equal
-    ==, equal
-    !=, not equal
-    >=, greater than or equal
-    >,  greater than
+    op , description
+   \+  ,  addition
+   \-  ,  subtraction
+   \*  ,  multiplication
+    /  ,  division
+    <  ,  less than
+    <= , less than or equal
+    == , equal
+    != , not equal
+    >= , greater than or equal
+    >  ,  greater than
 
 Example
 *******
