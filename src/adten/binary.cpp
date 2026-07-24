@@ -11,7 +11,7 @@
 namespace ad_tensor { // BEGIN_NAMESPACE_AD_TENSOR
 /*
 -------------------------------------------------------------------------------
-{xrst_begin adten_binary dev}
+{xrst_begin adten_binary_dev dev}
 {xrst_spell
     lhs
     rhs
@@ -46,7 +46,7 @@ the following is added to the parameter (variable) acyclic graph:
 where start is the length of arg_value and arg_type before this call to
 ``adten_t::binary`` .
 
-{xrst_end adten_binary}
+{xrst_end adten_binary_dev}
 */
 // BEGIN_BINARY
 adten_t adten_t::binary(

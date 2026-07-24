@@ -4,7 +4,7 @@
 // SPDX-FileContributor: 2026 Bradley M. Bell
 /*
 ------------------------------------------------------------------------------
-{xrst_begin adten usr}
+{xrst_begin_parent adten usr}
 {xrst_spell
     op
     lhs
@@ -52,14 +52,6 @@ has also been cloned.
     BEGIN_CLONE, END_CLONE
 }
 
-Binary Operators
-****************
-For *op* equal ``+``, ``-``, ``*``, ``/`` :
-{xrst_code cpp}
-    lhs op rhs
-{xrst_code}
-where lhs and rhs are const adten_t reference
-
 Compound Assignment Operators
 *****************************
 For *op* equal ``+=``, ``-=``, ``*=``, ``/=`` :
@@ -71,7 +63,7 @@ where lhs and rhs are adten_t references and rhs is.
 Other Member Functions
 **********************
 {xrst_comment BEGIN_SORT_THIS_LINE_PLUS_2}
-{xrst_toc_table
+{xrst_toc_table after
     src/adten/matmul.cpp
     src/adten/minus.cpp
     src/adten/recording.cpp
@@ -83,6 +75,26 @@ Other Member Functions
 }
 {xrst_comment END_SORT_THIS_LINE_MINUS_2}
 
+{xrst_end adten}
+------------------------------------------------------------------------------
+{xrst_begin adten_binary usr}
+{xrst_spell
+    lhs
+    rhs
+    op
+}
+
+AD Tensor Binary Operators
+##########################
+
+Syntax
+******
+{xrst_code cpp}
+    lhs op rhs
+{xrst_code}
+where lhs and rhs are ``const adten_t&`` and
+op is one of the following: ``+``, ``-``, ``*``, ``/`` .
+
 Example
 *******
 {xrst_literal ,
@@ -90,7 +102,7 @@ Example
     BEGIN_CPP, // END_CPP
 }
 
-{xrst_end adten}
+{xrst_end adten_binary}
 ------------------------------------------------------------------------------
 {xrst_begin_parent adten_dev dev}
 
