@@ -13,15 +13,12 @@ TEST(examples_adten, view)  {
     using at::Tensor;
     using ad_tensor::vector;
     //
-    // p
-    vector<Tensor> p;
-    //
     // x
     vector<Tensor> x;
     x.push_back( torch::tensor( {1.0, 2.0, 3.0, 4.0} ) );
     //
     // ap, ax
-    auto [ax, ap] = adten_t::start_recording(x, p);
+    vector<adten_t> ax = adten_t::start_recording(x);
     //
     // shape
     vector<int64_t> shape = {2, 2};
@@ -33,12 +30,11 @@ TEST(examples_adten, view)  {
     // y = f(p)
     adfn_t f = adten_t::stop_recording(ay, "f");
     //
-    // par_all, var_all
-    vector<Tensor> par_all = f.forward_par(p);
-    vector<Tensor> var_all = f.forward_var(x, par_all);
+    // var_all
+    vector<Tensor> var_all = f.forward_var(x);
     //
     // y
-    vector<Tensor> y = f.get_range(var_all, par_all);
+    vector<Tensor> y = f.get_range(var_all);
     //
     EXPECT_EQ( y.size(), ay.size() );
     //
@@ -50,13 +46,13 @@ TEST(examples_adten, view)  {
     dx.push_back( torch::tensor( {5.0, 6.0, 7.0, 8.0} ) );
     //
     // dy
-    vector<Tensor> dy = f.forward_der(dx, var_all, par_all);
+    vector<Tensor> dy = f.forward_der(dx, var_all);
     equal = dy[0].equal( torch::tensor( { {5.0, 6.0}, {7.0, 8.0} } ) );
     EXPECT_TRUE( equal );
     //
     // dy, dx
     dy[0] = torch::tensor( { {1.0, 2.0}, {3.0, 4.0} } );
-    dx    = f.reverse_der(dy, var_all, par_all);
+    dx    = f.reverse_der(dy, var_all);
     equal = dx[0].equal( torch::tensor( {1.0, 2.0, 3.0, 4.0} ) );
     EXPECT_TRUE( equal );
 }
