@@ -4,20 +4,19 @@
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
 /*
-{xrst_begin at_ten_nan usr}
+{xrst_begin empty_at_ten usr}
 
-The Scalar NaN Tensor
-#####################
+The Empty at::Tensor used by ad_tensor
+######################################
 {xrst_literal ,
-    BEGIN_AT_TEN_NAN, END_AT_TEN_NAN
+    BEGIN_EMPTY_AT_TEN, END_EMPTY_AT_TEN
 }
-{xrst_end at_ten_nan}
+{xrst_end empty_at_ten}
 */
 #include <limits>
 #include <torch/torch.h>
-// BEGIN_AT_TEN_NAN
-namespace ad_tensor { inline at::Tensor at_ten_nan(void) {
-    float nan = std::numeric_limits<float>::quiet_NaN();
-    return torch::tensor(nan);
+// BEGIN_EMPTY_AT_TEN
+namespace ad_tensor { inline at::Tensor empty_at_ten(void) {
+    return torch::empty( {0} );
 } }
-// END_AT_TEN_NAN
+// END_EMPTY_AT_TEN

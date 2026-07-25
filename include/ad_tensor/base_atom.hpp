@@ -8,8 +8,8 @@
 
 The Atomic Function Base Class
 ##############################
-An atomic function is defined by a derived class overrides of the
-virtual functions in base_atom_t.
+An atomic function is defined by a derived class
+that overrides of the virtual functions in base_atom_t.
 
 {xrst_end base_atom}
 -------------------------------------------------------------------------------
@@ -72,7 +72,6 @@ then the pair (i,j) must be in the depend sparsity pattern.
 {xrst_begin atom_forward usr}
 {xrst_spell
     rng
-    adten
 }
 
 Forward Function Evaluation
@@ -101,19 +100,17 @@ rng_used
 If rng_used is the empty vector, all of the range values are used.
 Otherwise this vector has the same size as :ref:`call_atom@arange`
 in the corresponding call this atomic function.
-If rng_used[i] is true,
-the return tensor with index i is used and must be calculated.
-If it is false,
-the return tensor with index i is not used and need not be calculated.
+If rng_used[i] is true (false),
+the return tensor with index i is used and must be calculated
+(is not used).
+Either rng_used is empty, or at least one of its elements is true.
 
 domain
 ******
 is the vector of the domain tensors containing the domain values.
-
 Given rng_used and :ref:`atom_depend-name` it is possible to determine
 that some domain values are not needed.
-These domain values may be changed to :ref:`at_ten_nan-name`
-or adten_t version of at_ten_nan.
+These domain values may be changed to :ref:`empty_at_ten-name` .
 
 range
 *****

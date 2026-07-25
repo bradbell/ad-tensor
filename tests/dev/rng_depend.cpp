@@ -31,7 +31,7 @@ TEST(tests_optimize, rng_depend_simple) {
     auto [av, ap] = adten_t::start_recording(v, p);  // p[0], v[0], v[1]
     //
     // ac_used, ac_not_used
-    // c[0] is always the constant nan
+    // c[0] is always the constant empty_at_ten()
     adten_t ac_used     = adten_t( c_used );                        // c[1]
     adten_t ac_not_used = adten_t( torch::tensor( {3.0, 4.0} ) );   // c[2]
     //
@@ -120,7 +120,7 @@ TEST(tests_optimize, rng_depend_chkpnt) {
     auto [av, ap] = adten_t::start_recording(v, p);  // p[0], v[0], v[1]
     //
     // ac_used, ac_not_used
-    // c[0] is always the constant nan
+    // c[0] is always the constant empty_at_ten()
     adten_t ac_used     = adten_t( c_used );                        // c[1]
     adten_t ac_not_used = adten_t( torch::tensor( {3.0, 4.0} ) );   // c[2]
     //

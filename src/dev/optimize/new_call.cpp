@@ -68,8 +68,7 @@ the corresponding result is (is not) in the new graph.
 
 Constants
 *********
-It is assumed that the constant with index zero and empty shape,
-in the AD function that contains agraph, is nan.
+It is assumed that the constant with index zero is :ref:`empty_at_ten-name` .
 
 {xrst_end new_call}
 */
@@ -154,7 +153,7 @@ size_t new_call(
             //
             case ad_type_t::constant:
             if( old2new_con[arg_value_old] == not_used ) {
-                // nan
+                // empty_at_ten()
                 agraph_new.m_arg_value.push_back( 0 );
             } else {
                 agraph_new.m_arg_value.push_back( old2new_con[arg_value_old] );
@@ -163,7 +162,7 @@ size_t new_call(
             //
             case ad_type_t::parameter:
             if( old2new_par[arg_value_old] == not_used ) {
-                // nan
+                // empty_at_ten()
                 agraph_new.m_arg_value.push_back( 0 );
                 arg_type = ad_type_t::constant;
             } else {
@@ -173,7 +172,7 @@ size_t new_call(
             //
             case ad_type_t::variable:
             if( old2new_var[arg_value_old] == not_used ) {
-                // nan
+                // empty_at_ten()
                 agraph_new.m_arg_value.push_back( 0 );
                 arg_type = ad_type_t::constant;
             } else {

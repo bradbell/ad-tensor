@@ -3,7 +3,7 @@
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
 #include <ad_tensor/adten.hpp>
-#include <ad_tensor/at_ten_nan.hpp>
+#include <ad_tensor/empty_at_ten.hpp>
 #include <ad_tensor/dev/tape.hpp>
 #include <ad_tensor/dev/op_enum.hpp>
 #include <ad_tensor/dev/agraph.hpp>
@@ -59,8 +59,7 @@ The recording can be used to compute derivatives with respect to these tensors.
 
 First Constant
 **************
-Each recording starts with a scalar nan as its first constant;
-see :ref:`at_ten_nan-name` .
+Each recording starts with :ref:`empty_at_ten-name` as its first constant.
 This is used as a place holder for values that are not needed; e.g.,
 see the heading :ref:`atom_forward@domain` in the documentation
 for atomic functions.
@@ -117,8 +116,8 @@ adten_t::start_recording(
     tape.m_recording = true;
     //
     // tape.m_con
-    // The constant at index zero is always a single element nan
-    tape.m_con.push_back( at_ten_nan() );
+    // The constant at index zero is always empty_at_ten()
+    tape.m_con.push_back( empty_at_ten() );
     //
     // tape.m_par.m_dom_shapes
     tape.m_par.m_dom_shapes.resize( dom_par.size() );
