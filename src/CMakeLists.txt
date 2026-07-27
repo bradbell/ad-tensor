@@ -53,6 +53,7 @@ add_library(ad_tensor SHARED
     dev/optimize/new_agraph.cpp
     dev/optimize/new_call.cpp
     dev/optimize/old2new.cpp
+    dev/optimize/optimize_con.cpp
     dev/optimize/rng_depend.cpp
     dev/rev_sum_view.cpp
     dev/tape.cpp

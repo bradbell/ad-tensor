@@ -78,7 +78,7 @@ namespace {
 namespace ad_tensor { // BEGIN_AD_TENSOR_NAMESPACE
 
 // BEGIN_OPTIMIZE
-adfn_t adfn_t::optimize(void) const
+adfn_t adfn_t::optimize(void)
 {   // END_OPTIMIZE
     //
     // adfn_old
@@ -89,6 +89,15 @@ adfn_t adfn_t::optimize(void) const
     //
     // depend_con, depend_par, depend_var
     auto [depend_con, depend_par, depend_var] = dev::rng_depend( &adfn_old );
+    //
+    // m_con, m_par, m_var
+    optimize_con( depend_con );
+    //
+    // depend_con
+    depend_con.resize( m_con.size() );
+    for(size_t i = 0; i < m_con.size(); ++i) {
+        depend_con[i] = true;
+    }
     //
     // n_dom_par, n_dom_var
     size_t n_dom_par = adfn_old.m_par.m_dom_shapes.size();
@@ -106,8 +115,6 @@ adfn_t adfn_t::optimize(void) const
         print_old2new( "old2new_var", old2new_var );
         cout << "End tracing " + adfn_old.get_name() + ".optimize\n";
     }
-
-
     //
     // adfn_new
     adfn_t adfn_new;

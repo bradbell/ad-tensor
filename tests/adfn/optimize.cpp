@@ -2,11 +2,61 @@
 // SPDX-FileCopyrightText: Bradley M. Bell <bradbell@seanet.com>
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
-// BEGIN_CPP
 #include <gtest/gtest.h>
 #include <ad_tensor/ad_tensor.hpp>
 //
-TEST(tests_adfn, optimize)  {
+// BEGIN_ADFN_OPTIMIZE_CON
+TEST(tests_adfn, optimize_con) {
+    using ad_tensor::adten_t;
+    using ad_tensor::adfn_t;
+    using at::Tensor;
+    using ad_tensor::vector;
+    //
+    // p
+    // We use p for the domain parameters
+    vector<Tensor> p;
+    p.push_back( torch::tensor( {1.0, 1.0} ) );
+    p.push_back( torch::tensor( {1.0, 1.0} ) );
+    //
+    // v
+    // We use v for the domain variables
+    vector<Tensor> v;
+    v.push_back( torch::tensor( {1.0, 1.0} ) );
+    //
+    // ap, av
+    auto [av, ap] = adten_t::start_recording(v, p);
+    //
+    // not_used_con, used_con, repeat_con
+    adten_t not_used_con = adten_t( torch::tensor(2.0) );
+    adten_t used_con     = adten_t( torch::tensor(3.0) );
+    adten_t repeat_con   = adten_t( torch::tensor(3.0) );
+    //
+    vector<adten_t> ar;
+    ar.push_back( used_con );
+    ar.push_back( repeat_con );
+    //
+    // r = f(v, p)
+    adfn_t f = adten_t::stop_recording(ar, "f");
+    EXPECT_EQ( f.n_con(), 4 );
+    //
+    // g = f
+    adfn_t g = f.optimize();
+    EXPECT_EQ( g.n_con(), 2 );
+    //
+    vector<Tensor> p_all = g.forward_par(p);
+    vector<Tensor> v_all = g.forward_var(v, p_all);
+    vector<Tensor> range = g.get_range(v_all, p_all);
+    //
+    bool equal = range[0].equal( used_con.at_ten() );
+    EXPECT_TRUE( equal );
+    //
+    equal = range[1].equal( repeat_con.at_ten() );
+    EXPECT_TRUE( equal );
+}
+// END_ADFN_OPTIMIZE_CON
+//
+// tests_adfn.optimize_call
+TEST(tests_adfn, optimize_call)  {
     using ad_tensor::adten_t;
     using ad_tensor::adfn_t;
     using at::Tensor;
@@ -86,4 +136,3 @@ TEST(tests_adfn, optimize)  {
     equal = dz[1].equal( dv[0] * v[1] + v[0] * dv[1] );
     EXPECT_TRUE(equal);
 }
-// END_CPP

@@ -46,18 +46,13 @@ TEST(examples_adfn, optimize)  {
     //
     // r = f(v, p)
     adfn_t f = adten_t::stop_recording(ar, "f");
-    adfn_t g = f.optimize();
-    //
-    // n_con
     EXPECT_EQ( f.n_con(), 3 );
-    EXPECT_EQ( g.n_con(), 2 );
-    //
-    // n_par
     EXPECT_EQ( f.n_par(), 4);
-    EXPECT_EQ( g.n_par(), 3);
-    //
-    // n_var
     EXPECT_EQ( f.n_var(), 3);
+    //
+    adfn_t g = f.optimize();
+    EXPECT_EQ( g.n_con(), 2 );
+    EXPECT_EQ( g.n_par(), 3);
     EXPECT_EQ( g.n_var(), 2);
     //
     vector<Tensor> p_all = g.forward_par(p);

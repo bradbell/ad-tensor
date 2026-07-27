@@ -181,9 +181,12 @@ private:
     //
     std::array< vector<bool>, 3 > rng_depend
     (void) const;
+    //
+    // renumber_con
+    void optimize_con(const vector<bool>& depend_con);
 public:
     // optimize
-    adfn_t optimize(void) const;
+    adfn_t optimize(void);
     //
     // BEGIN_DEFAULT_CTOR
     adfn_t()
