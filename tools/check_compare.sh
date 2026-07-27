@@ -43,5 +43,6 @@ do
         exit 1
     fi
 done
+rm temp.$$
 #
 echo "$script_path: OK"
