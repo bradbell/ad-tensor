@@ -69,14 +69,17 @@ agraph_t new_agraph(
     // not_used
     size_t not_used = std::numeric_limits<size_t>::max();
     //
-    // old2new_res
+    // old2new_res, agraph_type
     const vector<size_t>* old2new_res = nullptr;
+    ad_type_t agraph_type;
     if( var_op ) {
         assert( old2new_var.size() == agraph_old.m_op_seq.size() );
         old2new_res = &old2new_var;
+        agraph_type = ad_type_t::variable;
     } else {
         assert( old2new_par.size() == agraph_old.m_op_seq.size() );
         old2new_res = &old2new_par;
+        agraph_type = ad_type_t::parameter;
     }
     //
     // op_seq_old
@@ -104,8 +107,8 @@ agraph_t new_agraph(
             case op_enum_t::call:
             case op_enum_t::call_result:
             op_index_old = new_call(
-                agraph_new, agraph_old, op_index_old, var_op,
-                old2new_par, old2new_var
+                agraph_type, agraph_new, agraph_old, op_index_old,
+                *old2new_res
             );
             break;
             //

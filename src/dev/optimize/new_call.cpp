@@ -17,12 +17,11 @@ Syntax
 ******
 {xrst_code cpp}
     op_index_old = new_call(
+        agraph_type,
         agraph_new,
         agraph_old,
         op_index_old,
-        var_op,
-        old2new_par,
-        old2new_var
+        old2new,
     )
 {xrst_code}
 
@@ -39,6 +38,11 @@ We use the notation
     not_used = std::numeric_limits<size_t>::max()
 {xrst_code}
 
+agraph_type
+***********
+Is the type for this the graphs and must be ad_type_t::parameter
+or ad_type_t::variable.
+
 agraph_new
 **********
 The new graph up to but not including the call the an atomic function.
@@ -54,20 +58,12 @@ that is used in the new graph.
 Upon return, is op_index_old is the next operator index,
 after this call,  in the old graph.
 
-var_op
-******
-If this is true (false) the is a variable (parameter) graph.
-
-old2new_par, old2par_var
-************************
+old2new
+*******
 is the mapping from indices in the old graph to indices in the new graph
-for parameters and variables (in that order).
-If not_used is equal (not equal) to an old to new index,
-the corresponding result is (is not) in the new graph.
-
-Constants
-*********
-It is assumed that the constant with index zero is :ref:`empty_at_ten-name` .
+for agraph_type.
+If not_used is equal (not equal) to an old index,
+the corresponding result is not (is) in the new graph.
 
 {xrst_end new_call}
 */
@@ -78,26 +74,17 @@ namespace ad_tensor { namespace dev { // BEGIN_AD_TENSOR_DEV_NAMESPACE
 //
 // BEGIN_NEW_CALL
 size_t new_call(
+    ad_type_t             agraph_type,
     agraph_t&             agraph_new,
     const agraph_t&       agraph_old,
     size_t                op_index_old,
-    bool                  var_op,
-    const vector<size_t>& old2new_par,
-    const vector<size_t>& old2new_var)
+    const vector<size_t>& old2new)
 {   // END_NEW_CALL
     //
     //
     // not_used
     size_t not_used = std::numeric_limits<size_t>::max();
-    //
-    // old2new_res
-    const vector<size_t>* old2new_res = nullptr;
-    if( var_op ) {
-        old2new_res = &old2new_var;
-    } else {
-        old2new_res = &old2new_par;
-    }
-    assert( (*old2new_res)[op_index_old] != not_used );
+    assert( old2new[op_index_old] != not_used );
     //
     // op_index_old
     op_enum_t op_enum = agraph_old.m_op_seq[op_index_old];
@@ -116,9 +103,9 @@ size_t new_call(
     size_t first_old2new = 0;
 #endif
     for(size_t k = 0; k < n_result_old; ++k) {
-        if( (*old2new_res)[op_index_old + k] != not_used ) {
+        if( old2new[op_index_old + k] != not_used ) {
 #ifndef NDEBUG
-            first_old2new = (*old2new_res)[op_index_old + k];
+            first_old2new = old2new[op_index_old + k];
 #endif
             ++n_result_new;
         }
@@ -147,40 +134,22 @@ size_t new_call(
         size_t    arg_index     = arg_start + 4 + j;
         size_t    arg_value_old = agraph_old.m_arg_value[arg_index];
         ad_type_t arg_type      = agraph_old.m_arg_type[arg_index];
-        switch( arg_type ) {
-            //
-            case ad_type_t::constant:
+        if( arg_type != agraph_type ) {
             agraph_new.m_arg_value.push_back( arg_value_old );
-            break;
-            //
-            case ad_type_t::parameter:
-            if( old2new_par[arg_value_old] == not_used ) {
+        } else {
+            if( old2new[arg_value_old] == not_used ) {
                 // empty_at_ten()
                 agraph_new.m_arg_value.push_back( 0 );
                 arg_type = ad_type_t::constant;
             } else {
-                agraph_new.m_arg_value.push_back( old2new_par[arg_value_old] );
+                agraph_new.m_arg_value.push_back( old2new[arg_value_old] );
             }
-            break;
-            //
-            case ad_type_t::variable:
-            if( old2new_var[arg_value_old] == not_used ) {
-                // empty_at_ten()
-                agraph_new.m_arg_value.push_back( 0 );
-                arg_type = ad_type_t::constant;
-            } else {
-                agraph_new.m_arg_value.push_back( old2new_var[arg_value_old] );
-            }
-            break;
-            //
-            default:
-            assert( false );
         }
         agraph_new.m_arg_type.push_back( arg_type );
     }
     // agraph_new: m_arg_value, m_arg_type
     for(size_t k = 0; k < n_result_old; ++k) {
-        if( (*old2new_res)[op_index_old + k] != not_used ) {
+        if( old2new[op_index_old + k] != not_used ) {
             size_t arg_index = arg_start + 4 + n_domain + k;
             size_t arg_value = agraph_old.m_arg_value[ arg_index ];
             agraph_new.m_arg_value.push_back( arg_value );
