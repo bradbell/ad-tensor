@@ -46,7 +46,6 @@ Example
 -------------------------------------------------------------------------------
 {xrst_begin adten_view_dev dev}
 {xrst_spell
-    int
 }
 
 Create a View of an AD Tensor Developer Documentation
@@ -67,20 +66,14 @@ the following is added to the parameter (variable) acyclic graph:
     :header-rows: 1
 
     arg_index, arg_value, arg_type
-    start + 0, index for operand,                           type of the operand
-    start + 1, dim number of dimensions in the new shape,    ad_type::none
-    start + 2, index of first m_int64 entry (start_int64), ad_type_t::none
-
-.. csv-table::
-    :header-rows: 1
-
-    m_int64 index, meaning
-    start_int64 + 0, size of first dimension in new shape
-    ..., ...
-    start_int64 + n_dim - 1, size of last dimension in new shape
+    start + 0, index for operand,                         type of the operand
+    start + 1, number of dimensions in new shape (n_dim), ad_type::none
+    start + 2, first dimension in new shape,              ad_type_t::none
+    ..., ..., ...
+    start + n_dim + 1, last dimension in new shape,       ad_type_t::none
 
 where start is the length of arg_value and arg_type before this call to
-``adten_t::view`` and n_dim is the number of dimensions in the new shape
+``adten_t::view`` .
 
 {xrst_end adten_view_dev}
 */
@@ -141,12 +134,12 @@ adten_t adten_t::view(const c10::IntArrayRef& shape) const
         agraph->m_arg_value.push_back( n_dim );
         agraph->m_arg_type.push_back( ad_type_t::none );
         //
-        size_t start_int64 = agraph->m_int64.size();
-        agraph->m_arg_value.push_back( start_int64 );
-        agraph->m_arg_type.push_back( ad_type_t::none );
-        //
         for(size_t i = 0; i < n_dim; ++i) {
-            agraph->m_int64.push_back( shape[i] );
+            dev::user_assert( 0 <= shape[i],
+                "AD Tensor view: a shape element is less than zero"
+            );
+            agraph->m_arg_value.push_back( size_t( shape[i] ) );
+            agraph->m_arg_type.push_back( ad_type_t::none );
         }
     }
     return adten_t(res_tape_id, res_index, res_tensor, res_ad_type);

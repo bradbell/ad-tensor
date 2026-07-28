@@ -32,16 +32,15 @@ namespace ad_tensor { namespace dev {
         //
         // n_arg
         size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
-        assert( n_arg == 3 && "view_op: n_arg != 3");
+        assert( n_arg == 2 + n_dim && "view_op: n_arg != 2 + n_dim");
 #endif
         // operand_index
         size_t operand_index  = agraph.m_arg_value[arg_start];
         //
         // shape
-        size_t start_int64 = agraph.m_arg_value[arg_start + 2];
-        const int64_t* begin = agraph.m_int64.data() + start_int64;
-        const int64_t* end   = begin + n_dim;
-        c10::IntArrayRef shape(begin, end);
+        const size_t* begin = agraph.m_arg_value.data() + arg_start + 2;
+        const size_t* end   = begin + n_dim;
+        const vector<int64_t>   shape(begin, end);
         //
         // par_vec
         par_vec[op_index] = par_vec[operand_index].view(shape);
@@ -84,16 +83,15 @@ namespace ad_tensor { namespace dev {
         //
         // n_arg
         size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
-        assert( n_arg == 3 && "view_op: n_arg != 3");
+        assert( n_arg == 2 + n_dim  && "view_op: n_arg != 2 + n_dim ");
 #endif
         // operand_index
         size_t operand_index  = agraph.m_arg_value[arg_start];
         //
         // shape
-        size_t start_int64 = agraph.m_arg_value[arg_start + 2];
-        const int64_t* begin = agraph.m_int64.data() + start_int64;
-        const int64_t* end   = begin + n_dim;
-        c10::IntArrayRef shape(begin, end);
+        const size_t* begin = agraph.m_arg_value.data() + arg_start + 2;
+        const size_t* end   = begin + n_dim;
+        const vector<int64_t>   shape(begin, end);
         //
         // var_vec
         var_vec[op_index] = var_vec[operand_index].view(shape);

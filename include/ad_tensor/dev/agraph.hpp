@@ -7,7 +7,6 @@
 {xrst_begin agraph dev}
 {xrst_spell
     seq
-    int
     bool
 }
 
@@ -58,23 +57,6 @@ is constant (parameter) [variable] then
 is the index value in the array of all the
 constants (parameters) [variables] where the tensor for this argument resides.
 
-m_int64
-*******
-If an operation uses int64_t values, then there is an i_arg such that
-
-    m_arg_value[ m_arg_start[op_index] + i_arg ]
-
-is the start index in m_int64 of the int64_t values for this operation.
-
-m_bool
-******
-If an operation uses bool values, then there is an i_arg such that
-
-    m_arg_value[ m_arg_start[op_index] + i_arg ]
-
-is the start index in m_bool of the bool values for this operation.
-
-
 default constructor
 *******************
 This constructor creates an empty graph (all its vectors are empty).
@@ -96,8 +78,6 @@ public:
     vector<size_t>               m_arg_start;
     vector<size_t>               m_arg_value;
     vector<ad_type_t>            m_arg_type;
-    vector<int64_t>              m_int64;
-    vector<bool>                 m_bool;
     //
     // default constructor
     agraph_t()
@@ -106,8 +86,6 @@ public:
     , m_arg_start()
     , m_arg_value()
     , m_arg_type()
-    , m_int64()
-    , m_bool()
     { }
     //
     // is_empty
@@ -117,9 +95,7 @@ public:
             m_op_seq.empty() &&
             m_arg_start.empty() &&
             m_arg_value.empty() &&
-            m_arg_type.empty() &&
-            m_int64.empty() &&
-            m_bool.empty();
+            m_arg_type.empty();
     }
 }; } }
 // END_AGRAPH
