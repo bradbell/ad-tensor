@@ -33,14 +33,14 @@ adfn
 ****
 This is the function we are removing unnecessary constants from.
 
-adfn.m_con
-==========
+m_con
+=====
 The unnecessary constants are removed from this vector.
 It new size is less than or equal its old size.
 
-adfn.m_par.m_arg_value
-======================
-The entries in this vector, that have m_arg_type constant,
+m_par.m_arg_value, m_var.arg_value
+==================================
+The entries in these vectors, that have m_arg_type constant,
 get mapped from their index in the old m_con to their index in the new m_con.
 
 TEST
@@ -63,8 +63,8 @@ void adfn_t::optimize_con(const vector<bool>& depend_old)
 {   // END_OPTIMIZE_CON
     //
     // hash2new_con, const_iterator
-    // multimap would be more complicate, but it might be better when
-    // collisions occur (which is probably very rare).
+    // multimap would be more complicated, but it might be better when
+    // collisions occur.
     std::map<int64_t, size_t>                         hash2new_con;
     typedef std::map<int64_t, size_t>::const_iterator const_iterator;
     //
