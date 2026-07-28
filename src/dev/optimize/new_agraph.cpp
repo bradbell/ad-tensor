@@ -16,7 +16,7 @@ Syntax
 ******
 {xrst_code cpp}
     agraph_new = new_agraph(
-        agraph_old, var_op, old2new_con, old2new_par, old2new_var
+        agraph_old, var_op, old2new_par, old2new_var
     )
 {xrst_code}
 
@@ -45,10 +45,10 @@ var_op
 ******
 If this is true (false) the is a variable (parameter) graph.
 
-old2new_con, old2new_par, old2par_var
-*************************************
+old2new_par, old2par_var
+************************
 is the mapping from indices in the old graph to indices in the new graph
-for constants, parameters and variables (in that order).
+for parameters and variables (in that order).
 If not_used is equal (not equal) to an old to new index,
 the corresponding result is (is not) in the new graph.
 
@@ -62,7 +62,6 @@ namespace ad_tensor { namespace dev { // BEGIN_AD_TENSOR_DEV_NAMESPACE
 agraph_t new_agraph(
     const agraph_t&       agraph_old,
     bool                  var_op,
-    const vector<size_t>& old2new_con,
     const vector<size_t>& old2new_par,
     const vector<size_t>& old2new_var)
 {   // END_NEW_AGRAPH
@@ -106,7 +105,7 @@ agraph_t new_agraph(
             case op_enum_t::call_result:
             op_index_old = new_call(
                 agraph_new, agraph_old, op_index_old, var_op,
-                old2new_con, old2new_par, old2new_var
+                old2new_par, old2new_var
             );
             break;
             //
@@ -134,7 +133,7 @@ agraph_t new_agraph(
                     switch( ad_type ) {
                         //
                         case ad_type_t::constant:
-                        value_new = old2new_con[value_old];
+                        value_new = value_old;
                         break;
                         //
                         case ad_type_t::parameter:

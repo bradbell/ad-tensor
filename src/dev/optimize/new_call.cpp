@@ -21,7 +21,6 @@ Syntax
         agraph_old,
         op_index_old,
         var_op,
-        old2new_con,
         old2new_par,
         old2new_var
     )
@@ -59,10 +58,10 @@ var_op
 ******
 If this is true (false) the is a variable (parameter) graph.
 
-old2new_con, old2new_par, old2par_var
-*************************************
+old2new_par, old2par_var
+************************
 is the mapping from indices in the old graph to indices in the new graph
-for constants, parameters and variables (in that order).
+for parameters and variables (in that order).
 If not_used is equal (not equal) to an old to new index,
 the corresponding result is (is not) in the new graph.
 
@@ -83,7 +82,6 @@ size_t new_call(
     const agraph_t&       agraph_old,
     size_t                op_index_old,
     bool                  var_op,
-    const vector<size_t>& old2new_con,
     const vector<size_t>& old2new_par,
     const vector<size_t>& old2new_var)
 {   // END_NEW_CALL
@@ -152,12 +150,7 @@ size_t new_call(
         switch( arg_type ) {
             //
             case ad_type_t::constant:
-            if( old2new_con[arg_value_old] == not_used ) {
-                // empty_at_ten()
-                agraph_new.m_arg_value.push_back( 0 );
-            } else {
-                agraph_new.m_arg_value.push_back( old2new_con[arg_value_old] );
-            }
+            agraph_new.m_arg_value.push_back( arg_value_old );
             break;
             //
             case ad_type_t::parameter:

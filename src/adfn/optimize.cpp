@@ -121,22 +121,19 @@ adfn_t adfn_t::optimize(void)
     //
     // adfn_new.m_con
     for(size_t i_old = 0; i_old < adfn_old.m_con.size(); ++i_old) {
-        if( old2new_con[i_old] != not_used ) {
-            assert( old2new_con[i_old] == adfn_new.m_con.size() );
-            adfn_new.m_con.push_back( adfn_old.m_con[i_old] );
-        }
+        adfn_new.m_con.push_back( adfn_old.m_con[i_old] );
     }
     //
     // adfn_new.m_par
     bool var_op = false;
     adfn_new.m_par = new_agraph(
-        adfn_old.m_par, var_op, old2new_con, old2new_par, old2new_var
+        adfn_old.m_par, var_op, old2new_par, old2new_var
     );
     //
     // adfn_new.m_var
     var_op = true;
     adfn_new.m_var = new_agraph(
-        adfn_old.m_var, var_op, old2new_con, old2new_par, old2new_var
+        adfn_old.m_var, var_op, old2new_par, old2new_var
     );
     //
     // adfn_new: m_rng_index, m_rng_ad_type, m_rng_shapes
@@ -149,7 +146,7 @@ adfn_t adfn_t::optimize(void)
         switch( ad_type ) {
             //
             case ad_type_t::constant:
-            index_new = old2new_con[index_old];
+            index_new = index_old;
             break;
             //
             case ad_type_t::parameter:
