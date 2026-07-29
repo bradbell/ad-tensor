@@ -62,6 +62,7 @@ namespace ad_tensor { namespace dev { // BEGIN_AD_TENSOR_DEV_NAMESPACE
 agraph_t new_agraph(
     const agraph_t&       agraph_old,
     bool                  var_op,
+    const vector<bool>&   depend_old,
     const vector<size_t>& old2new_par,
     const vector<size_t>& old2new_var)
 {   // END_NEW_AGRAPH
@@ -108,7 +109,7 @@ agraph_t new_agraph(
             case op_enum_t::call_result:
             op_index_old = new_call(
                 agraph_type, agraph_new, agraph_old, op_index_old,
-                *old2new_res
+                depend_old, *old2new_res
             );
             break;
             //

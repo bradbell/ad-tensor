@@ -8,6 +8,7 @@
 #include <cassert>
 #include <ad_tensor/vector.hpp>
 #include <ad_tensor/dev/agraph.hpp>
+#include <ad_tensor/dev/optimize.hpp>
 //
 namespace ad_tensor { namespace dev { // BEGIN_AD_TENSOR_DEV_NAMESPACE
 //
@@ -89,8 +90,8 @@ bool new_op_equal(
 std::tuple< agraph_t, vector<size_t> > new_agraph(
     ad_type_t                agraph_type     ,
     const agraph_t&          agraph_old      ,
-    const vector<size_t>     rng_index_old   ,
-    const vector<ad_type_t>  rng_ad_type_old ,
+    const vector<size_t>&    rng_index_old   ,
+    const vector<ad_type_t>& rng_ad_type_old ,
     const vector<bool>&      depend_old   )
 {   // END_NEW_AGRAPH
     //
@@ -124,17 +125,24 @@ std::tuple< agraph_t, vector<size_t> > new_agraph(
     // n_old, op_index_old
     size_t n_old = agraph_old.m_op_seq.size();
     size_t op_index_old = 0;
-    while(op_index_old < n_old ) { if( depend_old[op_index_old] ) {
+    while(op_index_old < n_old) { if( ! depend_old[op_index_old] ) {
+        ++op_index_old;
+    } else {
         // op_enum
         op_enum_t op_enum = agraph_old.m_op_seq[op_index_old];
         switch( op_enum ) {
             // --------------------------------------------------------------
-            // agraph_new
+            // agraph_new, op_index_old
             case op_enum_t::call:
             case op_enum_t::call_result:
-            //
-            // op_index_old
-            ++op_index_old;
+            op_index_old = new_call(
+                agraph_type,
+                agraph_new,
+                agraph_old,
+                op_index_old,
+                depend_old,
+                old2new
+            );
             break;
             //
             // ---------------------------------------------------------------
@@ -167,12 +175,11 @@ std::tuple< agraph_t, vector<size_t> > new_agraph(
                         agraph_new.m_arg_value.size()
                 );
                 //
-                // arg_index
+                // agraph_new:: m_arg_type, m_arg_value
                 size_t start = agraph_old.m_arg_start[op_index_old];
                 size_t end   = agraph_old.m_arg_start[op_index_old + 1];
                 for(size_t arg_index = start; arg_index < end; ++arg_index) {
                     //
-                    // agraph_new:: m_arg_type, m_arg_value
                     ad_type_t ad_type = agraph_old.m_arg_type[arg_index];
                     agraph_new.m_arg_type.push_back( ad_type );
                     size_t value_old = agraph_old.m_arg_value[arg_index];
@@ -188,6 +195,16 @@ std::tuple< agraph_t, vector<size_t> > new_agraph(
             // ---------------------------------------------------------------
         }
     } }
+#ifndef NDEBUG
+    for(size_t i_old = 0; i_old < n_old; ++i_old) {
+        size_t i_new = old2new[i_old];
+        if( i_new != not_used ) {
+            assert( i_new < agraph_new.m_op_seq.size() );
+        }
+    }
+#endif
+    // agraph_new.m_arg_start
+    agraph_new.m_arg_start.push_back( agraph_new.m_arg_value.size() );
     //
     // rng_index_new
     vector<size_t> rng_index_new = rng_index_old;

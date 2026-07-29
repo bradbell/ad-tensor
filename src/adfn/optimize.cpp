@@ -127,13 +127,13 @@ adfn_t adfn_t::optimize(void)
     // adfn_new.m_par
     bool var_op = false;
     adfn_new.m_par = new_agraph(
-        adfn_old.m_par, var_op, old2new_par, old2new_var
+        adfn_old.m_par, var_op, depend_par, old2new_par, old2new_var
     );
     //
     // adfn_new.m_var
     var_op = true;
     adfn_new.m_var = new_agraph(
-        adfn_old.m_var, var_op, old2new_par, old2new_var
+        adfn_old.m_var, var_op, depend_var, old2new_par, old2new_var
     );
     //
     // adfn_new: m_rng_index, m_rng_ad_type, m_rng_shapes

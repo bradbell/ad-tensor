@@ -62,8 +62,10 @@ old2new
 *******
 is the mapping from indices in the old graph to indices in the new graph
 for agraph_type.
-If not_used is equal (not equal) to an old index,
+If not_used is equal (not equal) to old2new for an old index,
 the corresponding result is not (is) in the new graph.
+On input (output), this is only defined for old indices less than or equal
+the input (output) value of op_index_old.
 
 {xrst_end new_call}
 */
@@ -78,13 +80,11 @@ size_t new_call(
     agraph_t&             agraph_new,
     const agraph_t&       agraph_old,
     size_t                op_index_old,
+    const vector<bool>&   depend_old,
     const vector<size_t>& old2new)
 {   // END_NEW_CALL
     //
-    //
-    // not_used
-    size_t not_used = std::numeric_limits<size_t>::max();
-    assert( old2new[op_index_old] != not_used );
+    assert( depend_old[op_index_old] );
     //
     // op_index_old
     op_enum_t op_enum = agraph_old.m_op_seq[op_index_old];
@@ -103,7 +103,7 @@ size_t new_call(
     size_t first_old2new = 0;
 #endif
     for(size_t k = 0; k < n_result_old; ++k) {
-        if( old2new[op_index_old + k] != not_used ) {
+        if( depend_old[op_index_old + k] ) {
 #ifndef NDEBUG
             first_old2new = old2new[op_index_old + k];
 #endif
@@ -137,7 +137,7 @@ size_t new_call(
         if( arg_type != agraph_type ) {
             agraph_new.m_arg_value.push_back( arg_value_old );
         } else {
-            if( old2new[arg_value_old] == not_used ) {
+            if( ! depend_old[arg_value_old] ) {
                 // empty_at_ten()
                 agraph_new.m_arg_value.push_back( 0 );
                 arg_type = ad_type_t::constant;
@@ -149,7 +149,7 @@ size_t new_call(
     }
     // agraph_new: m_arg_value, m_arg_type
     for(size_t k = 0; k < n_result_old; ++k) {
-        if( old2new[op_index_old + k] != not_used ) {
+        if( depend_old[op_index_old + k] ) {
             size_t arg_index = arg_start + 4 + n_domain + k;
             size_t arg_value = agraph_old.m_arg_value[ arg_index ];
             agraph_new.m_arg_value.push_back( arg_value );
