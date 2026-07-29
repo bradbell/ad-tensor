@@ -63,15 +63,15 @@ agraph_t new_agraph(
     const agraph_t&       agraph_old,
     bool                  var_op,
     const vector<bool>&   depend_old,
-    const vector<size_t>& old2new_par,
-    const vector<size_t>& old2new_var)
+    vector<size_t>&       old2new_par,
+    vector<size_t>&       old2new_var)
 {   // END_NEW_AGRAPH
     //
     // not_used
     size_t not_used = std::numeric_limits<size_t>::max();
     //
     // old2new_res, agraph_type
-    const vector<size_t>* old2new_res = nullptr;
+    vector<size_t>* old2new_res = nullptr;
     ad_type_t agraph_type;
     if( var_op ) {
         assert( old2new_var.size() == agraph_old.m_op_seq.size() );

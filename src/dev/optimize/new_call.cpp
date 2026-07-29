@@ -81,7 +81,7 @@ size_t new_call(
     const agraph_t&       agraph_old,
     size_t                op_index_old,
     const vector<bool>&   depend_old,
-    const vector<size_t>& old2new)
+    vector<size_t>&       old2new)
 {   // END_NEW_CALL
     //
     assert( depend_old[op_index_old] );

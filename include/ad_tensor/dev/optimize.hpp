@@ -43,7 +43,7 @@ namespace ad_tensor { namespace dev {
         const agraph_t&       agraph_old,
         size_t                op_index_old,
         const vector<bool>&   depend_old,
-        const vector<size_t>& old2new
+        vector<size_t>&       old2new
     );
     //
     // new_agraph
@@ -51,7 +51,7 @@ namespace ad_tensor { namespace dev {
         const agraph_t&       agraph_old,
         bool                  var_op,
         const vector<bool>&   depend_old,
-        const vector<size_t>& old2new_par,
-        const vector<size_t>& old2new_var
+        vector<size_t>&       old2new_par,
+        vector<size_t>&       old2new_var
     );
 } }
