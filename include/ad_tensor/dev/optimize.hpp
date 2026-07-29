@@ -54,4 +54,11 @@ namespace ad_tensor { namespace dev {
         vector<size_t>&       old2new_par,
         vector<size_t>&       old2new_var
     );
+    std::tuple< agraph_t, vector<size_t> > new_agraph(
+        ad_type_t                agraph_type     ,
+        const agraph_t&          agraph_old      ,
+        const vector<size_t>&    rng_index_old   ,
+        const vector<ad_type_t>& rng_ad_type_old ,
+        const vector<bool>&      depend_old
+    );
 } }

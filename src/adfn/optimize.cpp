@@ -84,9 +84,6 @@ adfn_t adfn_t::optimize(void)
     // adfn_old
     const adfn_t& adfn_old = *this;
     //
-    // not_used
-    size_t not_used = std::numeric_limits<size_t>::max();
-    //
     // depend_con, depend_par, depend_var
     auto [depend_con, depend_par, depend_var] = dev::rng_depend( &adfn_old );
     //
@@ -124,49 +121,46 @@ adfn_t adfn_t::optimize(void)
         adfn_new.m_con.push_back( adfn_old.m_con[i_old] );
     }
     //
-    // adfn_new.m_par
-    bool var_op = false;
-    adfn_new.m_par = new_agraph(
-        adfn_old.m_par, var_op, depend_par, old2new_par, old2new_var
+    // adfn_new.m_rng_ad_type, m_rng_shapes
+    adfn_new.m_rng_ad_type  = adfn_old.m_rng_ad_type;
+    adfn_new.m_rng_shapes   = adfn_old.m_rng_shapes;
+    //
+    // adfn_new: m_par, m_rng_index
+    ad_type_t agraph_type = ad_type_t::parameter;
+    std::tie(adfn_new.m_par, adfn_new.m_rng_index) = dev::new_agraph(
+        agraph_type,
+        adfn_old.m_par,
+        adfn_old.m_rng_index,
+        adfn_old.m_rng_ad_type,
+        depend_par
     );
     //
     // adfn_new.m_var
-    var_op = true;
+    bool var_op = true;
     adfn_new.m_var = new_agraph(
         adfn_old.m_var, var_op, depend_var, old2new_par, old2new_var
     );
     //
-    // adfn_new: m_rng_index, m_rng_ad_type, m_rng_shapes
+    // adfn_new: m_rng_index
     size_t n_range = adfn_old.m_rng_index.size();
     for(size_t i = 0; i < n_range; ++i) {
-        const vector<int64_t>& shape     = adfn_old.m_rng_shapes[i];
         ad_type_t              ad_type   = adfn_old.m_rng_ad_type[i];
         size_t                 index_old = adfn_old.m_rng_index[i];
-        size_t                 index_new = not_used;
         switch( ad_type ) {
             //
             case ad_type_t::constant:
-            index_new = index_old;
-            break;
-            //
             case ad_type_t::parameter:
-            index_new = old2new_par[index_old];
             break;
             //
             case ad_type_t::variable:
-            index_new = old2new_var[index_old];
+            adfn_new.m_rng_index[i] = old2new_var[index_old];
             break;
             //
             default:
             break;
         }
-        assert( index_new != not_used );
-        //
-        adfn_new.m_rng_shapes.push_back( shape );
-        adfn_new.m_rng_index.push_back( index_new );
-        adfn_new.m_rng_ad_type.push_back( ad_type );
     }
-    // m_name, trash
+    // m_name, trace
     adfn_new.m_name = adfn_old.m_name + "_optimize";
     adfn_new.set_trace( adfn_old.get_trace() );
     //

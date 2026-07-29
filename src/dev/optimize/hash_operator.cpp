@@ -210,6 +210,7 @@ std::tuple< agraph_t, vector<size_t> > new_agraph(
     vector<size_t> rng_index_new = rng_index_old;
     for(size_t i = 0; i < rng_index_old.size(); ++i) {
         if( rng_ad_type_old[i] == agraph_type ) {
+            assert( depend_old[ rng_index_old[i] ] );
             rng_index_new[i] = old2new[ rng_index_old[i] ];
         }
     }

@@ -86,6 +86,9 @@ size_t new_call(
     //
     assert( depend_old[op_index_old] );
     //
+    // not_used
+    size_t not_used = std::numeric_limits<size_t>::max();
+    //
     // op_index_old
     op_enum_t op_enum = agraph_old.m_op_seq[op_index_old];
     while( op_enum != op_enum_t::call ) {
@@ -99,23 +102,15 @@ size_t new_call(
     //
     // n_result_new
     size_t n_result_new  = 0;
-#ifndef NDEBUG
-    size_t first_old2new = 0;
-#endif
     for(size_t k = 0; k < n_result_old; ++k) {
+        old2new[op_index_old + k] = not_used;
         if( depend_old[op_index_old + k] ) {
-#ifndef NDEBUG
-            first_old2new = old2new[op_index_old + k];
-#endif
+            size_t op_index_new = agraph_new.m_op_seq.size() + n_result_new;
+            old2new[op_index_old + k]  = op_index_new;
             ++n_result_new;
         }
     }
     assert( 0 < n_result_new );
-    //
-#ifndef NDEBUG
-    size_t op_index_new = agraph_new.m_op_seq.size();
-    assert( first_old2new == op_index_new );
-#endif
     //
     // agraph_new: m_op_seq, m_arg_start
     agraph_new.m_op_seq.push_back( dev::op_enum_t::call );
