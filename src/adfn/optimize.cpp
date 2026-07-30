@@ -136,30 +136,15 @@ adfn_t adfn_t::optimize(void)
     );
     //
     // adfn_new.m_var
-    bool var_op = true;
-    adfn_new.m_var = new_agraph(
-        adfn_old.m_var, var_op, depend_var, old2new_par, old2new_var
+    agraph_type = ad_type_t::variable;
+    std::tie(adfn_new.m_var, adfn_new.m_rng_index) = dev::new_agraph(
+        agraph_type,
+        adfn_old.m_var,
+        adfn_new.m_rng_index,
+        adfn_old.m_rng_ad_type,
+        depend_var
     );
     //
-    // adfn_new: m_rng_index
-    size_t n_range = adfn_old.m_rng_index.size();
-    for(size_t i = 0; i < n_range; ++i) {
-        ad_type_t              ad_type   = adfn_old.m_rng_ad_type[i];
-        size_t                 index_old = adfn_old.m_rng_index[i];
-        switch( ad_type ) {
-            //
-            case ad_type_t::constant:
-            case ad_type_t::parameter:
-            break;
-            //
-            case ad_type_t::variable:
-            adfn_new.m_rng_index[i] = old2new_var[index_old];
-            break;
-            //
-            default:
-            break;
-        }
-    }
     // m_name, trace
     adfn_new.m_name = adfn_old.m_name + "_optimize";
     adfn_new.set_trace( adfn_old.get_trace() );
