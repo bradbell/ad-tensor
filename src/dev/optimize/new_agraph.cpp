@@ -107,7 +107,17 @@ std::tuple< agraph_t, vector<size_t> > new_agraph(
     //
     // n_old, op_index_old
     size_t n_old = agraph_old.m_op_seq.size();
+    size_t n_dom = agraph_old.m_dom_shapes.size();
     size_t op_index_old = 0;
+    //
+    // agraph_new: m_op_seq, m_arg_start
+    assert( agraph_new.m_arg_value.size() == 0 );
+    while(op_index_old < n_dom) {
+        agraph_new.m_op_seq.push_back( dev::op_enum_t::dom );
+        agraph_new.m_arg_start.push_back( 0 );
+        old2new[op_index_old] = op_index_old;
+        ++op_index_old;
+    }
     while(op_index_old < n_old) { if( ! depend_old[op_index_old] ) {
         ++op_index_old;
     } else {
