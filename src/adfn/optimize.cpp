@@ -64,32 +64,21 @@ adfn_t adfn_t::optimize(void)
     // depend_con, depend_par, depend_var
     auto [depend_con, depend_par, depend_var] = dev::rng_depend( &adfn_old );
     //
-    // m_con, m_par, m_var
-    optimize_con( depend_con );
-    //
-    // depend_con
-    depend_con.resize( m_con.size() );
-    for(size_t i = 0; i < m_con.size(); ++i) {
-        depend_con[i] = true;
-    }
-    //
     if( adfn_old.get_trace() ) {
         std::cout << "Begin tracing " + adfn_old.get_name() + ".optimize\n";
         std::cout << "depend_con = " << dev::to_string( depend_con ) << "\n";
         std::cout << "depend_par = " << dev::to_string( depend_par ) << "\n";
         std::cout << "depend_var = " << dev::to_string( depend_var ) << "\n";
-        std::cout << "End tracing " + adfn_old.get_name() + ".optimize\n";
     }
+    //
+    // adfn_old: m_con, m_par, m_var, m_rng_index
+    optimize_con( depend_con );
     //
     // adfn_new
     adfn_t adfn_new;
     //
-    // adfn_new.m_con
-    for(size_t i_old = 0; i_old < adfn_old.m_con.size(); ++i_old) {
-        adfn_new.m_con.push_back( adfn_old.m_con[i_old] );
-    }
-    //
     // adfn_new.m_rng_ad_type, m_rng_shapes
+    adfn_new.m_con          = adfn_old.m_con;
     adfn_new.m_rng_ad_type  = adfn_old.m_rng_ad_type;
     adfn_new.m_rng_shapes   = adfn_old.m_rng_shapes;
     //
@@ -117,6 +106,9 @@ adfn_t adfn_t::optimize(void)
     adfn_new.m_name = adfn_old.m_name + "_optimize";
     adfn_new.set_trace( adfn_old.get_trace() );
     //
+    if( adfn_old.get_trace() ) {
+        std::cout << "End tracing " + adfn_old.get_name() + ".optimize\n";
+    }
     return adfn_new;
 }
 
