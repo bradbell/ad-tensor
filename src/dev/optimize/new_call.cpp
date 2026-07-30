@@ -40,7 +40,7 @@ We use the notation
 
 agraph_type
 ***********
-Is the type for this the graphs and must be ad_type_t::parameter
+is the type for the graphs and must be ad_type_t::parameter
 or ad_type_t::variable.
 
 agraph_new
