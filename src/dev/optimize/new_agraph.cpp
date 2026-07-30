@@ -85,7 +85,7 @@ std::tuple< agraph_t, vector<size_t> > new_agraph(
     const vector<bool>&      depend_old   )
 {   // END_NEW_AGRAPH
     //
-    // hash2old_op, const_iterator
+    // hash2old_agraph, const_iterator
     // multimap would be more complicated, but it might be better when
     // collisions occur.
     std::map<size_t, size_t>                         hash2old_agraph;
@@ -141,7 +141,8 @@ std::tuple< agraph_t, vector<size_t> > new_agraph(
                 agraph_old,
                 op_index_old,
                 depend_old,
-                old2new
+                old2new,
+                hash2old_agraph
             );
             break;
             //

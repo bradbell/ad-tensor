@@ -95,7 +95,6 @@ TEST(tests_adfn, optimize_agraph) {
     //
     // r = f(v, p)
     adfn_t f = adten_t::stop_recording(ar, "f");
-    f.set_trace(true);
     EXPECT_EQ( f.n_par(), 5 );
     EXPECT_EQ( f.n_var(), 4 );
     //

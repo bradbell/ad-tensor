@@ -38,12 +38,13 @@ namespace ad_tensor { namespace dev {
     //
     // new_call
     size_t new_call(
-        ad_type_t             agraph_type,
-        agraph_t&             agraph_new,
-        const agraph_t&       agraph_old,
-        size_t                op_index_old,
-        const vector<bool>&   depend_old,
-        vector<size_t>&       old2new
+        ad_type_t                 agraph_type,
+        agraph_t&                 agraph_new,
+        const agraph_t&           agraph_old,
+        size_t                    op_index_old,
+        const vector<bool>&       depend_old,
+        vector<size_t>&           old2new,
+        std::map<size_t, size_t>& hash2old_agraph
     );
     //
     // new_agraph

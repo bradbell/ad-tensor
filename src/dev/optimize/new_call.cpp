@@ -69,19 +69,23 @@ the input (output) value of op_index_old.
 
 {xrst_end new_call}
 */
+#include <map>
+#include <limits>
 #include <ad_tensor/dev/optimize.hpp>
 #include <ad_tensor/dev/unpack_call.hpp>
+#include <ad_tensor/dev/hash_operator.hpp>
 //
 namespace ad_tensor { namespace dev { // BEGIN_AD_TENSOR_DEV_NAMESPACE
 //
 // BEGIN_NEW_CALL
 size_t new_call(
-    ad_type_t             agraph_type,
-    agraph_t&             agraph_new,
-    const agraph_t&       agraph_old,
-    size_t                op_index_old,
-    const vector<bool>&   depend_old,
-    vector<size_t>&       old2new)
+    ad_type_t                 agraph_type,
+    agraph_t&                 agraph_new,
+    const agraph_t&           agraph_old,
+    size_t                    op_index_old,
+    const vector<bool>&       depend_old,
+    vector<size_t>&           old2new,
+    std::map<size_t, size_t>& hash2old_agraph)
 {   // END_NEW_CALL
     //
     assert( depend_old[op_index_old] );
@@ -99,7 +103,30 @@ size_t new_call(
     auto [arg_start, atom_id, n_domain, n_range, n_result_old] = unpack_call(
         op_index_old, agraph_old
     );
-    {
+    //
+    // hash, itr
+    size_t hash = hash_operator(
+        agraph_type, agraph_old, old2new, op_index_old
+    );
+    std::map<size_t, size_t>::const_iterator itr = hash2old_agraph.find(hash);
+    //
+    // op_before, replace
+    bool   replace   = false;
+    size_t op_before = std::numeric_limits<size_t>::max();
+    if( itr != hash2old_agraph.end() ) {
+        op_before = itr->second;
+        assert( op_before <= op_index_old );
+        assert( old2new[op_before] != not_used );
+        replace = new_op_equal(
+            agraph_type, agraph_old, old2new, op_index_old, op_before
+        );
+    }
+    // old2new[op_index_old]
+    if( replace ) {
+        old2new[op_index_old] = old2new[op_before];
+    } else {
+        old2new[op_index_old] = agraph_new.m_op_seq.size();
+        hash2old_agraph[hash] = op_index_old;
         //
         // n_result_new
         size_t n_result_new  = 0;
