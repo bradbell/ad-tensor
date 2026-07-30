@@ -61,6 +61,13 @@ The range index values for the function after optimization of the
 agraph_type operations. If rng_ad_type[i] is agraph_type,
 rng_index_new[i] may be different from rng_index_old[i].
 
+TEST
+****
+{xrst_literal ,
+    tests/adfn/optimize.cpp
+    BEGIN_OPTIMIZE_AGRAPH, END_OPTIMIZE_AGRAPH
+}
+
 {xrst_end new_agraph}
 */
 #include <ad_tensor/dev/optimize.hpp>
