@@ -52,31 +52,8 @@ will be the same as adfn_old.
 #include <ad_tensor/dev/optimize.hpp>
 #include <ad_tensor/dev/to_string.hpp>
 //
-namespace {
-    using std::cout;
-    //
-    void print_old2new(
-        const std::string&               name,
-        const ad_tensor::vector<size_t>& old2new) {
-        size_t not_used = std::numeric_limits<size_t>::max();
-        cout <<  name << " = [";
-        for(size_t i = 0; i < old2new.size(); ++i) {
-            if( old2new[i] == not_used ) {
-                cout << "not_used";
-            } else {
-                cout << old2new[i];
-            }
-            if( i + 1 < old2new.size() ) {
-                cout << ", ";
-            }
-        }
-        cout << "]\n";
-        return;
-    }
-}
-
 namespace ad_tensor { // BEGIN_AD_TENSOR_NAMESPACE
-
+//
 // BEGIN_OPTIMIZE
 adfn_t adfn_t::optimize(void)
 {   // END_OPTIMIZE
@@ -96,21 +73,12 @@ adfn_t adfn_t::optimize(void)
         depend_con[i] = true;
     }
     //
-    // n_dom_par, n_dom_var
-    size_t n_dom_par = adfn_old.m_par.m_dom_shapes.size();
-    size_t n_dom_var = adfn_old.m_var.m_dom_shapes.size();
-    //
-    // old2new_con, old2new_par, old2new_var
-    auto [old2new_con, old2new_par, old2new_var] = dev::old2new(
-        n_dom_par, n_dom_var, depend_con, depend_par, depend_var
-    );
-    //
     if( adfn_old.get_trace() ) {
-        cout << "Begin tracing " + adfn_old.get_name() + ".optimize\n";
-        print_old2new( "old2new_con", old2new_con );
-        print_old2new( "old2new_par", old2new_par );
-        print_old2new( "old2new_var", old2new_var );
-        cout << "End tracing " + adfn_old.get_name() + ".optimize\n";
+        std::cout << "Begin tracing " + adfn_old.get_name() + ".optimize\n";
+        std::cout << "depend_con = " << dev::to_string( depend_con ) << "\n";
+        std::cout << "depend_par = " << dev::to_string( depend_par ) << "\n";
+        std::cout << "depend_var = " << dev::to_string( depend_var ) << "\n";
+        std::cout << "End tracing " + adfn_old.get_name() + ".optimize\n";
     }
     //
     // adfn_new

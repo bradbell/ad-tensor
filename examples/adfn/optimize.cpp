@@ -50,6 +50,7 @@ TEST(examples_adfn, optimize)  {
     EXPECT_EQ( f.n_par(), 4);
     EXPECT_EQ( f.n_var(), 3);
     //
+    // g = f
     adfn_t g = f.optimize();
     EXPECT_EQ( g.n_con(), 2 );
     EXPECT_EQ( g.n_par(), 3);

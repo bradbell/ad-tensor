@@ -40,8 +40,8 @@ rng_index_old
 The :ref:`adfn_dev@m_rng_index` values for the function before optimization
 of the agraph_type operations.
 
-rng_ad_type_old
-***************
+rng_ad_type
+***********
 The :ref:`adfn_dev@m_rng_ad_type` values for the function optimization.
 This the same before and after optimization.
 
@@ -58,7 +58,7 @@ The new graph representing the agraph_type values that are deemed necessary.
 rng_index_new
 *************
 The range index values for the function after optimization of the
-agraph_type operations. If rng_ad_type_old[i] is agraph_type,
+agraph_type operations. If rng_ad_type[i] is agraph_type,
 rng_index_new[i] may be different from rng_index_old[i].
 
 {xrst_end new_agraph}
@@ -74,7 +74,7 @@ std::tuple< agraph_t, vector<size_t> > new_agraph(
     ad_type_t                agraph_type     ,
     const agraph_t&          agraph_old      ,
     const vector<size_t>&    rng_index_old   ,
-    const vector<ad_type_t>& rng_ad_type_old ,
+    const vector<ad_type_t>& rng_ad_type     ,
     const vector<bool>&      depend_old   )
 {   // END_NEW_AGRAPH
     //
@@ -192,7 +192,7 @@ std::tuple< agraph_t, vector<size_t> > new_agraph(
     // rng_index_new
     vector<size_t> rng_index_new = rng_index_old;
     for(size_t i = 0; i < rng_index_old.size(); ++i) {
-        if( rng_ad_type_old[i] == agraph_type ) {
+        if( rng_ad_type[i] == agraph_type ) {
             assert( depend_old[ rng_index_old[i] ] );
             rng_index_new[i] = old2new[ rng_index_old[i] ];
         }
