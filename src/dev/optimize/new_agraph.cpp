@@ -141,11 +141,13 @@ std::tuple< agraph_t, vector<size_t> > new_agraph(
             // ---------------------------------------------------------------
             default:
             //
-            // hash, itr, replace
+            // hash, itr
             hash = hash_operator(
                 agraph_type, agraph_old, old2new, op_index_old
             );
             itr       = hash2old_agraph.find(hash);
+            //
+            // op_before, replace
             replace   = false;
             op_before = std::numeric_limits<size_t>::max();
             if( itr != hash2old_agraph.end() ) {
@@ -161,6 +163,7 @@ std::tuple< agraph_t, vector<size_t> > new_agraph(
                 old2new[op_index_old] = old2new[op_before];
             } else {
                 old2new[op_index_old] = agraph_new.m_op_seq.size();
+                hash2old_agraph[hash] = op_index_old;
                 //
                 // agraph_new: m_op_seq, m_arg_start
                 agraph_new.m_op_seq.push_back(op_enum);
