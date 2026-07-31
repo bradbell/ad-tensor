@@ -15,6 +15,7 @@ The Optimizer Implementation
     src/dev/optimize/old2new.cpp
     src/dev/optimize/new_call.cpp
     src/dev/optimize/new_agraph.cpp
+    src/dev/optimize/hash_operator.cpp
 }
 
 {xrst_end optimize_dev}

@@ -8,17 +8,17 @@ namespace ad_tensor { namespace dev {
     // hash_operator
     size_t hash_operator(
         ad_type_t            ad_type,
-        const agraph_t&      agraph,
+        const agraph_t&      agraph_old,
         const vector<size_t> old2new,
-        size_t               op_index
+        size_t               old_index
     );
     //
     // new_op_equal
     bool new_op_equal(
         ad_type_t            ad_type,
-        const agraph_t&      agraph,
+        const agraph_t&      agraph_old,
         const vector<size_t> old2new ,
-        size_t               op_index_1 ,
-        size_t               op_index_2
+        size_t               old_index_1 ,
+        size_t               old_index_2
     );
 } }
