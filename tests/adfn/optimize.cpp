@@ -173,7 +173,6 @@ TEST(tests_adfn, optimize_call)  {
     used_var = ay[1] + ay[1]; // v_all[9]
     vector<adten_t> az = { used_par, used_var };
     adfn_t          g  = adten_t::stop_recording(az, "g");
-    g.set_trace(true);
     EXPECT_EQ(g.n_con(), 1);
     EXPECT_EQ(g.n_par(), 5);
     EXPECT_EQ(g.n_var(), 10);

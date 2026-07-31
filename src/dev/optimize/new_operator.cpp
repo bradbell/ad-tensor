@@ -139,13 +139,16 @@ size_t new_op_hash(
     size_t               old_index )
 {   // END_NEW_OP_HASH
     //
+    // hash_size_t
+    std::hash<size_t> hash_size_t;
+    //
     // op_enum, start, end
     op_enum_t op_enum  = agraph_old.m_op_seq[old_index];
     size_t start       = agraph_old.m_arg_start[old_index];
     size_t end         = agraph_old.m_arg_start[old_index + 1];
     //
     // hash
-    size_t hash  = (end - start) + (size_t(op_enum) << 8);
+    size_t hash  = hash_size_t( end - start + (size_t(op_enum) << 8) );
     for(size_t arg_index = start; arg_index < end; ++arg_index) {
         ad_type_t  arg_type   = agraph_old.m_arg_type[arg_index];
         size_t     arg_value  = agraph_old.m_arg_value[arg_index];
@@ -153,8 +156,8 @@ size_t new_op_hash(
             arg_value = old2new[arg_value];
         }
         //
-        hash ^= size_t(arg_type)  + 0x9e3779b9 + (hash << 6) + (hash >> 2);
-        hash ^= arg_value         + 0x9e3779b9 + (hash << 6) + (hash >> 2);
+        hash ^= size_t(arg_type)       + 0x9e3779b9 + (hash << 6) + (hash >> 2);
+        hash ^= hash_size_t(arg_value) + 0x9e3779b9 + (hash << 6) + (hash >> 2);
     }
     return hash;
 }
