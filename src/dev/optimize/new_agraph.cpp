@@ -71,7 +71,7 @@ TEST
 {xrst_end new_agraph}
 */
 #include <ad_tensor/dev/optimize.hpp>
-#include <ad_tensor/dev/hash_operator.hpp>
+#include <ad_tensor/dev/new_operator.hpp>
 //
 namespace ad_tensor { namespace dev { // BEGIN_AD_TENSOR_DEV_NAMESPACE
 //
@@ -150,7 +150,7 @@ std::tuple< agraph_t, vector<size_t> > new_agraph(
             default:
             //
             // hash, itr
-            hash = hash_operator(
+            hash = new_op_hash(
                 agraph_type, agraph_old, old2new, op_index_old
             );
             itr       = hash2old_agraph.find(hash);

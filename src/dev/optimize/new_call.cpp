@@ -80,7 +80,7 @@ Test
 #include <limits>
 #include <ad_tensor/dev/optimize.hpp>
 #include <ad_tensor/dev/unpack_call.hpp>
-#include <ad_tensor/dev/hash_operator.hpp>
+#include <ad_tensor/dev/new_operator.hpp>
 //
 namespace ad_tensor { namespace dev { // BEGIN_AD_TENSOR_DEV_NAMESPACE
 //
@@ -112,7 +112,7 @@ size_t new_call(
     );
     //
     // hash, itr
-    size_t hash = hash_operator(
+    size_t hash = new_op_hash(
         agraph_type, agraph_old, old2new, op_index_old
     );
     std::map<size_t, size_t>::const_iterator itr = hash2old_agraph.find(hash);

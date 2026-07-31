@@ -5,8 +5,8 @@
 // ----------------------------------------------------------------------------
 namespace ad_tensor { namespace dev {
     //
-    // hash_operator
-    size_t hash_operator(
+    // new_op_hash
+    size_t new_op_hash(
         ad_type_t            ad_type,
         const agraph_t&      agraph_old,
         const vector<size_t> old2new,

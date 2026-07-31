@@ -3,10 +3,9 @@
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
 /*
-{xrst_begin hash_operator dev}
+{xrst_begin new_op_hash dev}
 {xrst_spell
     agraph
-    op
 }
 
 The Operator Hash Code Function
@@ -15,7 +14,7 @@ The Operator Hash Code Function
 Syntax
 ******
 {xrst_code cpp}
-    hash = hash_operator(ad_type, agraph_old, old2new, old_index)
+    hash = new_op_hash(ad_type, agraph_old, old2new, old_index)
 {xrst_code}
 
 Prototype
@@ -55,7 +54,7 @@ This is the index of the operator that we are computing the hash code for.
 Note that all of its arguments to this operator with type ad_type have indices
 less than old_index (and hence old2new is defined for all such arguments).
 
-{xrst_end hash_operator}
+{xrst_end new_op_hash}
 ------------------------------------------------------------------------------
 */
 #include <limits>
@@ -70,7 +69,7 @@ namespace ad_tensor { namespace dev { // BEGIN_AD_TENSOR_DEV_NAMESPACE
 //
 // BEGIN_HASH_OPERATOR
 // stackoverflow.com/questions/20511347/a-good-hash-function-for-a-vector
-size_t hash_operator(
+size_t new_op_hash(
     ad_type_t            ad_type,
     const agraph_t&      agraph_old,
     const vector<size_t> old2new,
