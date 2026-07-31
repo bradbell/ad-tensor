@@ -20,32 +20,30 @@ Syntax
 Prototype
 *********
 {xrst_literal ,
-    BEGIN_HASH_OPERATOR, END_HASH_OPERATOR
+    BEGIN_NEW_OP_HASH, END_NEW_OP_HASH
 }
 
 ad_type
 *******
-This is the type of agraph and must be either parameter or variable.
+This is the type of agraph_old and must be either parameter or variable.
 
 agraph_old
 **********
-This is the old graph that is being optimized
+This is the old graph that is being optimized.
 
 old2new
 *******
-The idea here is that equivalent operators in the old graph
-will have the same operator index in the new (optimized) graph.
-Hence we want them to be treated as equal when computing hash codes.
+The idea here is that if two operators have the same index in the new graph,
+they can be treated as equivalent operators in the old graph.
+Suppose that
 
-Suppose op_index is an operator index before old_index and
-arg_index is a corresponding argument index with type ad_type; i.e.,
-
-#.  If op_index < old_index
-#.  agraph_old.m_arg_start[op_index] < arg_index
-#.  arg_index <  agraph_old.m_arg_start[op_index + 1]
+#.  agraph_old.m_arg_start[old_index] < arg_index
+#.  arg_index <  agraph_old.m_arg_start[old_index + 1]
 #.  agraph_old.m_arg_type[arg_index] == ad_type
+#.  op_index = agraph_old.m_arg_value[arg_index]
 
-Then old2new[op_index] is the index in the new graph of an operator
+Then op_index < old_index and
+old2new[op_index] is the index in the new graph of an operator
 that is equivalent to the operator with index op_index in the old graph.
 
 old_index
@@ -54,8 +52,73 @@ This is the index of the operator that we are computing the hash code for.
 Note that all of its arguments to this operator with type ad_type have indices
 less than old_index (and hence old2new is defined for all such arguments).
 
+hash
+****
+If two operators are :ref:`new_op_equal-name` ,
+then will have the same hash code.
+Otherwise, hash tries to separate operators.
+
 {xrst_end new_op_hash}
 ------------------------------------------------------------------------------
+{xrst_begin new_op_equal dev}
+{xrst_spell
+    agraph
+}
+
+Check if Two Operators are Equal in the Optimized Graph
+#######################################################
+
+Syntax
+******
+{xrst_code cpp}
+    equal = new_op_equal(ad_type, agraph_old, old2new, old_index_1, old_index_2
+{xrst_code}
+
+Prototype
+*********
+{xrst_literal ,
+    BEGIN_NEW_OP_EQUAL, END_NEW_OP_EQUAL
+}
+
+ad_type
+*******
+This is the type of agraph_old and must be either parameter or variable.
+
+agraph_old
+**********
+This is the old graph that is being optimized.
+
+old2new
+*******
+The idea here is that if two operators have the same index in the new graph,
+they can be treated as equivalent operators in the old graph.
+
+Suppose old_index <= old_index_1 and old_index <= old_index_2 and
+
+#.  agraph_old.m_arg_start[old_index] < arg_index
+#.  arg_index <  agraph_old.m_arg_start[old_index + 1]
+#.  agraph_old.m_arg_type[arg_index] == ad_type
+#.  op_index = agraph_old.m_arg_value[arg_index]
+
+Then op_index < old_index_1, op_index < old_index_2 and
+old2new[op_index] is the index in the new graph of an operator
+that is equivalent to the operator with index op_index in the old graph.
+
+
+old_index_1, old_index_2
+************************
+are the indices of the operators on the old graph
+that we are checking for equivalence; i.e,.
+are all their arguments the same the new graph.
+
+equal
+*****
+The return value is true if the :ref:`op_enum-name` is the
+same and all the operator arguments are the same (in the new graph).
+An operator's arguments are m_arg_type[arg_index] and m_arg_value[arg_index]
+for all the arg_index values corresponding to an operator.
+
+{xrst_end new_op_equal}
 */
 #include <limits>
 #include <map>
@@ -67,14 +130,14 @@ less than old_index (and hence old2new is defined for all such arguments).
 //
 namespace ad_tensor { namespace dev { // BEGIN_AD_TENSOR_DEV_NAMESPACE
 //
-// BEGIN_HASH_OPERATOR
+// BEGIN_NEW_OP_HASH
 // stackoverflow.com/questions/20511347/a-good-hash-function-for-a-vector
 size_t new_op_hash(
     ad_type_t            ad_type,
     const agraph_t&      agraph_old,
     const vector<size_t> old2new,
     size_t               old_index )
-{   // END_HASH_OPERATOR
+{   // END_NEW_OP_HASH
     //
     // op_enum, start, end
     op_enum_t op_enum  = agraph_old.m_op_seq[old_index];
@@ -96,13 +159,14 @@ size_t new_op_hash(
     return hash;
 }
 //
-// new_op_equal
+// BEGIN_NEW_OP_EQUAL
 bool new_op_equal(
     ad_type_t            ad_type,
     const agraph_t&      agraph_old,
     const vector<size_t> old2new ,
     size_t               old_index_1 ,
-    size_t               old_index_2 ) {
+    size_t               old_index_2 )
+{   // END_NEW_OP_EQUAL
     //
     // op_enum, narg, start_1
     op_enum_t op_enum = agraph_old.m_op_seq[old_index_1];
