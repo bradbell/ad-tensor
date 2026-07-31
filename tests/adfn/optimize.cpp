@@ -163,40 +163,46 @@ TEST(tests_adfn, optimize_call)  {
     vector<adten_t> ax = { used_par, used_var, not_used_var };
     //
     // ay = p_all[2], v_all[5], v_all[6] (v_all[6] is not used)
+    vector<adten_t> au = ad_tensor::call_chkpnt(f_chkpnt_id, ax);
+    //
+    // au = p_all[3], v_all[7], v_all[8] (v_all[8] is not used)
     vector<adten_t> ay = ad_tensor::call_chkpnt(f_chkpnt_id, ax);
     //
-    vector<adten_t> az = { ay[0], ay[1] };
+    used_par = ay[0] + ay[0]; // p_all[4]
+    used_var = ay[1] + ay[1]; // v_all[9]
+    vector<adten_t> az = { used_par, used_var };
     adfn_t          g  = adten_t::stop_recording(az, "g");
+    g.set_trace(true);
     EXPECT_EQ(g.n_con(), 1);
-    EXPECT_EQ(g.n_par(), 3);
-    EXPECT_EQ(g.n_var(), 7);
+    EXPECT_EQ(g.n_par(), 5);
+    EXPECT_EQ(g.n_var(), 10);
     //
     // z
     vector<Tensor> p_all = g.forward_par(p);
     vector<Tensor> v_all = g.forward_var(v, p_all);
     vector<Tensor> z     = g.get_range(v_all, p_all);
     //
-    bool equal = z[0].equal( p[0] + p[0] );
+    bool equal = z[0].equal( p[0] + p[0] + p[0] + p[0] );
     EXPECT_TRUE( equal );
     //
-    equal = z[1].equal( v[0] * v[1] );
+    equal = z[1].equal( v[0] * v[1] + v[0] * v[1]);
     EXPECT_TRUE( equal );
     //
     // h = g
     adfn_t h  = g.optimize();
     EXPECT_EQ(h.n_con(), 1);
-    EXPECT_EQ(h.n_par(), 3);
-    EXPECT_EQ(h.n_var(), 5);
+    EXPECT_EQ(h.n_par(), 4);
+    EXPECT_EQ(h.n_var(), 6);
     //
     // z
     p_all = h.forward_par(p);
     v_all = h.forward_var(v, p_all);
     z     = h.get_range(v_all, p_all);
     //
-    equal = z[0].equal( p[0] + p[0] );
+    equal = z[0].equal( p[0] + p[0] + p[0] + p[0] );
     EXPECT_TRUE( equal );
     //
-    equal = z[1].equal( v[0] * v[1] );
+    equal = z[1].equal( v[0] * v[1] + v[0] * v[1]);
     EXPECT_TRUE( equal );
     //
     // dv
@@ -211,6 +217,6 @@ TEST(tests_adfn, optimize_call)  {
     equal = dz[0].equal( torch::empty( {0} ) );
     EXPECT_TRUE(equal);
     //
-    equal = dz[1].equal( dv[0] * v[1] + v[0] * dv[1] );
+    equal = dz[1].equal( dv[0] * (v[1] + v[1]) + (v[0] + v[0]) * dv[1] );
     EXPECT_TRUE(equal);
 }
