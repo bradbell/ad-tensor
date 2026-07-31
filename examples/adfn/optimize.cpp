@@ -50,15 +50,15 @@ TEST(examples_adfn, optimize)  {
     EXPECT_EQ( f.n_par(), 4);
     EXPECT_EQ( f.n_var(), 3);
     //
-    // g = f
-    adfn_t g = f.optimize();
-    EXPECT_EQ( g.n_con(), 2 );
-    EXPECT_EQ( g.n_par(), 3);
-    EXPECT_EQ( g.n_var(), 2);
+    // f
+    f.optimize();
+    EXPECT_EQ( f.n_con(), 2 );
+    EXPECT_EQ( f.n_par(), 3);
+    EXPECT_EQ( f.n_var(), 2);
     //
-    vector<Tensor> p_all = g.forward_par(p);
-    vector<Tensor> v_all = g.forward_var(v, p_all);
-    vector<Tensor> range = g.get_range(v_all, p_all);
+    vector<Tensor> p_all = f.forward_par(p);
+    vector<Tensor> v_all = f.forward_var(v, p_all);
+    vector<Tensor> range = f.get_range(v_all, p_all);
     //
     bool equal = range[0].equal( used_con.at_ten() );
     EXPECT_TRUE( equal );

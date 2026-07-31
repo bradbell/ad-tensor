@@ -186,7 +186,7 @@ private:
     void optimize_con(const vector<bool>& depend_con);
 public:
     // optimize
-    adfn_t optimize(void);
+    void optimize(void);
     //
     // BEGIN_DEFAULT_CTOR
     adfn_t()

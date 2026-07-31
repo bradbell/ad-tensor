@@ -39,13 +39,13 @@ TEST(tests_adfn, optimize_con) {
     adfn_t f = adten_t::stop_recording(ar, "f");
     EXPECT_EQ( f.n_con(), 4 );
     //
-    // g = f
-    adfn_t g = f.optimize();
-    EXPECT_EQ( g.n_con(), 2 );
+    // f
+    f.optimize();
+    EXPECT_EQ( f.n_con(), 2 );
     //
-    vector<Tensor> p_all = g.forward_par(p);
-    vector<Tensor> v_all = g.forward_var(v, p_all);
-    vector<Tensor> range = g.get_range(v_all, p_all);
+    vector<Tensor> p_all = f.forward_par(p);
+    vector<Tensor> v_all = f.forward_var(v, p_all);
+    vector<Tensor> range = f.get_range(v_all, p_all);
     //
     bool equal = range[0].equal( used_con.at_ten() );
     EXPECT_TRUE( equal );
@@ -98,14 +98,14 @@ TEST(tests_adfn, optimize_agraph) {
     EXPECT_EQ( f.n_par(), 5 );
     EXPECT_EQ( f.n_var(), 4 );
     //
-    // g = f
-    adfn_t g = f.optimize();
-    EXPECT_EQ( g.n_par(), 3 );
-    EXPECT_EQ( g.n_var(), 2 );
+    // f
+    f.optimize();
+    EXPECT_EQ( f.n_par(), 3 );
+    EXPECT_EQ( f.n_var(), 2 );
     //
-    vector<Tensor> p_all = g.forward_par(p);
-    vector<Tensor> v_all = g.forward_var(v, p_all);
-    vector<Tensor> range = g.get_range(v_all, p_all);
+    vector<Tensor> p_all = f.forward_par(p);
+    vector<Tensor> v_all = f.forward_var(v, p_all);
+    vector<Tensor> range = f.get_range(v_all, p_all);
     //
     bool equal = range[0].equal( used_par.at_ten() );
     EXPECT_TRUE( equal );
@@ -189,16 +189,16 @@ TEST(tests_adfn, optimize_call)  {
     equal = z[1].equal( v[0] * v[1] + v[0] * v[1]);
     EXPECT_TRUE( equal );
     //
-    // h = g
-    adfn_t h  = g.optimize();
-    EXPECT_EQ(h.n_con(), 1);
-    EXPECT_EQ(h.n_par(), 4);
-    EXPECT_EQ(h.n_var(), 6);
+    // g
+    g.optimize();
+    EXPECT_EQ(g.n_con(), 1);
+    EXPECT_EQ(g.n_par(), 4);
+    EXPECT_EQ(g.n_var(), 6);
     //
     // z
-    p_all = h.forward_par(p);
-    v_all = h.forward_var(v, p_all);
-    z     = h.get_range(v_all, p_all);
+    p_all = g.forward_par(p);
+    v_all = g.forward_var(v, p_all);
+    z     = g.get_range(v_all, p_all);
     //
     equal = z[0].equal( p[0] + p[0] + p[0] + p[0] );
     EXPECT_TRUE( equal );
@@ -213,7 +213,7 @@ TEST(tests_adfn, optimize_call)  {
     dv.push_back( torch::tensor( {5.0, 6.0} ) );
     //
     // dz
-    vector<Tensor> dz = h.forward_der(dv, v_all, p_all);
+    vector<Tensor> dz = g.forward_der(dv, v_all, p_all);
     //
     equal = dz[0].equal( torch::empty( {0} ) );
     EXPECT_TRUE(equal);

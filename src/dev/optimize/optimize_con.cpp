@@ -43,7 +43,7 @@ m_par.m_arg_value, m_var.arg_value
 The entries in these vectors, that have m_arg_type constant,
 get mapped from their index in the old m_con to their index in the new m_con.
 
-TEST
+Test
 ****
 {xrst_literal ,
     tests/adfn/optimize.cpp

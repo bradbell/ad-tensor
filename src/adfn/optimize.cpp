@@ -11,7 +11,7 @@ Reduce The Operations and Memory Used by an AD Function
 Syntax
 ******
 {xrst_code cpp}
-    adfn_new  = adfn_old.optimize()
+    adfn.optimize()
 {xrst_code}
 
 Prototype
@@ -20,15 +20,9 @@ Prototype
     BEGIN_OPTIMIZE, END_OPTIMIZE
 }
 
-adfn_old
-********
-This is the original adfn_t representation of a function:
-
-    range = adfn(dom_par, dom_var)
-
-adfn_new
-********
-This is the new adfn_t representation of a function:
+adfn
+****
+is the adfn_t that we are optimizing; i.e., the mapping below does not change:
 
     range = adfn(dom_par, dom_var)
 
@@ -39,30 +33,26 @@ see :ref:`adfn@n_var` .
 
 name
 ****
-The name for adfn_new will be the name for adfn_old plus "_optimize" .
-
-trace
-*****
-The trace setting for adfn_new (directly after the optimization)
-will be the same as adfn_old.
+The name for the function will be changed to its old name plus "_optimize" .
 
 {xrst_end adfn_optimize}
 */
 #include <ad_tensor/adfn.hpp>
 #include <ad_tensor/dev/optimize.hpp>
 #include <ad_tensor/dev/to_string.hpp>
+#include <ad_tensor/dev/move_swap.hpp>
 //
 namespace ad_tensor { // BEGIN_AD_TENSOR_NAMESPACE
 //
 // BEGIN_OPTIMIZE
-adfn_t adfn_t::optimize(void)
+void adfn_t::optimize(void)
 {   // END_OPTIMIZE
     //
     // adfn_old
     const adfn_t& adfn_old = *this;
     //
     // depend_con, depend_par, depend_var
-    auto [depend_con, depend_par, depend_var] = dev::rng_depend( &adfn_old );
+    auto [depend_con, depend_par, depend_var] = dev::rng_depend( this );
     //
     if( adfn_old.get_trace() ) {
         std::cout << "Begin tracing " + adfn_old.get_name() + ".optimize\n";
@@ -71,45 +61,48 @@ adfn_t adfn_t::optimize(void)
         std::cout << "depend_var = " << dev::to_string( depend_var ) << "\n";
     }
     //
-    // adfn_old: m_con, m_par, m_var, m_rng_index
+    // m_con, m_par, m_var, m_rng_index
+    // constants do not depend on parameters or variables so do this first
     optimize_con( depend_con );
     //
-    // adfn_new
-    adfn_t adfn_new;
     //
-    // adfn_new.m_rng_ad_type, m_rng_shapes
-    adfn_new.m_con          = adfn_old.m_con;
-    adfn_new.m_rng_ad_type  = adfn_old.m_rng_ad_type;
-    adfn_new.m_rng_shapes   = adfn_old.m_rng_shapes;
+    // m_par, m_rng_index
+    // The constants have been mapped to their new values
+    // Parameters do not have variable arguments so we optimize them next.
+    {   // Start a block so that the old m_par and m_rng_index get freeded
+        // before we optimize the variables...
+        ad_type_t agraph_type = ad_type_t::parameter;
+        auto [ agraph_new, rng_index_new ] = dev::new_agraph(
+            agraph_type,
+            m_par,
+            m_rng_index,
+            m_rng_ad_type,
+            depend_par
+        );
+        dev::move_swap(m_par, agraph_new);
+        dev::move_swap(m_rng_index, rng_index_new);
+    }
     //
-    // adfn_new: m_par, m_rng_index
-    ad_type_t agraph_type = ad_type_t::parameter;
-    std::tie(adfn_new.m_par, adfn_new.m_rng_index) = dev::new_agraph(
+    // m_var, m_rng_index
+    // Variables can have constant and parameter arguments. We optimize them
+    // last to make detection of equivalent operators easier.
+    ad_type_t agraph_type = ad_type_t::variable;
+    auto [ agraph_new, rng_index_new ] = dev::new_agraph(
         agraph_type,
-        adfn_old.m_par,
-        adfn_old.m_rng_index,
-        adfn_old.m_rng_ad_type,
-        depend_par
-    );
-    //
-    // adfn_new.m_var
-    agraph_type = ad_type_t::variable;
-    std::tie(adfn_new.m_var, adfn_new.m_rng_index) = dev::new_agraph(
-        agraph_type,
-        adfn_old.m_var,
-        adfn_new.m_rng_index,
-        adfn_old.m_rng_ad_type,
+        m_var,
+        m_rng_index,
+        m_rng_ad_type,
         depend_var
     );
+    dev::move_swap(m_var, agraph_new);
+    dev::move_swap(m_rng_index, rng_index_new);
     //
-    // m_name, trace
-    adfn_new.m_name = adfn_old.m_name + "_optimize";
-    adfn_new.set_trace( adfn_old.get_trace() );
+    // m_name
+    m_name = m_name + "_optimize";
     //
-    if( adfn_old.get_trace() ) {
+    if( get_trace() ) {
         std::cout << "End tracing " + adfn_old.get_name() + ".optimize\n";
     }
-    return adfn_new;
 }
 
 } // END_AD_TENSOR_NAMESPACE
