@@ -67,6 +67,13 @@ the corresponding result is not (is) in the new graph.
 On input (output), this is only defined for old indices less than or equal
 the input (output) value of op_index_old.
 
+Test
+****
+{xrst_literal ,
+    tests/adfn/optimize.cpp
+    BEGIN_OPTIMIZE_CALL, END_OPTIMIZE_CALL
+}
+
 {xrst_end new_call}
 */
 #include <map>

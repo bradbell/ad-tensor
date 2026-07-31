@@ -121,7 +121,7 @@ TEST(tests_adfn, optimize_agraph) {
 }
 // END_OPTIMIZE_AGRAPH
 //
-// tests_adfn.optimize_call
+// BEGIN_OPTIMIZE_CALL
 TEST(tests_adfn, optimize_call)  {
     using ad_tensor::adten_t;
     using ad_tensor::adfn_t;
@@ -165,6 +165,7 @@ TEST(tests_adfn, optimize_call)  {
     // ay = p_all[2], v_all[5], v_all[6] (v_all[6] is not used)
     vector<adten_t> au = ad_tensor::call_chkpnt(f_chkpnt_id, ax);
     //
+    // This is a repeated call and so optimization removes it
     // au = p_all[3], v_all[7], v_all[8] (v_all[8] is not used)
     vector<adten_t> ay = ad_tensor::call_chkpnt(f_chkpnt_id, ax);
     //
@@ -220,3 +221,4 @@ TEST(tests_adfn, optimize_call)  {
     equal = dz[1].equal( dv[0] * (v[1] + v[1]) + (v[0] + v[0]) * dv[1] );
     EXPECT_TRUE(equal);
 }
+// END_OPTIMIZE_CALL
