@@ -39,6 +39,24 @@ trace
 
 {xrst_end atom_non_virtual}
 ------------------------------------------------------------------------------
+{xrst_begin atom_destructor usr}
+
+Destructor
+##########
+
+Discussion
+**********
+The base class destructor is virtual so that
+a base class pointer can call the derived class destructor.
+
+Code
+****
+{xrst_literal ,
+    BEGIN_DESTRUCTOR, END_DESTRUCTOR
+}
+
+{xrst_end atom_destructor}
+------------------------------------------------------------------------------
 {xrst_begin atom_depend usr}
 
 The Dependency Sparsity Pattern
@@ -275,6 +293,10 @@ public:
     void set_trace(bool trace);
     bool get_trace(void) const;
     // END_TRACE
+    //
+    // BEGIN_DESTRUCTOR
+    virtual ~base_atom_t(void) { }
+    // END_DESTRUCTOR
     //
     // BEGIN_DEPEND
     virtual std::optional<sparsity_t> depend(void) const;

@@ -77,7 +77,7 @@ namespace ad_tensor { namespace dev {
                     dim.push_back( static_cast<int64_t>(res_index) );
                 }
             } else if( 1 < res_shape[res_index] ) {
-                dim.push_back(res_index);
+                dim.push_back( int64_t(res_index) );
             }
         }
         return;

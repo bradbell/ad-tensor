@@ -11,7 +11,7 @@ namespace {
     using ad_tensor::vector;
     using at::Tensor;
     //
-    adfn_t objective(size_t n_data) {
+    adfn_t objective(int64_t n_data) {
         //
         // dom_par
         Tensor x               = torch::zeros(n_data);
@@ -50,7 +50,7 @@ namespace {
 TEST(examples_adfn, get_started_first_derivative)  {
     //
     // n_data
-    size_t n_data = 3;
+    int64_t n_data = 3;
     //
     // sumsq = f( (x,y), (slope, intercept) )
     adfn_t f = objective(n_data);
@@ -101,7 +101,7 @@ TEST(examples_adfn, get_started_first_derivative)  {
 TEST(examples_adfn, get_started_second_derivative)  {
     //
     // n_data
-    size_t n_data = 3;
+    int64_t n_data = 3;
     //
     // sumsq = f( (x,y), (slope, intercept) )
     adfn_t f = objective(n_data);

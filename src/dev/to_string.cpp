@@ -76,12 +76,12 @@ namespace ad_tensor { namespace dev {
         at::IntArrayRef shape  = tensor.sizes();
         std::string res = to_string(shape);
         //
-        size_t length = tensor.numel();
+        int64_t length = tensor.numel();
         //
         // vector_view
         at::Tensor vector_view = tensor.view(length);
         res += "[";
-        for(size_t i = 0; i < length; ++i) {
+        for(int64_t i = 0; i < length; ++i) {
             res += std::to_string( vector_view[i].item<double>() );
             if( i + 1 < length )
                 res += ", ";

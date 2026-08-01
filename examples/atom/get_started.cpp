@@ -80,6 +80,9 @@ namespace {
         derive_atom_t(void) {
             set_name("square");
         }
+        // destructor
+        ~derive_atom_t(void) override {}
+        //
         // depend
         optional<ad_tensor::sparsity_t> depend(void) const override {
             ad_tensor::sparsity_t sparsity;

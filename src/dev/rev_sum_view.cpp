@@ -68,7 +68,7 @@ void rev_sum_view(
     // in_dim
     in_dim.resize(arg_len, false);
     for(size_t i = 0; i < dim.size(); ++i) {
-        in_dim[ dim[i] ] = true;
+        in_dim[ size_t( dim[i] ) ] = true;
     }
     //
     // new_shape

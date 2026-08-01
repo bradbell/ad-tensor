@@ -102,6 +102,9 @@ namespace {
             m_atom_id_z = atom_id_z;
             set_name("y");
         }
+        // destructor
+        ~derive_atom_y_t(void) override {}
+        //
         // depend
         std::optional<ad_tensor::sparsity_t> depend(void) const override {
             ad_tensor::sparsity_t sparsity;
@@ -219,6 +222,9 @@ namespace {
         derive_atom_z_t(void) {
             set_name("z");
         }
+        // destructor
+        ~derive_atom_z_t(void) override {}
+        //
         // depend
         std::optional<ad_tensor::sparsity_t> depend(void) const override {
             ad_tensor::sparsity_t sparsity;
