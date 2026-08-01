@@ -51,6 +51,7 @@ A call to get will wait until it can lock out any calls to store.
 
 {xrst_end atom_global}
 */
+#include <shared_mutex>
 #include <torch/torch.h>
 #include <ad_tensor/vector.hpp>
 #include <ad_tensor/sparsity.hpp>

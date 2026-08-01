@@ -19,22 +19,16 @@ fi
 # sed
 source tools/grep_and_sed.sh
 #
-declare -A name2op
-name2op['lt']='<'
-name2op['le']='<='
-name2op['eq']='=='
-name2op['ne']='!='
-name2op['ge']='>='
-name2op['gt']='>'
-#
 gt_file='src/dev/derive_op/gt_op.cpp'
 #
-for name in lt le eq ne ge
+for pair in 'lt:<' 'le:<=' 'eq:==' 'ne:!=' 'ge:>='
 do
-    out_file=$(echo $gt_file | sed -e "s|gt_op|${name}_op|")
-    sed $gt_file > temp.$$ \
+    name=$(echo $pair | $sed -s 's|:.*||')
+    operator=$(echo $pair | $sed -e 's|.*:||')
+    out_file=$(echo $gt_file | $sed -e "s|gt_op|${name}_op|")
+    $sed $gt_file > temp.$$ \
     -e "s|gt_op|${name}_op|g" \
-    -e "s|lhs_tensor *> *rhs_tensor|lhs_tensor ${name2op[$name]} rhs_tensor|"
+    -e "s|lhs_tensor *> *rhs_tensor|lhs_tensor $operator rhs_tensor|"
     if ! diff $out_file temp.$$
     then
         echo "check_compare.sh: The file $out_file"

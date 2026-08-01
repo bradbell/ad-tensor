@@ -23,12 +23,19 @@ then
 fi
 # -----------------------------------------------------------------------------
 cmake_build_type='debug'
+cmake_c_compiler='gcc'
+cmake_cxx_compiler='g++'
 while [ "$#" -ge 1 ]
 do
     case $1 in
 
         '--release')
         cmake_build_type='release'
+        ;;
+
+        '--clang')
+        cmake_c_compiler='clang'
+        cmake_cxx_compiler='clang++'
         ;;
 
         *)
@@ -72,22 +79,39 @@ d
 EOF
 #
 # cxx_flags
-cxx_flags='-std=c++17 -Wall -pedantic-errors -Wshadow -Wfloat-conversion -Wconversion'
+cxx_flags='-std=c++23 -Wall -pedantic-errors -Wshadow -Wfloat-conversion -Wconversion'
 
 #
 # cmake
-echo_eval cmake -S .. -B . \
+cat << EOF
+cmake -S .. -B . \\
+    -G Ninja \\
+    -D include_tests=true \\
+    -D CMAKE_BUILD_TYPE=$cmake_build_type \\
+    -D Torch_DIR=$torch_dir \\
+    -D CMAKE_CXX_FLAGS="'$cxx_flags'" \\
+    -D CMAKE_C_COMPILER="$cmake_c_compiler" \\
+    -D CMAKE_CXX_COMPILER="$cmake_cxx_compiler" \\
+EOF
+if ! cmake -S .. -B . \
     -G Ninja \
     -D include_tests=true \
     -D CMAKE_BUILD_TYPE=$cmake_build_type \
     -D Torch_DIR=$torch_dir \
     -D CMAKE_CXX_FLAGS="'$cxx_flags'" \
-    |& sed -f temp.sed  > temp.out
+    -D CMAKE_C_COMPILER="$cmake_c_compiler" \
+    -D CMAKE_CXX_COMPILER="$cmake_cxx_compiler" \
+    2> temp.err
+then
+    sed -f temp.sed temp.err
+    echo 'run_cmake.sh: errors in cmake output above'
+    exit 1
+fi
 #
 cat temp.out
-if grep 'CMake Warning' temp.out > /dev/null
+if sed -f temp.sed temp.err | grep 'CMake Warning' > /dev/null
 then
-    echo 'run_cmake.sh: Warnings in cmake output above'
+    echo 'run_cmake.sh: warnings in cmake output above'
     exit 1
 fi
 #

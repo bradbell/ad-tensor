@@ -3,6 +3,7 @@
 # SPDX-FileCopyrightText: Bradley M. Bell <bradbell@seanet.com>
 # SPDX-FileContributor: 2026 Bradley M. Bell
 # -----------------------------------------------------------------------------
+import sys
 import torch
 import pathlib
 #
@@ -14,11 +15,13 @@ torch_path = pathlib.Path( torch_dir )
 # found
 found = None
 for name in [ 'TorchConfig.cmake', 'torch-config.cmake' ] :
-    for file in torch_path.rglob(name) :
-        if found != None :
-            print( found )
-            print( file.absolute() )
-            sys.exit( 'found multiple Torch cmake files; see output above' )
+    for file in torch_path.rglob(name, recurse_symlinks=True):
+        file = file.resolve()
+        if found != None and found != file :
+            msg  = 'found multiple Torch cmake files:\n'
+            msg += str( found ) + '\n'
+            msg += str( file )
+            sys.exit( msg )
         found = file
 #
 # torch_dir
