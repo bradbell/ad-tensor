@@ -15,6 +15,12 @@ op_enum_t
     BEGIN_OP_ENUM_T, END_OP_ENUM_T
 }
 
+Unary Operators
+***************
+{xrst_literal ,
+    BEGIN_UNARY, END_UNARY
+}
+
 Binary Operators
 ****************
 {xrst_literal ,
@@ -32,6 +38,10 @@ Other Operators
 // BEGIN_OP_ENUM_T
 namespace ad_tensor { namespace dev { enum struct op_enum_t
 {   // END_OP_ENUM_T
+    //
+    // BEGIN_UNARY BEGIN_SORT_THIS_LINE_PLUS_1
+    exp,         // exponentiation
+    // END_UNARY END_SORT_THIS_LINE_MINUS_1
     //
     // BEGIN_BINARY BEGIN_SORT_THIS_LINE_PLUS_1
     add,         // addition

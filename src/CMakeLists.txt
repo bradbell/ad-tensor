@@ -21,6 +21,7 @@ add_library(ad_tensor SHARED
     adten/solve.cpp
     adten/sum.cpp
     adten/transpose.cpp
+    adten/unary.cpp
     adten/view.cpp
     adten/where.cpp
     atom.cpp
@@ -35,6 +36,7 @@ add_library(ad_tensor SHARED
     dev/derive_op/div_op.cpp
     dev/derive_op/dom_op.cpp
     dev/derive_op/eq_op.cpp
+    dev/derive_op/exp_op.cpp
     dev/derive_op/ge_op.cpp
     dev/derive_op/gt_op.cpp
     dev/derive_op/le_op.cpp

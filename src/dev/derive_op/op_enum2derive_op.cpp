@@ -16,6 +16,7 @@ namespace ad_tensor { namespace dev {
         static const div_op_t<TensorType>         div_op;
         static const dom_op_t<TensorType>         dom_op;
         static const eq_op_t<TensorType>          eq_op;
+        static const exp_op_t<TensorType>         exp_op;
         static const ge_op_t<TensorType>          ge_op;
         static const gt_op_t<TensorType>          gt_op;
         static const le_op_t<TensorType>          le_op;
@@ -40,6 +41,7 @@ namespace ad_tensor { namespace dev {
             case op_enum_t::div:         return div_op;
             case op_enum_t::dom:         return dom_op;
             case op_enum_t::eq:          return eq_op;
+            case op_enum_t::exp:         return exp_op;
             case op_enum_t::ge:          return ge_op;
             case op_enum_t::gt:          return gt_op;
             case op_enum_t::le:          return le_op;

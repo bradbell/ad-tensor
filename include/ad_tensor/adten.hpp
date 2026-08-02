@@ -66,6 +66,32 @@ Other Member Functions
 
 {xrst_end adten}
 ------------------------------------------------------------------------------
+{xrst_begin adten_unary usr}
+{xrst_spell
+    exp
+}
+
+
+AD Tensor Unary Operators
+#########################
+
+Syntax
+******
+{xrst_code cpp}
+    result = adten.unary_function()
+{xrst_code}
+where adten is a ``const aten_t&`` and unary_function is one of the following:
+``exp`` .
+
+Example
+*******
+{xrst_literal ,
+    examples/adten/unary.cpp
+    BEGIN_CPP, END_CPP
+}
+
+{xrst_end adten_unary}
+------------------------------------------------------------------------------
 {xrst_begin adten_binary usr}
 {xrst_spell
     lhs
@@ -79,10 +105,10 @@ AD Tensor Binary Operators
 Syntax
 ******
 {xrst_code cpp}
-    lhs op rhs
+    result = lhs op rhs
 {xrst_code}
-where lhs and rhs are ``const adten_t&`` and
-op is one of the following:
+where lhs and rhs are ``const adten_t&`` ,
+result is ``adten_t`` and op is one of the following:
 
 .. csv-table::
     :header-rows: 1
@@ -103,7 +129,7 @@ Example
 *******
 {xrst_literal ,
     examples/adten/binary.cpp
-    BEGIN_CPP, // END_CPP
+    BEGIN_CPP, END_CPP
 }
 
 {xrst_end adten_binary}
@@ -132,7 +158,7 @@ Example
 *******
 {xrst_literal ,
     examples/adten/compound.cpp
-    BEGIN_CPP, // END_CPP
+    BEGIN_CPP, END_CPP
 }
 
 {xrst_end adten_compound}
@@ -149,6 +175,7 @@ The adten_t Class Developer Documentation
     src/adten/solve.cpp
     src/adten/sum.cpp
     src/adten/transpose.cpp
+    src/adten/unary.cpp
     src/adten/view.cpp
     src/adten/where.cpp
 }
@@ -204,9 +231,13 @@ The adten_t Private Constructor
 #include <ad_tensor/ad_type.hpp>
 #include <ad_tensor/dev/op_enum.hpp>
 //
+// AD_TENSOR_UNARY_OP
+# define AD_TENSOR_UNARY_OP(unary_function) \
+    adten_t unary_function(void) const \
+    {   return unary( dev::op_enum_t:: unary_function, *this); }
+//
 // AD_TENSOR_BINARY_OP
 # define AD_TENSOR_BINARY_OP(op, op_enum) \
-    \
     adten_t operator op (const adten_t& rhs) const \
     { return binary( dev::op_enum_t:: op_enum, *this, rhs ); }
 //
@@ -244,6 +275,11 @@ private:
     : m_tape_id(tape_id), m_index(index), m_at_ten(tensor), m_ad_type(ad_type)
     { }
     // END_PRIVATE_CTOR
+    //
+    // unary
+    static adten_t unary(
+        dev::op_enum_t op_enum, const adten_t& operand
+    );
     //
     // binary
     static adten_t binary(
@@ -313,6 +349,9 @@ public:
     AD_TENSOR_COMPOUND_ASSIGNMENT(-)
     AD_TENSOR_COMPOUND_ASSIGNMENT(*)
     AD_TENSOR_COMPOUND_ASSIGNMENT(/)
+    //
+    // Numeric unary operators
+    AD_TENSOR_UNARY_OP(exp);
     //
     // Numeric binary operators
     AD_TENSOR_BINARY_OP(+, add)

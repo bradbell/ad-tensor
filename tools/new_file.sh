@@ -94,32 +94,43 @@ case $ext in
 # SPDX-FileCopyrightText: $spdx_copyright_text
 # SPDX-FileContributor: $year $fullname
 # -----------------------------------------------------------------------------
-# script_path
-script_dir="$( dirname -- "${BASH_SOURCE[0]}" )"
-script_dir="$( cd -- "$script_dir" &> /dev/null && pwd )"
-script_path="$script_dir/$(basename $0)"
-#
 EOF
     ;;
 
-    .sh|.py|.xrst)
-    if [ "$ext" == '.sh' ]
-    then
-        echo '#! /usr/bin/env bash' >> $path_to_file
-        echo 'set -e -u' >> $path_to_file
-    fi
+    .sh)
     cat << EOF >> $path_to_file
+#! /usr/bin/env bash
+set -e -u
 # SPDX-License-Identifier: $spdx_license_id
 # SPDX-FileCopyrightText: $spdx_copyright_text
 # SPDX-FileContributor: $year $fullname
 # -----------------------------------------------------------------------------
 # script_path
-script_dir="$( dirname -- "${BASH_SOURCE[0]}" )"
-script_dir="$( cd -- "$script_dir" &> /dev/null && pwd )"
-script_path="$script_dir/$(basename $0)"
+script_dir="\$( dirname -- "\${BASH_SOURCE[0]}" )"
+script_dir="\$( cd -- "\$script_dir" &> /dev/null && pwd )"
+script_path="\$script_dir/\$(basename \$0)"
 #
+if [ ! -e tools/\$(basename \$0) ]
+then
+    echo "\$(basename \$0) must be executed from its parent directory"
+    exit 1
+fi
+# -----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
+echo "\$script_path: OK"
+exit 0
 EOF
-    if [ "$ext" == '.sh' ]
+    chmod +x $path_to_file
+    ;;
+
+    .py|.xrst)
+    cat << EOF >> $path_to_file
+# SPDX-License-Identifier: $spdx_license_id
+# SPDX-FileCopyrightText: $spdx_copyright_text
+# SPDX-FileContributor: $year $fullname
+# -----------------------------------------------------------------------------
+EOF
+    if [ "$ext" == .py ]
     then
         chmod +x $path_to_file
     fi
