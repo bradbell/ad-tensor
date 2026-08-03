@@ -66,7 +66,7 @@ adten_t adten_t::unary( dev::op_enum_t op_enum, const adten_t& operand )
     if( ! tape.m_recording )
         return adten_t( res_at_ten );
     dev::user_assert( operand.m_tape_id == tape.m_tape_id ,
-        "unary operand does not match tape that is recording"
+        "unary operand's tape is not tape that is recording"
     );
     //
     // res_ad_type

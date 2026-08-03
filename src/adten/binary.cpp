@@ -118,10 +118,10 @@ adten_t adten_t::binary(
     if( ! tape.m_recording )
         return adten_t( res_at_ten );
     dev::user_assert( lhs.m_tape_id == tape.m_tape_id ,
-        "binary left operand does not match tape that is recording"
+        "binary left operand's tape is not tape that is recording"
     );
     dev::user_assert( rhs.m_tape_id == tape.m_tape_id ,
-        "binary right operand does not match tape that is recording"
+        "binary right operand's tape is not tape that is recording"
     );
     //
     // res_ad_type

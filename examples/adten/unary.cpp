@@ -18,7 +18,6 @@ TEST(examples_adten, unary_exp)  {
     vector<adten_t>  ar;
     ar.push_back( av[0].exp() );
     ad_tensor::adfn_t f  = adten_t::stop_recording(ar, "f");
-    f.set_trace(true);
     //
     // v_all, r
     vector<Tensor> v_all = f.forward_var(v);

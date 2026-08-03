@@ -125,10 +125,10 @@ adten_t adten_t::matmul(const adten_t& rhs) const
     if( ! tape.m_recording )
         return adten_t( res_tensor );
     dev::user_assert( m_tape_id == tape.m_tape_id , "matmul: "
-        "left AD tensor does not match tape that is recording"
+        "left AD tensor's tape is not tape that is recording"
     );
     dev::user_assert( rhs.m_tape_id == tape.m_tape_id , "matmul: "
-        "right AD tensor does not match tape that is recording"
+        "right AD tensor's tape is not tape that is recording"
     );
     //
     // res_ad_type

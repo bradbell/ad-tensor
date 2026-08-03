@@ -88,7 +88,7 @@ adten_t adten_t::operator-(void) const
         return adten_t( res_tensor );
     }
     dev::user_assert( m_tape_id == tape.m_tape_id ,
-        "minus operand does not match tape that is recording"
+        "minus operand's tape is not tape that is recording"
     );
     //
     // res_ad_type

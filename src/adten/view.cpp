@@ -93,7 +93,7 @@ adten_t adten_t::view(const c10::IntArrayRef& shape) const
     if( ! tape.m_recording )
         return adten_t( res_tensor );
     dev::user_assert( m_tape_id == tape.m_tape_id ,
-        "AD tensor being viewed does not match tape that is recording"
+        "Tape for AD tensor being viewed is not tape that is recording"
     );
     //
     // res_ad_type

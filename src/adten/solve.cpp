@@ -138,10 +138,10 @@ adten_t adten_t::solve(const adten_t& rhs, bool left) const
     if( ! tape.m_recording )
         return adten_t( res_tensor );
     dev::user_assert( m_tape_id == tape.m_tape_id , "solve: "
-        "square AD tensor does not match tape that is recording"
+        "square AD tensor's tape is not tape that is recording"
     );
     dev::user_assert( rhs.m_tape_id == tape.m_tape_id , "solve: "
-        "rhs AD tensor does not match tape that is recording"
+        "rhs AD tensor's tape is not tape that is recording"
     );
     //
     // res_ad_type

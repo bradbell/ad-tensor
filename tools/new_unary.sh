@@ -21,7 +21,7 @@ then
     echo 'usage: tools/new_unary.sh unary_function'
     exit 1
 fi
-# TODO: Automatically change the files listed below:
+# List of files that need to change when adding a new unary operator:
 #   include/ad_tensor/adten.hpp
 #   include/ad_tensor/dev/op_enum.hpp
 #   include/ad_tensor/dev/derive_op.hpp

@@ -102,13 +102,13 @@ adten_t adten_t::where(
     if( ! tape.m_recording )
         return adten_t( res_at_ten );
     dev::user_assert( cond.m_tape_id == tape.m_tape_id ,
-        "AD tensor where: cond tape is not tape that is recording"
+        "AD tensor where: cond's tape is not tape that is recording"
     );
     dev::user_assert( true_case.m_tape_id == tape.m_tape_id ,
-        "AD tensor where: true_case tape does is not tape that is recording"
+        "AD tensor where: true_case's tape is not tape that is recording"
     );
     dev::user_assert( false_case.m_tape_id == tape.m_tape_id ,
-        "AD tensor where: false_case tape does is not tape that is recording"
+        "AD tensor where: false_case's tape is not tape that is recording"
     );
     //
     // res_ad_type
