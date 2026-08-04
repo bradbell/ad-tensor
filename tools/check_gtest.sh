@@ -37,5 +37,9 @@ echo_eval ./examples/examples
 echo_eval ninja tests
 echo_eval ./tests/tests
 #
+# build/benchmarks/benchmarks
+echo_eval ninja benchmarks
+echo_eval ./benchmarks/benchmarks
+#
 echo "$script_path: OK"
 exit 0

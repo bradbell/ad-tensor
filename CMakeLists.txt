@@ -7,7 +7,7 @@
 cmake_minimum_required(VERSION 3.10)
 #
 # ad_tensor_SOURCE_DIR
-project(ad_tensor VERSION "2026.8.3")
+project(ad_tensor VERSION "2026.8.4")
 #
 # TORCH_INCLUDE_DIRS, TORCH_CXX_FLAGS, TORCH_LIBRARIES
 find_package(Torch REQUIRED)
@@ -29,4 +29,5 @@ if( include_tests )
     find_package(GTest REQUIRED)
     add_subdirectory(examples)
     add_subdirectory(tests)
+    add_subdirectory(benchmarks)
 endif()
