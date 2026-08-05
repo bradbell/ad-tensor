@@ -108,7 +108,6 @@ then
     exit 1
 fi
 #
-cat temp.out
 if sed -f temp.sed temp.err | grep 'CMake Warning' > /dev/null
 then
     echo 'run_cmake.sh: warnings in cmake output above'

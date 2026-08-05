@@ -45,6 +45,7 @@ namespace ad_tensor { namespace dev {
             // END_SORT_THIS_LINE_MINUS_1
             default:
             assert( false && "to_string(op_enum): unexpected op_enum value");
+            return "Error in dev::to_string(op_enum)";
         }
     }
     //

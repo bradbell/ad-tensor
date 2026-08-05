@@ -100,12 +100,10 @@ adten_t adten_t::solve(const adten_t& rhs, bool left) const
 // END_SOLVE
 {
     //
-    // square
-    const adten_t& square = *this;
-    //
 # ifndef NDEBUG
-    size_t square_n_dim = this->sizes().size();
-    size_t rhs_n_dim    = rhs.sizes().size();
+    const adten_t& square = *this;
+    size_t square_n_dim   = this->sizes().size();
+    size_t rhs_n_dim      = rhs.sizes().size();
     //
     dev::user_assert( square_n_dim == 2 ,
         "solve: square is not two dimensional"

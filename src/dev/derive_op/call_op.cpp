@@ -76,8 +76,10 @@ void call_op_depend(
     ad_type_t parameter = ad_type_t::parameter;
     ad_type_t variable  = ad_type_t::variable;
     //
+# ifndef NDEBUG
     // n_set
     size_t n_set = vec_sets.n_set();
+# endif
     //
     // sub_sets
     thread_local vector<size_t>    sub_sets;
@@ -148,8 +150,8 @@ void call_op_depend(
         } else {
             assert( set_id - n_par == op_index + k);
         }
-    }
 #endif
+    }
 }
 // ------------------------------------------------------------------------
 // forward_par

@@ -12,10 +12,11 @@
 
 The AD Tensor Vector Class
 ##########################
-If NDEBUG is defined, this is the ``std::vector`` template class.
-Otherwise is a light weight wrapper for ``std::vector`` that only modifies
-the indexing operator. To be specific, the indexing operator [] is mapped
+This a light weight wrapper for ``std::vector`` that only modifies
+the indexing operator when NDEBUG is not defined.
+To be specific, the indexing operator [] is mapped
 to std::vector::at so that indices are checked to be in bounds.
+In all other aspects, it is exactly like std::vector.
 
 Prototype
 *********
@@ -28,9 +29,6 @@ Prototype
 */
 // BEGIN_TOP
 namespace ad_tensor {
-#ifdef NDEBUG
-        using std::vector;
-#else
     template <class T> class vector : public std::vector<T>
     {
     public:
@@ -80,12 +78,13 @@ namespace ad_tensor {
             return *this;
         }
         //
-        // BEGIN_BOTTOM
+// BEGIN_BOTTOM
+# ifndef NDEBUG
         reference operator[](size_type pos)
         {   return this->at(pos); }
         const_reference operator[](size_type pos) const
         {   return this->at(pos); }
-    };
-#endif
-}
+# endif
 // END_BOTTOM
+    };
+}

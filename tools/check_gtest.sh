@@ -21,10 +21,25 @@ then
    echo "tools/check_gtest.sh: must be executed from its parent directory"
    exit 1
 fi
+release='no'
+if [ "$#" != 0 ]
+then
+    if [ "$#" == 1 ] && [ "$1" == '--release' ]
+    then
+        release='yes'
+    else
+        echo 'usage: tools/check_gtest.sh [--release]'
+    fi
+fi
 # -----------------------------------------------------------------------------
 #
 # run_cmake.sh
-tools/run_cmake.sh
+if [ "$release" == 'yes' ]
+then
+    tools/run_cmake.sh --release
+else
+    tools/run_cmake.sh
+fi
 #
 # build
 cd build

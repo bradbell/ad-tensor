@@ -21,11 +21,6 @@ then
     echo "tools/check_all.sh: must be executed from its parent directory"
     exit 1
 fi
-if [ "$#" -ge 3 ]
-then
-    echo 'usage: tools/check_all.sh [--skip_check_copy] [--external_links]'
-    exit 1
-fi
 #
 # sed
 source tools/grep_and_sed.sh
@@ -33,18 +28,27 @@ source tools/grep_and_sed.sh
 # skip_check_copy, external_links
 external_links='no'
 skip_check_copy='no'
+release='no'
 while [ $# -ge 1 ]
 do
-    if [ "$1" == '--skip_check_copy' ]
-    then
-        skip_check_copy='yes'
-    elif [ "$1" == '--external_links' ]
-    then
+    case "$1" in
+        #
+        --skip_check_copy)
+        skip_check_copy='no'
+        ;;
+        --external_links)
         external_links='yes'
-    else
-        echo 'usage: tools/check_all.sh [-skip_check_copy]'
+        ;;
+        --release)
+        release='yes'
+        ;;
+        *)
+cat << EOF
+usage: tools/check_all.sh [-skip_check_copy] [--external_links] [--release]
+EOF
         exit 1
-    fi
+    esac
+    #
     shift
 done
 # -----------------------------------------------------------------------------
@@ -82,7 +86,12 @@ done
 #
 # check_gtest.sh
 # Do last because other tests may change things that require this to re-run.
-echo_eval check_gtest.sh
+if [ "$release" == 'yes' ]
+then
+    echo_eval check_gtest.sh --release
+else
+    echo_eval check_gtest.sh
+fi
 #
 echo "$script_path: OK"
 exit 0
