@@ -199,7 +199,7 @@ void op_depend(
                     break;
                     //
                     default:
-                    assert(false);
+                    break;
                 }
             }
         }

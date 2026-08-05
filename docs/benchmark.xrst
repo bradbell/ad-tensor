@@ -1,0 +1,22 @@
+# ---------------------------------------------------------------------------
+# SPDX-License-Identifier: EPL-2.0 OR GPL-2.0-or-later
+# SPDX-FileCopyrightText: Bradley M. Bell <bradbell@seanet.com>
+# SPDX-FileContributor: 2026 Bradley M. Bell
+# ---------------------------------------------------------------------------
+{xrst_begin benchmarks ben}
+{xrst_spell
+    autograd
+}
+
+Comparing Execution Time of AD Tensor Versus Autograd
+#####################################################
+
+Tutorial
+********
+These benchmarks also serve as a tutorials for using AD Tensors.
+
+{xrst_toc_table
+    benchmarks/fit_poly.cpp
+}
+
+{xrst_end benchmarks}
