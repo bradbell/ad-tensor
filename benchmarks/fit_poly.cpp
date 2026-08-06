@@ -12,9 +12,19 @@
 Fitting A Polynomial Benchmark
 ##############################
 
-Problem Source
-**************
-This problem comes from the pytorch tutorial
+Loss Function
+*************
+Let :math:`x \in {\rm R}^m` be a uniform grid on points on [-1,+1] .
+The loss function :math:`f : {\rm R}^4 \rightarrow {\rm R}`
+for this example is defined by
+
+.. math::
+
+    f(c) = \sum_{i=0}^{m-1} \left(
+        \exp( x_i ) - \sum_{j=0}^3 c_j x_i^j
+    \right)^2
+
+This objective comes from the pytorch tutorial
 `Pytorch Tensors and autograd
 <https://docs.pytorch.org/tutorials/beginner/ pytorch_with_examples.html#pytorch-tensors-and-autograd>`_ ,
 
