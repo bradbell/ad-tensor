@@ -55,7 +55,7 @@ We express :math:`\Sigma^{-1}` in terms of its Cholesky factor
 We drop the constant :math:`n m \log(2 \pi)` and the factor of one half.
 In addition, we scale the objective by dividing by the number of data points
 :math:`n`.
-The resulting loss function is
+The resulting objective is
 :math:`f : \mathbb{R}^m \times \mathbb{R}^{m \times m} \rightarrow \mathbb{R}`
 where
 
@@ -68,80 +68,82 @@ where
 
 and :math:`L` is restricted to the lower triangular matrices
 with positive entries on the diagonal.
-The minimizer of this loss function is
+The minimizer of this function with respect to :math:`\mu` is
 
 .. math::
 
-    \hat{\mu}    & =
-        \frac{1}{n} \sum_{i=0}^{n-1} y_i
-    \\
-    \hat{\Sigma} & =
-        \frac{1}{n} \sum_{i=0}^{n-1} (y_i - \hat{\mu}) (y_i - \hat{\mu})^T
+    \hat{\mu} = \frac{1}{n} \sum_{i=0}^{n-1} y_i
 
 see the `proof <https://statproofbook.github.io/P/mvn-mle.html>`_ .
+We define our loss function as
+
+.. math::
+
+    g(L) = f( \hat{\mu} , L ) =
+    - \log \det( L L^T )
+    +
+    \frac{1}{n} \sum_{i=0}^{n-1} ( y_i - \hat{\mu} )^T L L^T (y_i - \hat{\mu} )
 
 {xrst_end multi_normal_benchmark}
 '''
 import time
 import torch
+import numpy
+import scipy
 #
+# start_time, number_learning_steps, learning_rate
 start_time            = time.perf_counter()
 number_learning_steps = 5000
 learning_rate         = 1e-4
 #
-def f(mu, L, y) :
+# y, mu_hat
+m = 2
+n = 1000
+y = torch.randn( (m, n) )
+mu_hat  = y.mean(dim = 1).view(m, 1)
+#
+# minimum_L, initial_L
+minimum_L = torch.full( (m,m), float('-inf') )
+for j in range(m) :
+    minimum_L[j, j] = 0.01
+minimum_L = torch.tril( minimum_L )
+initial_L = torch.tril( torch.randn( (m, m) ) )
+initial_L = torch.maximum(initial_L, minimum_L)
+#
+def g(L) :
     (m, n)     = y.size()
     Lt         = L.transpose(0, 1)
     Sigma_inv  = torch.matmul(L, Lt)
     term_det   = torch.logdet(Sigma_inv)
     #
-    res        = y - mu.repeat(1, n)
+    res        = y - mu_hat.repeat(1, n)
     Lt_res     = Lt.matmul(res)
     term_res   = (Lt_res * Lt_res).sum() / n
     #
     return term_res - term_det
 #
-#   m, n, L_min
-m = 2
-n = 1000
-#
-# L_min
-L_min = torch.full( (m,m), float('-inf') )
-for j in range(m) :
-    L_min[j, j] = 0.01
-L_min = torch.tril( L_min )
-#
-# y, mu, L
-y    = torch.randn( (m, n) )
-mu   = torch.randn(m).view((m, 1))
-L    = torch.tril( torch.randn( (m, m) ) )
-L    = torch.maximum(L, L_min)
-print("L =", L)
-print("mu =", mu)
-#
 initial_loss  = None
+L             = initial_L
 for t in range(number_learning_steps) :
-    mu.requires_grad_(True)
-    mu.grad = None
     #
     L.requires_grad_(True)
     L.grad  = None
     #
-    loss = f(mu, L, y)
+    loss = g(L)
     loss.backward()
     if t == 0 :
         initial_loss = loss.item()
     relative_loss = loss.item() / initial_loss
     if t % 500 == 0  :
-        print( f'relative_loss = {relative_loss}' )
-    with torch.no_grad() :
-        mu = mu - learning_rate * mu.grad
-        L  = torch.tril( L - learning_rate * L.grad )
-        L  = torch.maximum(L, L_min)
+        norm = L.grad.norm('fro')
+        print( f'relative_loss = {relative_loss}, |L.grad| ={norm}' )
+    if t < number_learning_steps - 1 :
+        with torch.no_grad() :
+            L  = torch.tril( L - learning_rate * L.grad )
+            L  = torch.maximum(L, minimum_L)
+#
+relative_loss = loss.item() / initial_loss
+norm = L.grad.norm('fro')
+print( f'relative_loss = {relative_loss}, |L.grad| ={norm}' )
 elapsed_time = time.perf_counter() - start_time
 print( f'elapsed time = {elapsed_time}' )
-Lt       = L.transpose(0, 1)
-res      = y - mu.repeat(1, n)
-Lt_res   = Lt.matmul(res)
-term_res = (Lt_res * Lt_res).sum() / (m * n)
-print( f'average weighted residual squared = {term_res}' )
