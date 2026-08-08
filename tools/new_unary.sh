@@ -29,10 +29,10 @@ then
 fi
 # -----------------------------------------------------------------------------
 # fun_name, chars_minus_3
-if [ "$#" != 2 ] 
+if [ "$#" != 2 ]
 then
     echo 'usage:       tools/new_unary.sh fun_name description'
-    echo 'fun_name:    is the funciton name; e.g., exp'
+    echo 'fun_name:    is the function name; e.g., exp'
     echo 'description: is the function description; e.g., exponentiation'
     exit 1
 fi
@@ -55,7 +55,7 @@ cat << EOF > temp.sed
 /TEST(.*, unary_exp)/! b end
 : loop
 N
-/\\n}/! b loop 
+/\\n}/! b loop
 h
 s|^|//\\n// unary_$fun_name\\n|
 s|exp|$fun_name|g
