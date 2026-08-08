@@ -39,6 +39,7 @@ add_library(ad_tensor SHARED
     dev/derive_op/exp_op.cpp
     dev/derive_op/ge_op.cpp
     dev/derive_op/gt_op.cpp
+    dev/derive_op/inverse_op.cpp
     dev/derive_op/le_op.cpp
     dev/derive_op/lt_op.cpp
     dev/derive_op/matmul_op.cpp

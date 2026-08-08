@@ -39,6 +39,8 @@ fi
 fun_name="$1"
 description="$2"
 chars_minus_3=$(( ${#1} - 3 ))
+Description=$(echo $description | \
+    sed -e 's|^\([a-z]\)|\u\1|' -e 's|\b\([a-z]\)|\u\1|g' )
 # -----------------------------------------------------------------------------
 file_in=src/dev/derive_op/exp_op.cpp
 file_out=src/dev/derive_op/${fun_name}_op.cpp
@@ -46,26 +48,27 @@ cat << EOF > temp.sed
 s|exp_op|${fun_name}_op|
 s|exp()|$fun_name()|
 EOF
+git checkout --quiet $file_in
 echo "$file_out"
 sed -f temp.sed $file_in > $file_out
 git add $file_out
 # -----------------------------------------------------------------------------
-file='examples/adten/unary.cpp'
+file_in=examples/adten/unary/exp.cpp
+file_out=examples/adten/unary/$fun_name.cpp
+underline=$(echo $Description | sed -e 's|.|#|g')
 cat << EOF > temp.sed
-/TEST(.*, unary_exp)/! b end
-: loop
-N
-/\\n}/! b loop
-h
-s|^|//\\n// unary_$fun_name\\n|
 s|exp|$fun_name|g
-H
-x
+/^Exponentiation$/! b end
+N
+s|.*|$Description\\
+$underline|
+#
 : end
 EOF
-git checkout --quiet $file
-echo "$file"
-sed -i $file -f temp.sed
+git checkout --quiet $file_in
+echo "$file_out"
+sed -f temp.sed $file_in > $file_out
+git add $file_out
 # -----------------------------------------------------------------------------
 file='include/ad_tensor/adten.hpp'
 cat << EOF > temp.sed

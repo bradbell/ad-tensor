@@ -21,7 +21,8 @@ add_executable(examples
     adten/solve.cpp
     adten/sum.cpp
     adten/transpose.cpp
-    adten/unary.cpp
+    adten/unary/exp.cpp
+    adten/unary/inverse.cpp
     adten/view.cpp
     adten/where.cpp
     atom/ad_forward_der.cpp

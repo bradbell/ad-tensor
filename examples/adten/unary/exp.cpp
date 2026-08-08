@@ -2,6 +2,17 @@
 // SPDX-FileCopyrightText: Bradley M. Bell <bradbell@seanet.com>
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
+/*
+{xrst_begin unary_exp usr}
+
+Exponentiation
+##############
+{xrst_literal ,
+    BEGIN_CPP, END_CPP
+}
+
+{xrst_end unary_exp}
+*/
 // BEGIN_CPP
 #include <gtest/gtest.h>
 #include <ad_tensor/ad_tensor.hpp>

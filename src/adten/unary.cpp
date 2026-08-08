@@ -57,6 +57,11 @@ adten_t adten_t::unary( dev::op_enum_t op_enum, const adten_t& operand )
         res_at_ten = operand.at_ten().exp();
         break;
         //
+        // inverse
+        case dev::op_enum_t::inverse:
+        res_at_ten = operand.at_ten().inverse();
+        break;
+        //
         default:
         assert( false && "adten_t::unary: invalid value for op_enum");
     }
