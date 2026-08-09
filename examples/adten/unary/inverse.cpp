@@ -10,6 +10,7 @@
     cccc
     inv
     dv
+    df
 }
 
 Example Matrix Inverse
@@ -58,7 +59,12 @@ Derivative
         -v_2 \\
         v_0
     \end{array} \right)
-    ( v_3, -v_2, -v_1, v_0 )
+    \left( \begin{array}{c}
+        v_3  \\
+        -v_2 \\
+        -v_1 \\
+        v_0
+    \end{array} \right)^T
 
 Forward Direction Derivative
 ****************************
@@ -70,7 +76,7 @@ Forward Direction Derivative
          dv_1 \\
          dv_2 \\
          dv_3
-    \end{array} \right)^T
+    \end{array} \right)
     =
     \frac{1}{ \det(v) }
     \left( \begin{array}{c}
@@ -81,6 +87,35 @@ Forward Direction Derivative
     \end{array} \right)
     -
     \frac{ v_3 dv_0 - v_2 dv_1 - v_1 dv_2 + v_0 dv_3}{ \det(v)^2 }
+    \left( \begin{array}{c}
+        v_3 \\
+        -v_1 \\
+        -v_2 \\
+        v_0
+    \end{array} \right)
+
+Reverse Direction Derivative
+****************************
+
+.. math::
+
+    \left( \begin{array}{c}
+        df_0 \\
+        df_1 \\
+        df_2 \\
+        df_3
+    \end{array} \right)^T
+    f^{(1)} (v)
+    =
+    \frac{1}{ \det(v) }
+    \left( \begin{array}{c}
+        df_3   \\
+        - df_1 \\
+        - df_2 \\
+        df_0
+    \end{array} \right)^T
+    -
+    \frac{ v_3 df_0 - v_1 df_1 - v_2 df_2 + v_0 df_3}{ \det(v)^2 }
     \left( \begin{array}{c}
         v_3 \\
         -v_1 \\
@@ -149,16 +184,16 @@ TEST(examples_adten, unary_inverse)  {
     ) );
     vector<Tensor> dr = f.forward_der(dv, v_all);
     //
+    // check
     double term   = v3 * dv0 - v2 * dv1 - v1 * dv2 + v0 * dv3;
     term          = term / (det * det );
-    double dinv0  = + dv3 / det - v3 * term;
-    double dinv1  = - dv1 / det + v1 * term;
-    double dinv2  = - dv2 / det + v2 * term;
-    double dinv3  = + dv0 / det - v0 * term;
-    //
+    double df0  = + dv3 / det - v3 * term;
+    double df1  = - dv1 / det + v1 * term;
+    double df2  = - dv2 / det + v2 * term;
+    double df3  = + dv0 / det - v0 * term;
     Tensor check = torch::tensor({
-        {dinv0, dinv1},
-        {dinv2, dinv3}
+        {df0, df1},
+        {df2, df3}
     }, options );
     std::cout << "check = " << check << "\n";
     std::cout << "dr[0] = " << dr[0] << "\n";
