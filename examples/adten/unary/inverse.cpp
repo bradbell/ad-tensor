@@ -5,9 +5,92 @@
 /*
 -------------------------------------------------------------------------------
 {xrst_begin unary_inverse usr}
+{xrst_spell
+    cc
+    cccc
+    inv
+    dv
+}
 
-Matrix Inverse
-##############
+Example Matrix Inverse
+######################
+
+Inverse
+*******
+.. math::
+
+    v & = \left( \begin{array}{cc}
+        v_0 & v_1 \\
+        v_2 & v_3
+    \end{array} \right)
+    \\
+    \det(v) &= v_0 v_3 - v_1 v_2
+    \\
+    {\rm inv} (v) & =
+    \frac{1}{ \det(v) } \left( \begin{array}{cc}
+        v_3  & - v_1 \\
+        - v_2 & v_0
+    \end{array} \right)
+    \\
+    f(v) & =
+    \frac{1}{ \det(v)} \left( \begin{array}{c}
+        v_3 \\
+        -v_1 \\
+        -v_2 \\
+        v_0
+    \end{array} \right)
+
+Derivative
+**********
+.. math::
+    \\
+    f(v) =
+    \frac{1}{ \det(v)} \left( \begin{array}{cccc}
+        0  & 0  & 0  & 1   \\
+        0  & -1 & 0  & 0   \\
+        0  & 0  & -1 & 0  \\
+        1  & 0  & 0  & 0  \\
+    \end{array} \right)
+    -
+    \frac{1}{ \det(v)^2 } \left( \begin{array}{c}
+        v_3 \\
+        -v_1 \\
+        -v_2 \\
+        v_0
+    \end{array} \right)
+    ( v_3, -v_2, -v_1, v_0 )
+
+Forward Direction Derivative
+****************************
+
+.. math::
+
+    f^{(1)} (v) \left( \begin{array}{c}
+        dv_0 \\
+         dv_1 \\
+         dv_2 \\
+         dv_3
+    \end{array} \right)^T
+    =
+    \frac{1}{ \det(v) }
+    \left( \begin{array}{c}
+        dv_3   \\
+        - dv_1 \\
+        - dv_2 \\
+        dv_0
+    \end{array} \right)
+    -
+    \frac{ v_3 dv_0 - v_2 dv_1 - v_1 dv_2 + v_0 dv_3}{ \det(v)^2 }
+    \left( \begin{array}{c}
+        v_3 \\
+        -v_1 \\
+        -v_2 \\
+        v_0
+    \end{array} \right)
+
+
+Source Code
+***********
 {xrst_literal ,
     BEGIN_CPP, END_CPP
 }
@@ -34,8 +117,8 @@ TEST(examples_adten, unary_inverse)  {
         {v2, v3}
     }, options ) );
     //
-    // determinant
-    double determinant = v0 * v3 - v1 * v2;
+    // det
+    double det = v0 * v3 - v1 * v2;
     //
     // inverse
     /* inv(v) = {
@@ -45,7 +128,7 @@ TEST(examples_adten, unary_inverse)  {
     */
     Tensor inverse = torch::tensor(
         { {v3, -v1}, {-v2, v0} }, options
-    ) / determinant;
+    ) / det;
     //
     // f
     vector<adten_t> av = adten_t::start_recording(v);
@@ -58,15 +141,6 @@ TEST(examples_adten, unary_inverse)  {
     vector<Tensor> r     = f.get_range(v_all);
     EXPECT_TRUE( r[0].allclose( inverse ) );
     //
-    // jacobian_dv
-    /* inv'(v) * dv =
-        { {dv3, -dv1}, {-dv2, dv0} } / det(v0, v1, v2, v3)
-        -
-        { {v3, -v1}, {-v2, v0} } / det(v0, v1, v2, v3)^2
-        *
-        ( v0 * dv3 + dv0 * v3 - v1 * dv2 - dv1 * v2)
-    */
-    //
     // dv, dr
     vector<Tensor> dv;
     double dv0 = 5.0, dv1 = 6.0, dv2 = 7.0, dv3 = 8.0;
@@ -75,18 +149,20 @@ TEST(examples_adten, unary_inverse)  {
     ) );
     vector<Tensor> dr = f.forward_der(dv, v_all);
     //
-    Tensor ten1 = torch::tensor(
-        { {dv3, -dv1}, {-dv2, dv0} }, options
-    );
-    ten1       /= determinant;
-    Tensor ten2 = torch::tensor({
-        {v3, -v1}, {-v2, v0} }, options
-    );
-    ten2       /= determinant * determinant;
-    ten2       *= v0 * dv3 + dv0 * v3 - v1 * dv2 - dv1 * v2;
-    std::cout << "ten1 - ten2" << ten1 - ten2 << "\n";
+    double term   = v3 * dv0 - v2 * dv1 - v1 * dv2 + v0 * dv3;
+    term          = term / (det * det );
+    double dinv0  = + dv3 / det - v3 * term;
+    double dinv1  = - dv1 / det + v1 * term;
+    double dinv2  = - dv2 / det + v2 * term;
+    double dinv3  = + dv0 / det - v0 * term;
+    //
+    Tensor check = torch::tensor({
+        {dinv0, dinv1},
+        {dinv2, dinv3}
+    }, options );
+    std::cout << "check = " << check << "\n";
     std::cout << "dr[0] = " << dr[0] << "\n";
-    EXPECT_TRUE( dr[0].allclose( ten1 - ten2  ) );
+    EXPECT_TRUE( dr[0].allclose( check ) );
 # if 0
     //
     // dr, dv

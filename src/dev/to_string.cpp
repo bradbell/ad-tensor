@@ -82,7 +82,7 @@ namespace ad_tensor { namespace dev {
         int64_t length = tensor.numel();
         //
         // vector_view
-        at::Tensor vector_view = tensor.view(length);
+        at::Tensor vector_view = tensor.contiguous().view(length);
         res += "[";
         for(int64_t i = 0; i < length; ++i) {
             res += std::to_string( vector_view[i].item<double>() );

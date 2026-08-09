@@ -187,9 +187,9 @@ namespace ad_tensor { namespace dev {
         //
         // rev_der[operand_index]
         if( rev_der[operand_index].numel() == 0 ) {
-            rev_der[operand_index]  = prod;
+            rev_der[operand_index]  = - prod;
         } else {
-            rev_der[operand_index] += prod;
+            rev_der[operand_index] -= prod;
         }
     }
     template void inverse_op_t<adten_t>::reverse_der(

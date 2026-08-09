@@ -5,8 +5,8 @@
 /*
 {xrst_begin unary_exp usr}
 
-Exponentiation
-##############
+Example Exponentiation
+######################
 {xrst_literal ,
     BEGIN_CPP, END_CPP
 }
