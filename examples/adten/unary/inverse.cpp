@@ -197,12 +197,27 @@ TEST(examples_adten, unary_inverse)  {
     std::cout << "check = " << check << "\n";
     std::cout << "dr[0] = " << dr[0] << "\n";
     EXPECT_TRUE( dr[0].allclose( check ) );
-# if 0
     //
     // dr, dv
-    dr[0] = torch::tensor( {6.0, 7.0} );
-    dv     = f.reverse_der(dr, v_all);
-    EXPECT_TRUE( dv[0].equal( r[0] * dr[0] ) );
-#endif
+    dr0 = 5.0, dr1 = 6.0, dr2 = 7.0, dr3 = 8.0;
+    dr[0] = torch::tensor(
+        { {dr0, dr1}, {dr2, dr3} }, options
+    );
+    dv = f.reverse_der(dr, v_all);
+    //
+    // check
+    term   = v3 * dr0 - v1 * dr1 - v2 * dr2 + v0 * dv3;
+    term          = term / (det * det );
+    dv0    = + dr3 / det - v3 * term;
+    dv1    = - dr1 / det + v2 * term;
+    dv2    = - dr2 / det + v1 * term;
+    dv3    = + dr0 / det - v0 * term;
+    check = torch::tensor({
+        {dv0, dv1},
+        {dv2, dv3}
+    }, options );
+    std::cout << "check = " << check << "\n";
+    std::cout << "dv[0] = " << dv[0] << "\n";
+    EXPECT_TRUE( dv[0].allclose( check ) );
 }
 // END_CPP
