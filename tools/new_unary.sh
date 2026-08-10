@@ -6,9 +6,12 @@ set -e -u
 # -----------------------------------------------------------------------------
 # List of files that need to change when adding a new unary operator:
 #
+# Need to be edited by hand:
 #   src/dev/derive_op/<fun_name>_op.cpp
 #   src/examples/adten/unary.cpp
 #
+# Automatically generated file should work:
+#   examples/CMakeLists.txt
 #   include/ad_tensor/adten.hpp
 #   include/ad_tensor/dev/op_enum.hpp
 #   include/ad_tensor/dev/derive_op.hpp
@@ -40,7 +43,8 @@ fun_name="$1"
 description="$2"
 chars_minus_3=$(( ${#1} - 3 ))
 Description=$(echo $description | \
-    sed -e 's|^\([a-z]\)|\u\1|' -e 's|\b\([a-z]\)|\u\1|g' )
+    sed -e 's|^\([a-z]\)|\u\1|' -e 's|\b\([a-z]\)|\u\1|g' -e 's|^|Example |'
+)
 # -----------------------------------------------------------------------------
 file_in=src/dev/derive_op/exp_op.cpp
 file_out=src/dev/derive_op/${fun_name}_op.cpp
@@ -58,7 +62,7 @@ file_out=examples/adten/unary/$fun_name.cpp
 underline=$(echo $Description | sed -e 's|.|#|g')
 cat << EOF > temp.sed
 s|exp|$fun_name|g
-/^Exponentiation$/! b end
+/^Example Exponentiation$/! b end
 N
 s|.*|$Description\\
 $underline|
@@ -70,10 +74,21 @@ echo "$file_out"
 sed -f temp.sed $file_in > $file_out
 git add $file_out
 # -----------------------------------------------------------------------------
+file='examples/CMakeLists.txt'
+cat << EOF > temp.sed
+s|^\\( *\\)aten/unary/exp.cpp|&\\
+\\1aten/unary/${fun_name}.cpp|
+EOF
+git checkout --quiet $file
+echo "$file"
+sed -i $file -f temp.sed
+# -----------------------------------------------------------------------------
 file='include/ad_tensor/adten.hpp'
 cat << EOF > temp.sed
 s|^\\( *\\)AD_TENSOR_UNARY_OP(exp);|&\\
 \\1AD_TENSOR_UNARY_OP($fun_name);|
+s|^\\( *\\)examples/adten/unary/exp.cpp|&\\
+\\1examples/adten/unary/$fun_name.cpp|
 EOF
 git checkout --quiet $file
 echo "$file"

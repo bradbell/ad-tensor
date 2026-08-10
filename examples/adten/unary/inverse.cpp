@@ -194,8 +194,6 @@ TEST(examples_adten, unary_inverse)  {
         {dr0, dr1},
         {dr2, dr3}
     }, options );
-    std::cout << "check = " << check << "\n";
-    std::cout << "dr[0] = " << dr[0] << "\n";
     EXPECT_TRUE( dr[0].allclose( check ) );
     //
     // dr, dv
@@ -216,8 +214,6 @@ TEST(examples_adten, unary_inverse)  {
         {dv0, dv1},
         {dv2, dv3}
     }, options );
-    std::cout << "check = " << check << "\n";
-    std::cout << "dv[0] = " << dv[0] << "\n";
     EXPECT_TRUE( dv[0].allclose( check ) );
 }
 // END_CPP

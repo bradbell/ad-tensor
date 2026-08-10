@@ -85,10 +85,13 @@ where adten is a ``const aten_t&`` and unary_function is one of the following:
 
 Example
 *******
+{xrst_comment BEGIN_SORT_THIS_LINE_PLUS_2}
 {xrst_toc_table
     examples/adten/unary/exp.cpp
     examples/adten/unary/inverse.cpp
+    examples/adten/unary/logdet.cpp
 }
+{xrst_comment END_SORT_THIS_LINE_MINUS_2}
 
 {xrst_end adten_unary}
 ------------------------------------------------------------------------------
@@ -352,6 +355,7 @@ public:
     //
     // Numeric unary operators
     AD_TENSOR_UNARY_OP(exp);
+    AD_TENSOR_UNARY_OP(logdet);
     AD_TENSOR_UNARY_OP(inverse);
     //
     // Numeric binary operators

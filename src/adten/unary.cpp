@@ -57,6 +57,11 @@ adten_t adten_t::unary( dev::op_enum_t op_enum, const adten_t& operand )
         res_at_ten = operand.at_ten().exp();
         break;
         //
+        // logdet
+        case dev::op_enum_t::logdet:
+        res_at_ten = operand.at_ten().logdet();
+        break;
+        //
         // inverse
         case dev::op_enum_t::inverse:
         res_at_ten = operand.at_ten().inverse();

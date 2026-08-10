@@ -34,6 +34,7 @@ namespace ad_tensor { namespace dev {
             case op_enum_t::gt:           return "gt";
             case op_enum_t::inverse:      return "inverse";
             case op_enum_t::le:           return "le";
+            case op_enum_t::logdet:       return "logdet";
             case op_enum_t::lt:           return "lt";
             case op_enum_t::matmul:       return "matmul";
             case op_enum_t::minus:        return "minus";

@@ -21,6 +21,7 @@ namespace ad_tensor { namespace dev {
         static const gt_op_t<TensorType>          gt_op;
         static const inverse_op_t<TensorType>     inverse_op;
         static const le_op_t<TensorType>          le_op;
+        static const logdet_op_t<TensorType>      logdet_op;
         static const lt_op_t<TensorType>          lt_op;
         static const matmul_op_t<TensorType>      matmul_op;
         static const minus_op_t<TensorType>       minus_op;
@@ -47,6 +48,7 @@ namespace ad_tensor { namespace dev {
             case op_enum_t::gt:          return gt_op;
             case op_enum_t::inverse:     return inverse_op;
             case op_enum_t::le:          return le_op;
+            case op_enum_t::logdet:      return logdet_op;
             case op_enum_t::lt:          return lt_op;
             case op_enum_t::matmul:      return matmul_op;
             case op_enum_t::minus:       return minus_op;
