@@ -10,7 +10,6 @@
     cccc
     inv
     dv
-    df
 }
 
 Example Matrix Inverse
@@ -45,7 +44,7 @@ Derivative
 **********
 .. math::
     \\
-    f(v) =
+    f^{(1)} (v) =
     \frac{1}{ \det(v)} \left( \begin{array}{cccc}
         0  & 0  & 0  & 1   \\
         0  & -1 & 0  & 0   \\
@@ -100,28 +99,28 @@ Reverse Direction Derivative
 .. math::
 
     \left( \begin{array}{c}
-        df_0 \\
-        df_1 \\
-        df_2 \\
-        df_3
+        dr_0 \\
+        dr_1 \\
+        dr_2 \\
+        dr_3
     \end{array} \right)^T
     f^{(1)} (v)
     =
     \frac{1}{ \det(v) }
     \left( \begin{array}{c}
-        df_3   \\
-        - df_1 \\
-        - df_2 \\
-        df_0
+        dr_3   \\
+        - dr_1 \\
+        - dr_2 \\
+        dr_0
     \end{array} \right)^T
     -
-    \frac{ v_3 df_0 - v_1 df_1 - v_2 df_2 + v_0 df_3}{ \det(v)^2 }
+    \frac{ v_3 dr_0 - v_1 dr_1 - v_2 dr_2 + v_0 dr_3}{ \det(v)^2 }
     \left( \begin{array}{c}
         v_3 \\
-        -v_1 \\
         -v_2 \\
+        -v_1 \\
         v_0
-    \end{array} \right)
+    \end{array} \right)^T
 
 
 Source Code
@@ -187,13 +186,13 @@ TEST(examples_adten, unary_inverse)  {
     // check
     double term   = v3 * dv0 - v2 * dv1 - v1 * dv2 + v0 * dv3;
     term          = term / (det * det );
-    double df0  = + dv3 / det - v3 * term;
-    double df1  = - dv1 / det + v1 * term;
-    double df2  = - dv2 / det + v2 * term;
-    double df3  = + dv0 / det - v0 * term;
+    double dr0  = + dv3 / det - v3 * term;
+    double dr1  = - dv1 / det + v1 * term;
+    double dr2  = - dv2 / det + v2 * term;
+    double dr3  = + dv0 / det - v0 * term;
     Tensor check = torch::tensor({
-        {df0, df1},
-        {df2, df3}
+        {dr0, dr1},
+        {dr2, dr3}
     }, options );
     std::cout << "check = " << check << "\n";
     std::cout << "dr[0] = " << dr[0] << "\n";
