@@ -2,11 +2,117 @@
 // SPDX-FileCopyrightText: Bradley M. Bell <bradbell@seanet.com>
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
+/*
+{xrst_begin multi_normal_benchmark ben}
+{xrst_spell
+    cholesky
+    autograd
+}
+
+Fitting a Multivariate Normal Distribution
+##########################################
+
+Loss Function
+*************
+Let :math:`\Sigma \in \mathbb{R}^{m \times m}` be a
+symmetric positive definite matrix and :math:`\mu \in \mathbb{R}^m` .
+Suppose :math:`y_i \in \mathbb{R}^m` for :math:`i = 0 , \ldots , n-1`
+is distributed normally with mean :math:`\mu` and variance :math:`\Sigma` .
+The probability density for the sequence :math:`\{ y_i \}` given
+its mean and variance is
+
+.. math::
+
+    \mathbb{p} ( \{ y_i \} | \mu , \Sigma )
+    =
+    ( 2 \pi )^{- n m / 2 } \det( \Sigma )^{ - n / 2 }
+    \cdot
+    \exp \left[ -\frac{1}{2}
+        \sum_{i=0}^{n-1} ( y_i - \mu)^T \Sigma^{-1} (y_i - \mu)
+    \right]
+
+The negative log density is
+
+.. math::
+
+    - \log [ \mathbb{p} ( \{ y_i \} | \mu , \Sigma ) ]
+    =
+    \frac{n m}{2} \log(2 \pi) + \frac{n}{2} \log \det( \Sigma )
+    +
+    \frac{1}{2} \sum_{i=0}^{n-1} ( y_i - \mu)^T \Sigma^{-1} (y_i - \mu)
+
+We express :math:`\Sigma^{-1}` in terms of its Cholesky factor
+:math:`L` ; i.e., :math:`L` is lower triangular,
+:math:`\Sigma^{-1} = L L^T` , and
+
+.. math::
+
+    - \log [ \mathbb{p} ( \{ y_i \} | \mu , L ) ]
+    =
+    \frac{n m}{2} \log(2 \pi) - \frac{n}{2} \log \det( L L^T  )
+    +
+    \frac{1}{2} \sum_{i=0}^{n-1} ( y_i - \mu)^T L L^T (y_i - \mu)
+
+We drop the constant :math:`n m \log(2 \pi)` and the factor of one half.
+In addition, we scale the objective by dividing by the number of data points
+:math:`n`.
+The resulting objective is
+:math:`f : \mathbb{R}^m \times \mathbb{R}^{m \times m} \rightarrow \mathbb{R}`
+where
+
+.. math::
+    f( \mu, L )
+    =
+    - \log \det( L L^T )
+    +
+    \frac{1}{n} \sum_{i=0}^{n-1} ( y_i - \mu)^T L L^T (y_i - \mu)
+
+and :math:`L` is restricted to the lower triangular matrices
+with positive entries on the diagonal.
+The minimizer of this function with respect to :math:`\mu` is
+
+.. math::
+
+    \hat{\mu} = \frac{1}{n} \sum_{i=0}^{n-1} y_i
+
+see the `proof <https://statproofbook.github.io/P/mvn-mle.html>`_ .
+We define our loss function as
+
+.. math::
+
+    g(L) = f( \hat{\mu} , L ) =
+    - \log \det( L L^T )
+    +
+    \frac{1}{n} \sum_{i=0}^{n-1} ( y_i - \hat{\mu} )^T L L^T (y_i - \hat{\mu} )
+
+
+Common Code
+***********
+{xrst_literal ,
+    BEGIN_COMMON, END_COMMON
+}
+
+Autograd Benchmark
+******************
+{xrst_literal ,
+    BEGIN_AUTOGRAD, END_AUTOGRAD
+}
+
+AD Tensor Benchmark
+*******************
+{xrst_literal ,
+    BEGIN_AD_TENSOR, END_AD_TENSOR
+}
+
+
+{xrst_end multi_normal_benchmark}
+*/
 //
 #include <gtest/gtest.h>
 #include <torch/torch.h>
 #include <ad_tensor/ad_tensor.hpp>
 //
+// BEGIN_COMMON
 namespace {
     //
     // vector
@@ -77,7 +183,9 @@ namespace {
     }
     const at::Tensor initial_L = compute_initial_L();
 }
+// END_COMMON
 //
+// BEGIN_AUTOGRAD
 TEST(benchmarks, multi_normal_autograd) {
     //
     // L, initial_loss
@@ -105,7 +213,9 @@ TEST(benchmarks, multi_normal_autograd) {
     double relative_loss = loss(L).item<double>() / initial_loss;
     EXPECT_LT(relative_loss, expected_relative_loss);
 }
+// END_AUTOGRAD
 //
+// BEGIN_AD_TENSOR
 TEST(benchmarks, multi_normal_ad_tensor) {
     //
     // adten_t, adfn_t
@@ -144,3 +254,4 @@ TEST(benchmarks, multi_normal_ad_tensor) {
     double relative_loss = loss(L[0]).item<double>() / initial_loss;
     EXPECT_LT(relative_loss, expected_relative_loss);
 }
+// END_AD_TENSOR
