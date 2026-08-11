@@ -80,7 +80,6 @@ EOF
 #
 # cxx_flags
 cxx_flags='-std=c++23 -Wall -pedantic-errors -Wshadow -Wfloat-conversion -Wconversion'
-
 #
 # cmake
 cat << EOF

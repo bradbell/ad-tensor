@@ -97,35 +97,22 @@ namespace {
 // BEGIN_AUTOGRAD
 TEST(benchmarks, fit_poly_autograd) {
     //
-    // Tensor
-    using torch::Tensor;
-    //
     // x, y
-    Tensor x = torch::linspace(-1.0, 1.0, number_grid_points);
-    Tensor y = x.exp();
+    torch::Tensor x = torch::linspace(-1.0, 1.0, number_grid_points);
+    torch::Tensor y = x.exp();
     //
     // c
-    vector<Tensor> c;
+    vector<torch::Tensor> c;
     for(size_t j = 0; j < number_coefficients; ++j) {
         c.push_back( torch::randn( {1}, torch::requires_grad() ) );
     }
     //
-    // learning_rage, dloss, initial_loss, relative_loss
-    double initial_loss      = double_nan;
-    double relative_loss     = double_nan;
+    // initial_loss, t
+    double initial_loss      = loss(c, x, y).item<double>();
     for(size_t t = 0; t < number_learning_steps; ++t) {
         //
         // loss_t
-        Tensor loss_t = loss(c, x, y);
-        //
-        // initial_loss
-        if( t == 0 ) {
-            initial_loss = loss_t.item<double>();
-        }
-        // relative_loss
-        if( t == number_learning_steps - 1 ) {
-            relative_loss = loss_t.item<double>() / initial_loss;
-        }
+        torch::Tensor loss_t = loss(c, x, y);
         //
         // c
         loss_t.backward();
@@ -138,6 +125,8 @@ TEST(benchmarks, fit_poly_autograd) {
         }
     }
     //
+    // relative_loss
+    double relative_loss = loss(c, x, y).item<double>() / initial_loss;
     EXPECT_LT(relative_loss, expected_relative_loss);
 }
 // END_AUTOGRAD
@@ -170,10 +159,9 @@ TEST(benchmarks, fit_poly_ad_tensor) {
     vector<adten_t> aloss = { loss(ac, ax, ay) };
     adfn_t adfn = adten_t::stop_recording(aloss, "adfn");
     //
-    // learning_rage, dloss, initial_loss, relative_loss
+    // dloss, initial_loss, t
     vector<at::Tensor> dloss = { torch::tensor(1.0) };
-    double initial_loss      = double_nan;
-    double relative_loss     = double_nan;
+    double initial_loss      = loss(c, x, y).item<double>();
     for(size_t t = 0; t < number_learning_steps; ++t) {
         //
         // var_all
@@ -182,23 +170,14 @@ TEST(benchmarks, fit_poly_ad_tensor) {
         // grad
         vector<at::Tensor> grad  = adfn.reverse_der(dloss, var_all);
         //
-        // initial_loss
-        if( t == 0 ) {
-            vector<at::Tensor> loss_t  = adfn.get_range(var_all);
-            initial_loss = loss_t[0].item<double>();
-        }
-        // relative_loss
-        if( t == number_learning_steps - 1 ) {
-            vector<at::Tensor> loss_t  = adfn.get_range(var_all);
-            relative_loss = loss_t[0].item<double>() / initial_loss;
-        }
-        //
         // c
         for(size_t j = 0; j < number_coefficients; ++j) {
             c[j] -= learning_rate * grad[j];
         }
     }
     //
+    // relative_loss
+    double relative_loss = loss(c, x, y).item<double>() / initial_loss;
     EXPECT_LT(relative_loss, expected_relative_loss);
 }
 // END_AD_TENSOR

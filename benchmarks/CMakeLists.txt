@@ -6,6 +6,7 @@
 # BEGIN_SORT_THIS_LINE_PLUS_2
 add_executable(benchmarks
     fit_poly.cpp
+    multi_normal.cpp
 )
 # END_SORT_THIS_LINE_MINUS_2
 #
