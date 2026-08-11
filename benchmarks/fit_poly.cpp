@@ -49,7 +49,6 @@ AD Tensor Benchmark
 {xrst_end fit_poly_benchmark}
 */
 // BEGIN_COMMON
-#include <chrono>
 #include <gtest/gtest.h>
 #include <torch/torch.h>
 #include <ad_tensor/ad_tensor.hpp>
@@ -60,15 +59,18 @@ namespace {
     using ad_tensor::vector;
     //
     // double_nan
-    double double_nan = std::numeric_limits<double>::quiet_NaN();
+    const double double_nan = std::numeric_limits<double>::quiet_NaN();
     //
-    // number_coefficients, number_grid_points, number_learning_steps
-    size_t number_coefficients   = 4;
-    size_t number_grid_points    = 2000;
-    size_t number_learning_steps = 5000;
+    // number_coefficients, number_grid_points
+    const size_t number_coefficients   = 4;
+    const size_t number_grid_points    = 2000;
     //
     // expected_relative_loss
-    double expected_relative_loss = 1e-3;
+    const double expected_relative_loss = 1e-3;
+    //
+    // learning_rate, number_learning_steps
+    const double learning_rate         = 1e-5;
+    const size_t number_learning_steps = 5000;
     //
     // loss
     template<class Tensor>
@@ -106,7 +108,6 @@ TEST(benchmarks, fit_poly_autograd) {
     }
     //
     // learning_rage, dloss, initial_loss, relative_loss
-    double learning_rate     = 1e-5;
     double initial_loss      = double_nan;
     double relative_loss     = double_nan;
     for(size_t t = 0; t < number_learning_steps; ++t) {
@@ -167,7 +168,6 @@ TEST(benchmarks, fit_poly_ad_tensor) {
     adfn_t adfn = adten_t::stop_recording(aloss, "adfn");
     //
     // learning_rage, dloss, initial_loss, relative_loss
-    double learning_rate     = 1e-5;
     vector<at::Tensor> dloss = { torch::tensor(1.0) };
     double initial_loss      = double_nan;
     double relative_loss     = double_nan;
