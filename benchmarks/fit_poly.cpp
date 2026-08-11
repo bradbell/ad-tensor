@@ -73,19 +73,22 @@ namespace {
     const size_t number_learning_steps = 5000;
     //
     // loss
-    template<class Tensor>
-    Tensor loss(const vector<Tensor>& c, const Tensor& x, const Tensor& y) {
+    template<class TensorType>
+    TensorType loss(
+        const vector<TensorType>& c ,
+        const TensorType&         x ,
+        const TensorType&         y ) {
         assert( size_t( x.numel() ) == number_grid_points );
         assert( size_t( y.numel() ) == number_grid_points );
         assert( size_t( c.size() )  == number_coefficients );
         int64_t n_y = y.numel();
-        Tensor xp      = Tensor( torch::ones( {n_y} ) );
-        Tensor predict = c[0] * xp;
+        TensorType xp      = TensorType( torch::ones( {n_y} ) );
+        TensorType predict = c[0] * xp;
         for(size_t j = 1; j < number_coefficients; ++j) {
             xp       = xp * x;
             predict  = predict + c[j] * xp;
         }
-        Tensor residual = (y - predict);
+        TensorType residual = (y - predict);
         return (residual * residual).sum();
     }
 }
