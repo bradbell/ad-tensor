@@ -29,18 +29,25 @@ while [ "$#" -ge 1 ]
 do
     case $1 in
 
-        '--release')
+        --help)
+        echo 'usage: tools/run_cmake.sh [flag1 [flag2 .. ] ]'
+        echo 'possible flags: --help --release --clang'
+        exit 0
+        ;;
+
+        --release)
         cmake_build_type='release'
         ;;
 
-        '--clang')
+        --clang)
         cmake_c_compiler='clang'
         cmake_cxx_compiler='clang++'
         ;;
 
         *)
         echo 'usage: tools/run_cmake.sh [flag1 [flag2 .. ] ]'
-        echo 'list of possible flags: --release'
+        echo 'possible flags: --help --release --clang'
+        exit 1
         ;;
 
     esac
