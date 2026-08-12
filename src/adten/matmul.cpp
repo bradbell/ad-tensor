@@ -22,18 +22,31 @@ Prototype
 lhs
 ***
 is the left hand side in the matrix multiplication.
-This must be one or two dimensional.
-If it is one dimensional, it is treated as a row vector.
+We use lhs.n_dim to denote the number of dimensions in lhs.
+
+#.  If lhs.n_dim is one,
+    it is treated as a row vector with lhs.n_dim equal to two.
+
+#.  If lhs.n_dim is greater than two, first lhs.n_dim - 2 dimensions
+    are treated as batching dimensions.
 
 rhs
 ***
 is the right hand side in the matrix multiplication.
-This must be one or two dimensional.
-If it is one dimensional, it is treated as a column vector.
+We use rhs.n_dim to denote the number of dimensions in rhs.
+
+#.  If rhs.n_dim is one,
+    it is treated as a column vector with rhs.n_dim equal to two.
+
+#.  If rhs.n_dim is greater than two, first rhs.n_dim - 2 dimensions
+    are treated as batching dimensions.
+
+$.  Broadcasting is use to match the size of the batching dimensions of lhs
+    and rhs.
 
 prod
 ****
-is the result of the summation.
+is the result of the matrix multiply.
 
 Example
 *******
@@ -77,6 +90,8 @@ the following is added to the parameter (variable) acyclic graph:
 
 where start is the length of arg_value and arg_type before this call to
 ``adten_t::binary`` .
+Note that the case were both arguments are one dimensional (i.e, vectors)
+has been converted to an element-wise multiply and sum.
 
 {xrst_end adten_matmul_dev}
 -------------------------------------------------------------------------------
@@ -94,25 +109,25 @@ adten_t adten_t::matmul(const adten_t& rhs) const
 // END_MATMUL END_DEV_MATMUL
 {
     //
-# ifndef NDEBUG
-    size_t lhs_n_dim = this->sizes().size();
-    size_t rhs_n_dim = rhs.sizes().size();
     //
-    dev::user_assert( lhs_n_dim == 1 || lhs_n_dim == 2 ,
-        "matmul: lhs is not one or two dimensional"
-    );
-    dev::user_assert( rhs_n_dim == 1 || rhs_n_dim == 2 ,
-        "matmul: rhs is not one or two dimensional"
-    );
-    //
-    int64_t lhs_second_dim;
-    if( lhs_n_dim == 1 ) {
-        lhs_second_dim = this->sizes()[0];
-    } else {
-        lhs_second_dim = this->sizes()[1];
+    // lhs_ndim, rhs_ndim
+    // If both arguments are vectors, use element-wise multiply and sum
+    size_t  lhs_ndim  = this->sizes().size();
+    int64_t rhs_ndim = this->sizes().size();
+    if( lhs_ndim == 1 && rhs_ndim == 1 ) {
+        return ((*this) * rhs).sum();
     }
-    int64_t rhs_first_dim = rhs.sizes()[0];
-    dev::user_assert( lhs_second_dim == rhs_first_dim,
+# ifndef NDEBUG
+    //
+    // lhs_ncols, rhs_nrows
+    int64_t lhs_ncols = this->sizes()[ lhs_ndim - 1];
+    int64_t rhs_nrows;
+    if( rhs_ndim == 1 )  {
+        rhs_nrows = rhs.sizes()[0];
+    } else {
+        rhs_nrows = rhs.sizes()[rhs_ndim - 2];
+    }
+    dev::user_assert( lhs_ncols == rhs_nrows,
         "matmul: lhs times rhs dimension mismatch"
     );
 # endif

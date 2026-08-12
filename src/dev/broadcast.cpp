@@ -24,7 +24,6 @@ Prototype
 res_shape
 *********
 contains the shape of the result of the binary operations.
-This is not used and should not be in call when lock is false.
 
 arg_shape
 *********

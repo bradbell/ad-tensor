@@ -22,7 +22,7 @@ TEST(examples_adten, matmul)  {
         {x10, x11}
     } ) );
     //
-    // ap, ax
+    // ax
     vector<adten_t> ax = adten_t::start_recording(x);
     //
     // ay

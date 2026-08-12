@@ -6,6 +6,7 @@
 add_executable(tests
     adfn/optimize.cpp
     adfn/reverse_der.cpp
+    adten/matmul.cpp
     dev/base_op.cpp
     dev/op_enum.cpp
     dev/rng_depend.cpp
