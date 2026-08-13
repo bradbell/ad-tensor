@@ -33,9 +33,21 @@ TEST(tests_adten, matmul_mat_vec)  {
     adten_t& avec = av[0];
     adten_t& amat = av[1];
     //
-    // ay
+    // avec
+    // matmul does not support one dimensional arguments
+    int64_t raw_array_two[] = {2,1};
+    c10::IntArrayRef shape_two(raw_array_two, 2);
+    avec = avec.view(shape_two);
+    //
+    // prod
+    // convert to a one dimensional result
+    adten_t prod = amat.matmul( avec );
+    int64_t raw_array_one[] = {2};
+    c10::IntArrayRef shape_one(raw_array_one, 1);
+    prod = prod.view(shape_one);
+    //
     vector<adten_t> ay;
-    ay.push_back( amat.matmul( avec ) );  // y[0] = mat * vec
+    ay.push_back( prod );  // y[0] = mat * vec
     //
     // y = f(x)
     adfn_t f = adten_t::stop_recording(ay, "f");
@@ -78,7 +90,7 @@ TEST(tests_adten, matmul_batch)  {
     using ad_tensor::vector;
     //
     // batch_vec, batch_shape
-    Tensor batch_vec  = torch::tensor({ 
+    Tensor batch_vec  = torch::tensor({
         {{ 2.0, 3.0 }}, {{ 4.0, 5.0 }}, {{ 6.0, 7.0 }}
     });
     c10::IntArrayRef batch_shape = batch_vec.sizes();
@@ -140,29 +152,33 @@ TEST(tests_adten, matmul_batch)  {
         SCALAR_EQ( dyk[0][0], vk[0][0] * dmat[0][0] + vk[0][1] * dmat[1][0] );
         SCALAR_EQ( dyk[0][1], vk[0][0] * dmat[0][1] + vk[0][1] * dmat[1][1] );
     }
-    /* TODO: fix matmul_op.cpp so that broadcasting works here
     //
     // dv
     dy[0] = torch::tensor({
         {{ 12.0, 13.0 }}, {{ 14.0, 15.0 }}, {{ 16.0, 17.0 }}
     });
     dv         = f.reverse_der(dy, var_all);
-    Tensor sum = torch::zeros( {2, 2} );
+    //
+    // dv[0]
     for(size_t k = 0; k < 3; ++k) {
         Tensor dyk   = dy[0][k];
-        Tensor vk    = batch_vec[k];
         Tensor dvk   = dv[0][k];
         //
         SCALAR_EQ( dvk[0][0], dyk[0][0] * mat[0][0] + dyk[0][1] * mat[0][1] );
         SCALAR_EQ( dvk[0][1], dyk[0][0] * mat[1][0] + dyk[0][1] * mat[1][1] );
+    }
+    //
+    // dv[1]
+    Tensor sum = torch::zeros( {2, 2} );
+    for(size_t k = 0; k < 3; ++k) {
+        Tensor dyk   = dy[0][k];
+        Tensor vk    = batch_vec[k];
         //
         sum[0][0] = sum[0][0] + dyk[0][0] * vk[0][0];
         sum[1][0] = sum[1][0] + dyk[0][0] * vk[0][1];
         sum[0][1] = sum[0][1] + dyk[0][1] * vk[0][0];
         sum[1][1] = sum[1][1] + dyk[0][1] * vk[0][1];
     }
-    std::cout << "sum = " << sum << "\n";
-    std::cout << "dv[1] = " << dv[1] << "\n";
-    */
+    EXPECT_TRUE( dv[1].equal( sum ) );
 }
 // END_CPP

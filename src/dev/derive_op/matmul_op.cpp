@@ -190,6 +190,9 @@ namespace ad_tensor { namespace dev {
         vector<TensorType>&          rev_der
     ) const {
         //
+        // array
+        thread_local vector<int64_t> array;
+        //
         // arg_start
         size_t arg_start = agraph.m_arg_start[op_index];
         //
@@ -213,26 +216,26 @@ namespace ad_tensor { namespace dev {
             TensorType rhs_tensor  = tensor_at_arg_index(
                 arg_start + 1, agraph, con_vec, par_vec, var_vec
             );
-            if( rhs_tensor.sizes().size() == 1 ) {
-                int64_t n           = rhs_tensor.sizes()[0];
-                int64_t raw_array[] = {1, n};
-                c10::IntArrayRef shape(raw_array, 2);
-                rhs_tensor = rhs_tensor.view(shape);
-            }
+            //
+            // dim
+            size_t skip = 2;
+            broadcast(
+                var_vec[op_index].sizes(),
+                var_vec[lhs_index].sizes(),
+                array,
+                skip
+            );
+            c10::IntArrayRef dim(array);
+            //
             // rhs_transpose
             size_t n_dim = rhs_tensor.sizes().size();
-            assert( 1 < n_dim );
             TensorType rhs_transpose = rhs_tensor.transpose(n_dim-2, n_dim-1);
             //
             // prod
             TensorType prod = rev_der[op_index].matmul( rhs_transpose );
             //
             // rev_der[lhs_index] += prod
-            if( rev_der[lhs_index].numel() == 0 ) {
-                rev_der[lhs_index] = prod;
-            } else {
-                rev_der[lhs_index] += prod;
-            }
+            plus_equal(rev_der[lhs_index], prod, dim);
         }
         //
         // rev_der[rhs_index]
@@ -242,27 +245,26 @@ namespace ad_tensor { namespace dev {
             TensorType lhs_tensor  = tensor_at_arg_index(
                 arg_start, agraph, con_vec, par_vec, var_vec
             );
-            if( lhs_tensor.sizes().size() == 1 ) {
-                int64_t n           = lhs_tensor.sizes()[0];
-                int64_t raw_array[] = {n, 1};
-                c10::IntArrayRef shape(raw_array, 2);
-                lhs_tensor = lhs_tensor.view(shape);
-            }
+            //
+            // dim
+            size_t skip = 2;
+            broadcast(
+                var_vec[op_index].sizes(),
+                var_vec[rhs_index].sizes(),
+                array,
+                skip
+            );
+            c10::IntArrayRef dim(array);
             //
             // lhs_transpose
             size_t n_dim = lhs_tensor.sizes().size();
-            assert( 1 < n_dim );
             TensorType lhs_transpose = lhs_tensor.transpose(n_dim-2, n_dim-1);
             //
             // prod
             TensorType prod = lhs_transpose.matmul( rev_der[op_index] );
             //
             // rev_der[rhs_index] += prod
-            if( rev_der[rhs_index].numel() == 0 ) {
-                rev_der[rhs_index] = prod;
-            } else {
-                rev_der[rhs_index] += prod;
-            }
+            plus_equal(rev_der[rhs_index], prod, dim);
         }
     }
     template void matmul_op_t<adten_t>::reverse_der(

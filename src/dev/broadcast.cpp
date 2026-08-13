@@ -18,6 +18,7 @@ Determine Broadcast Dimensions for a Result Argument Pair
 Prototype
 *********
 {xrst_literal ,
+    include/ad_tensor/dev/broadcast.hpp
     BEGIN_BROADCAST, END_BROADCAST
 }
 
@@ -39,17 +40,22 @@ Upon return, dim is the dimension indices, in the res_shape,
 where arg_shape was broadcast to match the shape of the other argument
 to the binary operation.
 
+skip
+****
+is the number of dimensions, at the end, to skip from the broadcasting.
+For example, a matrix multiply does not broadcast the last two dimensions
+so skip would be two for this case.
+
 {xrst_end broadcast}
 */
-// BEGIN_BROADCAST
 namespace ad_tensor { namespace dev {
     // broadcast(res, arg, dim)
     void broadcast(
         const c10::IntArrayRef&    res_shape ,
         const c10::IntArrayRef&    arg_shape ,
-        vector<int64_t>&           dim
-    )
-    {   // END_BROADCAST
+        vector<int64_t>&           dim       ,
+        size_t                     skip
+    ) {
         //
         // dim
         dim.resize(0);
@@ -65,7 +71,7 @@ namespace ad_tensor { namespace dev {
         assert( arg_len <= res_len && "broadcast: "
             "arg shape is longer than res shape"
         );
-        for(size_t i = 0; i < res_len; ++i)
+        for(size_t i = skip; i < res_len; ++i)
         {   size_t res_index  = res_len - i - 1;
             if( i < arg_len )
             {   size_t arg_index = arg_len - i - 1;

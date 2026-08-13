@@ -13,6 +13,12 @@
 Matrix Multiplication
 #####################
 
+Syntax
+******
+{xrst_code cpp}
+    prod = lhs.matmul(rhs)
+{xrst_code}
+
 Prototype
 *********
 {xrst_literal ,
@@ -22,31 +28,22 @@ Prototype
 lhs
 ***
 is the left hand side in the matrix multiplication.
-We use lhs.n_dim to denote the number of dimensions in lhs.
-
-#.  If lhs.n_dim is one,
-    it is treated as a row vector with lhs.n_dim equal to two.
-
-#.  If lhs.n_dim is greater than two, first lhs.n_dim - 2 dimensions
-    are treated as batching dimensions.
+It must be two or more dimensional.
+If it is more than two dimensional; i.e. sizes (\*,m,n), broadcasting is used
+to match rhs for the \* dimensions.
 
 rhs
 ***
 is the right hand side in the matrix multiplication.
-We use rhs.n_dim to denote the number of dimensions in rhs.
-
-#.  If rhs.n_dim is one,
-    it is treated as a column vector with rhs.n_dim equal to two.
-
-#.  If rhs.n_dim is greater than two, first rhs.n_dim - 2 dimensions
-    are treated as batching dimensions.
-
-$.  Broadcasting is use to match the size of the batching dimensions of lhs
-    and rhs.
+It must be two or more dimensional.
+If it is more than two dimensional; i.e. sizes (\*,n,p), broadcasting is used
+to match lhs for the \* dimensions.
 
 prod
 ****
 is the result of the matrix multiply.
+If lhs and rhs are two dimensional, it has sizes (m,p).
+Otherwise it has the sizes (\*,m,p) that result from broadcasting.
 
 Example
 *******
@@ -104,31 +101,24 @@ has been converted to an element-wise multiply and sum.
 namespace ad_tensor { // BEGIN_NAMESPACE_AD_TENSOR
 
 // BEGIN_MATMUL BEGIN_DEV_MATMUL
-// prod = lhs.matmul(rhs)
 adten_t adten_t::matmul(const adten_t& rhs) const
 // END_MATMUL END_DEV_MATMUL
 {
-    //
-    //
-    // lhs_ndim, rhs_ndim
-    // If both arguments are vectors, use element-wise multiply and sum
-    size_t  lhs_ndim  = this->sizes().size();
-    int64_t rhs_ndim = this->sizes().size();
-    if( lhs_ndim == 1 && rhs_ndim == 1 ) {
-        return ((*this) * rhs).sum();
-    }
 # ifndef NDEBUG
+    c10::IntArrayRef lhs_shape = this->sizes();
+    c10::IntArrayRef rhs_shape = rhs.sizes();
     //
-    // lhs_ncols, rhs_nrows
-    int64_t lhs_ncols = this->sizes()[ lhs_ndim - 1];
-    int64_t rhs_nrows;
-    if( rhs_ndim == 1 )  {
-        rhs_nrows = rhs.sizes()[0];
-    } else {
-        rhs_nrows = rhs.sizes()[rhs_ndim - 2];
-    }
-    dev::user_assert( lhs_ncols == rhs_nrows,
-        "matmul: lhs times rhs dimension mismatch"
+    dev::user_assert( lhs_shape.size() >= 2,
+        "matmul: left hand operand is not two or more dimensional"
+    );
+    dev::user_assert( rhs_shape.size() >= 2,
+        "matmul: right hand operand is not two or more dimensional"
+    );
+    size_t n_left  = lhs_shape.size();
+    size_t n_right = rhs_shape.size();
+    dev::user_assert( lhs_shape[n_left - 1] == rhs_shape[n_right - 2],
+        "matmul: the number of columns is left operand "
+        "not equal number of rows in right operand"
     );
 # endif
     //

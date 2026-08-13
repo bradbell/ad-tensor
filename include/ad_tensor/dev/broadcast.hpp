@@ -7,9 +7,12 @@
 #include <ad_tensor/vector.hpp>
 //
 namespace ad_tensor { namespace dev {
+    // BEGIN_BROADCAST
     void broadcast(
         const c10::IntArrayRef&    res_shape  ,
         const c10::IntArrayRef&    arg_shape  ,
-        vector<int64_t>&           dim
+        vector<int64_t>&           dim        ,
+        size_t                     skip = 0
     );
+    // END_BROADCAST
 } }
