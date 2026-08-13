@@ -18,9 +18,9 @@ Prototype
     BEGIN_LINALG_SOLVE, END_LINALG_SOLVE
 }
 
-square
+linear
 ******
-is a two dimensional invertible square matrix.
+is a two dimensional invertible linear matrix.
 
 rhs
 ***
@@ -30,15 +30,15 @@ If it is one dimensional, it is treated as a column vector.
 
 left
 ****
-if true (false) the square matrix is on the left (right).
+if true (false) the linear matrix is on the left (right).
 The default for left is true.
 
 solution
 ********
 is the solution of the linear equation
 
-    square   x solution = rhs      (left true)
-    solution x square   = rhs      (left false)
+    linear   x solution = rhs      (left true)
+    solution x linear   = rhs      (left false)
 
 where x denotes matrix multiplication.
 
@@ -78,7 +78,7 @@ the following is added to the parameter (variable) acyclic graph:
     :header-rows: 1
 
     arg_index, arg_value,                  arg_type
-    start + 0, index for square,           type for square
+    start + 0, index for linear,           type for linear
     start + 1, index for rhs,              type for rhs
     start + 2, 1 (0) is left true (false), ad_type::none
 
@@ -101,31 +101,31 @@ adten_t adten_t::solve(const adten_t& rhs, bool left) const
 {
     //
 # ifndef NDEBUG
-    const adten_t& square = *this;
-    size_t square_n_dim   = this->sizes().size();
+    const adten_t& linear = *this;
+    size_t linear_n_dim   = this->sizes().size();
     size_t rhs_n_dim      = rhs.sizes().size();
     //
-    dev::user_assert( square_n_dim == 2 ,
-        "solve: square is not two dimensional"
+    dev::user_assert( linear_n_dim == 2 ,
+        "solve: linear is not two dimensional"
     );
     dev::user_assert( rhs_n_dim == 1 || rhs_n_dim == 2 ,
         "solve: rhs is not one or two dimensional"
     );
-    int64_t square_n_row = square.sizes()[0];
-    int64_t square_n_col = square.sizes()[1];
-    dev::user_assert( square_n_row == square_n_col ,
-        "solve: square: number of rows is not equal number of columns"
+    int64_t linear_n_row = linear.sizes()[0];
+    int64_t linear_n_col = linear.sizes()[1];
+    dev::user_assert( linear_n_row == linear_n_col ,
+        "solve: linear: number of rows is not equal number of columns"
     );
     int64_t rhs_n_row = rhs.sizes()[0];
     int64_t rhs_n_col = 1;
     if( rhs_n_dim == 2 ) {
         rhs_n_col = rhs.sizes()[1];
     }
-    dev::user_assert( square_n_row == rhs_n_row || ! left , "solve: "
-        "left true and number of rows in square and rhs are not equal"
+    dev::user_assert( linear_n_row == rhs_n_row || ! left , "solve: "
+        "left true and number of rows in linear and rhs are not equal"
     );
-    dev::user_assert( square_n_col == rhs_n_col || left , "solve: "
-        "left false and number of columns in square and rhs are not equal"
+    dev::user_assert( linear_n_col == rhs_n_col || left , "solve: "
+        "left false and number of columns in linear and rhs are not equal"
     );
 # endif
     // res_tensor
@@ -136,7 +136,7 @@ adten_t adten_t::solve(const adten_t& rhs, bool left) const
     if( ! tape.m_recording )
         return adten_t( res_tensor );
     dev::user_assert( m_tape_id == tape.m_tape_id , "solve: "
-        "square AD tensor's tape is not tape that is recording"
+        "linear AD tensor's tape is not tape that is recording"
     );
     dev::user_assert( rhs.m_tape_id == tape.m_tape_id , "solve: "
         "rhs AD tensor's tape is not tape that is recording"
@@ -185,10 +185,10 @@ adten_t adten_t::solve(const adten_t& rhs, bool left) const
     return adten_t(res_tape_id, res_index, res_tensor, res_ad_type);
 }
 // BEGIN_LINALG_SOLVE
-// solution = linalg_solve(square, rsh, left)
-adten_t linalg_solve(const adten_t& square, const adten_t& rhs, bool left)
+// solution = linalg_solve(linear, rsh, left)
+adten_t linalg_solve(const adten_t& linear, const adten_t& rhs, bool left)
 // END_LINALG_SOLVE
-{   return square.solve(rhs, left);
+{   return linear.solve(rhs, left);
 }
 // ---------------------------------------------------------------------------
 } // END_NAMESPACE_AD_TENSOR

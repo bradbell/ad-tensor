@@ -395,6 +395,6 @@ namespace ad_tensor {
     //
     // linalg_solve
     adten_t linalg_solve(
-        const adten_t& square, const adten_t& rhs, bool left = true
+        const adten_t& linear, const adten_t& rhs, bool left = true
     );
 }
