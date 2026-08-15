@@ -3,20 +3,19 @@
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
 /*
-{xrst_begin tensor_at_index dev}
+{xrst_begin shape_at_index dev}
 {xrst_spell
     agraph
-    adten
 }
 
-Get Tensor Corresponding to an Operator Argument Index
-######################################################
+Get Shape Corresponding to an Operator Argument Index
+#####################################################
 
 Prototype
 *********
 {xrst_literal ,
-    BEGIN_TENSOR_AT_ARG_INDEX_PAR, END_TENSOR_AT_ARG_INDEX_PAR
-    BEGIN_TENSOR_AT_ARG_INDEX_VAR, END_TENSOR_AT_ARG_INDEX_VAR
+    BEGIN_SHAPE_AT_ARG_INDEX_PAR, END_SHAPE_AT_ARG_INDEX_PAR
+    BEGIN_SHAPE_AT_ARG_INDEX_VAR, END_SHAPE_AT_ARG_INDEX_VAR
 }
 
 arg_index
@@ -50,11 +49,10 @@ agraph is a variable (parameter) acyclic graph.
 
 return
 ******
-The return is the tensor corresponding to this argument and operator usage.
-This is not a constant reference because it returns a temporary
-when TensorType is adten_t and the argument is a constant.
+The return is the shape of the tensor corresponding to this
+argument and operator usage.
 
-{xrst_end tensor_at_index}
+{xrst_end shape_at_index}
 */
 #include <cassert>
 #include <torch/torch.h>
@@ -65,92 +63,91 @@ when TensorType is adten_t and the argument is a constant.
 //
 namespace ad_tensor { namespace dev {
     // ----------------------------------------------------------------------
-    // BEGIN_TENSOR_AT_ARG_INDEX_PAR
-    // See return for why this is not a const TensorType&
+    // BEGIN_SHAPE_AT_ARG_INDEX_PAR
     template<class TensorType>
-    TensorType tensor_at_arg_index(
+    c10::IntArrayRef shape_at_arg_index(
         size_t                    arg_index ,
         const agraph_t&           agraph    ,
         const vector<at::Tensor>& con_vec   ,
         const vector<TensorType>& par_vec   )
-    // END_TENSOR_AT_ARG_INDEX_PAR
+    // END_SHAPE_AT_ARG_INDEX_PAR
     {   size_t    index   = agraph.m_arg_value[arg_index];
         ad_type_t ad_type = agraph.m_arg_type[arg_index];
         switch( ad_type ) {
             //
             // constant
             case ad_type_t::constant:
-            return TensorType( con_vec[index] );
+            return con_vec[index].sizes();
             //
             // parameter
             case ad_type_t::parameter:
-            return par_vec[index];
+            return par_vec[index].sizes();
             //
             // default
             default:
-            assert( false && "tensor_at_arg_index: "
+            assert( false && "shape_at_arg_index: "
                 "expected a constant or parameter"
             );
         }
         // should not get here
-        return par_vec[0];
+        return par_vec[0].sizes();
     }
-    template adten_t tensor_at_arg_index<adten_t>(
+    template c10::IntArrayRef shape_at_arg_index<adten_t>(
         size_t                    arg_index ,
         const agraph_t&           agraph    ,
         const vector<at::Tensor>& con_vec   ,
         const vector<adten_t>&    par_vec
     );
-    template at::Tensor tensor_at_arg_index<at::Tensor>(
+    template c10::IntArrayRef shape_at_arg_index<at::Tensor>(
         size_t                    arg_index ,
         const agraph_t&           agraph    ,
         const vector<at::Tensor>& con_vec   ,
         const vector<at::Tensor>& par_vec
     );
     // ----------------------------------------------------------------------
-    // BEGIN_TENSOR_AT_ARG_INDEX_VAR
-    // See return for why this is not a const TensorType&
+    // BEGIN_SHAPE_AT_ARG_INDEX_VAR
     template<class TensorType>
-    TensorType tensor_at_arg_index(
+    c10::IntArrayRef shape_at_arg_index(
         size_t                    arg_index ,
         const agraph_t&           agraph    ,
         const vector<at::Tensor>& con_vec   ,
         const vector<TensorType>& par_vec   ,
         const vector<TensorType>& var_vec   )
-    // END_TENSOR_AT_ARG_INDEX_VAR
+    // END_SHAPE_AT_ARG_INDEX_VAR
     {   size_t    index   = agraph.m_arg_value[arg_index];
         ad_type_t ad_type = agraph.m_arg_type[arg_index];
         switch( ad_type ) {
             //
             // constant
             case ad_type_t::constant:
-            return TensorType( con_vec[index] );
+            return con_vec[index].sizes();
+
             //
             // parameter
             case ad_type_t::parameter:
-            return par_vec[index];
+            return par_vec[index].sizes();
             //
             // variable
             case ad_type_t::variable:
-            return var_vec[index];
+            return var_vec[index].sizes();
             //
             // default
             default:
-            assert( false && "tensor_at_arg_index:"
+            assert( false && "shape_at_arg_index:"
                 "expected a constant, parameter or variable"
             );
         }
         // should not get here
-        return var_vec[0];
+        return var_vec[0].sizes();
     }
-    template adten_t tensor_at_arg_index<adten_t>(
+    template c10::IntArrayRef shape_at_arg_index<adten_t>(
         size_t                    arg_index ,
         const agraph_t&           agraph    ,
         const vector<at::Tensor>& con_vec   ,
         const vector<adten_t>&    par_vec   ,
         const vector<adten_t>&    var_vec
     );
-    template at::Tensor tensor_at_arg_index<at::Tensor>(
+    template c10::IntArrayRef shape_at_arg_index<at::Tensor>(
         size_t                    arg_index ,
         const agraph_t&           agraph    ,
         const vector<at::Tensor>& con_vec   ,

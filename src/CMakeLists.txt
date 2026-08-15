@@ -61,6 +61,7 @@ add_library(ad_tensor SHARED
     dev/optimize/optimize_con.cpp
     dev/optimize/rng_depend.cpp
     dev/rev_sum_view.cpp
+    dev/shape_at_index.cpp
     dev/tape.cpp
     dev/tensor_at_index.cpp
     dev/to_string.cpp
