@@ -145,8 +145,8 @@ namespace ad_tensor { namespace dev {
         );
         //
         // true_type, false_type
-        ad_type_t true_type  = agraph.m_arg_type[arg_start + 1];
-        ad_type_t false_type = agraph.m_arg_type[arg_start + 2];
+        adtype_t true_type  = agraph.m_arg_type[arg_start + 1];
+        adtype_t false_type = agraph.m_arg_type[arg_start + 2];
         //
         // true_index. false_index
         size_t true_index  = agraph.m_arg_value[arg_start + 1];
@@ -154,7 +154,7 @@ namespace ad_tensor { namespace dev {
         //
         // zero, variable
         TensorType zero = TensorType( torch::zeros( {1} ) );
-        ad_type_t  variable = ad_type_t::variable;
+        adtype_t  variable = adtype_t::variable;
         //
         if( true_type == variable ) {
             if( false_type == variable ) {
@@ -211,11 +211,11 @@ namespace ad_tensor { namespace dev {
         );
         //
         // true_type, false_type
-        ad_type_t true_type  = agraph.m_arg_type[arg_start + 1];
-        ad_type_t false_type = agraph.m_arg_type[arg_start + 2];
+        adtype_t true_type  = agraph.m_arg_type[arg_start + 1];
+        adtype_t false_type = agraph.m_arg_type[arg_start + 2];
         //
         // rev_der[true_index]
-        if( true_type  == ad_type_t::variable ) {
+        if( true_type  == adtype_t::variable ) {
             //
             // true_index
             size_t true_index  = agraph.m_arg_value[arg_start + 1];
@@ -232,7 +232,7 @@ namespace ad_tensor { namespace dev {
         }
         //
         // rev_der[false_index]
-        if( false_type  == ad_type_t::variable ) {
+        if( false_type  == adtype_t::variable ) {
             //
             // false_index
             size_t false_index  = agraph.m_arg_value[arg_start];

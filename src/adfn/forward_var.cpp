@@ -3,7 +3,7 @@
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
 #include <ad_tensor/adfn.hpp>
-#include <ad_tensor/ad_type.hpp>
+#include <ad_tensor/adtype.hpp>
 #include <ad_tensor/dev/base_op.hpp>
 #include <ad_tensor/dev/derive_op.hpp>
 #include <ad_tensor/dev/to_string.hpp>

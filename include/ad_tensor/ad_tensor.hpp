@@ -5,8 +5,8 @@
 // ----------------------------------------------------------------------------
 // BEGIN_SORT_THIS_LINE_PLUS_1
 #include <ad_tensor/ad_tensor.hpp>
-#include <ad_tensor/ad_type.hpp>
 #include <ad_tensor/adten.hpp>
+#include <ad_tensor/adtype.hpp>
 #include <ad_tensor/atom.hpp>
 #include <ad_tensor/base_atom.hpp>
 #include <ad_tensor/chkpnt.hpp>

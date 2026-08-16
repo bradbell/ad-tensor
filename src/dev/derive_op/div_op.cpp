@@ -114,32 +114,32 @@ namespace ad_tensor { namespace dev {
         assert( n_arg == 2 && "div: n_arg != 2" );
 # endif
         // variable
-        ad_type_t variable = ad_type_t::variable;
+        adtype_t variable = adtype_t::variable;
         //
         // lhs_index, rhs_index
         size_t lhs_index = agraph.m_arg_value[arg_start];
         size_t rhs_index = agraph.m_arg_value[arg_start + 1];
         //
         // lhs_type, rhs_type
-        ad_type_t lhs_type = agraph.m_arg_type[arg_start];
-        ad_type_t rhs_type = agraph.m_arg_type[arg_start + 1];
+        adtype_t lhs_type = agraph.m_arg_type[arg_start];
+        adtype_t rhs_type = agraph.m_arg_type[arg_start + 1];
         if( lhs_type == variable && for_der[lhs_index].numel() == 0 ) {
-            lhs_type = ad_type_t::constant;
+            lhs_type = adtype_t::constant;
         }
         if( rhs_type == variable && for_der[rhs_index].numel() == 0 ) {
-            rhs_type = ad_type_t::constant;
+            rhs_type = adtype_t::constant;
         }
         //
         // for_der[op_index]
-        if( lhs_type != ad_type_t::variable ) {
-            assert( rhs_type == ad_type_t::variable );
+        if( lhs_type != adtype_t::variable ) {
+            assert( rhs_type == adtype_t::variable );
             //
             // for_der
             for_der[op_index] =
                 - var_vec[op_index] * for_der[lhs_index] / var_vec[rhs_index];
             //
-        } else if( rhs_type != ad_type_t::variable ) {
-            assert( lhs_type == ad_type_t::variable );
+        } else if( rhs_type != adtype_t::variable ) {
+            assert( lhs_type == adtype_t::variable );
             //
             // for_der
             for_der[op_index] = for_der[lhs_index] / var_vec[rhs_index];;
@@ -191,8 +191,8 @@ namespace ad_tensor { namespace dev {
 # endif
         //
         // lhs_type, rhs_type
-        ad_type_t lhs_type = agraph.m_arg_type[arg_start];
-        ad_type_t rhs_type = agraph.m_arg_type[arg_start + 1];
+        adtype_t lhs_type = agraph.m_arg_type[arg_start];
+        adtype_t rhs_type = agraph.m_arg_type[arg_start + 1];
         //
         // lhs_index, rhs_index
         size_t lhs_index = agraph.m_arg_value[arg_start];
@@ -207,7 +207,7 @@ namespace ad_tensor { namespace dev {
         TensorType quotient = rev_der[op_index] / rhs_tensor;
         //
         // rev_der[lhs_index]
-        if( lhs_type == ad_type_t::variable ) {
+        if( lhs_type == adtype_t::variable ) {
             //
             // dim
             broadcast(
@@ -221,7 +221,7 @@ namespace ad_tensor { namespace dev {
         }
         //
         // rev_der[rhs_index]
-        if( rhs_type == ad_type_t::variable ) {
+        if( rhs_type == adtype_t::variable ) {
             //
             // prod
             TensorType prod = quotient * var_vec[op_index];

@@ -17,9 +17,13 @@ data = [
     '''
     const
     ''',
-    # abbreviations
+    # local abbreviations
     '''
     var
     vec
     ''',
+    # local words
+    '''
+    adtype
+    '''
 ]

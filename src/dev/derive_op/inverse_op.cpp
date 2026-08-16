@@ -21,9 +21,9 @@ namespace ad_tensor { namespace dev {
         //
 #ifndef NDEBUG
         //
-        // ad_type
-        ad_type_t ad_type   = agraph.m_arg_type[arg_start];
-        assert( ad_type  == ad_type_t::parameter );
+        // adtype
+        adtype_t adtype   = agraph.m_arg_type[arg_start];
+        assert( adtype  == adtype_t::parameter );
         //
         // n_arg
         size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
@@ -63,9 +63,9 @@ namespace ad_tensor { namespace dev {
         //
 #ifndef NDEBUG
         //
-        // ad_type
-        ad_type_t ad_type   = agraph.m_arg_type[arg_start];
-        assert( ad_type  == ad_type_t::variable );
+        // adtype
+        adtype_t adtype   = agraph.m_arg_type[arg_start];
+        assert( adtype  == adtype_t::variable );
         //
         // n_arg
         size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
@@ -108,9 +108,9 @@ namespace ad_tensor { namespace dev {
         //
 #ifndef NDEBUG
         //
-        // ad_type
-        ad_type_t ad_type   = agraph.m_arg_type[arg_start];
-        assert( ad_type  == ad_type_t::variable );
+        // adtype
+        adtype_t adtype   = agraph.m_arg_type[arg_start];
+        assert( adtype  == adtype_t::variable );
         //
         // n_arg
         size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
@@ -167,9 +167,9 @@ namespace ad_tensor { namespace dev {
         //
 #ifndef NDEBUG
         //
-        // ad_type
-        ad_type_t ad_type   = agraph.m_arg_type[arg_start];
-        assert( ad_type  == ad_type_t::variable );
+        // adtype
+        adtype_t adtype   = agraph.m_arg_type[arg_start];
+        assert( adtype  == adtype_t::variable );
         //
         // n_arg
         size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;

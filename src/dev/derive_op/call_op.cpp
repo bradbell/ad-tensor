@@ -73,8 +73,8 @@ void call_op_depend(
     assert( agraph.m_op_seq[op_index] == op_enum_t::call );
     //
     // parameter, variable
-    ad_type_t parameter = ad_type_t::parameter;
-    ad_type_t variable  = ad_type_t::variable;
+    adtype_t parameter = adtype_t::parameter;
+    adtype_t variable  = adtype_t::variable;
     //
 # ifndef NDEBUG
     // n_set
@@ -126,7 +126,7 @@ void call_op_depend(
                 );
             }
             arg_index           = arg_start + 4 + dom_index;
-            ad_type_t arg_type  = agraph.m_arg_type[arg_index];
+            adtype_t arg_type  = agraph.m_arg_type[arg_index];
             size_t    arg_value = agraph.m_arg_value[arg_index];
             if( arg_type == parameter ) {
                 sub_sets.push_back( arg_value );
@@ -354,21 +354,21 @@ void call_op_t<TensorType>::forward_der(
     for(size_t j = 0; j < n_domain; ++j) {
         size_t    arg_index = arg_start + 4 + j;
         size_t    vec_index = agraph.m_arg_value[arg_index];
-        ad_type_t arg_type  = agraph.m_arg_type[arg_index];
+        adtype_t arg_type  = agraph.m_arg_type[arg_index];
         switch( arg_type ) {
-            case ad_type_t::constant: {
+            case adtype_t::constant: {
                 TensorType domain_j = TensorType( con_vec[vec_index] );
                 domain.push_back( domain_j );
                 dom_der.push_back( TensorType( torch::empty({0}) ) );
             }
             break;
-            case ad_type_t::parameter: {
+            case adtype_t::parameter: {
                 const TensorType& domain_j = par_vec[vec_index];
                 domain.push_back( domain_j );
                 dom_der.push_back( TensorType( torch::empty({0}) ) );
             }
             break;
-            case ad_type_t::variable: {
+            case adtype_t::variable: {
                 const TensorType& domain_j = var_vec[vec_index];
                 domain.push_back( domain_j );
                 dom_der.push_back( for_der[vec_index] );
@@ -477,8 +477,8 @@ void call_op_t<TensorType>::reverse_der(
     // rev_der
     for(size_t j = 0; j < n_domain; ++j) {
         size_t    arg_index  = arg_start + 4 + j;
-        ad_type_t ad_type    = agraph.m_arg_type[arg_index];
-        if( ad_type == ad_type_t::variable ) {
+        adtype_t adtype    = agraph.m_arg_type[arg_index];
+        if( adtype == adtype_t::variable ) {
             size_t rev_index = agraph.m_arg_value[arg_index];
             plus_equal( rev_der[rev_index], dom_der[j] );
         }

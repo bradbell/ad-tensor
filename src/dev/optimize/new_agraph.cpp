@@ -16,7 +16,7 @@ Syntax
 ******
 {xrst_code cpp}
     tie(agraph_new, rng_index_new) = new_agraph(
-        agraph_type, agraph_old, rng_index_old, rng_ad_type, depend_old
+        agraph_type, agraph_old, rng_index_old, rng_adtype, depend_old
     )
 {xrst_code}
 
@@ -28,8 +28,8 @@ Prototype
 
 agraph_type
 ***********
-is the type for the graphs and must be ad_type_t::parameter
-or ad_type_t::variable.
+is the type for the graphs and must be adtype_t::parameter
+or adtype_t::variable.
 
 agraph_old
 **********
@@ -40,9 +40,9 @@ rng_index_old
 The :ref:`adfn_dev@m_rng_index` values for the function before optimization
 of the agraph_type operations.
 
-rng_ad_type
-***********
-The :ref:`adfn_dev@m_rng_ad_type` values for the function optimization.
+rng_adtype
+**********
+The :ref:`adfn_dev@m_rng_adtype` values for the function optimization.
 This the same before and after optimization.
 
 depend_old
@@ -58,7 +58,7 @@ The new graph representing the agraph_type values that are deemed necessary.
 rng_index_new
 *************
 The range index values for the function after optimization of the
-agraph_type operations. If rng_ad_type[i] is agraph_type,
+agraph_type operations. If rng_adtype[i] is agraph_type,
 rng_index_new[i] may be different from rng_index_old[i].
 
 Test
@@ -78,10 +78,10 @@ namespace ad_tensor { namespace dev { // BEGIN_AD_TENSOR_DEV_NAMESPACE
 // )
 // BEGIN_NEW_AGRAPH
 std::tuple< agraph_t, vector<size_t> > new_agraph(
-    ad_type_t                agraph_type     ,
+    adtype_t                agraph_type     ,
     const agraph_t&          agraph_old      ,
     const vector<size_t>&    rng_index_old   ,
-    const vector<ad_type_t>& rng_ad_type     ,
+    const vector<adtype_t>& rng_adtype     ,
     const vector<bool>&      depend_old   )
 {   // END_NEW_AGRAPH
     //
@@ -184,11 +184,11 @@ std::tuple< agraph_t, vector<size_t> > new_agraph(
                 size_t end   = agraph_old.m_arg_start[op_index_old + 1];
                 for(size_t arg_index = start; arg_index < end; ++arg_index) {
                     //
-                    ad_type_t ad_type = agraph_old.m_arg_type[arg_index];
-                    agraph_new.m_arg_type.push_back( ad_type );
+                    adtype_t adtype = agraph_old.m_arg_type[arg_index];
+                    agraph_new.m_arg_type.push_back( adtype );
                     size_t value_old = agraph_old.m_arg_value[arg_index];
                     size_t value_new = value_old;
-                    if( ad_type == agraph_type ) {
+                    if( adtype == agraph_type ) {
                         value_new = old2new[value_old];
                     }
                     agraph_new.m_arg_value.push_back( value_new );
@@ -213,7 +213,7 @@ std::tuple< agraph_t, vector<size_t> > new_agraph(
     // rng_index_new
     vector<size_t> rng_index_new = rng_index_old;
     for(size_t i = 0; i < rng_index_old.size(); ++i) {
-        if( rng_ad_type[i] == agraph_type ) {
+        if( rng_adtype[i] == agraph_type ) {
             assert( depend_old[ rng_index_old[i] ] );
             rng_index_new[i] = old2new[ rng_index_old[i] ];
         }

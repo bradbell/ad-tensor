@@ -114,18 +114,18 @@ void atom_depend(
         while(s_index < pattern.size() && pattern[s_index][0] == rng_index ) {
             size_t d_index    = pattern[s_index][1];
             size_t value      = agraph.m_arg_value[arg_start + 4 + d_index];
-            ad_type_t ad_type = agraph.m_arg_type[arg_start + 4 + d_index];
-            switch( ad_type ) {
+            adtype_t adtype = agraph.m_arg_type[arg_start + 4 + d_index];
+            switch( adtype ) {
                 //
-                case ad_type_t::constant:
+                case adtype_t::constant:
                 depend_con[value] = true;
                 break;
                 //
-                case ad_type_t::parameter:
+                case adtype_t::parameter:
                 depend_par[value] = true;
                 break;
                 //
-                case ad_type_t::variable:
+                case adtype_t::variable:
                 assert( var_op );
                 depend_var[value] = true;
                 break;
@@ -185,15 +185,15 @@ void op_depend(
                 size_t value = agraph.m_arg_value[arg_index];
                 switch( agraph.m_arg_type[arg_index] ) {
                     //
-                    case ad_type_t::constant:
+                    case adtype_t::constant:
                     depend_con[value] = true;
                     break;
                     //
-                    case ad_type_t::parameter:
+                    case adtype_t::parameter:
                     depend_par[value] = true;
                     break;
                     //
-                    case ad_type_t::variable:
+                    case adtype_t::variable:
                     assert( var_op );
                     depend_var[value] = true;
                     break;
@@ -237,17 +237,17 @@ namespace ad_tensor {
         depend_var.resize(n_var, false);
         //
         // depend_con, depend_par, depend_var
-        for(size_t i = 0; i < n_rng; ++i) { switch( m_rng_ad_type[i] ) {
+        for(size_t i = 0; i < n_rng; ++i) { switch( m_rng_adtype[i] ) {
             //
-            case ad_type_t::constant:
+            case adtype_t::constant:
             depend_con[ m_rng_index[i] ] = true;
             break;
             //
-            case ad_type_t::parameter:
+            case adtype_t::parameter:
             depend_par[ m_rng_index[i] ] = true;
             break;
             //
-            case ad_type_t::variable:
+            case adtype_t::variable:
             depend_var[ m_rng_index[i] ] = true;
             break;
             //

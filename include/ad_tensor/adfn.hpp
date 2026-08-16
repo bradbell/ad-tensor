@@ -114,9 +114,9 @@ m_rng_index
 ***********
 is the constant, parameter, or variable index for each of the range tensors.
 
-m_rng_ad_type
-*************
-is the ad_type for each of the range tensors.
+m_rng_adtype
+************
+is the adtype for each of the range tensors.
 
 m_rng_shapes
 ************
@@ -129,7 +129,7 @@ is the shape for each of the range tensors.
 #include <ad_tensor/vector.hpp>
 #include <torch/torch.h>
 #include <ad_tensor/direction.hpp>
-#include <ad_tensor/ad_type.hpp>
+#include <ad_tensor/adtype.hpp>
 #include <ad_tensor/sparsity.hpp>
 #include <ad_tensor/dev/agraph.hpp>
 #include <ad_tensor/dev/call_op_depend.hpp>
@@ -167,7 +167,7 @@ private:
     dev::agraph_t             m_par;
     dev::agraph_t             m_var;
     vector<size_t>            m_rng_index;
-    vector<ad_type_t>         m_rng_ad_type;
+    vector<adtype_t>         m_rng_adtype;
     vector< vector<int64_t> > m_rng_shapes;
     std::string               m_name;
     bool                      m_trace;
@@ -195,7 +195,7 @@ public:
     , m_par()
     , m_var()
     , m_rng_index()
-    , m_rng_ad_type()
+    , m_rng_adtype()
     , m_rng_shapes()
     , m_name()
     , m_trace(false)
@@ -209,7 +209,7 @@ public:
         m_var.is_empty() &&
         m_con.empty() &&
         m_rng_index.empty() &&
-        m_rng_ad_type.empty() &&
+        m_rng_adtype.empty() &&
         m_rng_shapes.empty() &&
         m_name.empty()
         ;

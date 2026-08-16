@@ -14,7 +14,7 @@ The Operator Hash Code Function
 Syntax
 ******
 {xrst_code cpp}
-    hash = new_op_hash(ad_type, agraph_old, old2new, old_index)
+    hash = new_op_hash(adtype, agraph_old, old2new, old_index)
 {xrst_code}
 
 Prototype
@@ -23,8 +23,8 @@ Prototype
     BEGIN_NEW_OP_HASH, END_NEW_OP_HASH
 }
 
-ad_type
-*******
+adtype
+******
 This is the type of agraph_old and must be either parameter or variable.
 
 agraph_old
@@ -39,7 +39,7 @@ Suppose that
 
 #.  agraph_old.m_arg_start[old_index] < arg_index
 #.  arg_index <  agraph_old.m_arg_start[old_index + 1]
-#.  agraph_old.m_arg_type[arg_index] == ad_type
+#.  agraph_old.m_arg_type[arg_index] == adtype
 #.  op_index = agraph_old.m_arg_value[arg_index]
 
 Then op_index < old_index and
@@ -49,7 +49,7 @@ that is equivalent to the operator with index op_index in the old graph.
 old_index
 *********
 This is the index of the operator that we are computing the hash code for.
-Note that all of its arguments to this operator with type ad_type have indices
+Note that all of its arguments to this operator with type adtype have indices
 less than old_index (and hence old2new is defined for all such arguments).
 
 hash
@@ -71,7 +71,7 @@ Check if Two Operators are Equal in the Optimized Graph
 Syntax
 ******
 {xrst_code cpp}
-    equal = new_op_equal(ad_type, agraph_old, old2new, old_index_1, old_index_2
+    equal = new_op_equal(adtype, agraph_old, old2new, old_index_1, old_index_2
 {xrst_code}
 
 Prototype
@@ -80,8 +80,8 @@ Prototype
     BEGIN_NEW_OP_EQUAL, END_NEW_OP_EQUAL
 }
 
-ad_type
-*******
+adtype
+******
 This is the type of agraph_old and must be either parameter or variable.
 
 agraph_old
@@ -97,7 +97,7 @@ Suppose old_index <= old_index_1 and old_index <= old_index_2 and
 
 #.  agraph_old.m_arg_start[old_index] < arg_index
 #.  arg_index <  agraph_old.m_arg_start[old_index + 1]
-#.  agraph_old.m_arg_type[arg_index] == ad_type
+#.  agraph_old.m_arg_type[arg_index] == adtype
 #.  op_index = agraph_old.m_arg_value[arg_index]
 
 Then op_index < old_index_1, op_index < old_index_2 and
@@ -133,7 +133,7 @@ namespace ad_tensor { namespace dev { // BEGIN_AD_TENSOR_DEV_NAMESPACE
 // BEGIN_NEW_OP_HASH
 // stackoverflow.com/questions/20511347/a-good-hash-function-for-a-vector
 size_t new_op_hash(
-    ad_type_t            ad_type,
+    adtype_t            adtype,
     const agraph_t&      agraph_old,
     const vector<size_t> old2new,
     size_t               old_index )
@@ -150,9 +150,9 @@ size_t new_op_hash(
     // hash
     size_t hash  = hash_size_t( end - start + (size_t(op_enum) << 8) );
     for(size_t arg_index = start; arg_index < end; ++arg_index) {
-        ad_type_t  arg_type   = agraph_old.m_arg_type[arg_index];
+        adtype_t  arg_type   = agraph_old.m_arg_type[arg_index];
         size_t     arg_value  = agraph_old.m_arg_value[arg_index];
-        if( arg_type == ad_type ) {
+        if( arg_type == adtype ) {
             arg_value = old2new[arg_value];
         }
         //
@@ -164,7 +164,7 @@ size_t new_op_hash(
 //
 // BEGIN_NEW_OP_EQUAL
 bool new_op_equal(
-    ad_type_t            ad_type,
+    adtype_t            adtype,
     const agraph_t&      agraph_old,
     const vector<size_t> old2new ,
     size_t               old_index_1 ,
@@ -189,13 +189,13 @@ bool new_op_equal(
     // i_arg
     for(size_t i_arg = 0; i_arg < n_arg; ++i_arg) {
         //
-        ad_type_t  arg_type = agraph_old.m_arg_type[start_1 + i_arg];
+        adtype_t  arg_type = agraph_old.m_arg_type[start_1 + i_arg];
         if( arg_type != agraph_old.m_arg_type[start_2 + i_arg] ) {
             return false;
         }
         size_t arg_value_1  = agraph_old.m_arg_value[start_1 + i_arg];
         size_t arg_value_2  = agraph_old.m_arg_value[start_2 + i_arg];
-        if( arg_type == ad_type ) {
+        if( arg_type == adtype ) {
             arg_value_1 = old2new[arg_value_1];
             arg_value_2 = old2new[arg_value_2];
         }

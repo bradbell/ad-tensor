@@ -115,21 +115,21 @@ namespace ad_tensor { namespace dev {
 # endif
         //
         // lhs_type, rhs_type
-        ad_type_t lhs_type = agraph.m_arg_type[arg_start];
-        ad_type_t rhs_type = agraph.m_arg_type[arg_start + 1];
+        adtype_t lhs_type = agraph.m_arg_type[arg_start];
+        adtype_t rhs_type = agraph.m_arg_type[arg_start + 1];
         //
         // lhs_index, rhs_index
         size_t lhs_index = agraph.m_arg_value[arg_start];
         size_t rhs_index = agraph.m_arg_value[arg_start + 1];
         //
-        if( lhs_type != ad_type_t::variable ) {
-            assert( rhs_type == ad_type_t::variable );
+        if( lhs_type != adtype_t::variable ) {
+            assert( rhs_type == adtype_t::variable );
             //
             // for_der
             for_der[op_index] = for_der[rhs_index];
             //
-        } else if( rhs_type != ad_type_t::variable ) {
-            assert( lhs_type == ad_type_t::variable );
+        } else if( rhs_type != adtype_t::variable ) {
+            assert( lhs_type == adtype_t::variable );
             //
             // for_der
             for_der[op_index] = for_der[lhs_index];
@@ -180,11 +180,11 @@ namespace ad_tensor { namespace dev {
 # endif
         //
         // lhs_type, rhs_type
-        ad_type_t lhs_type = agraph.m_arg_type[arg_start];
-        ad_type_t rhs_type = agraph.m_arg_type[arg_start + 1];
+        adtype_t lhs_type = agraph.m_arg_type[arg_start];
+        adtype_t rhs_type = agraph.m_arg_type[arg_start + 1];
         //
         // rev_der[lhs_index]
-        if( lhs_type == ad_type_t::variable ) {
+        if( lhs_type == adtype_t::variable ) {
             //
             // lhs_index
             size_t lhs_index = agraph.m_arg_value[arg_start];
@@ -201,7 +201,7 @@ namespace ad_tensor { namespace dev {
         }
         //
         // rev_der[rhs_index]
-        if( rhs_type == ad_type_t::variable ) {
+        if( rhs_type == adtype_t::variable ) {
             //
             // rhs_index
             size_t rhs_index = agraph.m_arg_value[arg_start + 1];

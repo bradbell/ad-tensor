@@ -22,13 +22,13 @@ namespace ad_tensor { namespace dev {
         //
         // n_dim
         size_t n_dim = agraph.m_arg_value[arg_start + 1];
-        assert( ad_type_t::none ==  agraph.m_arg_type[arg_start + 1] );
+        assert( adtype_t::none ==  agraph.m_arg_type[arg_start + 1] );
         //
 #ifndef NDEBUG
         //
-        // ad_type
-        ad_type_t ad_type   = agraph.m_arg_type[arg_start];
-        assert( ad_type  == ad_type_t::parameter );
+        // adtype
+        adtype_t adtype   = agraph.m_arg_type[arg_start];
+        assert( adtype  == adtype_t::parameter );
         //
         // n_arg
         size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
@@ -73,13 +73,13 @@ namespace ad_tensor { namespace dev {
         //
         // n_dim
         size_t n_dim = agraph.m_arg_value[arg_start + 1];
-        assert( ad_type_t::none ==  agraph.m_arg_type[arg_start + 1] );
+        assert( adtype_t::none ==  agraph.m_arg_type[arg_start + 1] );
         //
 #ifndef NDEBUG
         //
-        // ad_type
-        ad_type_t ad_type   = agraph.m_arg_type[arg_start];
-        assert( ad_type  == ad_type_t::variable );
+        // adtype
+        adtype_t adtype   = agraph.m_arg_type[arg_start];
+        assert( adtype  == adtype_t::variable );
         //
         // n_arg
         size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;

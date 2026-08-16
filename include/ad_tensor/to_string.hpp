@@ -5,7 +5,7 @@
 // ----------------------------------------------------------------------------
 #include <string>
 #include <torch/torch.h>
-#include <ad_tensor/ad_type.hpp>
+#include <ad_tensor/adtype.hpp>
 #include <ad_tensor/adten.hpp>
 #include <ad_tensor/dev/op_enum.hpp>
 #include <ad_tensor/vector.hpp>

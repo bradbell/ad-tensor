@@ -111,10 +111,10 @@ adten_t adten_t::where(
         "AD tensor where: false_case's tape is not tape that is recording"
     );
     //
-    // res_ad_type
-    ad_type_t res_ad_type = cond.m_ad_type;
-    res_ad_type           = std::max(res_ad_type, true_case.m_ad_type);
-    res_ad_type           = std::max(res_ad_type, false_case.m_ad_type);
+    // res_adtype
+    adtype_t res_adtype = cond.m_adtype;
+    res_adtype           = std::max(res_adtype, true_case.m_adtype);
+    res_adtype           = std::max(res_adtype, false_case.m_adtype);
     //
     // res_tape_id
     size_t res_tape_id = tape.m_tape_id;
@@ -122,7 +122,7 @@ adten_t adten_t::where(
     // res_index
     size_t res_index;
     //
-    if( res_ad_type == ad_type_t::constant ) {
+    if( res_adtype == adtype_t::constant ) {
         // res_index, tape.m_con
         res_index = tape.m_con.size();
         tape.m_con.push_back( res_at_ten.clone() );
@@ -130,10 +130,10 @@ adten_t adten_t::where(
         //
         // agraph
         dev::agraph_t* agraph = nullptr;
-        if( res_ad_type == ad_type_t::parameter )
+        if( res_adtype == adtype_t::parameter )
             agraph = &tape.m_par;
         else {
-            assert( res_ad_type == ad_type_t::variable );
+            assert( res_adtype == adtype_t::variable );
             agraph = &tape.m_var;
         }
         //
@@ -143,15 +143,15 @@ adten_t adten_t::where(
         agraph->m_arg_start.push_back( agraph->m_arg_value.size() );
         //
         agraph->m_arg_value.push_back( cond.m_index );
-        agraph->m_arg_type.push_back( cond.m_ad_type );
+        agraph->m_arg_type.push_back( cond.m_adtype );
         //
         agraph->m_arg_value.push_back( true_case.m_index );
-        agraph->m_arg_type.push_back( true_case.m_ad_type );
+        agraph->m_arg_type.push_back( true_case.m_adtype );
         //
         agraph->m_arg_value.push_back( false_case.m_index );
-        agraph->m_arg_type.push_back( false_case.m_ad_type );
+        agraph->m_arg_type.push_back( false_case.m_adtype );
     }
-    return adten_t(res_tape_id, res_index, res_at_ten, res_ad_type);
+    return adten_t(res_tape_id, res_index, res_at_ten, res_adtype);
 }
 // ---------------------------------------------------------------------------
 } // END_NAMESPACE_AD_TENSOR

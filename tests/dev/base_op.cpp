@@ -6,7 +6,7 @@
 #include <torch/torch.h>
 //
 #include <ad_tensor/vector.hpp>
-#include <ad_tensor/ad_type.hpp>
+#include <ad_tensor/adtype.hpp>
 #include <ad_tensor/dev/op_enum.hpp>
 #include <ad_tensor/dev/agraph.hpp>
 #include <ad_tensor/dev/derive_op.hpp>
@@ -14,9 +14,9 @@
 // empty namespace
 namespace {
     //
-    // op_enum_t, ad_type_t
+    // op_enum_t, adtype_t
     using ad_tensor::dev::op_enum_t;
-    using ad_tensor::ad_type_t;
+    using ad_tensor::adtype_t;
     using ad_tensor::dev::agraph_t;
     using ad_tensor::dev::base_op_t;
     //
@@ -36,7 +36,7 @@ TEST(tests_dev, op_base)  {
     // m_arg_start, m_arg_value, m_arg_type, con_vec, par_vec
     op_enum_t              dom         = op_enum_t::dom;
     op_enum_t              add         = op_enum_t::add;
-    ad_type_t              par         = ad_type_t::parameter;
+    adtype_t              par         = adtype_t::parameter;
     Tensor                 empty       = torch::empty( {0} );
     Tensor                 ones        = torch::ones( {2} );
     size_t                 op_index    = 1;
@@ -46,7 +46,7 @@ TEST(tests_dev, op_base)  {
     agraph.m_op_seq     = ad_tensor::vector<op_enum_t>( {dom, add} );
     agraph.m_arg_start  = ad_tensor::vector<size_t>( {0, 0, 2} );
     agraph.m_arg_value  = ad_tensor::vector<size_t>( {0, 0} );
-    agraph.m_arg_type   = ad_tensor::vector<ad_type_t>( {par, par} );
+    agraph.m_arg_type   = ad_tensor::vector<adtype_t>( {par, par} );
     //
     // par_vec[op_index]
     base_op.forward_par(op_index, agraph, con_vec, par_vec);

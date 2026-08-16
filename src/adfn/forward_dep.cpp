@@ -59,8 +59,8 @@ std::array<sparsity_t, 2> adfn_t::forward_dep(void) const
     using ad_tensor::dev::to_string;
     //
     // parameter, variable
-    ad_type_t parameter = ad_type_t::parameter;
-    ad_type_t variable  = ad_type_t::variable;
+    adtype_t parameter = adtype_t::parameter;
+    adtype_t variable  = adtype_t::variable;
     //
     // sub_sets
     vector<size_t> sub_sets;
@@ -90,7 +90,7 @@ std::array<sparsity_t, 2> adfn_t::forward_dep(void) const
                 sub_sets.resize(0);
                 for(size_t arg_index = arg_start; arg_index < arg_end;
                 ++arg_index) {
-                    ad_type_t domain_type = agraph.m_arg_type[arg_index];
+                    adtype_t domain_type = agraph.m_arg_type[arg_index];
                     if( domain_type == parameter ) {
                         size_t operand = agraph.m_arg_value[arg_index];
                         sub_sets.push_back( operand);
@@ -158,7 +158,7 @@ std::array<sparsity_t, 2> adfn_t::forward_dep(void) const
                 sub_sets.resize(0);
                 for(size_t arg_index = arg_start; arg_index < arg_end;
                 ++arg_index) {
-                    ad_type_t domain_type = agraph.m_arg_type[arg_index];
+                    adtype_t domain_type = agraph.m_arg_type[arg_index];
                     if( domain_type == parameter ) {
                         size_t operand = agraph.m_arg_value[arg_index];
                         sub_sets.push_back( operand);
@@ -214,7 +214,7 @@ std::array<sparsity_t, 2> adfn_t::forward_dep(void) const
     // depend_par
     sparsity_t depend_par;
     for(size_t i = 0; i < m_rng_index.size(); ++i) {
-        ad_type_t range_type = m_rng_ad_type[i];
+        adtype_t range_type = m_rng_adtype[i];
         if( range_type == parameter ) {
             size_t rng_set_id = m_rng_index[i];
             c10::ArrayRef<size_t> set = vec_sets.get_set( rng_set_id );
@@ -238,7 +238,7 @@ std::array<sparsity_t, 2> adfn_t::forward_dep(void) const
     // depend_var
     sparsity_t depend_var;
     for(size_t i = 0; i < m_rng_index.size(); ++i) {
-        ad_type_t range_type = m_rng_ad_type[i];
+        adtype_t range_type = m_rng_adtype[i];
         if( range_type == variable ) {
             size_t rng_set_id = m_rng_index[i] + n_par;
             c10::ArrayRef<size_t> set = vec_sets.get_set( rng_set_id );

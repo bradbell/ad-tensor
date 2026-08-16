@@ -106,8 +106,8 @@ namespace ad_tensor { namespace dev {
 #ifndef NDEBUG
         size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
         assert( n_arg == 1 && "minus: n_arg != 1" );
-        ad_type_t operand_type  = agraph.m_arg_type[arg_start];
-        assert( operand_type == ad_type_t::variable && "minus::forward_der: "
+        adtype_t operand_type  = agraph.m_arg_type[arg_start];
+        assert( operand_type == adtype_t::variable && "minus::forward_der: "
             "operand is not a variable"
         );
 # endif
@@ -154,8 +154,8 @@ namespace ad_tensor { namespace dev {
 #ifndef NDEBUG
         size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
         assert( n_arg == 1 && "minus: n_arg != 1" );
-        ad_type_t operand_type  = agraph.m_arg_type[arg_start];
-        assert( operand_type == ad_type_t::variable &&
+        adtype_t operand_type  = agraph.m_arg_type[arg_start];
+        assert( operand_type == adtype_t::variable &&
             "minus::forward_der: operand is not a variable"
         );
 # endif

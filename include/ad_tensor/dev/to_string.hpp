@@ -5,14 +5,14 @@
 // ----------------------------------------------------------------------------
 #include <string>
 #include <torch/torch.h>
-#include <ad_tensor/ad_type.hpp>
+#include <ad_tensor/adtype.hpp>
 #include <ad_tensor/adten.hpp>
 #include <ad_tensor/dev/op_enum.hpp>
 #include <ad_tensor/vector.hpp>
 #include <ad_tensor/sparsity.hpp>
 namespace ad_tensor { namespace dev {
     // BEGIN_SORT_THIS_LINE_PLUS_1
-    std::string to_string(ad_type_t ad_type);
+    std::string to_string(adtype_t adtype);
     std::string to_string(const adten_t& atensor);
     std::string to_string(const at::Tensor& tensor);
     std::string to_string(const c10::ArrayRef<size_t>& vec);

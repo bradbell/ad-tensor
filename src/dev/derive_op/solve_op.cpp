@@ -32,7 +32,7 @@ namespace ad_tensor { namespace dev {
 #ifndef NDEBUG
         size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
         assert( n_arg == 3  );
-        assert( agraph.m_arg_type[arg_start+2] == ad_type_t::none );
+        assert( agraph.m_arg_type[arg_start+2] == adtype_t::none );
 # endif
         //
         // linear_ten, rhs_ten
@@ -78,7 +78,7 @@ namespace ad_tensor { namespace dev {
 #ifndef NDEBUG
         size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
         assert( n_arg == 3 );
-        assert( agraph.m_arg_type[arg_start+2] == ad_type_t::none );
+        assert( agraph.m_arg_type[arg_start+2] == adtype_t::none );
 # endif
         //
         // linear_ten, rhs_ten
@@ -130,23 +130,23 @@ namespace ad_tensor { namespace dev {
 #ifndef NDEBUG
         size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
         assert( n_arg == 3 );
-        assert( agraph.m_arg_type[arg_start+2] == ad_type_t::none );
+        assert( agraph.m_arg_type[arg_start+2] == adtype_t::none );
 # endif
         // variable
-        ad_type_t variable = ad_type_t::variable;
+        adtype_t variable = adtype_t::variable;
         //
         // linear_index, rhs_index
         size_t linear_index = agraph.m_arg_value[arg_start];
         size_t rhs_index = agraph.m_arg_value[arg_start + 1];
         //
         // linear_type, rhs_type
-        ad_type_t linear_type = agraph.m_arg_type[arg_start];
-        ad_type_t rhs_type = agraph.m_arg_type[arg_start + 1];
+        adtype_t linear_type = agraph.m_arg_type[arg_start];
+        adtype_t rhs_type = agraph.m_arg_type[arg_start + 1];
         if( linear_type == variable && for_der[linear_index].numel() == 0 ) {
-            linear_type = ad_type_t::constant;
+            linear_type = adtype_t::constant;
         }
         if( rhs_type == variable && for_der[rhs_index].numel() == 0 ) {
-            rhs_type = ad_type_t::constant;
+            rhs_type = adtype_t::constant;
         }
         //
         // linear
@@ -156,14 +156,14 @@ namespace ad_tensor { namespace dev {
         //
         // prod
         TensorType prod = TensorType( torch::empty( {0} ) );
-        if( left && linear_type == ad_type_t::variable ) {
+        if( left && linear_type == adtype_t::variable ) {
             prod = for_der[linear_index].matmul( var_vec[op_index] );
-        } else if( ! left && linear_type == ad_type_t::variable ) {
+        } else if( ! left && linear_type == adtype_t::variable ) {
             prod = var_vec[op_index].matmul( for_der[linear_index] );
         }
         // diff
         TensorType diff = TensorType( torch::empty( {0} ) );
-        if( rhs_type == ad_type_t::variable ) {
+        if( rhs_type == adtype_t::variable ) {
             diff = for_der[rhs_index];
         }
         minus_equal(diff, prod);
@@ -217,12 +217,12 @@ namespace ad_tensor { namespace dev {
 #ifndef NDEBUG
         size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
         assert( n_arg == 3 );
-        assert( agraph.m_arg_type[arg_start+2] == ad_type_t::none );
+        assert( agraph.m_arg_type[arg_start+2] == adtype_t::none );
 # endif
         //
         // linear_type, rhs_type
-        ad_type_t linear_type     = agraph.m_arg_type[arg_start];
-        ad_type_t rhs_type        = agraph.m_arg_type[arg_start + 1];
+        adtype_t linear_type     = agraph.m_arg_type[arg_start];
+        adtype_t rhs_type        = agraph.m_arg_type[arg_start + 1];
         //
         // linear_index, rhs_index
         size_t linear_index = agraph.m_arg_value[arg_start];
@@ -238,12 +238,12 @@ namespace ad_tensor { namespace dev {
         //
         // rhs_bar
         TensorType rhs_bar = linalg_solve(linear_tra, rev_der[op_index], left);
-        if( rhs_type == ad_type_t::variable ) {
+        if( rhs_type == adtype_t::variable ) {
             plus_equal(rev_der[rhs_index], rhs_bar);
         }
         //
         // linear_bar
-        if( linear_type == ad_type_t::variable ) {
+        if( linear_type == adtype_t::variable ) {
             if( left ) {
                 TensorType prod = rhs_bar.matmul(solution_tra);
                 minus_equal(rev_der[linear_index], prod);

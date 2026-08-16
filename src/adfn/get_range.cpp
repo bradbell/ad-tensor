@@ -62,8 +62,8 @@ vector<TensorType> adfn_t::get_range(
     // cout
     using std::cout;
     //
-    assert( m_rng_index.size() == m_rng_ad_type.size() &&
-        "adfn: m_rng_index and m_rng_ad_type have different sizes"
+    assert( m_rng_index.size() == m_rng_adtype.size() &&
+        "adfn: m_rng_index and m_rng_adtype have different sizes"
     );
     // trace
     if( m_trace ) {
@@ -74,18 +74,18 @@ vector<TensorType> adfn_t::get_range(
     vector<TensorType> range;
     for(size_t i = 0; i < m_rng_index.size(); ++i)
     {   size_t    index    = m_rng_index[i];
-        ad_type_t ad_type  = m_rng_ad_type[i];
-        switch(ad_type) {
+        adtype_t adtype  = m_rng_adtype[i];
+        switch(adtype) {
             //
-            case ad_type_t::constant:
+            case adtype_t::constant:
             range.push_back( m_con[index] );
             break;
             //
-            case ad_type_t::parameter:
+            case adtype_t::parameter:
             range.push_back( par_all[index] );
             break;
             //
-            case ad_type_t::variable:
+            case adtype_t::variable:
             range.push_back( var_all[index] );
             break;
             //
@@ -96,7 +96,7 @@ vector<TensorType> adfn_t::get_range(
         }
         if( m_trace ) {
             cout << "range[" << i << "] = " << dev::to_string(range[i]);
-            cout << ", [" << index << ", " << dev::to_string(ad_type) << "]\n";
+            cout << ", [" << index << ", " << dev::to_string(adtype) << "]\n";
         }
     }
     if( m_trace ) {

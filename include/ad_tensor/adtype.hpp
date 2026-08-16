@@ -4,7 +4,7 @@
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
 /*
-{xrst_begin ad_type usr}
+{xrst_begin adtype usr}
 {xrst_spell
     enum
 }
@@ -32,7 +32,7 @@ The elements of a variable tensor are called variables.
 
 none
 ****
-The type none is used when the ad_type does not correspond to an AD tensor.
+The type none is used when the adtype does not correspond to an AD tensor.
 
 Enum Values
 ***********
@@ -40,10 +40,10 @@ Enum Values
     BEGIN_AD_TYPE_T, END_AD_TYPE_T
 }
 
-{xrst_end ad_type}
+{xrst_end adtype}
 */
 // BEGIN_AD_TYPE_T
-namespace ad_tensor { enum struct ad_type_t {
+namespace ad_tensor { enum struct adtype_t {
     constant,
     parameter,
     variable,
