@@ -66,6 +66,7 @@ This member function returns true if all the vectors in the graph are empty.
 
 {xrst_end agraph}
 */
+#include <ad_tensor/vector.hpp>
 #include <ad_tensor/adtype.hpp>
 #include <ad_tensor/dev/op_enum.hpp>
 
@@ -76,7 +77,7 @@ public:
     vector<op_enum_t>            m_op_seq;
     vector<size_t>               m_arg_start;
     vector<size_t>               m_arg_value;
-    vector<adtype_t>            m_arg_type;
+    vector<adtype_t>             m_arg_type;
     //
     // default constructor
     agraph_t()

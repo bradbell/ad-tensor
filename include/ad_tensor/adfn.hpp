@@ -167,7 +167,7 @@ private:
     dev::agraph_t             m_par;
     dev::agraph_t             m_var;
     vector<size_t>            m_rng_index;
-    vector<adtype_t>         m_rng_adtype;
+    vector<adtype_t>          m_rng_adtype;
     vector< vector<int64_t> > m_rng_shapes;
     std::string               m_name;
     bool                      m_trace;

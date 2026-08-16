@@ -53,6 +53,7 @@ Other Member Functions
 **********************
 {xrst_comment BEGIN_SORT_THIS_LINE_PLUS_2}
 {xrst_toc_table after
+    src/adten/index_put.cpp
     src/adten/matmul.cpp
     src/adten/minus.cpp
     src/adten/recording.cpp
@@ -173,6 +174,7 @@ The adten_t Class Developer Documentation
 {xrst_comment BEGIN_SORT_THIS_LINE_PLUS_2}
 {xrst_toc_table after
     src/adten/binary.cpp
+    src/adten/index_put.cpp
     src/adten/matmul.cpp
     src/adten/minus.cpp
     src/adten/solve.cpp
@@ -389,6 +391,12 @@ public:
     //
     // solve
     adten_t solve(const adten_t& rhs, bool left) const;
+    //
+    // index_put
+    adten_t index_put(
+        const c10::List< std::optional<at::Tensor> >& input ,
+        const adten_t&                                replace
+    ) const;
 }; }
 
 namespace ad_tensor {

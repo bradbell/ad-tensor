@@ -94,6 +94,7 @@ namespace ad_tensor { namespace dev {
     AD_TENSOR_DERIVE_OP(exp_op)
     AD_TENSOR_DERIVE_OP(ge_op)
     AD_TENSOR_DERIVE_OP(gt_op)
+    AD_TENSOR_DERIVE_OP(index_put_op)
     AD_TENSOR_DERIVE_OP(inverse_op)
     AD_TENSOR_DERIVE_OP(le_op)
     AD_TENSOR_DERIVE_OP(logdet_op)

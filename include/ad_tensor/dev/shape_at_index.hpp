@@ -16,7 +16,7 @@ namespace ad_tensor { namespace dev {
         const vector<TensorType>& par_vec   );
     //
     template <class TensorType>
-    c10::IntArrayRef shae_at_arg_index(
+    c10::IntArrayRef shape_at_arg_index(
         size_t                    arg_index ,
         const agraph_t&           agraph    ,
         const vector<at::Tensor>& con_vec   ,

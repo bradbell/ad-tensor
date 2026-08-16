@@ -62,6 +62,7 @@ namespace ad_tensor { namespace dev { enum struct op_enum_t
     call,        // call atomic function
     call_result, // place holder when more than one result for a call
     dom,         // domain tensor
+    index_put,   // assign elements of a tensor
     matmul,      // matrix multiplication
     minus,       // unary minus
     solve,       // solve matrix equation
