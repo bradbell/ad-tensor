@@ -408,8 +408,9 @@ public:
 
 namespace ad_tensor {
     //
-    // linalg_solve
+    // BEGIN_LINALG_SOLVE
     adten_t linalg_solve(
         const adten_t& linear, const adten_t& rhs, bool left = true
     );
+    // END_LINALG_SOLVE
 }

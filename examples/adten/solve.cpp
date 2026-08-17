@@ -2,6 +2,75 @@
 // SPDX-FileCopyrightText: Bradley M. Bell <bradbell@seanet.com>
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
+/*
+{xrst_begin example_solve usr}
+{xrst_spell
+    cc
+    ll
+}
+
+Example Solving linear Equations
+################################
+
+Problem
+*******
+Given :math:`v \in \mathbb{R}^3` and :math:`p \in \mathbb{R}^4`
+solve for :math:`r \in \mathbb{R}^4` where
+
+.. math::
+
+    \left( \begin{array}{cc}
+        p_0 & p_1 \\
+        p_2 & p_3
+    \end{array} \right)
+    =
+    \left( \begin{array}{cc}
+        v_0 & 0   \\
+        v_1 & v_2
+    \end{array} \right)
+    \left( \begin{array}{cc}
+        r_0 & r_1 \\
+        r_2 & r_3
+    \end{array} \right)
+
+.. math::
+
+    \left( \begin{array}{cc}
+        p_0 & p_1 \\
+        p_2 & p_3
+    \end{array} \right)
+    =
+    \left( \begin{array}{cc}
+        v_0 r_0            & v_0 r_1           \\
+        v_1 r_0 + v_2 r_2  & v_1 r_1 + v_2 r_3 
+    \end{array} \right)
+
+.. math::
+
+    \begin{array}{ll}
+    r_0 = p_0 / v_0              & r_1 = p_1 / v_0  \\
+    r_2 = (p_2 - v_1 r_0) / v_2  & r_3 = (p_3 - v_1 r_1) / v_2 
+    \end{array}
+
+It follows that :math:`r = f(p, v)` where
+
+.. math::
+
+    f(v, p) & = \left( \begin{array}{c}
+        p_0 / v_0 \\
+        p_1 / v_0 \\
+        (p_2 - v_1 p_0 / v_0) / v_2 \\
+        (p_3 - v_1 p_1 / v_0) / v_2
+    \end{array} \right)
+    
+Source Code
+***********
+{xrst_literal ,
+    BEGIN_CPP, END_CPP
+}
+
+{xrst_end example_solve}
+*/
 // BEGIN_CPP
 #include <gtest/gtest.h>
 #include <ad_tensor/ad_tensor.hpp>
@@ -12,127 +81,48 @@ TEST(examples_adten, solve)  {
     using at::Tensor;
     using ad_tensor::vector;
     //
-    // x
-    double x0 = 0.5, x1 = 1.0, x2 = 1.5, x3 = 2.0;
-    vector<Tensor> x;
-    x.push_back( torch::tensor( {
-        {x0, x1},
-        {x2, x3}
-    } ) );
-    /*
-    inv(x) = {
-        {x3, -x1},
-        {-x2, x0}
-    } / det(x0, x1, x2, x3)
-    */
     // p
-    vector<Tensor> p;
     double p0 = 1.0, p1 = 2.0, p2 = 3.0, p3 = 4.0;
-    p.push_back( torch::tensor( {
-        {p0, p1},
-        {p2, p3}
-    } ) );
+    vector<Tensor> p;
+    p.push_back( torch::tensor( {p0, p1, p2, p3} ) );
     //
-    // ap, ax
-    auto [ax, ap] = adten_t::start_recording(x, p);
+    // v
+    double v0 = 5.0, v1 = 6.0, v2 = 7.0;
+    vector<Tensor> v;
+    v.push_back( torch::tensor( {v0, v1, v2} ) );
     //
-    // ay
-    vector<adten_t> ay;
+    // ap, av
+    auto [av, ap] = adten_t::start_recording(v, p);
+    //
+    // aP
+    adten_t aP     = ap[0].view( {2, 2} );
+    //
+    // aV
+    adten_t azeros = adten_t( torch::zeros( {2, 2} ) );
+    std::optional<at::Tensor> row_index = torch::tensor( {0, 1, 1} );
+    std::optional<at::Tensor> col_index = torch::tensor( {0, 0, 1} );
+    c10::List< std::optional<at::Tensor> > index_list = {row_index, col_index};
+    adten_t aV  = azeros.index_put(index_list, av[0]);
+    //
+    // aR
     bool left = true;
-    ay.push_back( ad_tensor::linalg_solve(ax[0], ap[0], left) );
-    left = false;
-    ay.push_back( ad_tensor::linalg_solve(ax[0], ap[0], left) );
+    adten_t aR = ad_tensor::linalg_solve(aV, aP, left);
     //
-    // y = f(x, p)
-    adfn_t f = adten_t::stop_recording(ay, "f");
+    // r = f(v, p)
+    vector<adten_t> ar = {aR};
+    adfn_t f           = adten_t::stop_recording(ar, "f");
     //
     // par_all, var_all
     vector<Tensor> par_all = f.forward_par(p);
-    vector<Tensor> var_all = f.forward_var(x, par_all);
+    vector<Tensor> var_all = f.forward_var(v, par_all);
     //
-    // y
-    vector<Tensor> y = f.get_range(var_all, par_all);
-    //
-    // det
-    double det = x0 * x3 - x1 * x2;
-    //
-    // y0_times_det
-    Tensor y0_times_det = torch::tensor( {
-        {  x3 * p0 - x1 * p2,   x3 * p1 - x1 * p3},
-        {- x2 * p0 + x0 * p2, - x2 * p1 + x0 * p3}
-    } );
-    //
-    // y1_times_det
-    Tensor y1_times_det = torch::tensor( {
-        { p0 * x3 - p1 * x2, - p0 * x1 + p1 * x0 },
-        { p2 * x3 - p3 * x2, - p2 * x1 + p3 * x0 }
-    } );
-    //
-    bool equal, close;
-    //
-    // inv(x) * p
-    equal = y[0].equal( y0_times_det / det);
-    EXPECT_TRUE( equal );
-    //
-    // p * inv(x)
-    equal = y[1].equal( y1_times_det / det);
-    EXPECT_TRUE( equal );
-    //
-    Tensor check;
-    //
-    // dx, dy
-    vector<Tensor> dx(1), dy(1);
-    dx[0]  = torch::tensor( { {1.0, 0.0}, {0.0, 0.0} } );
-    dy     = f.forward_der(dx, var_all, par_all);
-    //
-    // check dy[0]
-    check  = torch::tensor( { {0.0, 0.0}, {p2,  p3} } ) / det;
-    check -= y0_times_det * x3 / (det * det);
-    close  = dy[0].allclose( check );
-    EXPECT_TRUE( close );
-    //
-    // check dy[1]
-    check  = torch::tensor( { {0.0, p1}, {0.0,  p3} } ) / det;
-    check -= y1_times_det * x3 / (det * det);
-    close  = dy[1].allclose( check );
-    EXPECT_TRUE( close );
-    // ---------------------------------------------------------------------
-    // dy
-    // select (0,0) element of y[0] which is:
-    // g(x0, x1, x2, x3) = (x3 * p0 - x1 * p2) / (x0 * x3 - x1 * x2)
-    dy[0]  = torch::tensor( { {1.0, 0.0}, {0.0, 0.0} } );
-    dy[1]  = torch::tensor( { {0.0, 0.0}, {0.0, 0.0} } );
-    //
-    // partials of g
-    double times_det = x3 * p0 - x1 * p2;
-    double g_x0 =            - times_det * x3 / (det * det);
-    double g_x1 = - p2 / det + times_det * x2 / (det * det);
-    double g_x2 =            + times_det * x1 / (det * det);
-    double g_x3 =   p0 / det - times_det * x0 / (det * det);
-    //
-    // dx
-    dx     = f.reverse_der(dy, var_all, par_all);
-    check  = torch::tensor( { {g_x0, g_x1}, {g_x2, g_x3} } );
-    close  = dx[0].allclose( check );
-    EXPECT_TRUE( close );
-    // ---------------------------------------------------------------------
-    // dy
-    // select (1,0) element of y[1] which is:
-    // h(x0, x1, x2, x3) = (p2 * x3 - p3 * x2) / (x0 * x3 - x1 * x2)
-    dy[0]  = torch::tensor( { {0.0, 0.0}, {0.0, 0.0} } );
-    dy[1]  = torch::tensor( { {0.0, 0.0}, {1.0, 0.0} } );
-    //
-    // partials of g
-    times_det   =   p2 * x3 - p3 * x2;
-    double h_x0 =            - times_det * x3 / (det * det);
-    double h_x1 =              times_det * x2 / (det * det);
-    double h_x2 = - p3 / det + times_det * x1 / (det * det);
-    double h_x3 =   p2 / det - times_det * x0 / (det * det);
-    //
-    // dx
-    dx     = f.reverse_der(dy, var_all, par_all);
-    check  = torch::tensor( { {h_x0, h_x1}, {h_x2, h_x3} } );
-    close  = dx[0].allclose( check );
+    // r
+    vector<Tensor> r = f.get_range(var_all, par_all);
+    Tensor check = torch::tensor({
+        {p0 / v0,                     p1 / v0},
+        {(p2 - v1 * p0 / v0) / v2,   (p3 - v1 * p1 / v0) / v2}
+    });
+    bool close  = r[0].allclose( check );
     EXPECT_TRUE( close );
 }
 // END_CPP

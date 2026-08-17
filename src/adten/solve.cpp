@@ -7,46 +7,57 @@
 {xrst_begin adten_solve usr}
 {xrst_spell
     rhs
+    linalg
 }
 
 Solve Linear Equations
 ######################
 
+Syntax
+******
+{xrst_code cpp}
+    unknown = linalg_solve(linear, rhs, flag)
+{xrst_code}
+
 Prototype
 *********
 {xrst_literal ,
+    include/ad_tensor/adten.hpp
     BEGIN_LINALG_SOLVE, END_LINALG_SOLVE
 }
 
 linear
 ******
-is a two dimensional invertible linear matrix.
+is a square matrix or (\*,n,n) batch of square matrices,
+that define the linear equations.
+If it is a batch of matrices, broadcasting is used to match
+the rhs dimensions.
 
 rhs
 ***
-is the right hand side of the matrix equation.
-This must be one or two dimensional.
-If it is one dimensional, it is treated as a column vector.
+is a square matrix or (\*,n,n) batch of square matrices,
+that define the right hand sides in the equations.
+If it is a batch of matrices, broadcasting is used to match
+the linear dimensions.
 
 left
 ****
 if true (false) the linear matrix is on the left (right).
-The default for left is true.
 
-solution
-********
-is the solution of the linear equation
+unknown
+*******
+is the matrix unknown (or batch of matrices) containing the
+unknowns in the linear equation
 
-    linear   x solution = rhs      (left true)
-    solution x linear   = rhs      (left false)
+    linear   x unknown  = rhs      (left true)
+    unknown  x linear   = rhs      (left false)
 
 where x denotes matrix multiplication.
 
 Example
 *******
-{xrst_literal ,
+{xrst_toc_table 
     examples/adten/solve.cpp
-    BEGIN_CPP, END_CPP
 }
 {xrst_end adten_solve}
 -------------------------------------------------------------------------------
@@ -61,7 +72,8 @@ Compute and Record Solution of Linear Equations
 Prototype
 *********
 {xrst_literal ,
-    BEGIN_SOLVE, END_SOLVE
+    include/ad_tensor/adten.hpp
+    BEGIN_LINALG_SOLVE, END_LINALG_SOLVE
 }
 
 Recording
@@ -95,37 +107,26 @@ where start be the length of arg_value and arg_type before this call to
 
 namespace ad_tensor { // BEGIN_NAMESPACE_AD_TENSOR
 
-// BEGIN_SOLVE
 adten_t adten_t::solve(const adten_t& rhs, bool left) const
-// END_SOLVE
 {
     //
 # ifndef NDEBUG
-    const adten_t& linear = *this;
-    size_t linear_n_dim   = this->sizes().size();
-    size_t rhs_n_dim      = rhs.sizes().size();
-    //
-    dev::user_assert( linear_n_dim == 2 ,
-        "solve: linear is not two dimensional"
+    const adten_t&   linear = *this;
+    c10::IntArrayRef linear_shape = linear.sizes();
+    dev::user_assert( linear_shape.size() >= 2 ,
+        "linalg_solve: linear is not two or more dimensional"
     );
-    dev::user_assert( rhs_n_dim == 1 || rhs_n_dim == 2 ,
-        "solve: rhs is not one or two dimensional"
+    size_t n_linear = linear_shape.size();
+    dev::user_assert( linear_shape[n_linear-1] == linear_shape[n_linear-2],
+        "linalg_solve: linear is square matrix or batch of square matrices"
     );
-    int64_t linear_n_row = linear.sizes()[0];
-    int64_t linear_n_col = linear.sizes()[1];
-    dev::user_assert( linear_n_row == linear_n_col ,
-        "solve: linear: number of rows is not equal number of columns"
+    c10::IntArrayRef rhs_shape = rhs.sizes();
+    dev::user_assert( rhs_shape.size() >= 2 ,
+        "linalg_solve: rhs is not two or more dimensional"
     );
-    int64_t rhs_n_row = rhs.sizes()[0];
-    int64_t rhs_n_col = 1;
-    if( rhs_n_dim == 2 ) {
-        rhs_n_col = rhs.sizes()[1];
-    }
-    dev::user_assert( linear_n_row == rhs_n_row || ! left , "solve: "
-        "left true and number of rows in linear and rhs are not equal"
-    );
-    dev::user_assert( linear_n_col == rhs_n_col || left , "solve: "
-        "left false and number of columns in linear and rhs are not equal"
+    size_t n_rhs    = rhs_shape.size();
+    dev::user_assert( rhs_shape[n_rhs-1] == rhs_shape[n_rhs-2],
+        "linalg_solve: rhs is square matrix or batch of square matrices"
     );
 # endif
     // res_tensor
@@ -184,10 +185,7 @@ adten_t adten_t::solve(const adten_t& rhs, bool left) const
     }
     return adten_t(res_tape_id, res_index, res_tensor, res_adtype);
 }
-// BEGIN_LINALG_SOLVE
-// solution = linalg_solve(linear, rsh, left)
 adten_t linalg_solve(const adten_t& linear, const adten_t& rhs, bool left)
-// END_LINALG_SOLVE
 {   return linear.solve(rhs, left);
 }
 // ---------------------------------------------------------------------------

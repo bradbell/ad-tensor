@@ -24,9 +24,9 @@ TEST(examples_adten, index_put)  {
     replace = torch::tensor( { 0.0 } );
     //
     // index_list
-    std::optional<Tensor>  col_index  = torch::tensor( {0} );
-    std::optional<Tensor>  row_index  = torch::tensor( {1} );
-    c10::List< std::optional<Tensor> > index_list = { col_index, row_index };
+    std::optional<Tensor>  row_index  = torch::tensor( {0} );
+    std::optional<Tensor>  col_index  = torch::tensor( {1} );
+    c10::List< std::optional<Tensor> > index_list = { row_index, col_index };
     //
     // x
     vector<Tensor> x = {before, replace};
