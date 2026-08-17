@@ -3,80 +3,70 @@
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
 /*
-{xrst_begin adten_index_put usr}
+{xrst_begin adten_index usr}
 {xrst_spell
-    numel
 }
 
-Replacing Some Elements of a Tensor
-###################################
+Extracting Some Elements from a Tensor
+######################################
 
 Syntax
 ******
 {xrst_code cpp}
-    after = before.index_put(index_list, replace)
+    extract = from.index(index_list)
 {xrst_code}
 
 Prototype
 *********
 {xrst_literal ,
-    BEGIN_INDEX_PUT, END_INDEX_PUT
+    BEGIN_INDEX, END_INDEX
 }
 
-before
-******
-is the initial tensor before replacing some element values
-We use m for the number of dimensions in before; i.e.
+from
+****
+is the tensor we are extracting elements from.
+We use m for the number of dimensions in tensor; i.e.
 
-    m = before.sizes().size();
+    m = from.sizes().size();
 
 index_list
 **********
-Is the list of indices that specify where in before the replacement values
-assigned to the corresponding elements.
+Is the list of indices that specify which elements are extracted.
 There must be m tensors in index_list and
 each tensor in this list must be one dimensional and
-have the same number of elements as replace.
+have the same number of elements which we denote by n.
 
-replace
+extract
 *******
-is a one dimensional tensor of replacement values.
-We use n for the number of elements in replace; i.e.
-
-    n = replace.numel()
-
-after
-*****
-This tensor has he same shape as the before tensor.
+is a size n one dimensional tensor of extracted values.
 Let index_0, ... , index_m1 denote corresponding elements of index_list.
-The value of after is described by the following pseudo code:
+The value of extract is described by the following pseudo code:
 {xrst_code cpp}
-    after = before;
     for(j = 0; j < n; ++j) {
-        after[ index_0[j], ... , index_m1[j] ] = replace[j]
+        extract[j] = from[ index_0[j], ... , index_m1[j] ]
     }
 {xrst_code}
 
 Example
 *******
 {xrst_literal ,
-    examples/adten/index_put.cpp
+    examples/adten/index.cpp
     BEGIN_CPP, END_CPP
 }
-{xrst_end adten_index_put}
+{xrst_end adten_index}
 -------------------------------------------------------------------------------
-{xrst_begin adten_index_put_dev dev}
+{xrst_begin adten_index_dev dev}
 {xrst_spell
     idx
 }
 
-Compute and Record an Element Replace Operation
+Compute and Record an Element Extract Operation
 ###############################################
 
 Prototype
 *********
 {xrst_literal ,
-    BEGIN_DEV_INDEX_PUT, END_DEV_INDEX_PUT
+    BEGIN_DEV_INDEX, END_DEV_INDEX
 }
 
 Recording
@@ -93,19 +83,18 @@ the following is added to the parameter (variable) acyclic graph:
     :header-rows: 1
 
     arg_index, arg_value, arg_type
-    start + 0, index for before tensor,                   type of before
-    start + 1, index for replace tensor,                  type if replace
-    start + 2, number of indices in index_list  (n_idx),  adtype_t::none
-    start + 3, index  of tensor index_list[0]             adtype_t::constant
+    start + 0, index for from tensor,                     type of from
+    start + 1, number of indices in index_list  (n_idx),  adtype_t::none
+    start + 2, index  of tensor index_list[0]             adtype_t::constant
     ..., ..., ...
-    start + 2 + n_idx, index of index_list[n_idx-1]       adtype_t::constant
+    start + 1 + n_idx, index of index_list[n_idx-1]       adtype_t::constant
 
 where start is the length of arg_value and arg_type before this call to
 ``adten_t::binary``,
 If n_dim is zero, all the dimensions are summed.
 
 
-{xrst_end adten_index_put_dev}
+{xrst_end adten_index_dev}
 */
 #include <ad_tensor/adten.hpp>
 #include <ad_tensor/dev/tape.hpp>
@@ -115,37 +104,32 @@ If n_dim is zero, all the dimensions are summed.
 //
 namespace ad_tensor { // BEGIN_NAMESPACE_AD_TENSOR
 //
-// BEGIN_INDEX_PUT  BEGIN_DEV_INDEX_PUT
-adten_t adten_t::index_put(
-        const c10::List< std::optional<at::Tensor> >& index_list ,
-        const adten_t&                                replace
+// BEGIN_INDEX  BEGIN_DEV_INDEX
+adten_t adten_t::index(
+        const c10::List< std::optional<at::Tensor> >& index_list
     ) const
-{   // END_INDEX_PUT END_DEV_INDEX_PUT
+{   // END_INDEX END_DEV_INDEX
     //
     // before
-    const adten_t& before = *this;
+    const adten_t& from = *this;
     //
     // res_tensor
-    at::Tensor res_tensor =
-        before.m_at_ten.index_put(index_list, replace.m_at_ten);
+    at::Tensor res_tensor = from.m_at_ten.index(index_list);
     //
     // tape
     dev::tape_t& tape = dev::this_threads_tape();
     if( ! tape.m_recording )
         return adten_t( res_tensor );
     //
-    dev::user_assert( before.m_tape_id == tape.m_tape_id ,
-        "index_put: Tape for before is not tape that is recording"
+    dev::user_assert( from.m_tape_id == tape.m_tape_id ,
+        "index: Tape for from is not tape that is recording"
     );
-    dev::user_assert( replace.m_tape_id == tape.m_tape_id ,
-        "index_put: Tape for replace is not tape that is recording"
-    );
-    dev::user_assert( index_list.size() == before.sizes().size(),
-        "index_put: index_list.size() not equal number of dimensions in before"
+    dev::user_assert( index_list.size() == from.sizes().size(),
+        "index: index_list.size() not equal number of dimensions in from"
     );
     //
     // res_adtype
-    adtype_t res_adtype = std::max( before.m_adtype, replace.m_adtype );
+    adtype_t res_adtype = from.m_adtype;
     //
     // res_tape_id
     size_t res_tape_id = tape.m_tape_id;
@@ -164,7 +148,7 @@ adten_t adten_t::index_put(
         if( res_adtype == adtype_t::parameter )
             agraph = &tape.m_par;
         else {
-            assert( res_adtype == adtype_t::variable  && "index_put: "
+            assert( res_adtype == adtype_t::variable  && "index: "
                 "before or replace is not constant, parameter, or variable"
             );
             agraph = &tape.m_var;
@@ -172,23 +156,19 @@ adten_t adten_t::index_put(
         //
         // res_index, agraph
         res_index       = agraph->m_op_seq.size();
-        agraph->m_op_seq.push_back( dev::op_enum_t::index_put );
+        agraph->m_op_seq.push_back( dev::op_enum_t::index );
         agraph->m_arg_start.push_back( agraph->m_arg_value.size() );
         //
         // start + 0
-        agraph->m_arg_value.push_back( before.m_index );
-        agraph->m_arg_type.push_back( before.m_adtype );
+        agraph->m_arg_value.push_back( from.m_index );
+        agraph->m_arg_type.push_back( from.m_adtype );
         //
         // start + 1
-        agraph->m_arg_value.push_back( replace.m_index );
-        agraph->m_arg_type.push_back( replace.m_adtype );
-        //
-        // start + 2
         size_t n_idx = index_list.size();
         agraph->m_arg_value.push_back( n_idx );
         agraph->m_arg_type.push_back( adtype_t::none );
         //
-        // start + 3 + i
+        // start + 2 + i
         for (const std::optional<at::Tensor>& index : index_list) {
             size_t con_index  = tape.m_con.size();
             tape.m_con.push_back( index.value().clone() );

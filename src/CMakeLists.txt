@@ -15,6 +15,7 @@ add_library(ad_tensor SHARED
     adten/binary.cpp
     adten/call_atom.cpp
     adten/ctor.cpp
+    adten/index.cpp
     adten/index_put.cpp
     adten/matmul.cpp
     adten/minus.cpp
@@ -40,6 +41,7 @@ add_library(ad_tensor SHARED
     dev/derive_op/exp_op.cpp
     dev/derive_op/ge_op.cpp
     dev/derive_op/gt_op.cpp
+    dev/derive_op/index_op.cpp
     dev/derive_op/index_put_op.cpp
     dev/derive_op/inverse_op.cpp
     dev/derive_op/le_op.cpp
