@@ -61,6 +61,12 @@ TEST(examples_adten, index)  {
     equal = dy[0].equal( torch::tensor( {10.0, 13.0} ) );
     EXPECT_TRUE( equal );
     //
-    // TODO: Implement reverse_der example for this operator.
+    // dy
+    dy[0] = torch::tensor( {14.0, 15.0} );
+    //
+    // dx
+    dx = f.reverse_der(dy, var_all);
+    equal = dx[0].equal( torch::tensor( { {14.0, 0.0}, {0.0, 15.0} } ) );
+    EXPECT_TRUE( equal );
 }
 // END_CPP

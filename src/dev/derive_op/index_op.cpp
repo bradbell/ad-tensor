@@ -182,8 +182,41 @@ namespace ad_tensor { namespace dev {
         const vector<TensorType>&    var_vec     ,
         vector<TensorType>&          rev_der
     ) const {
-        // TODO: Need to implement this
-        assert( false );
+        //
+        // index_list
+        thread_local c10::List< std::optional<at::Tensor> > index_list;
+        //
+        // arg_start, n_idx
+        size_t arg_start = agraph.m_arg_start[op_index];
+        size_t n_idx     = agraph.m_arg_value[arg_start + 1];
+        //
+#ifndef NDEBUG
+        size_t arg_end   = agraph.m_arg_start[op_index + 1];
+        size_t n_arg     = arg_end - arg_start;
+        assert( n_arg  == 2 + n_idx );
+#endif
+        //
+        // index_list
+        index_list.resize(0);
+        for(size_t i = 0; i < n_idx; ++i) {
+            size_t con_index = agraph.m_arg_value[arg_start + 2 + i];
+            std::optional<at::Tensor> index = con_vec[con_index];
+            index_list.push_back( index );
+        }
+        //
+        // from_shape, from_index
+        c10::IntArrayRef from_shape  = shape_at_arg_index(
+            arg_start, agraph, con_vec, par_vec, var_vec
+        );
+        size_t   from_index  = agraph.m_arg_value[arg_start];
+        //
+        // extract_der
+        TensorType zeros       = TensorType( torch::zeros( from_shape ) );
+        TensorType extract_der = rev_der[op_index];
+        extract_der             = zeros.index_put(index_list, extract_der);
+        //
+        // rev_der[from_index] += extract_der
+        plus_equal(rev_der[from_index], extract_der);
     }
     template void index_op_t<adten_t>::reverse_der(
         size_t                       op_index    ,
