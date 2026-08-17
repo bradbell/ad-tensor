@@ -218,9 +218,62 @@ namespace ad_tensor { namespace dev {
         const vector<TensorType>&    var_vec     ,
         vector<TensorType>&          rev_der
     ) const {
-        // TODO: Need to first implement
-        // replace =  output.index( index_list )
-        assert( false );
+        //
+        // index_list
+        thread_local c10::List< std::optional<at::Tensor> > index_list;
+        //
+        // arg_start, n_idx
+        size_t arg_start = agraph.m_arg_start[op_index];
+        size_t n_idx     = agraph.m_arg_value[arg_start + 2];
+        //
+#ifndef NDEBUG
+        size_t arg_end   = agraph.m_arg_start[op_index + 1];
+        size_t n_arg     = arg_end - arg_start;
+        assert( n_arg  == 3 + n_idx );
+#endif
+        //
+        // index_list
+        index_list.resize(0);
+        for(size_t i = 0; i < n_idx; ++i) {
+            size_t con_index = agraph.m_arg_value[arg_start + 3 + i];
+            std::optional<at::Tensor> index = con_vec[con_index];
+            index_list.push_back( index );
+        }
+        //
+        // before_shape
+        c10::IntArrayRef before_shape  = shape_at_arg_index(
+            arg_start, agraph, con_vec, par_vec, var_vec
+        );
+        //
+        // before_index, replace_index
+        size_t before_index  = agraph.m_arg_value[arg_start];
+        size_t replace_index = agraph.m_arg_value[arg_start + 1];
+        //
+        // before_type, replace_type
+        adtype_t before_type  = agraph.m_arg_type[arg_start];
+        adtype_t replace_type = agraph.m_arg_type[arg_start + 1];
+        //
+        // replace_der
+        TensorType replace_der = rev_der[op_index].index(index_list);
+        //
+        // rev_der[replace_index]
+        if( replace_type == adtype_t::variable ) {
+            //
+            // rev_der[replace_index] += replace_der
+            plus_equal(rev_der[replace_index], replace_der);
+        }
+        //
+        // rev_der[before_index]
+        if( before_type == adtype_t::variable ) {
+            //
+            // rev_der[before_index] += rev_der[op_index]
+            plus_equal(rev_der[before_index], rev_der[op_index]);
+            //
+            // rev_der[before_index] -= replace_der
+            TensorType zeros  = TensorType( torch::zeros( before_shape ) );
+            replace_der       = zeros.index_put(index_list, replace_der);
+            minus_equal(rev_der[before_index], replace_der);
+        }
     }
     template void index_put_op_t<adten_t>::reverse_der(
         size_t                       op_index    ,

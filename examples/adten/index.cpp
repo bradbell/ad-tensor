@@ -38,8 +38,6 @@ TEST(examples_adten, index)  {
     //
     // f(from) = from.index(index_list)
     adfn_t f = adten_t::stop_recording(ay, "f");
-    f.set_trace(true);
-    f.print_con();
     //
     // from
     from = torch::tensor( { {6.0, 7.0}, {8.0, 9.0} } );

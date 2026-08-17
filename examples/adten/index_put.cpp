@@ -44,8 +44,6 @@ TEST(examples_adten, index_put)  {
     //
     // f(before, replace) = before.index_put(index_list, replace)
     adfn_t f = adten_t::stop_recording(ay, "f");
-    f.set_trace(true);
-    f.print_con();
     //
     // replace
     replace = torch::tensor( {5.0} );
@@ -70,6 +68,16 @@ TEST(examples_adten, index_put)  {
     equal = dy[0].equal( torch::tensor( { {6.0, 10.0}, {8.0, 9.0} } ) );
     EXPECT_TRUE( equal );
     //
-    // TODO: Implement reverse_der example for this operator.
+    // dy
+    Tensor  dafter  = torch::tensor( {{6.0, 7.0}, {8.0, 9.0} } );
+    dy              = {dafter};
+    //
+    // dbefore, dreplace
+    dx       = f.reverse_der(dy, var_all);
+    dbefore  = dx[0];
+    dreplace = dx[1];
+    equal    = dbefore.equal( torch::tensor( { {6.0, 0.0}, {8.0, 9.0} } ) );
+    EXPECT_TRUE( equal );
+    EXPECT_EQ( dreplace.item<double>(), 7.0 );
 }
 // END_CPP
