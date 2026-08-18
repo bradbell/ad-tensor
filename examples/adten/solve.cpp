@@ -5,6 +5,7 @@
 /*
 {xrst_begin example_solve usr}
 {xrst_spell
+    ccc
     cc
     ll
 }
@@ -42,14 +43,14 @@ solve for :math:`r \in \mathbb{R}^4` where
     =
     \left( \begin{array}{cc}
         v_0 r_0            & v_0 r_1           \\
-        v_1 r_0 + v_2 r_2  & v_1 r_1 + v_2 r_3 
+        v_1 r_0 + v_2 r_2  & v_1 r_1 + v_2 r_3
     \end{array} \right)
 
 .. math::
 
     \begin{array}{ll}
     r_0 = p_0 / v_0              & r_1 = p_1 / v_0  \\
-    r_2 = (p_2 - v_1 r_0) / v_2  & r_3 = (p_3 - v_1 r_1) / v_2 
+    r_2 = (p_2 - v_1 r_0) / v_2  & r_3 = (p_3 - v_1 r_1) / v_2
     \end{array}
 
 It follows that :math:`r = f(p, v)` where
@@ -62,7 +63,18 @@ It follows that :math:`r = f(p, v)` where
         (p_2 - v_1 p_0 / v_0) / v_2 \\
         (p_3 - v_1 p_1 / v_0) / v_2
     \end{array} \right)
-    
+    \\
+    \frac{ \partial f }{ \partial v} f(v, p) & = \left( \begin{array}{ccc}
+    - p_0 / v_0^2         &  0                 &  0            \\
+    - p_1 / v_0^2         &  0                 &  0            \\
+    v_1 p_0 / (v_0^2 v_2) &  - p_0 / (v_0 v_2) &  - r_2 / v_2  \\
+    v_1 p_1 / (v_0^2 v_2) &  - p_1 / (v_0 v_2) &  - r_3 / v_2
+    \end{array} \right)
+
+where
+:math:`r_2 = (p_2 - v_1 p_0 / v_0) / v_2` and
+:math:`r_3 = (p_3 - v_1 p_1 / v_0) / v_2` .
+
 Source Code
 ***********
 {xrst_literal ,
@@ -91,6 +103,12 @@ TEST(examples_adten, solve)  {
     vector<Tensor> v;
     v.push_back( torch::tensor( {v0, v1, v2} ) );
     //
+    // r0, r1, r2, r3
+    double r0 = p0 / v0;
+    double r1 = p1 / v0;
+    double r2 = (p2 - v1 * p0 / v0 ) / v2;
+    double r3 = (p3 - v1 * p1 / v0 ) / v2;
+    //
     // ap, av
     auto [av, ap] = adten_t::start_recording(v, p);
     //
@@ -109,6 +127,8 @@ TEST(examples_adten, solve)  {
     adten_t aR = ad_tensor::linalg_solve(aV, aP, left);
     //
     // r = f(v, p)
+    // TODO: once adten_t::contiguous is available, change ar to a vector here.
+    // and remove the use of contiguous below.
     vector<adten_t> ar = {aR};
     adfn_t f           = adten_t::stop_recording(ar, "f");
     //
@@ -118,11 +138,37 @@ TEST(examples_adten, solve)  {
     //
     // r
     vector<Tensor> r = f.get_range(var_all, par_all);
-    Tensor check = torch::tensor({
-        {p0 / v0,                     p1 / v0},
-        {(p2 - v1 * p0 / v0) / v2,   (p3 - v1 * p1 / v0) / v2}
-    });
-    bool close  = r[0].allclose( check );
+    Tensor check = torch::tensor( {r0, r1, r2, r3} );
+    bool close  = r[0].contiguous().view({4}).allclose( check );
     EXPECT_TRUE( close );
+    //
+    // Jacobian
+    Tensor Jacobian = torch::tensor({
+        { -p0/(v0*v0),       0.0,          0.0    },
+        { -p1/(v0*v0),       0.0,          0.0    },
+        { v1*p0/(v0*v0*v2),  -p0/(v0*v2),  -r2/v2 },
+        { v1*p1/(v0*v0*v2),  -p1/(v0*v2),  -r3/v2 }
+    });
+    //
+    // dv, dr
+    vector<Tensor> dv(1), dr(1);
+    //
+    // (partial of f w.r.t v_j) (v, p)
+    for(size_t j = 0; j < 3; ++j) {
+        dv[0] = torch::eye(3).select(0, j);
+        dr    = f.forward_der(dv, var_all, par_all);
+        check = Jacobian.select(1, j);
+        close = dr[0].contiguous().view({4}).allclose( check );
+        EXPECT_TRUE( close );
+    }
+    //
+    // (derivative of f_i w.r.t. v) (v, p)
+    for(size_t i = 0; i < 4; ++i) {
+        dr[0] = torch::eye(4).select(0, i).view( {2,2} );
+        dv    = f.reverse_der(dr, var_all, par_all);
+        check = Jacobian.select(0, i);
+        close = dv[0].contiguous().view({3}).allclose( check );
+        EXPECT_TRUE( close );
+    }
 }
 // END_CPP
