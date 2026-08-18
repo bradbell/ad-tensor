@@ -5,7 +5,10 @@
 #include <gtest/gtest.h>
 #include <ad_tensor/ad_tensor.hpp>
 #include <torch/torch.h>
-TEST(tests_adten, solve)  {
+//
+// solve_full
+// Test left, right, and parameters with a full matrix
+TEST(tests_adten, solve_full)  {
     using ad_tensor::adten_t;
     using ad_tensor::adfn_t;
     using at::Tensor;
@@ -133,4 +136,92 @@ TEST(tests_adten, solve)  {
     check  = torch::tensor( { {h_x0, h_x1}, {h_x2, h_x3} } );
     close  = dx[0].allclose( check );
     EXPECT_TRUE( close );
+}
+//
+// solve_batch
+TEST(tests_adten, solve_batch) {
+    using ad_tensor::adten_t;
+    using ad_tensor::adfn_t;
+    using at::Tensor;
+    using ad_tensor::vector;
+    //
+    // w
+    //
+    double w0 = 1.0, w1 = 2.0, w2 = 3.0, w3 = 4.0, w4 = 5.0, w5 = 6.0;
+    Tensor w = torch::tensor({ w0, w1, w2, w3, w4, w5 }).view( {3, 2, 1} );
+    //
+    // x
+    double x0 = 1.0, x1 = -1.0;
+    vector<Tensor> x;
+    x.push_back( torch::tensor( { x0, x1 } ) );
+    //
+    // ax
+    vector<adten_t> ax = adten_t::start_recording(x);
+    //
+    // X      = { {0, x0),   {x1,   0} }
+    // inv(X) = { {0, 1/x1), (1/x0, 0} }
+    adten_t               azeros    = adten_t( torch::zeros( {2, 2} ) );
+    std::optional<Tensor> row_index = torch::tensor( {0, 1} );
+    std::optional<Tensor> col_index = torch::tensor( {1, 0} );
+    c10::List< std::optional<Tensor> > index_list = {row_index, col_index};
+    adten_t aX = azeros.index_put(index_list, ax[0]);
+    //
+    // aw
+    adten_t aw = adten_t(w);
+    //
+    // ay
+    // X * Y = W
+    vector<adten_t> ay = { linalg_solve(aX, aw).view( {6} ) };
+    //
+    // y = f(x)
+    adfn_t f = adten_t::stop_recording(ay, "f");
+    //
+    // y
+    vector<Tensor> v_all = f.forward_var(x);
+    vector<Tensor> y     = f.get_range(v_all);
+    y[0] = y[0].contiguous();
+    //
+    // inv(X) * {{w0}, {w1}} = { {w1/x1}. {w0/x0} }
+    // inv(X) * {{w2}, {w3}} = { {w3/x1}. {w2/x0} }
+    // inv(X) * {{w4}, {w5}} = { {w5/x1}. {w4/x0} }
+    //
+    // check
+    Tensor check = torch::tensor({
+        w1/x1, w0/x0, w3/x1, w2/x0, w5/x1, w4/x0
+    });
+    EXPECT_TRUE( y[0].allclose(check) );
+    //
+    // Jacobian
+    Tensor Jacobian = torch::tensor({
+        {0.0,         -w1/(x1*x1)},
+        {-w0/(x0*x0),         0.0},
+        {0.0,         -w3/(x1*x1)},
+        {-w2/(x0*x0),         0.0},
+        {0.0,         -w5/(x1*x1)},
+        {-w4/(x0*x0),         0.0}
+    });
+    //
+    // dx, dy
+    vector<Tensor> dx(1), dy(1);
+    //
+    // (partial of f w.r.t x_j) (x)
+    for(size_t j = 0; j < 2; ++j) {
+        dx[0] = torch::eye(2).select(0, j);
+        dy    = f.forward_der(dx, v_all);
+        check = Jacobian.select(1, j);
+        bool close = dy[0].contiguous().view({6}).allclose( check );
+        EXPECT_TRUE( close );
+    }
+    /*
+    TODO: get the test below to work
+    //
+    // (deriverive of f_i) (x)
+    for(size_t i = 0; i < 6; ++i) {
+        dy[0] = torch::eye(6).select(0, i);
+        dx    = f.reverse_der(dy, v_all);
+        check = Jacobian.select(0, i);
+        bool close = dx[0].contiguous().view({2}).allclose( check );
+        EXPECT_TRUE( close );
+    }
+    */
 }

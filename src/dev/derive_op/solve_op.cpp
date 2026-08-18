@@ -232,9 +232,13 @@ namespace ad_tensor { namespace dev {
         TensorType linear = tensor_at_arg_index(
             arg_start, agraph, con_vec, par_vec, var_vec
         );
-        // linear_tra, solution_tra
-        TensorType linear_tra   = linear.transpose(0, 1);
-        TensorType solution_tra = var_vec[op_index].transpose(0, 1);
+        // linear_tra
+        size_t n_lin = linear.sizes().size();
+        TensorType linear_tra   = linear.transpose(n_lin-2, n_lin-1);
+        //
+        // solution_tra
+        size_t n_sol = var_vec[op_index].sizes().size();
+        TensorType solution_tra = var_vec[op_index].transpose(n_sol-2, n_sol-1);
         //
         // rhs_bar
         TensorType rhs_bar = linalg_solve(linear_tra, rev_der[op_index], left);

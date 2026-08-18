@@ -56,7 +56,7 @@ where x denotes matrix multiplication.
 
 Example
 *******
-{xrst_toc_table 
+{xrst_toc_table
     examples/adten/solve.cpp
 }
 {xrst_end adten_solve}
@@ -118,15 +118,15 @@ adten_t adten_t::solve(const adten_t& rhs, bool left) const
     );
     size_t n_linear = linear_shape.size();
     dev::user_assert( linear_shape[n_linear-1] == linear_shape[n_linear-2],
-        "linalg_solve: linear is square matrix or batch of square matrices"
+        "linalg_solve: linear not square matrix or batch of square matrices"
     );
     c10::IntArrayRef rhs_shape = rhs.sizes();
     dev::user_assert( rhs_shape.size() >= 2 ,
         "linalg_solve: rhs is not two or more dimensional"
     );
     size_t n_rhs    = rhs_shape.size();
-    dev::user_assert( rhs_shape[n_rhs-1] == rhs_shape[n_rhs-2],
-        "linalg_solve: rhs is square matrix or batch of square matrices"
+    dev::user_assert( rhs_shape[n_rhs-2] == linear_shape[n_linear-1],
+        "linalg_solve: number row in rhs not equal number coliumns in linear"
     );
 # endif
     // res_tensor

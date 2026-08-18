@@ -143,6 +143,13 @@ adten_t adten_t::index_put(
     dev::user_assert( index_list.size() == before.sizes().size(),
         "index_put: index_list.size() not equal number of dimensions in before"
     );
+    dev::user_assert( replace.sizes().size() == 1,
+        "index_put: replace is not one dimensional"
+    );
+    //
+#ifndef NDEBUG
+    size_t n_replace = replace.numel();
+#endif
     //
     // res_adtype
     adtype_t res_adtype = std::max( before.m_adtype, replace.m_adtype );
@@ -190,6 +197,13 @@ adten_t adten_t::index_put(
         //
         // start + 3 + i
         for (const std::optional<at::Tensor>& index : index_list) {
+            dev::user_assert( index.value().sizes().size() == 1,
+                "index_put: one of the index tensors is not one dimensional"
+            );
+            dev::user_assert( index.value().numel() == n_replace,
+                "index_put: one of the index tensors does not have the same "
+                "number of elements as replace"
+            );
             size_t con_index  = tape.m_con.size();
             tape.m_con.push_back( index.value().clone() );
             agraph->m_arg_value.push_back( con_index );
