@@ -212,8 +212,6 @@ TEST(tests_adten, solve_batch) {
         bool close = dy[0].contiguous().view({6}).allclose( check );
         EXPECT_TRUE( close );
     }
-    /*
-    TODO: get the test below to work
     //
     // (deriverive of f_i) (x)
     for(size_t i = 0; i < 6; ++i) {
@@ -223,5 +221,4 @@ TEST(tests_adten, solve_batch) {
         bool close = dx[0].contiguous().view({2}).allclose( check );
         EXPECT_TRUE( close );
     }
-    */
 }

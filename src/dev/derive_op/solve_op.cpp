@@ -7,6 +7,7 @@
 #include <ad_tensor/dev/broadcast.hpp>
 #include <ad_tensor/dev/plus_minus_equal.hpp>
 #include <ad_tensor/dev/tensor_at_index.hpp>
+#include <ad_tensor/dev/shape_at_index.hpp>
 //
 namespace {
     using at::linalg_solve;         // used for at::Tensor equations
@@ -208,6 +209,9 @@ namespace ad_tensor { namespace dev {
         vector<TensorType>&          rev_der
     ) const {
         //
+        // array
+        thread_local vector<int64_t> array;
+        //
         // arg_start
         size_t arg_start = agraph.m_arg_start[op_index];
         //
@@ -228,32 +232,54 @@ namespace ad_tensor { namespace dev {
         size_t linear_index = agraph.m_arg_value[arg_start];
         size_t rhs_index = agraph.m_arg_value[arg_start + 1];
         //
-        // linear
+        // linear, linear_shape
         TensorType linear = tensor_at_arg_index(
             arg_start, agraph, con_vec, par_vec, var_vec
         );
+        c10::IntArrayRef linear_shape = shape_at_arg_index(
+            arg_start, agraph, con_vec, par_vec, var_vec
+        );
+        //
+        // solution, solution_shape
+        TensorType solution = var_vec[op_index];
+        c10::IntArrayRef solution_shape = solution.sizes();
+        //
         // linear_tra
-        size_t n_lin = linear.sizes().size();
+        size_t n_lin = linear_shape.size();
         TensorType linear_tra   = linear.transpose(n_lin-2, n_lin-1);
         //
         // solution_tra
-        size_t n_sol = var_vec[op_index].sizes().size();
-        TensorType solution_tra = var_vec[op_index].transpose(n_sol-2, n_sol-1);
+        size_t n_sol = solution_shape.size();
+        TensorType solution_tra = solution.transpose(n_sol-2, n_sol-1);
         //
         // rhs_bar
         TensorType rhs_bar = linalg_solve(linear_tra, rev_der[op_index], left);
         if( rhs_type == adtype_t::variable ) {
-            plus_equal(rev_der[rhs_index], rhs_bar);
+            //
+            // dim
+            c10::IntArrayRef rhs_shape = shape_at_arg_index(
+                arg_start+1, agraph, con_vec, par_vec, var_vec
+            );
+            size_t skip = 2;
+            broadcast(solution_shape, rhs_shape, array, skip);
+            c10::IntArrayRef dim(array);
+            //
+            plus_equal(rev_der[rhs_index], rhs_bar, dim);
         }
         //
         // linear_bar
         if( linear_type == adtype_t::variable ) {
+            // dim
+            size_t skip = 2;
+            broadcast( solution_shape, linear_shape, array, skip);
+            c10::IntArrayRef dim(array);
+            //
             if( left ) {
                 TensorType prod = rhs_bar.matmul(solution_tra);
-                minus_equal(rev_der[linear_index], prod);
+                minus_equal(rev_der[linear_index], prod, dim);
             } else {
                 TensorType prod = solution_tra.matmul( rhs_bar );
-                minus_equal(rev_der[linear_index], prod);
+                minus_equal(rev_der[linear_index], prod, dim);
             }
         }
     }
