@@ -85,7 +85,7 @@ vector<TensorType> adfn_t::forward_var(
     }
     for(size_t i = 0; i < shapes.size(); ++i) {
         c10::IntArrayRef shape = shapes[i];
-        if( dom_var[i].numel() != 0 ) {
+        if( dom_var[i].defined() ) {
             if( ! dom_var[i].sizes().equals( shape ) ) {
                 msg += "dom_var[" + std::to_string(i) + "] shape is ";
                 msg += dev::to_string( dom_var[i].sizes() );
@@ -104,7 +104,7 @@ vector<TensorType> adfn_t::forward_var(
     //
     // n_op, n_all, empty
     size_t n_op      = m_var.m_op_seq.size();
-    TensorType empty = TensorType( torch::empty( {0} ) );
+    TensorType empty = TensorType( at::Tensor() );
     //
     // var_all
     vector<TensorType> var_all =  dom_var ;

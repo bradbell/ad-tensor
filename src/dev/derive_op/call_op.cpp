@@ -359,13 +359,13 @@ void call_op_t<TensorType>::forward_der(
             case adtype_t::constant: {
                 TensorType domain_j = TensorType( con_vec[vec_index] );
                 domain.push_back( domain_j );
-                dom_der.push_back( TensorType( torch::empty({0}) ) );
+                dom_der.push_back( TensorType( at::Tensor() ) );
             }
             break;
             case adtype_t::parameter: {
                 const TensorType& domain_j = par_vec[vec_index];
                 domain.push_back( domain_j );
-                dom_der.push_back( TensorType( torch::empty({0}) ) );
+                dom_der.push_back( TensorType( at::Tensor() ) );
             }
             break;
             case adtype_t::variable: {
@@ -445,7 +445,7 @@ void call_op_t<TensorType>::reverse_der(
     rng_used.resize(0);
     rng_used.resize(n_range, false);
     rng_der.resize(0);
-    rng_der.resize( n_range, TensorType( torch::empty({0}) ) );
+    rng_der.resize( n_range, TensorType( at::Tensor() ) );
     for(size_t k = 0; k < n_result; ++k) {
         size_t rev_index    = op_index + k;
         size_t arg_index    = arg_start + 4 + n_domain + k;

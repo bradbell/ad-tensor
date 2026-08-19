@@ -79,8 +79,8 @@ void adfn_t::optimize_con(const vector<bool>& depend_old)
     vector<size_t> old2new_con(n_old, not_used);
     //
     // old2new_con[0], hash2new_con[0]
-    // always keep the empty tensor at constant index 0
-    assert( m_con[0].equal( empty_at_ten() ) );
+    // always keep the undefined tensor at constant index 0
+    assert( ! m_con[0].defined() );
     old2new_con[0]  = 0;
     hash2new_con[0] = 0;
     //
@@ -91,7 +91,7 @@ void adfn_t::optimize_con(const vector<bool>& depend_old)
         //
         // hash
         int64_t hash = 0;
-        if( m_con[i_old].numel() != 0 ) {
+        if( m_con[i_old].defined() ) {
             hash = torch::hash_tensor( m_con[i_old] ).item<int64_t>();
         }
         //
@@ -124,7 +124,7 @@ void adfn_t::optimize_con(const vector<bool>& depend_old)
     // m_con
     // shrink to fit is non-binding, so ensure this memory gets freed
     for(size_t i_old = n_new; i_old < n_old; ++i_old) {
-        m_con[i_old] = empty_at_ten();
+        m_con[i_old] = at::Tensor();
     }
     m_con.resize(n_new);
     //

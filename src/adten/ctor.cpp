@@ -13,7 +13,7 @@ namespace ad_tensor { // BEGIN_NAMESPACE_AD_TENSOR
 adten_t::adten_t(void)
 : m_tape_id(0)
 , m_index(0)
-, m_at_ten( torch::empty({0}) )
+, m_at_ten( at::Tensor() )
 , m_adtype(adtype_t::constant)
 { }
 adten_t::adten_t( const at::Tensor& tensor )
@@ -22,7 +22,7 @@ adten_t::adten_t( const at::Tensor& tensor )
 , m_at_ten(tensor)
 , m_adtype(adtype_t::constant)
 {   //
-    if( tensor.numel() != 0 ) {
+    if( tensor.defined() ) {
         // tape
         dev::tape_t& tape = dev::this_threads_tape();
         if( tape.m_recording ) {

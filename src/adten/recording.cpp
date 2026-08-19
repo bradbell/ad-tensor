@@ -116,8 +116,8 @@ adten_t::start_recording(
     tape.m_recording = true;
     //
     // tape.m_con
-    // The constant at index zero is always empty_at_ten()
-    tape.m_con.push_back( empty_at_ten() );
+    // The constant at index zero is always a ! defined() tensor
+    tape.m_con.push_back( at::Tensor() );
     //
     // tape.m_par.m_dom_shapes
     tape.m_par.m_dom_shapes.resize( dom_par.size() );

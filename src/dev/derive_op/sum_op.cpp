@@ -154,7 +154,7 @@ namespace ad_tensor { namespace dev {
 #endif
         // operand_index
         size_t operand_index  = agraph.m_arg_value[arg_start];
-        if( for_der[operand_index].numel() == 0 ) {
+        if( ! for_der[operand_index].defined() ) {
             return;
         }
         //
@@ -204,7 +204,7 @@ namespace ad_tensor { namespace dev {
         thread_local vector<int64_t> array;
         //
         // check for case where this operation is not connected to the range
-        if( rev_der[op_index].numel() == 0 ) {
+        if( ! rev_der[op_index].defined() ) {
             return;
         }
         //
@@ -231,7 +231,7 @@ namespace ad_tensor { namespace dev {
         //
         // rev_der[operand_index]
         if( rev_der[op_index].numel() == 1 ) {
-            if( rev_der[operand_index].numel() == 0 ) {
+            if( ! rev_der[operand_index].defined() ) {
                 TensorType zeros   = TensorType( torch::zeros(operand_shape) );
                 rev_der[operand_index] = zeros + rev_der[op_index];
             } else {
@@ -253,7 +253,7 @@ namespace ad_tensor { namespace dev {
                 array
             );
             c10::IntArrayRef res_shape(array);
-            if( rev_der[operand_index].numel() == 0 ) {
+            if( ! rev_der[operand_index].defined() ) {
                 TensorType zeros   = TensorType( torch::zeros(operand_shape) );
                 rev_der[operand_index] = zeros + \
                     rev_der[op_index].view(res_shape);

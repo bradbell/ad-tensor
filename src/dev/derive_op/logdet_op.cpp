@@ -118,7 +118,7 @@ namespace ad_tensor { namespace dev {
 #endif
         // operand_index, operand
         size_t operand_index  = agraph.m_arg_value[arg_start];
-        if( for_der[operand_index].numel() == 0 ) {
+        if( ! for_der[operand_index].defined() ) {
             return;
         }
         const TensorType& operand = var_vec[operand_index];
@@ -167,7 +167,7 @@ namespace ad_tensor { namespace dev {
         thread_local vector<int64_t> array;
         //
         // check for case where this operation is not connected to the range
-        if( rev_der[op_index].numel() == 0 ) {
+        if( ! rev_der[op_index].defined() ) {
             return;
         }
         //
@@ -196,7 +196,7 @@ namespace ad_tensor { namespace dev {
         shape[n_dim - 1] = 1;
         shape[n_dim - 2] = 1;
         TensorType inv_tran = operand.inverse().transpose(n_dim-1, n_dim-2);
-        if( rev_der[operand_index].numel() == 0 ) {
+        if( ! rev_der[operand_index].defined() ) {
             rev_der[operand_index]  =
                 inv_tran * rev_der[op_index].view(shape);
         } else {

@@ -6,7 +6,6 @@
 ------------------------------------------------------------------------------
 {xrst_begin_parent adten usr}
 {xrst_spell
-    numel
 }
 
 The AD Tensor Class
@@ -32,13 +31,14 @@ This returns the at:Tensor corresponding to this object.
     BEGIN_AT_TEN, END_AT_TEN
 }
 
-sizes, numel
-************
-For *fun* equals ``sizes``, ``numel``,
+sizes, numel, defined
+*********************
+For *fun* equals ``sizes``, ``numel``, ``defined``
 return the result for the underlying at::Tensor.
 {xrst_literal ,
     BEGIN_SIZES, END_SIZES
     BEGIN_NUMEL, END_NUMEL
+    BEGIN_DEFINED, END_DEFINED
 }
 
 clone
@@ -313,6 +313,11 @@ public:
     int64_t numel(void) const
     // END_NUMEL
     {   return m_at_ten.numel(); }
+    //
+    // BEGIN_DEFINED
+    bool defined(void) const
+    // END_DEFINED
+    {   return m_at_ten.defined(); }
     //
     // BEGIN_CLONE
     adten_t clone(void) const

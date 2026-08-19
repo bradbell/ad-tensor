@@ -59,7 +59,7 @@ TEST(tests_adten, matmul_mat_vec)  {
     vector<Tensor> y = f.get_range(var_all);
     //
     // empty
-    Tensor empty = ad_tensor::empty_at_ten();
+    Tensor empty = Tensor();
     //
     //
     // y[0]
@@ -126,7 +126,7 @@ TEST(tests_adten, matmul_batch)  {
     vector<Tensor> y = f.get_range(var_all);
     //
     // empty
-    Tensor empty = ad_tensor::empty_at_ten();
+    Tensor empty = Tensor();
     //
     //
     // y[0]

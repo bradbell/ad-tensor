@@ -116,7 +116,7 @@ namespace ad_tensor { namespace dev {
         size_t    operand_index = agraph.m_arg_value[arg_start];
         //
         // for_der[op_index]
-        if( for_der[operand_index].numel() != 0 ) {
+        if( for_der[operand_index].defined() ) {
             for_der[op_index] = - for_der[operand_index];
         }
     }
@@ -164,7 +164,7 @@ namespace ad_tensor { namespace dev {
         size_t    operand_index = agraph.m_arg_value[arg_start];
         //
         // rev_der[operand_index]
-        if( rev_der[operand_index].numel() == 0 ) {
+        if( ! rev_der[operand_index].defined() ) {
             rev_der[operand_index] = - rev_der[op_index];
         } else {
             rev_der[operand_index] -= rev_der[op_index];

@@ -143,10 +143,10 @@ namespace ad_tensor { namespace dev {
         // linear_type, rhs_type
         adtype_t linear_type = agraph.m_arg_type[arg_start];
         adtype_t rhs_type = agraph.m_arg_type[arg_start + 1];
-        if( linear_type == variable && for_der[linear_index].numel() == 0 ) {
+        if( linear_type == variable && ! for_der[linear_index].defined() ) {
             linear_type = adtype_t::constant;
         }
-        if( rhs_type == variable && for_der[rhs_index].numel() == 0 ) {
+        if( rhs_type == variable && ! for_der[rhs_index].defined() ) {
             rhs_type = adtype_t::constant;
         }
         //
@@ -156,19 +156,19 @@ namespace ad_tensor { namespace dev {
         );
         //
         // prod
-        TensorType prod = TensorType( torch::empty( {0} ) );
+        TensorType prod = TensorType( at::Tensor() );
         if( left && linear_type == adtype_t::variable ) {
             prod = for_der[linear_index].matmul( var_vec[op_index] );
         } else if( ! left && linear_type == adtype_t::variable ) {
             prod = var_vec[op_index].matmul( for_der[linear_index] );
         }
         // diff
-        TensorType diff = TensorType( torch::empty( {0} ) );
+        TensorType diff = TensorType( at::Tensor() );
         if( rhs_type == adtype_t::variable ) {
             diff = for_der[rhs_index];
         }
         minus_equal(diff, prod);
-        assert( diff.numel() != 0 );
+        assert( diff.defined() );
         //
         // solution_dot
         for_der[op_index] = linalg_solve(linear, diff, left);

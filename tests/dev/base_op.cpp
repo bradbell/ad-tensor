@@ -37,7 +37,7 @@ TEST(tests_dev, op_base)  {
     op_enum_t              dom         = op_enum_t::dom;
     op_enum_t              add         = op_enum_t::add;
     adtype_t              par         = adtype_t::parameter;
-    Tensor                 empty       = torch::empty( {0} );
+    Tensor                 empty       = at::Tensor();
     Tensor                 ones        = torch::ones( {2} );
     size_t                 op_index    = 1;
     ad_tensor::vector<Tensor>    con_vec     = {};

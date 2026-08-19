@@ -7,7 +7,6 @@
 {xrst_begin base_op dev}
 {xrst_spell
     der
-    numel
 }
 
 The Operator Base Class
@@ -101,7 +100,7 @@ reverse_der
     Hence for_der[index] for index < op_index are outputs to this routine.
     Actually all the outputs correspond to index values that are
     arguments to the operator at index op_index.
-#.  The empty matrix, for_der[index].numel() == 0, corresponds to zero
+#.  The empty matrix, ! for_der[index].defined(), corresponds to zero
     derivative for the corresponding variable. There is not reason to process
     cases where for_der[op_index] is empty; hence for_der[op_index]
     is never empty when this routine is called.

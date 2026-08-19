@@ -146,7 +146,6 @@ We use the notation atom_f for the mathematical function defined by
 {xrst_spell
     rng
     adten
-    numel
 }
 
 Forward Derivative Evaluation
@@ -209,7 +208,6 @@ range directional derivative.
 {xrst_spell
     rng
     adten
-    numel
 }
 
 Reverse Derivative Evaluation

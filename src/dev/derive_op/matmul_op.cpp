@@ -123,10 +123,10 @@ namespace ad_tensor { namespace dev {
         // lhs_type, rhs_type
         adtype_t lhs_type = agraph.m_arg_type[arg_start];
         adtype_t rhs_type = agraph.m_arg_type[arg_start + 1];
-        if( lhs_type == variable && for_der[lhs_index].numel() == 0 ) {
+        if( lhs_type == variable && ! for_der[lhs_index].defined() ) {
             lhs_type = adtype_t::constant;
         }
-        if( rhs_type == variable && for_der[rhs_index].numel() == 0 ) {
+        if( rhs_type == variable && ! for_der[rhs_index].defined() ) {
             rhs_type = adtype_t::constant;
         }
         //

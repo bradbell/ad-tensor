@@ -118,7 +118,7 @@ namespace ad_tensor { namespace dev {
 #endif
         // operand_index
         size_t operand_index  = agraph.m_arg_value[arg_start];
-        if( for_der[operand_index].numel() == 0 ) {
+        if( ! for_der[operand_index].defined() ) {
             return;
         }
         // for_der
@@ -156,7 +156,7 @@ namespace ad_tensor { namespace dev {
         thread_local vector<int64_t> array;
         //
         // check for case where this operation is not connected to the range
-        if( rev_der[op_index].numel() == 0 ) {
+        if( ! rev_der[op_index].defined() ) {
             return;
         }
         //
@@ -177,7 +177,7 @@ namespace ad_tensor { namespace dev {
         size_t           operand_index  = agraph.m_arg_value[arg_start];
         //
         // rev_der[operand_index]
-        if( rev_der[operand_index].numel() == 0 ) {
+        if( ! rev_der[operand_index].defined() ) {
             rev_der[operand_index]  = var_vec[op_index] * rev_der[op_index];
         } else {
             rev_der[operand_index] += var_vec[op_index] * rev_der[op_index];

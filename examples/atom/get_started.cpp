@@ -111,8 +111,8 @@ namespace {
             //
             // rng_der
             vector<Tensor> rng_der;
-            if( dom_der[0].numel() == 0 ) {
-                rng_der.push_back( torch::empty( {0} ) );
+            if( ! dom_der[0].defined() ) {
+                rng_der.push_back( at::Tensor() );
             } else {
                 rng_der.push_back( 2.0 * domain[0] * dom_der[0] );
             }
@@ -128,8 +128,8 @@ namespace {
             //
             // dom_der
             vector<Tensor> dom_der;
-            if( rng_der[0].numel() == 0 ) {
-                dom_der.push_back( torch::empty( {0} ) );
+            if( ! rng_der[0].defined() ) {
+                dom_der.push_back( at::Tensor() );
             } else {
                 dom_der.push_back( 2.0 * domain[0] * rng_der[0] );
             }

@@ -104,7 +104,7 @@ namespace ad_tensor { namespace dev {
         const vector<at::Tensor>&    var_vec     ,
         vector<at::Tensor>&          for_der
     ) const {
-        assert( for_der[op_index].numel() == 0 );
+        assert( ! for_der[op_index].defined() );
     }
     template<> void lt_op_t<adten_t>::forward_der(
         size_t                       op_index    ,
@@ -114,7 +114,7 @@ namespace ad_tensor { namespace dev {
         const vector<adten_t>&       var_vec     ,
         vector<adten_t>&             for_der
     ) const {
-        assert( for_der[op_index].at_ten().numel() == 0 );
+        assert( ! for_der[op_index].defined() );
     }
     // ------------------------------------------------------------------------
     // reverse_der

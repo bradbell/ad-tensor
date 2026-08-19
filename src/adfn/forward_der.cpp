@@ -12,7 +12,6 @@
 {xrst_begin adfn_forward_der usr}
 {xrst_spell
     rng
-    numel
 }
 
 Compute A Domain Directional Derivative
@@ -105,7 +104,7 @@ vector<TensorType> adfn_t::forward_der(
     }
     for(size_t i = 0; i < shapes.size(); ++i) {
         c10::IntArrayRef shape = shapes[i];
-        if( dom_der[i].numel() != 0 && ! dom_der[i].sizes().equals( shape ) ) {
+        if( dom_der[i].defined() && ! dom_der[i].sizes().equals( shape ) ) {
             msg += "dom_der[" + std::to_string(i) + "] shape is ";
             msg += dev::to_string( dom_der[i].sizes() );
             msg += " and the dom_var shape for this index and adfn is ";
@@ -122,7 +121,7 @@ vector<TensorType> adfn_t::forward_der(
     //
     // n_op, n_all, empty
     size_t n_op      = m_var.m_op_seq.size();
-    TensorType empty = TensorType( torch::empty( {0} ) );
+    TensorType empty = TensorType( at::Tensor() );
     //
     // all_der
     vector<TensorType> all_der =  dom_der ;
@@ -162,12 +161,12 @@ vector<TensorType> adfn_t::forward_der(
         switch(adtype) {
             //
             case adtype_t::constant: {
-                rng_der.push_back( TensorType(torch::empty( {0} )) );
+                rng_der.push_back( TensorType(at::Tensor()) );
             }
             break;
             //
             case adtype_t::parameter: {
-                rng_der.push_back( TensorType(torch::empty( {0} )) );
+                rng_der.push_back( TensorType(at::Tensor()) );
             }
             break;
             //

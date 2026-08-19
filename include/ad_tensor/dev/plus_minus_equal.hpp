@@ -9,7 +9,6 @@
 {xrst_begin plus_minus_equal dev}
 {xrst_spell
     rhs
-    numel
 }
 
 Mode Plus Or Minus Equals For Tensors
@@ -52,18 +51,18 @@ namespace ad_tensor { namespace dev {
         const c10::IntArrayRef&        dim  = c10::IntArrayRef() )
 // END_PLUS_EQUAL
     {   //
-        if( rhs.numel() == 0 ) {
+        if( ! rhs.defined() ) {
             return;
         }
         if( dim.size() == 0 ) {
-            if( target.numel() == 0 ) {
+            if( ! target.defined() ) {
                 target = rhs.clone();
             } else {
                 target += rhs;
                 }
                 } else {
             TensorType compress = rhs.sum(dim);
-            if( target.numel() == 0 ) {
+            if( ! target.defined() ) {
                 target = compress;
             } else {
                 target += compress;
@@ -77,18 +76,18 @@ namespace ad_tensor { namespace dev {
         const c10::IntArrayRef&        dim  = c10::IntArrayRef() )
 // END_MINUS_EQUAL
     {   //
-        if( rhs.numel() == 0 ) {
+        if( ! rhs.defined() ) {
             return;
         }
         if( dim.size() == 0 ) {
-            if( target.numel() == 0 ) {
+            if( ! target.defined() ) {
                 target = - rhs;
             } else {
                 target -= rhs;
             }
         } else {
             TensorType compress = rhs.sum(dim);
-            if( target.numel() == 0 ) {
+            if( ! target.defined() ) {
                 target = - compress;
             } else {
                 target -= compress;

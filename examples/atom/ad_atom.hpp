@@ -163,8 +163,8 @@ namespace {
             vector<adten_t> rng_der;
             //
             // rng_der
-            if( dom_der[0].numel() == 0 ) {
-                rng_der.push_back( adten_t( torch::empty( {0} ) ) );
+            if( ! dom_der[0].defined() ) {
+                rng_der.push_back( adten_t( at::Tensor() ) );
             } else {
                 vector<adten_t> domain_z;
                 domain_z.push_back( domain[0] );
@@ -192,8 +192,8 @@ namespace {
             vector<adten_t> dom_der;
             //
             // dom_der
-            if( rng_der[0].numel() == 0 ) {
-                dom_der.push_back( adten_t( torch::empty( {0} ) ) );
+            if( ! rng_der[0].defined() ) {
+                dom_der.push_back( adten_t( at::Tensor() ) );
             } else {
                 vector<adten_t> domain_z;
                 domain_z.push_back( domain[0] );
@@ -263,12 +263,12 @@ namespace {
             Tensor u    = domain[1];
             Tensor dx   = dom_der[0];
             Tensor du   = dom_der[1];
-            Tensor dz   = torch::empty( {0} );
-            if( dx.numel() != 0 && du.numel() != 0 ) {
+            Tensor dz   = at::Tensor();
+            if( dx.defined() && du.defined() ) {
                 dz   = 6.0 * x * u * dx + 3.0 * x * x * du;
-            } else if( dx.numel() != 0 ) {
+            } else if( dx.defined() ) {
                 dz   = 6.0 * x * u * dx;
-            } else if( du.numel() != 0 ) {
+            } else if( du.defined() ) {
                 dz   = 3.0 * x * x * du;
             }
             //

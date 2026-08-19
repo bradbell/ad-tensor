@@ -17,6 +17,6 @@ The Empty at::Tensor used by ad_tensor
 #include <torch/torch.h>
 // BEGIN_EMPTY_AT_TEN
 namespace ad_tensor { inline at::Tensor empty_at_ten(void) {
-    return torch::empty( {0} );
+    return at::Tensor();
 } }
 // END_EMPTY_AT_TEN

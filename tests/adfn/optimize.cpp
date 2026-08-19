@@ -214,7 +214,7 @@ TEST(tests_adfn, optimize_call)  {
     // dz
     vector<Tensor> dz = g.forward_der(dv, v_all, p_all);
     //
-    equal = dz[0].equal( torch::empty( {0} ) );
+    equal = ! dz[0].defined();
     EXPECT_TRUE(equal);
     //
     equal = dz[1].equal( dv[0] * (v[1] + v[1]) + (v[0] + v[0]) * dv[1] );

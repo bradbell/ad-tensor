@@ -109,7 +109,7 @@ void check_empty_derivative() {
     // dy
     vector<Tensor> dy;
     dy.push_back( torch::tensor( {1.0, 2.0} ) );
-    dy.push_back( torch::empty( {0} ) );
+    dy.push_back( at::Tensor() );
     //
     // dx
     vector<Tensor> dx = f.reverse_der(dy, var_all);

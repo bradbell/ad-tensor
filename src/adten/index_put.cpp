@@ -5,7 +5,6 @@
 /*
 {xrst_begin adten_index_put usr}
 {xrst_spell
-    numel
 }
 
 Replacing Some Elements of a Tensor
@@ -148,7 +147,7 @@ adten_t adten_t::index_put(
     );
     //
 #ifndef NDEBUG
-    size_t n_replace = replace.numel();
+    int64_t n_replace = replace.numel();
 #endif
     //
     // res_adtype

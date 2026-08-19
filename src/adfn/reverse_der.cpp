@@ -12,7 +12,6 @@
 {xrst_begin adfn_reverse_der usr}
 {xrst_spell
     rng
-    numel
 }
 
 Compute Derivative of A Range Direction Summation
@@ -105,7 +104,7 @@ vector<TensorType> adfn_t::reverse_der(
     }
     for(size_t i = 0; i < shapes.size(); ++i) {
         c10::IntArrayRef shape = shapes[i];
-        if( rng_der[i].numel() != 0 && ! rng_der[i].sizes().equals(shape) ) {
+        if( rng_der[i].defined() && ! rng_der[i].sizes().equals(shape) ) {
             msg += "rng_der[" + std::to_string(i) + "]: numel is not zero ";
             msg += "and shape is ";
             msg += dev::to_string( rng_der[i].sizes() );
@@ -123,7 +122,7 @@ vector<TensorType> adfn_t::reverse_der(
     //
     // n_op, n_all, empty
     size_t n_op      = m_var.m_op_seq.size();
-    TensorType empty = TensorType( torch::empty( {0} ) );
+    TensorType empty = TensorType( at::Tensor() );
     //
     // all_der
     vector<TensorType> all_der( n_op, empty );
@@ -143,7 +142,7 @@ vector<TensorType> adfn_t::reverse_der(
         //
         // all_der[op_index]
         // Only propcess this operator if its result is connected to the range
-        if( all_der[op_index].numel() != 0 ) {
+        if( all_der[op_index].defined() ) {
             //
             // base_op
             dev::op_enum_t op_enum = m_var.m_op_seq[ op_index ];
@@ -169,7 +168,7 @@ vector<TensorType> adfn_t::reverse_der(
             }
         } else {
             // no longer need this memory so free it.
-            all_der[op_index] = TensorType( torch::empty( {0} ) );
+            all_der[op_index] = TensorType( at::Tensor() );
         }
     }
     //
