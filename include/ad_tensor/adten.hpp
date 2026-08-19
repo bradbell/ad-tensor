@@ -6,6 +6,7 @@
 ------------------------------------------------------------------------------
 {xrst_begin_parent adten usr}
 {xrst_spell
+    numel
 }
 
 The AD Tensor Class

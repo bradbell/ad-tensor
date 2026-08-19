@@ -54,7 +54,6 @@ Test
 */
 #include <map>
 #include <ad_tensor/adten.hpp>
-#include <ad_tensor/empty_at_ten.hpp>
 //
 namespace ad_tensor { // BEGIN_AD_TENSOR_NAMESPACE
 //

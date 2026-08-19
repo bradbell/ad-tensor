@@ -37,7 +37,7 @@ This is either at::Tensor or :ref:`adten-name` .
 dom_der
 *******
 This is the domain direction that the derivative is computed with respect to.
-If dom_der[j].numel() is zero, then dom_der[j] will act like a zero tensor
+If dom_der[j].defined() is false, then dom_der[j] will act like a zero tensor
 with the same shape as domain[j] and calculations that use this value will
 be skipped.
 
@@ -46,7 +46,7 @@ var_all
 is the value of all the variables for this function.
 This is usually calculated by :ref:`adfn_forward_var-name` .
 Since derivatives are only computed with respect to domain variables,
-it does not make sense for dom_var to be empty.
+it does not make sense for dom_var or var_all to be empty.
 
 par_all
 *******
@@ -66,7 +66,7 @@ is the directional derivative of the range in the dom_der direction; i.e.
     rng_der = adfn_var (dom_var, dom_par) * dom_der
 
 where adfn_var denotes the partial of adfn w.r.t. to domain variables.
-If rng_der[i].numel() is zero, then rng_der[i] has not been calculated
+If rng_der[i].defined() is false, then rng_der[i] has not been calculated
 because it is known to be zero with the same shape as range[i]
 for this AD function
 
@@ -119,13 +119,13 @@ vector<TensorType> adfn_t::forward_der(
         cout << "Begin tracing " + get_name() + ".forward_der\n";
     }
     //
-    // n_op, n_all, empty
-    size_t n_op      = m_var.m_op_seq.size();
-    TensorType empty = TensorType( at::Tensor() );
+    // n_op, n_all, undefined
+    size_t n_op          = m_var.m_op_seq.size();
+    TensorType undefined = TensorType( at::Tensor() );
     //
     // all_der
     vector<TensorType> all_der =  dom_der ;
-    all_der.resize( n_op, empty );
+    all_der.resize( n_op, undefined );
     //
     // all_der
     for(size_t op_index = 0; op_index < n_op; ++op_index) {

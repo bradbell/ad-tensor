@@ -22,7 +22,6 @@ TODO
     include/ad_tensor/adten.hpp
     include/ad_tensor/adtype.hpp
     include/ad_tensor/adfn.hpp
-    include/ad_tensor/empty_at_ten.hpp
     src/chkpnt.cpp
     src/atom.cpp
     docs/bib.xrst

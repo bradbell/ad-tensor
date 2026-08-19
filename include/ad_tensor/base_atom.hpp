@@ -128,7 +128,7 @@ domain
 is the vector of the domain tensors containing the domain values.
 Given rng_used and :ref:`atom_depend-name` it is possible to determine
 that some domain values are not needed.
-These domain values may be changed to :ref:`empty_at_ten-name` .
+These domain values may be change to a ! defined() tensor .
 
 range
 *****
@@ -174,7 +174,7 @@ will have has_value() equal to false.
 You should also use this case when an error occurs during
 the evaluation of this derivative of the atomic function.
 
-If dom_der[j].numel() is zero, then dom_der[j] represents a zero tensor
+If dom_der[j].defined() is false, then dom_der[j] represents a zero tensor
 with the same shape as domain[j] and calculations that use this value
 can be skipped.
 
@@ -236,7 +236,7 @@ will have has_value() equal to false.
 You should also use this case when an error occurs during
 the evaluation of this derivative of the atomic function.
 
-If rng_der[i].numel() is zero, then rng_der[i] represents a zero tensor
+If rng_der[i].defined() is false, then rng_der[i] represents a zero tensor
 with the same shape as range[i] and calculations that use this value
 can be skipped.
 

@@ -207,7 +207,7 @@ vector<adten_t> adten_t::call_atom(
         for(size_t j = 0; j < n_domain; ++j) {
             adtype_t adtype = adomain[j].m_adtype;
             if( ig == 0 && adtype == adtype_t::variable ) {
-                // empty_at_ten()
+                // undefined tensor()
                 agraph->m_arg_value.push_back( 0 );
                 agraph->m_arg_type.push_back( adtype_t::constant );
             } else {

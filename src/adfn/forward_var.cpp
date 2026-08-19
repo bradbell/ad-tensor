@@ -102,13 +102,13 @@ vector<TensorType> adfn_t::forward_var(
         cout << "Begin tracing " + get_name() + ".forward_var\n";
     }
     //
-    // n_op, n_all, empty
-    size_t n_op      = m_var.m_op_seq.size();
-    TensorType empty = TensorType( at::Tensor() );
+    // n_op, undefined
+    size_t     n_op      = m_var.m_op_seq.size();
+    TensorType undefined = TensorType( at::Tensor() );
     //
     // var_all
     vector<TensorType> var_all =  dom_var ;
-    var_all.resize( n_op, empty );
+    var_all.resize(n_op, undefined);
     //
     // var_all
     for(size_t op_index = 0; op_index < n_op; ++op_index) {

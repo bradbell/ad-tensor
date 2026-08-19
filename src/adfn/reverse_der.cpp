@@ -37,7 +37,7 @@ This is either at::Tensor or :ref:`adten-name` .
 rng_der
 *******
 This is the range direction that the derivative is computed with respect to.
-If rng_der[i].numel() is zero, then rng_der[i] will act like a zero tensor
+If rng_der[i].defined() is false, then rng_der[i] will act like a zero tensor
 with the same shape as range[i] and calculations that use this value will
 be skipped.
 
@@ -65,7 +65,7 @@ is the domain derivative of the range space direction; i.e.
 
     dom_der =  (d / d dom_var) sum[ rng_der * adfn(dom_var, dom_par ) ]
 
-If dom_der[j].numel() is zero, then dom_der[j] has not been calculated
+If dom_der[j].defined() is false, then dom_der[j] has not been calculated
 because it is known to be zero with the same shape as domain[j]
 for this AD function
 
@@ -120,12 +120,12 @@ vector<TensorType> adfn_t::reverse_der(
         cout << "Begin tracing " + get_name() + ".reverse_der\n";
     }
     //
-    // n_op, n_all, empty
-    size_t n_op      = m_var.m_op_seq.size();
-    TensorType empty = TensorType( at::Tensor() );
+    // n_op, undefined
+    size_t     n_op      = m_var.m_op_seq.size();
+    TensorType undefined = TensorType( at::Tensor() );
     //
     // all_der
-    vector<TensorType> all_der( n_op, empty );
+    vector<TensorType> all_der(n_op, undefined);
     for(size_t i = 0; i < m_rng_index.size(); ++i) {
         if( m_rng_adtype[i] == adtype_t::variable )  {
             all_der[ m_rng_index[i] ] = rng_der[i];

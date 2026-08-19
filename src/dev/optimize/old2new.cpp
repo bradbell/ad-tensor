@@ -111,7 +111,7 @@ std::array< vector<size_t>, 3 > old2new(
     size_t not_used = std::numeric_limits<size_t>::max();
     //
     // old2new_con
-    // The first constant is a empty_at_ten() (keep even if it is not used).
+    // The first constant is an undefined tensor (keep even if it is not used).
     vector<size_t> old2new_con(depend_con.size(), not_used);
     size_t n_con    = depend_con.size();
     old2new_con[0]  = 0;

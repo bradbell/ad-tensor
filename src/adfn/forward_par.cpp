@@ -92,13 +92,13 @@ vector<TensorType> adfn_t::forward_par(const vector<TensorType>& dom_par) const
         cout << "Begin tracing " + get_name() + ".forward_par\n";
     }
     //
-    // n_op, n_all, empty
-    size_t n_op      = m_par.m_op_seq.size();
-    TensorType empty = TensorType( at::Tensor() );
+    // n_op, undefined
+    size_t     n_op      = m_par.m_op_seq.size();
+    TensorType undefined = TensorType( at::Tensor() );
     //
     // par_all
     vector<TensorType> par_all =  dom_par ;
-    par_all.resize( n_op, empty );
+    par_all.resize(n_op, undefined);
     //
     // par_all
     for(size_t op_index = 0; op_index < n_op; ++op_index) {

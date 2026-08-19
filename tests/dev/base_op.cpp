@@ -37,11 +37,11 @@ TEST(tests_dev, op_base)  {
     op_enum_t              dom         = op_enum_t::dom;
     op_enum_t              add         = op_enum_t::add;
     adtype_t              par         = adtype_t::parameter;
-    Tensor                 empty       = at::Tensor();
-    Tensor                 ones        = torch::ones( {2} );
-    size_t                 op_index    = 1;
+    Tensor                undefined   = at::Tensor();
+    Tensor                ones        = torch::ones( {2} );
+    size_t                op_index    = 1;
     ad_tensor::vector<Tensor>    con_vec     = {};
-    ad_tensor::vector<Tensor>    par_vec     = {ones, empty};
+    ad_tensor::vector<Tensor>    par_vec     = {ones, undefined};
     agraph_t               agraph;
     agraph.m_op_seq     = ad_tensor::vector<op_enum_t>( {dom, add} );
     agraph.m_arg_start  = ad_tensor::vector<size_t>( {0, 0, 2} );

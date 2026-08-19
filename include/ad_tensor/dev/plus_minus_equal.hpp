@@ -25,14 +25,14 @@ Prototype
 target
 ******
 This is the target we are adding to (or subtracting from).
-The special case where on input target.numel() is zero
-(target is empty) corresponds to a zero target value.
+The special case where on input target.defined() is false
+corresponds to a zero target value.
 
 rhs
 ***
 this is the right hand side that was are adding to (or subtracting from).
-The special case where rhs.numel() is zero
-(rhs is empty) corresponds to a zero right hand side.
+The special case where rhs.defined() is false
+corresponds to a zero right hand side.
 In this case, target does not change.
 
 dim

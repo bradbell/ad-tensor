@@ -168,7 +168,7 @@ size_t new_call(
                 agraph_new.m_arg_value.push_back( arg_value_old );
             } else {
                 if( ! depend_old[arg_value_old] ) {
-                    // empty_at_ten()
+                    // undefined tensor()
                     agraph_new.m_arg_value.push_back( 0 );
                     arg_type = adtype_t::constant;
                 } else {

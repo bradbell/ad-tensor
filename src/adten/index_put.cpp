@@ -5,6 +5,7 @@
 /*
 {xrst_begin adten_index_put usr}
 {xrst_spell
+    numel
 }
 
 Replacing Some Elements of a Tensor

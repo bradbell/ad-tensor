@@ -3,7 +3,6 @@
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
 #include <ad_tensor/adten.hpp>
-#include <ad_tensor/empty_at_ten.hpp>
 #include <ad_tensor/dev/tape.hpp>
 #include <ad_tensor/dev/op_enum.hpp>
 #include <ad_tensor/dev/agraph.hpp>
@@ -59,7 +58,7 @@ The recording can be used to compute derivatives with respect to these tensors.
 
 First Constant
 **************
-Each recording starts with :ref:`empty_at_ten-name` as its first constant.
+Each recording starts with an undefined tensor as its first constant.
 This is used as a place holder for values that are not needed; e.g.,
 see the heading :ref:`atom_forward@domain` in the documentation
 for atomic functions.
