@@ -5,11 +5,12 @@
 #include <boost/config.hpp>
 #include <boost/dll/alias.hpp>
 #include <iostream>
+#include <torch/torch.h>
 
-// add_int_plugin
-int add_int_plugin(int x, int y) {
+// add_tensor_plugin
+at::Tensor add_tensor_plugin(const at::Tensor& x, const at::Tensor& y) {
     return x + y;
 }
 
-// add_int
-BOOST_DLL_ALIAS(add_int_plugin, add_int)
+// add_tensor
+BOOST_DLL_ALIAS(add_tensor_plugin, add_tensor)

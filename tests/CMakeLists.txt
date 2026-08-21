@@ -21,6 +21,7 @@ if( include_plugin )
     set(plugin_LIBRARIES "${Boost_LIBRARIES}")
     set(plugin_TESTS
         plugin/test_add_int.cpp
+        plugin/test_add_tensor.cpp
     )
     #
     add_subdirectory(plugin)
