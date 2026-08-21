@@ -47,3 +47,6 @@ target_link_libraries(tests
     ${TORCH_LIBRARIES}
     ${plugin_LIBRARIES}
 )
+if( include_plugin )
+    add_dependencies(tests plugin_lib)
+endif()

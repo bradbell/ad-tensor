@@ -30,11 +30,11 @@ TEST(tests_plugin, add_int) {
         std::string dir = plugin_dirs[index++];
         //
         // plugin_path
-        boost::filesystem::path plugin_path = dir + "/add_int_plugin";
+        boost::filesystem::path plugin_path = dir + "/plugin_lib";
         //
         //  Define the path to the compiled plugin file
-        // On Windows this looks for "add_int_plugin.dll",
-        // on Linux "libadd_int_plugin.so"
+        // On Windows this looks for "plugin_lib.dll",
+        // on Linux "libplugin_lib.so"
         try {
             // Import the function by specifying its signature <int(int, int)>
             // and alias name "add_int".

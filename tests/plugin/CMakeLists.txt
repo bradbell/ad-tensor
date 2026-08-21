@@ -3,6 +3,8 @@
 # SPDX-FileContributor: 2026 Bradley M. Bell
 # ----------------------------------------------------------------------------
 #
-# add_int_plugin
-add_library(add_int_plugin MODULE add_int.cpp)
-target_link_libraries(add_int_plugin PRIVATE ${Boost_LIBRARIES} )
+# plugin_lib
+add_library(plugin_lib MODULE
+    add_int.cpp
+)
+target_link_libraries(plugin_lib PRIVATE ${Boost_LIBRARIES} )
