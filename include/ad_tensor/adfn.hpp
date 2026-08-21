@@ -82,6 +82,7 @@ Other Public Members
     src/adfn/forward_der.cpp
     src/adfn/reverse_der.cpp
     src/adfn/optimize.cpp
+    examples/adfn/source_gen.cpp
 }
 
 

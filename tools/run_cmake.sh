@@ -93,6 +93,7 @@ cat << EOF
 cmake -S .. -B . \\
     -G Ninja \\
     -D include_tests=true \\
+    -D include_plugin=true \\
     -D CMAKE_BUILD_TYPE=$cmake_build_type \\
     -D Torch_DIR=$torch_dir \\
     -D CMAKE_CXX_FLAGS="'$cxx_flags'" \\
@@ -102,6 +103,7 @@ EOF
 if ! cmake -S .. -B . \
     -G Ninja \
     -D include_tests=true \
+    -D include_plugin=true \
     -D CMAKE_BUILD_TYPE=$cmake_build_type \
     -D Torch_DIR=$torch_dir \
     -D CMAKE_CXX_FLAGS="'$cxx_flags'" \
