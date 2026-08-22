@@ -7,13 +7,19 @@
 #include <boost/filesystem.hpp>
 #include <gtest/gtest.h>
 #include <torch/torch.h>
+#include <ad_tensor/vector.hpp>
 
 namespace dll = boost::dll;
 
 TEST(tests_plugin, add_tensor) {
     //
-    // dll_name
-    std::string dll_ext = boost::dll::shared_library::suffix().string();
+    // at_tensor_vector_t, return_t
+    typedef ad_tensor::vector<at::Tensor>               at_tensor_vector_t;
+    typedef std::tuple<at_tensor_vector_t, std::string> return_t;
+    //
+    // dom_par, dom_var
+    ad_tensor::vector<at::Tensor> dom_par = { torch::tensor( {1, 2} ) };
+    ad_tensor::vector<at::Tensor> dom_var = { torch::tensor( {3, 4} ) };
     //
     // plugin_dirs
     std::vector< std::string > plugin_dirs = {
@@ -41,18 +47,23 @@ TEST(tests_plugin, add_tensor) {
             // and alias name "add_tensor".
             // Automatically adds .dll/.so extension
             auto add_tensor = dll::import_alias<
-                at::Tensor(const at::Tensor&, const at::Tensor&)
+                return_t(const at_tensor_vector_t&, const at_tensor_vector_t&)
             >(
                 plugin_path,
                 "add_tensor",
                 dll::load_mode::append_decorations
             );
             //
-            // Execute the function
-            at::Tensor x     = torch::tensor( {1, 2} );
-            at::Tensor y     = torch::tensor( {3, 4} );
-            at::Tensor check = torch::tensor( {4, 6} );
-            EXPECT_TRUE( add_tensor(x, y).equal( check ) );
+            // range
+            return_t return_tuple  = add_tensor(dom_par, dom_var);
+            auto [range, message]  = std::move( return_tuple );
+            //
+            EXPECT_EQ(message, "");
+            EXPECT_EQ(range.size(), 1);
+            //
+            // check
+            at::Tensor check = dom_par[0] + dom_var[0];
+            EXPECT_TRUE( check.equal( range[0] ) );
             //
             // found
             found = true;
@@ -61,7 +72,7 @@ TEST(tests_plugin, add_tensor) {
         }
     }
     if( ! found ) {
-        std::cout << error_message;
+        std::cerr << error_message;
     }
     EXPECT_TRUE(found);
 }

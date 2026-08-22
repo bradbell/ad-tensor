@@ -11,9 +11,6 @@ namespace dll = boost::dll;
 
 TEST(tests_plugin, add_int) {
     //
-    // dll_name
-    std::string dll_ext = boost::dll::shared_library::suffix().string();
-    //
     // plugin_dirs
     std::vector< std::string > plugin_dirs = {
         "build/tests/plugin",
@@ -55,7 +52,7 @@ TEST(tests_plugin, add_int) {
         }
     }
     if( ! found ) {
-        std::cout << error_message;
+        std::cerr << error_message;
     }
     EXPECT_TRUE(found);
 }
