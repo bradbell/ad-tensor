@@ -16,6 +16,7 @@ if( include_plugin )
     #
     # include_directories
     include_directories( ${Boost_INCLUDE_DIRS} )
+    include_directories( ${CMAKE_CURRENT_BINARY_DIR} )
     #
     # plugin_LIBRARIES, plugin_TESTS
     set(plugin_LIBRARIES "${Boost_LIBRARIES}")

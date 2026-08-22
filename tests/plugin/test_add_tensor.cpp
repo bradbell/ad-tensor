@@ -5,7 +5,7 @@
 #include <gtest/gtest.h>
 #include <torch/torch.h>
 #include <ad_tensor/vector.hpp>
-#include "get_plugin.hpp"
+#include <plugin/get_plugin.hpp> // see ./get_plugin.hpp.in
 
 TEST(tests_plugin, add_tensor) {
     //

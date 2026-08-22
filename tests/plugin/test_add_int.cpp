@@ -3,7 +3,7 @@
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
 #include <gtest/gtest.h>
-#include "get_plugin.hpp"
+#include <plugin/get_plugin.hpp> // see ./get_plugin.hpp.in
 
 TEST(tests_plugin, add_int) {
     //
