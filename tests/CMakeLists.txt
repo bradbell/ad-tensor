@@ -21,8 +21,6 @@ if( include_plugin )
     # plugin_LIBRARIES, plugin_TESTS
     set(plugin_LIBRARIES "${Boost_LIBRARIES}")
     set(plugin_TESTS
-        plugin/test_add_int.cpp
-        plugin/test_add_tensor.cpp
         ${CMAKE_CURRENT_BINARY_DIR}/plugin/build_lib.cpp
     )
     #

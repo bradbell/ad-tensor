@@ -3,12 +3,7 @@
 # SPDX-FileContributor: 2026 Bradley M. Bell
 # ----------------------------------------------------------------------------
 #
-# get_plutin.hpp, build_lib.cpp
-configure_file(
-    ${CMAKE_CURRENT_SOURCE_DIR}/get_plugin.hpp.in
-    ${CMAKE_CURRENT_BINARY_DIR}/get_plugin.hpp
-    @ONLY
-)
+# build_lib.cpp
 configure_file(
     ${CMAKE_CURRENT_SOURCE_DIR}/build_lib.cpp.in
     ${CMAKE_CURRENT_BINARY_DIR}/build_lib.cpp

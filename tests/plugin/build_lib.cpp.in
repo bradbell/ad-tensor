@@ -6,10 +6,11 @@
 #include <filesystem>
 #include <fstream>
 #include <gtest/gtest.h>
+#include <torch/torch.h>
+#include <ad_tensor/vector.hpp>
+#include "@CMAKE_CURRENT_SOURCE_DIR@/get_plugin.hpp"
 //
-TEST(tests_plugin, compile) {
-    //
-    namespace fs = std::filesystem;
+TEST(tests_plugin, build_lib) {
     //
     // CMAKE_CURRENT_BINARY_DIR/CMakeLists.txt
     std::string text = R"(
@@ -48,11 +49,11 @@ target_link_libraries(plugin_lib
         //
         // build_dir
         const char* build_dir = "@CMAKE_CURRENT_BINARY_DIR@/build";
-        if( ! fs::is_directory( build_dir ) ) {
-            fs::create_directory( build_dir );
+        if( ! std::filesystem::is_directory( build_dir ) ) {
+            std::filesystem::create_directory( build_dir );
         }
-        fs::current_path(build_dir);
-        std::cout << "current_path = " << fs::current_path() << "\n";
+        std::filesystem::current_path(build_dir);
+        std::cout << "current_path = " << std::filesystem::current_path() << "\n";
         //
         // ../CMakeLists.txt
         std::ofstream file( "../CMakeLists.txt" );
@@ -64,11 +65,36 @@ target_link_libraries(plugin_lib
     //
     // cmake
     int return_code = std::system(
-        "cmake -B . -S .. -D Torch_DIR='@Torch_DIR@'"
+        "cmake -B . -S .. -D Torch_DIR='@Torch_DIR@' --log-level=ERROR"
     );
     EXPECT_EQ(return_code, 0);
     //
     // ninja
     return_code = std::system("cmake --build .");
     EXPECT_EQ(return_code, 0);
+    //
+    auto add_int = get_plugin<int(int, int)>( "./plugin_lib", "add_int");
+    EXPECT_EQ(add_int(2, 3), 5);
+    //
+    // at_tensor_vector_t, return_t
+    typedef ad_tensor::vector<at::Tensor>               at_tensor_vector_t;
+    typedef std::tuple<at_tensor_vector_t, std::string> return_t;
+    //
+    // dom_par, dom_var
+    ad_tensor::vector<at::Tensor> dom_par = { torch::tensor( {1, 2} ) };
+    ad_tensor::vector<at::Tensor> dom_var = { torch::tensor( {3, 4} ) };
+    //
+    auto add_tensor = get_plugin<
+        return_t(const at_tensor_vector_t&, const at_tensor_vector_t&)
+    >( "./plugin_lib", "add_tensor" );
+    //
+    // range
+    auto [range, message] = add_tensor(dom_par, dom_var);
+    //
+    EXPECT_EQ(message, "");
+    EXPECT_EQ(range.size(), 1);
+    //
+    // check
+    at::Tensor check = dom_par[0] + dom_var[0];
+    EXPECT_TRUE( check.equal( range[0] ) );
 }

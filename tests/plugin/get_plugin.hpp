@@ -9,17 +9,18 @@
 #include <gtest/gtest.h>
 
 template <class FunctionType>
-boost::function<FunctionType> get_plugin(std::string plugin_name) {
+boost::function<FunctionType> get_plugin(
+    std::string plugin_file    ,
+    std::string function_alias ) {
     //
     // plugin_path
-    std::string dir = "@CMAKE_CURRENT_BINARY_DIR@";
-    boost::filesystem::path plugin_path = dir + "/plugin_lib";
+    boost::filesystem::path plugin_path(plugin_file);
     //
     try {
         // plugin
         auto plugin = boost::dll::import_alias<FunctionType>(
             plugin_path,
-            plugin_name,
+            function_alias,
             boost::dll::load_mode::append_decorations
          );
          return plugin;
@@ -31,7 +32,7 @@ boost::function<FunctionType> get_plugin(std::string plugin_name) {
     // This already failed above so it will fail again
     return  boost::dll::import_alias<FunctionType>(
         plugin_path,
-        plugin_name,
+        function_alias,
         boost::dll::load_mode::append_decorations
     );
 }
