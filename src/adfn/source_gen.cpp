@@ -5,8 +5,6 @@
 /*
 {xrst_begin adfn_source_gen usr}
 {xrst_spell
-    std
-    dll
 }
 
 Generate C++ Source Code For this AD Function
@@ -37,52 +35,81 @@ Is C++ source code for the function range = adfn(dom_var, dom_par) where:
 {xrst_code}
 The vector y above can contain derivatives if adfn
 was recording using AD Tensors and derivatives of another AD function.
-The C interface to the source code function is defined below.
-(A C interface is used to make dll linking simpler.)
-
-C Interface
-***********
 
 Syntax
 ======
 {xrst_code cpp}
-   auto [ range, message ] = adfn_name_plugin(dom_par, dom_var )
+   range = adfn_name_plugin(dom_par, dom_var )
 {xrst_code}
 
 adfn_name_plugin
-----------------
+================
 This begins with the name of this adfn; see :ref:`stop_recording-name`
 and the ends with ``_plugin`` .
 
 dom_par
--------
+=======
 is the vector of domain parameter tensors and has the following prototype:
 {xrst_code cpp}
     const ad_tensor::vector<at::Tensor>& dom_par;
 {xrst_code}
 
 dom_var
--------
+=======
 is the vector of domain variable tensors and has the following prototype:
 {xrst_code cpp}
     const ad_tensor::vector<at::Tensor>& dom_var;
 {xrst_code}
 
 range
------
+=====
 is the vector of range tensors and has the following prototype:
 {xrst_code cpp}
     ad::tensor::vector<at::Tensor> range
 {xrst_code}
-If a fatal error occurs, range will be the empty vector.
-
-message
--------
-is the warning or error message and has the following prototype:
-{xrst_code cpp}
-    std::string message;
-{xrst_code}
-If message is empty, no error or warnings occurred.
 
 {xrst_end adfn_source_gen}
+------------------------------------------------------------------------------
 */
+#include <string>
+#include <format>
+#include <ad_tensor/adfn.hpp>
+//
+namespace {
+    // string, format
+    using std::string;
+    using std::format;
+    //
+    // -----------------------------------------------------------------------
+    // preamble
+    std::string preamble(const std::string& adfn_name)  {
+        //
+        // source
+        // Note that {{ and }} escapes the special meaning of {} in format.
+        constexpr const char* fmt =
+R"|(// ad_tensor::adfn::src_gen output
+#include <torch/torch.h>
+#include <ad_tensor/ad_tensor.hpp>
+//
+ad::tensor::vector<at::Tensor> {}_plugin(
+    const ad::tensor::vector<at::Tensor>& dom_par ,
+    const ad::tensor::vector<at::Tensor>& dom_var )
+{{  \\
+)|";
+        return std::format(fmt, adfn_name);
+    }
+    // -----------------------------------------------------------------------
+
+}
+// -------------------------------------------------------------------------
+namespace ad_tensor { // BEGIN_AD_TENSOR_NAMESPACE
+//
+std::string adfn_t::source_gen(void) const {
+    //
+    // source
+    string source = preamble( get_name() );
+    //
+    source += "}\n";
+    return source;
+}
+} // END_AD_TENSOR_NAMESPACE

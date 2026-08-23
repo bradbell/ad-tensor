@@ -13,7 +13,7 @@ add_executable(examples
     adfn/get_started.cpp
     adfn/optimize.cpp
     adfn/reverse_der.cpp
-    adfn/source_gen.cpp
+    adfn/src_gen.cpp
     adten/binary.cpp
     adten/compound.cpp
     adten/index.cpp
