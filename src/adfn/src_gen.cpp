@@ -3,7 +3,7 @@
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
 /*
-{xrst_begin adfn_source_gen usr}
+{xrst_begin adfn_src_gen usr}
 {xrst_spell
 }
 
@@ -18,7 +18,7 @@ Its implementation is under construction.
 Syntax
 ******
 {xrst_code cpp}
-    source_code = adfn.source_gen()
+    source_code = adfn.src_gen()
 {xrst_code}
 
 adfn
@@ -68,7 +68,7 @@ is the vector of range tensors and has the following prototype:
     ad::tensor::vector<at::Tensor> range
 {xrst_code}
 
-{xrst_end adfn_source_gen}
+{xrst_end adfn_src_gen}
 ------------------------------------------------------------------------------
 */
 #include <string>
@@ -84,7 +84,6 @@ namespace {
     // preamble
     std::string preamble(const std::string& adfn_name)  {
         //
-        // source
         // Note that {{ and }} escapes the special meaning of {} in format.
         constexpr const char* fmt =
 R"|(// ad_tensor::adfn::src_gen output
@@ -104,12 +103,12 @@ ad::tensor::vector<at::Tensor> {}_plugin(
 // -------------------------------------------------------------------------
 namespace ad_tensor { // BEGIN_AD_TENSOR_NAMESPACE
 //
-std::string adfn_t::source_gen(void) const {
+std::string adfn_t::src_gen(void) const {
     //
-    // source
-    string source = preamble( get_name() );
+    // src
+    string src = preamble( get_name() );
     //
-    source += "}\n";
-    return source;
+    src += "}\n";
+    return src;
 }
 } // END_AD_TENSOR_NAMESPACE

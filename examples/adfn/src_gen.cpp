@@ -33,7 +33,7 @@ TEST(examples_adfn, src_gen)  {
     adfn_t f = adten_t::stop_recording(ar, "f");
     //
     // src
-    std::string src = f.source_gen();
+    std::string src = f.src_gen();
     //
     EXPECT_TRUE(src.starts_with("// ad_tensor::adfn::src_gen output") );
     // std::cout << "src = " << src << "\n";

@@ -12,7 +12,7 @@ add_library(ad_tensor SHARED
     adfn/optimize.cpp
     adfn/print_con.cpp
     adfn/reverse_der.cpp
-    adfn/source_gen.cpp
+    adfn/src_gen.cpp
     adten/binary.cpp
     adten/call_atom.cpp
     adten/ctor.cpp

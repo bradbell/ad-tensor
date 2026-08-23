@@ -82,7 +82,7 @@ Other Public Members
     src/adfn/forward_der.cpp
     src/adfn/reverse_der.cpp
     src/adfn/optimize.cpp
-    src/adfn/source_gen.cpp
+    src/adfn/src_gen.cpp
 }
 
 
@@ -189,8 +189,8 @@ public:
     // optimize
     void optimize(void);
     //
-    // source_gen
-    std::string source_gen(void) const;
+    // src_gen
+    std::string src_gen(void) const;
     //
     // BEGIN_DEFAULT_CTOR
     adfn_t()
