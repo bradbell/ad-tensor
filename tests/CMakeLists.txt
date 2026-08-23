@@ -23,6 +23,7 @@ if( include_plugin )
     set(plugin_TESTS
         plugin/test_add_int.cpp
         plugin/test_add_tensor.cpp
+        ${CMAKE_CURRENT_BINARY_DIR}/plugin/build_lib.cpp
     )
     #
     add_subdirectory(plugin)
