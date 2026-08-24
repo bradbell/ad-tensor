@@ -39,6 +39,7 @@ add_executable(tests
     dev/rng_depend.cpp
     dev/tape.cpp
     dev/vec_sets.cpp
+    fileio.cpp
 )
 # END_SORT_THIS_LINE_MINUS_2
 #
