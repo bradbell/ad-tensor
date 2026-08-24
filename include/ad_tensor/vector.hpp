@@ -12,7 +12,7 @@
 
 The AD Tensor Vector Class
 ##########################
-This a light weight wrapper for ``std::vector`` that only modifies
+This a light class derived from ``std::vector`` that only modifies
 the indexing operator when NDEBUG is not defined.
 To be specific, the indexing operator [] is mapped
 to std::vector::at so that indices are checked to be in bounds.
