@@ -55,6 +55,7 @@ TEST(tests, fileio) {
     //
     // vec_at_ten
     ad_tensor::vector<at::Tensor> ad_vec_at_ten_in;
+    ad_vec_at_ten_in.push_back( torch::empty( {0} ) );
     ad_vec_at_ten_in.push_back( torch::tensor( { {1, 2}, {3, 4} } ) );
     ad_vec_at_ten_in.push_back( torch::tensor( { 5.0, 6.0, 7.0, 8.0 } ) );
     //
@@ -65,7 +66,8 @@ TEST(tests, fileio) {
     ad_tensor::vector<at::Tensor> ad_vec_at_ten_out =
         load_ad_vec_at_ten(file_name);
     //
-    EXPECT_EQ(ad_vec_at_ten_out.size(), 2);
+    EXPECT_EQ(ad_vec_at_ten_out.size(), 3);
     EXPECT_TRUE( ad_vec_at_ten_out[0].equal( ad_vec_at_ten_in[0] ) );
     EXPECT_TRUE( ad_vec_at_ten_out[1].equal( ad_vec_at_ten_in[1] ) );
+    EXPECT_TRUE( ad_vec_at_ten_out[2].equal( ad_vec_at_ten_in[2] ) );
 }
