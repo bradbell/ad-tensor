@@ -5,10 +5,12 @@
 /*
 {xrst_begin adfn_src_gen usr}
 {xrst_spell
+    dir
+    cpp
 }
 
-Generate C++ Source Code For this AD Function
-#############################################
+Generate C++ Source Code A AD Function
+######################################
 
 Under Construction
 ******************
@@ -18,22 +20,45 @@ Its implementation is under construction.
 Syntax
 ******
 {xrst_code cpp}
-    source_code = adfn.src_gen()
+    adfn.src_gen(dir)
 {xrst_code}
+
+Prototype
+*********
+{xrst_literal ,
+    BEGIN_SRC_GEN, END_SRC_GEN
+}
 
 adfn
 ****
 We use adfn for this AD function object.
 
-source_code
-***********
+dir
+***
+is the directory where the C++ and binary output files are stored.
+
+adfn_name.cpp
+=============
+The C++ output file name begins with the name of this adfn
+(see :ref:`stop_recording-name`) and the ends with ``.cpp`` .
+It defines the source code function defined below.
+
+adfn_name.binary
+================
+The binary output file name begins with the name of this adfn;
+and the ends with ``.binary`` .
+It contains the constant at::Tensors used to evaluate the
+source code function defined below.
+
+Source Code Function
+********************
 Is C++ source code for the function range = adfn(dom_var, dom_par) where:
 {xrst_code cpp}
     par_all = adfn.forward_par(dom_par);
     var_all = adfn.forward_var(dom_var, par_all);
-    y       = adfn.get_range(var_all, par_all);
+    range   = adfn.get_range(var_all, par_all);
 {xrst_code}
-The vector y above can contain derivatives if adfn
+The vector range above can contain derivatives if adfn
 was recording using AD Tensors and derivatives of another AD function.
 
 Syntax
@@ -44,8 +69,7 @@ Syntax
 
 adfn_name_plugin
 ================
-This begins with the name of this adfn; see :ref:`stop_recording-name`
-and the ends with ``_plugin`` .
+This begins with the name of this adfn and the ends with ``_plugin`` .
 
 dom_par
 =======
@@ -65,13 +89,15 @@ range
 =====
 is the vector of range tensors and has the following prototype:
 {xrst_code cpp}
-    ad::tensor::vector<at::Tensor> range
+    ad_tensor::vector<at::Tensor> range
 {xrst_code}
 
 {xrst_end adfn_src_gen}
 ------------------------------------------------------------------------------
 */
 #include <string>
+#include <filesystem>
+#include <fstream>
 #include <format>
 #include <ad_tensor/adfn.hpp>
 //
@@ -100,21 +126,40 @@ std::string preamble(
 R"|(// ad_tensor::adfn::src_gen output
 #include <torch/torch.h>
 #include <ad_tensor/vector.hpp>
+#include <ad_tensor/no_elements.hpp>
 #include <ad_tensor/dev/user_assert.hpp>
+#include <ad_tensor/dev/to_string.hpp>
 //
-ad::tensor::vector<at::Tensor> {}_plugin(
-const ad::tensor::vector<at::Tensor>& dom_par ,
-const ad::tensor::vector<at::Tensor>& dom_var )
+ad_tensor::vector<at::Tensor> {}_plugin(
+const ad_tensor::vector<at::Tensor>& dom_par ,
+const ad_tensor::vector<at::Tensor>& dom_var )
 {{   //
+    // dev, string, vector
+    namespace dev = ad_tensor::dev;
+    using std::string;
+    using ad_tensor::vector;
+    using ad_tensor::has_elements;
 )|";
     src += std::format(fmt1, adfn_name);
     //
+    // ifndef NDEBUG
     src += indent + "//\n";
     src += "#ifndef NDEBUG\n";
     //
     src += indent + "{\n";
+    //
+    // msg
+    constexpr const char* fmt2 =
+R"|(        //
+        // msg
+        string msg = "{}_plugin: ";
+        //
+)|";
+    src += std::format(fmt2, adfn_name);
+    //
+    // par_shapes
     src += indent + indent + "//  par_shapes\n";
-    src += indent + indent + "const vector< vector<int64_t> > par_shapes;\n";
+    src += indent + indent + "vector< vector<int64_t> > par_shapes;\n";
     for(size_t i = 0; i < par_shapes.size(); ++i) {
         src +=  indent + indent + "par_shapes.push_back( {";
         for(size_t j = 0; j < par_shapes[i].size(); ++j) {
@@ -125,29 +170,6 @@ const ad::tensor::vector<at::Tensor>& dom_var )
         }
         src += "} );\n";
     }
-    //
-    src += indent + indent + "//  var_shapes\n";
-    src += indent + indent + "const vector< vector<int64_t> > var_shapes;\n";
-    for(size_t i = 0; i < var_shapes.size(); ++i) {
-        src +=  indent + indent + "var_shapes.push_back( {";
-        for(size_t j = 0; j < var_shapes[i].size(); ++j) {
-            src += std::to_string( var_shapes[i][j] );
-            if( j+1 < var_shapes[i].size() ) {
-                src += ", ";
-            }
-        }
-        src += "} );\n";
-    }
-    // msg
-    constexpr const char* fmt2 =
-R"|(        //
-        // msg
-        string msg = "{}_plugin: ";
-        //
-)|";
-    src += std::format(fmt2, adfn_name);
-    //
-    // check par_shapes
     src +=
 R"|(        if( dom_par.size() != par_shapes.size() ) {
             msg += "dom_par.size() = " + std::to_string( dom_par.size() );
@@ -169,7 +191,19 @@ R"|(        if( dom_par.size() != par_shapes.size() ) {
         }
 )|";
     //
-    // check var_shapes
+    // var_shapes
+    src += indent + indent + "//  var_shapes\n";
+    src += indent + indent + "vector< vector<int64_t> > var_shapes;\n";
+    for(size_t i = 0; i < var_shapes.size(); ++i) {
+        src +=  indent + indent + "var_shapes.push_back( {";
+        for(size_t j = 0; j < var_shapes[i].size(); ++j) {
+            src += std::to_string( var_shapes[i][j] );
+            if( j+1 < var_shapes[i].size() ) {
+                src += ", ";
+            }
+        }
+        src += "} );\n";
+    }
     src +=
 R"|(        if( dom_var.size() != var_shapes.size() ) {
             msg += "dom_var.size() = " + std::to_string( dom_var.size() );
@@ -191,6 +225,7 @@ R"|(        if( dom_var.size() != var_shapes.size() ) {
         }
 )|";
     //
+    // endif
     src += indent + "}\n";
     src += "#endif\n";
     //
@@ -201,20 +236,38 @@ R"|(        if( dom_var.size() != var_shapes.size() ) {
 } // END_EMPTY_NAMESPACE
 // -------------------------------------------------------------------------
 namespace ad_tensor { // BEGIN_AD_TENSOR_NAMESPACE
-//
-std::string adfn_t::src_gen(void) const {
+// BEGIN_SRC_GEN
+void adfn_t::src_gen(const std::string& dir) const
+{   // END_SRC_GEN
     //
-    // indent
-    string indent = "    ";
+    // fs
+    namespace fs = std::filesystem;
     //
-    // src
-    string src = preamble(
-        get_name()         ,
+    // adfn_name
+    string adfn_name = get_name();
+    //
+    // dir_path
+    fs::path dir_path(dir);
+    //
+    // file_cpp
+    fs::path file_cpp_path = dir_path / ( adfn_name + ".cpp" );
+    std::ofstream file_cpp(file_cpp_path);
+    //
+    // adfn_name.binary
+    fs::path file_binary_path = dir_path / ( adfn_name + ".binary" );
+    string file_name = file_binary_path.string();
+    auto vec_ten_ptr = dynamic_cast< const std::vector<at::Tensor>* >(&m_con);
+    torch::save( *vec_ten_ptr, file_name);
+    //
+    // file_cpp
+    file_cpp <<  preamble(
+        adfn_name          ,
         m_par.m_dom_shapes ,
         m_var.m_dom_shapes
     );
     //
-    src += "}\n";
-    return src;
+    // file_cpp
+    file_cpp << "}\n";
+    file_cpp.close();
 }
 } // END_AD_TENSOR_NAMESPACE

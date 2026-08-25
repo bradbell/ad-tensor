@@ -3,6 +3,7 @@
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
 // BEGIN_CPP
+#include <filesystem>
 #include <gtest/gtest.h>
 #include <ad_tensor/ad_tensor.hpp>
 //
@@ -32,11 +33,12 @@ TEST(examples_adfn, src_gen)  {
     // r = f(v, p)
     adfn_t f = adten_t::stop_recording(ar, "f");
     //
-    // src
-    std::string src = f.src_gen();
+    // dir_path
+    std::filesystem::path dir_path = std::filesystem::temp_directory_path();
     //
-    EXPECT_TRUE(src.starts_with("// ad_tensor::adfn::src_gen output") );
+    // dir_path/f.cpp, dir_path/f.binary
+    f.src_gen(dir_path.string());
     //
-    // std::cout << "src = " << src << "\n";
+    std::cout << "dir_path = " << dir_path << "\n";
 }
 // END_CPP
