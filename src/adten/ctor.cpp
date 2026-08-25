@@ -27,8 +27,8 @@ adten_t::adten_t( const at::Tensor& tensor )
         dev::tape_t& tape = dev::this_threads_tape();
         if( tape.m_recording ) {
             m_tape_id = tape.m_tape_id;
-            m_index   = tape.m_con.size();
-            tape.m_con.push_back( tensor.clone() );
+            m_index   = tape.m_con_vec.size();
+            tape.m_con_vec.push_back( tensor.clone() );
         }
     }
 }

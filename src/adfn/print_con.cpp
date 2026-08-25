@@ -10,7 +10,7 @@ namespace ad_tensor {
     void adfn_t::print_con(void) const
     {   //
         std::cout << "Begin " + get_name() + ".print_con\n";
-        std::cout << to_string( m_con );
+        std::cout << to_string( m_con_vec );
         std::cout << "End " + get_name() + ".print_con\n";
     }
 }

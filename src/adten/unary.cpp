@@ -89,9 +89,9 @@ adten_t adten_t::unary( dev::op_enum_t op_enum, const adten_t& operand )
     size_t res_index;
     //
     if(res_adtype == adtype_t::constant ) {
-        // res_index, tape.m_con
-        res_index = tape.m_con.size();
-        tape.m_con.push_back( res_at_ten.clone() );
+        // res_index, tape.m_con_vec
+        res_index = tape.m_con_vec.size();
+        tape.m_con_vec.push_back( res_at_ten.clone() );
     } else {
         //
         // agraph

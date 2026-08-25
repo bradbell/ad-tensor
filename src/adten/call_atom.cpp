@@ -132,7 +132,7 @@ vector<adten_t> adten_t::call_atom(
         rng_adtype[row] = std::max(rng_adtype[row],  adomain[col].m_adtype);
     }
     //
-    // arange, tape.m_con, m_index, par_rng_index, var_rng_index
+    // arange, tape.m_con_vec, m_index, par_rng_index, var_rng_index
     vector<adten_t> arange;
     vector<size_t> par_rng_index, var_rng_index;
     size_t par_index = tape.m_par.m_op_seq.size();
@@ -140,7 +140,7 @@ vector<adten_t> adten_t::call_atom(
     for(size_t i = 0; i < n_range; ++i) switch( rng_adtype[i] ) {
         //
         // adtype_t::constant
-        // This adds the constant to tape.m_con.
+        // This adds the constant to tape.m_con_vec.
         case adtype_t::constant:
         arange.push_back( adten_t( range[i] ) );
         break;

@@ -26,22 +26,22 @@ Prototype
 depend_old
 **********
 If depend_old[i_old] is true (false) then the range values for adfn depend
-on the constant with index i_old in the input value of adfn.m_con.
-The size of this vector is equal the size of the input value of adfn.m_con.
+on the constant with index i_old in the input value of adfn.m_con_vec.
+The size of this vector is equal the size of the input value of adfn.m_con_vec.
 
 adfn
 ****
 This is the function we are removing unnecessary constants from.
 
-m_con
-=====
+m_con_vec
+=========
 The unnecessary constants are removed from this vector.
 It new size is less than or equal its old size.
 
 m_par.m_arg_value, m_var.arg_value
 ==================================
 The entries in these vectors, that have m_arg_type constant,
-get mapped from their index in the old m_con to their index in the new m_con.
+get mapped from their index in the old m_con_vec to their index in the new m_con_vec.
 
 Test
 ****
@@ -69,7 +69,7 @@ void adfn_t::optimize_con(const vector<bool>& depend_old)
     //
     // n_old
     size_t n_old = depend_old.size();
-    assert( n_old == m_con.size() );
+    assert( n_old == m_con_vec.size() );
     //
     // not_used
     size_t not_used = std::numeric_limits<size_t>::max();
@@ -79,7 +79,7 @@ void adfn_t::optimize_con(const vector<bool>& depend_old)
     //
     // old2new_con[0], hash2new_con[0]
     // always keep the undefined tensor at constant index 0
-    assert( ! m_con[0].defined() );
+    assert( ! m_con_vec[0].defined() );
     old2new_con[0]  = 0;
     hash2new_con[0] = 0;
     //
@@ -90,8 +90,8 @@ void adfn_t::optimize_con(const vector<bool>& depend_old)
         //
         // hash
         int64_t hash = 0;
-        if( m_con[i_old].defined() ) {
-            hash = torch::hash_tensor( m_con[i_old] ).item<int64_t>();
+        if( m_con_vec[i_old].defined() ) {
+            hash = torch::hash_tensor( m_con_vec[i_old] ).item<int64_t>();
         }
         //
         //
@@ -101,17 +101,17 @@ void adfn_t::optimize_con(const vector<bool>& depend_old)
         if( hash != 0 && itr != hash2new_con.end() ) {
             size_t i_new = itr->second;
             assert( i_new < n_new );
-            replace = m_con[i_old].equal( m_con[i_new] );
+            replace = m_con_vec[i_old].equal( m_con_vec[i_new] );
         }
         //
         if( replace ) {
             // old2new_con[i_old]
             old2new_con[i_old] = itr->second;
         } else {
-            // old2new[i_old], m_con[n_new], hash2new_con[hash]
+            // old2new[i_old], m_con_vec[n_new], hash2new_con[hash]
             assert( n_new <= i_old );
             if( n_new < i_old ) {
-                m_con[n_new] = m_con[i_old];
+                m_con_vec[n_new] = m_con_vec[i_old];
             }
             old2new_con[i_old] = n_new;
             if( hash != 0 ) {
@@ -120,12 +120,12 @@ void adfn_t::optimize_con(const vector<bool>& depend_old)
             ++n_new;
         }
     } }
-    // m_con
+    // m_con_vec
     // shrink to fit is non-binding, so ensure this memory gets freed
     for(size_t i_old = n_new; i_old < n_old; ++i_old) {
-        m_con[i_old] = at::Tensor();
+        m_con_vec[i_old] = at::Tensor();
     }
-    m_con.resize(n_new);
+    m_con_vec.resize(n_new);
     //
     // agraph
     dev::agraph_t* agraph = nullptr;

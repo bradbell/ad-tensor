@@ -78,7 +78,7 @@ vector<TensorType> adfn_t::get_range(
         switch(adtype) {
             //
             case adtype_t::constant:
-            range.push_back( m_con[index] );
+            range.push_back( m_con_vec[index] );
             break;
             //
             case adtype_t::parameter:
