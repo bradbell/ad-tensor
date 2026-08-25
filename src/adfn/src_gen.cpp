@@ -256,19 +256,52 @@ void adfn_t::src_gen(const std::string& dir) const
     fs::path file_cpp_path = dir_path / ( adfn_name + ".cpp" );
     std::ofstream file_cpp(file_cpp_path);
     //
-    // adfn_name.binary
+    // file_binary_path
     fs::path file_binary_path = dir_path / ( adfn_name + ".binary" );
-    string file_name = file_binary_path.string();
-    auto vec_ten_ptr = dynamic_cast< const std::vector<at::Tensor>* >(&m_con);
-    torch::save( *vec_ten_ptr, file_name);
     //
-    // file_cpp
+    // adfn_name.binary
+    {   string file_name = file_binary_path.string();
+        auto vec_ten_ptr = 
+            dynamic_cast< const std::vector<at::Tensor>* >(&m_con);
+        torch::save( *vec_ten_ptr, file_name);
+    }
+    //
+    // file_cpp: dev, string, Tensor, vector, has_elements
+    // also check size and shapes for dom_par and dom_var
     file_cpp <<  preamble(
         adfn_name          ,
         m_par.m_dom_shapes ,
         m_var.m_dom_shapes
     );
     //
+    // file_cpp: adfn_name
+    {   constexpr const char* fmt =
+R"|(    //
+    // adfn_name
+    string adfn_name = "{}";
+)|";
+        file_cpp << std::format(fmt, adfn_name);
+    }
+    //
+    // file_cpp: con_vec
+    {   string file_name = fs::canonical(file_binary_path).string();   
+        constexpr const char* fmt =
+R"|(    //
+    // con_vec
+    vector<Tensor> con_vec;
+    {{   string file_name = "{}";
+        auto vec_ptr = dynamic_cast< std::vector<Tensor>* > (&con_vec); 
+        try {{
+            torch::load(*vec_ptr, file_name);
+        }} catch (...) {{
+            dev::user_assert(false,
+                adfn_name + "_plugin couuld not load " + file_name
+        }}
+    }}
+)|";
+        file_cpp << std::format(fmt, file_name);
+    }
+    // ------------------------------------------------------------------------
     // file_cpp: range
     {   constexpr const char* fmt =
 R"|(    //
