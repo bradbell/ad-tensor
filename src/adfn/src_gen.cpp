@@ -122,7 +122,7 @@ std::string preamble(
     //
     // src
     // Note that {{ and }} escapes the special meaning of {} in format.
-    constexpr const char* fmt1 =
+    {   constexpr const char* fmt =
 R"|(// ad_tensor::adfn::src_gen output
 #include <torch/torch.h>
 #include <ad_tensor/vector.hpp>
@@ -134,13 +134,15 @@ ad_tensor::vector<at::Tensor> {}_plugin(
 const ad_tensor::vector<at::Tensor>& dom_par ,
 const ad_tensor::vector<at::Tensor>& dom_var )
 {{   //
-    // dev, string, vector
+    // dev, string, Tensor, vector, has_elements
     namespace dev = ad_tensor::dev;
     using std::string;
+    using at::Tensor;
     using ad_tensor::vector;
     using ad_tensor::has_elements;
 )|";
-    src += std::format(fmt1, adfn_name);
+        src += std::format(fmt, adfn_name);
+    }
     //
     // ifndef NDEBUG
     src += indent + "//\n";
@@ -149,13 +151,14 @@ const ad_tensor::vector<at::Tensor>& dom_var )
     src += indent + "{\n";
     //
     // msg
-    constexpr const char* fmt2 =
+    {   constexpr const char* fmt =
 R"|(        //
         // msg
         string msg = "{}_plugin: ";
         //
 )|";
-    src += std::format(fmt2, adfn_name);
+        src += std::format(fmt, adfn_name);
+    }
     //
     // par_shapes
     src += indent + indent + "//  par_shapes\n";
@@ -265,6 +268,19 @@ void adfn_t::src_gen(const std::string& dir) const
         m_par.m_dom_shapes ,
         m_var.m_dom_shapes
     );
+    //
+    // file_cpp: range
+    {   constexpr const char* fmt =
+R"|(    //
+    // range
+    Tensor no_elem = ad_tensor::no_elements();
+    size_t n_range = {};
+    vector<Tensor> range(n_range, no_elem);
+    //
+    return range;
+)|";
+        file_cpp << std::format(fmt, m_rng_index.size());
+    }
     //
     // file_cpp
     file_cpp << "}\n";
