@@ -8,6 +8,7 @@
 #include <ad_tensor/dev/derive_op.hpp>
 #include <ad_tensor/dev/to_string.hpp>
 #include <ad_tensor/dev/user_assert.hpp>
+#include <ad_tensor/no_elements.hpp>
 /*
 {xrst_begin adfn_forward_der usr}
 {xrst_spell
@@ -37,7 +38,7 @@ This is either at::Tensor or :ref:`adten-name` .
 dom_der
 *******
 This is the domain direction that the derivative is computed with respect to.
-If dom_der[j].defined() is false, then dom_der[j] will act like a zero tensor
+If no_elements(dom_der[j]), then dom_der[j] will act like a zero tensor
 with the same shape as domain[j] and calculations that use this value will
 be skipped.
 
@@ -66,7 +67,7 @@ is the directional derivative of the range in the dom_der direction; i.e.
     rng_der = adfn_var (dom_var, dom_par) * dom_der
 
 where adfn_var denotes the partial of adfn w.r.t. to domain variables.
-If rng_der[i].defined() is false, then rng_der[i] has not been calculated
+If no_elements(rng_der[i]), then rng_der[i] has not been calculated
 because it is known to be zero with the same shape as range[i]
 for this AD function
 
@@ -104,7 +105,7 @@ vector<TensorType> adfn_t::forward_der(
     }
     for(size_t i = 0; i < shapes.size(); ++i) {
         c10::IntArrayRef shape = shapes[i];
-        if( dom_der[i].defined() && ! dom_der[i].sizes().equals( shape ) ) {
+        if( has_elements(dom_der[i]) && ! dom_der[i].sizes().equals( shape ) ) {
             msg += "dom_der[" + std::to_string(i) + "] shape is ";
             msg += dev::to_string( dom_der[i].sizes() );
             msg += " and the dom_var shape for this index and adfn is ";
@@ -119,13 +120,13 @@ vector<TensorType> adfn_t::forward_der(
         cout << "Begin tracing " + get_name() + ".forward_der\n";
     }
     //
-    // n_op, n_all, undefined
+    // n_op, no_elem
     size_t n_op          = m_var.m_op_seq.size();
-    TensorType undefined = TensorType( at::Tensor() );
+    TensorType no_elem   = TensorType( no_elements() );
     //
     // all_der
     vector<TensorType> all_der =  dom_der ;
-    all_der.resize( n_op, undefined );
+    all_der.resize( n_op, no_elem );
     //
     // all_der
     for(size_t op_index = 0; op_index < n_op; ++op_index) {
@@ -161,12 +162,12 @@ vector<TensorType> adfn_t::forward_der(
         switch(adtype) {
             //
             case adtype_t::constant: {
-                rng_der.push_back( TensorType(at::Tensor()) );
+                rng_der.push_back( TensorType(no_elements()) );
             }
             break;
             //
             case adtype_t::parameter: {
-                rng_der.push_back( TensorType(at::Tensor()) );
+                rng_der.push_back( TensorType(no_elements()) );
             }
             break;
             //

@@ -6,6 +6,7 @@
 #include <gtest/gtest.h>
 #include <torch/torch.h>
 #include <ad_tensor/adten.hpp>
+#include <ad_tensor/no_elements.hpp>
 //
 namespace { // BEGIN_EMPTY_NAMESPACE
 
@@ -109,7 +110,7 @@ void check_empty_derivative() {
     // dy
     vector<Tensor> dy;
     dy.push_back( torch::tensor( {1.0, 2.0} ) );
-    dy.push_back( at::Tensor() );
+    dy.push_back( ad_tensor::no_elements() );
     //
     // dx
     vector<Tensor> dx = f.reverse_der(dy, var_all);

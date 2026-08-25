@@ -4,6 +4,7 @@
 // ----------------------------------------------------------------------------
 #include <ad_tensor/dev/derive_op.hpp>
 #include <ad_tensor/adten.hpp>
+#include <ad_tensor/no_elements.hpp>
 //
 namespace ad_tensor { namespace dev {
     // ------------------------------------------------------------------------
@@ -118,7 +119,7 @@ namespace ad_tensor { namespace dev {
 #endif
         // operand_index
         size_t operand_index  = agraph.m_arg_value[arg_start];
-        if( ! for_der[operand_index].defined() ) {
+        if( no_elements(for_der[operand_index]) ) {
             return;
         }
         // for_der
@@ -158,7 +159,7 @@ namespace ad_tensor { namespace dev {
         thread_local vector<int64_t> array;
         //
         // check for case where this operation is not connected to the range
-        if( ! rev_der[op_index].defined() ) {
+        if( no_elements(rev_der[op_index]) ) {
             return;
         }
         //
@@ -186,7 +187,7 @@ namespace ad_tensor { namespace dev {
         );
         //
         // rev_der[operand_index]
-        if( ! rev_der[operand_index].defined() ) {
+        if( no_elements(rev_der[operand_index]) ) {
             rev_der[operand_index]  = - prod;
         } else {
             rev_der[operand_index] -= prod;

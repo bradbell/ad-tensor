@@ -7,6 +7,7 @@
 #include <ad_tensor/dev/plus_minus_equal.hpp>
 #include <ad_tensor/dev/broadcast.hpp>
 #include <ad_tensor/dev/tensor_at_index.hpp>
+#include <ad_tensor/no_elements.hpp>
 //
 namespace ad_tensor { namespace dev {
     // ------------------------------------------------------------------------
@@ -116,7 +117,7 @@ namespace ad_tensor { namespace dev {
         size_t    operand_index = agraph.m_arg_value[arg_start];
         //
         // for_der[op_index]
-        if( for_der[operand_index].defined() ) {
+        if( has_elements(for_der[operand_index]) ) {
             for_der[op_index] = - for_der[operand_index];
         }
     }
@@ -164,7 +165,7 @@ namespace ad_tensor { namespace dev {
         size_t    operand_index = agraph.m_arg_value[arg_start];
         //
         // rev_der[operand_index]
-        if( ! rev_der[operand_index].defined() ) {
+        if( no_elements(rev_der[operand_index]) ) {
             rev_der[operand_index] = - rev_der[op_index];
         } else {
             rev_der[operand_index] -= rev_der[op_index];

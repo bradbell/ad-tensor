@@ -7,6 +7,7 @@
 #include <ad_tensor/dev/op_enum.hpp>
 #include <ad_tensor/dev/agraph.hpp>
 #include <ad_tensor/dev/user_assert.hpp>
+#include <ad_tensor/no_elements.hpp>
 //
 namespace ad_tensor { // BEGIN_NAMESPACE_AD_TENSOR
 /*
@@ -94,7 +95,7 @@ adten_t adten_t::sum(const c10::IntArrayRef& dim) const
 {
     //
     // res_tensor
-    at::Tensor res_tensor = at::Tensor();
+    at::Tensor res_tensor = no_elements();
     if( dim.size() == 0 ) {
         res_tensor = m_at_ten.sum();
     } else {

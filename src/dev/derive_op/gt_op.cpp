@@ -7,6 +7,7 @@
 #include <ad_tensor/dev/broadcast.hpp>
 #include <ad_tensor/dev/plus_minus_equal.hpp>
 #include <ad_tensor/dev/tensor_at_index.hpp>
+#include <ad_tensor/no_elements.hpp>
 //
 namespace ad_tensor { namespace dev {
     // ------------------------------------------------------------------------
@@ -104,7 +105,7 @@ namespace ad_tensor { namespace dev {
         const vector<at::Tensor>&    var_vec     ,
         vector<at::Tensor>&          for_der
     ) const {
-        assert( ! for_der[op_index].defined() );
+        assert( no_elements(for_der[op_index]) );
     }
     template<> void gt_op_t<adten_t>::forward_der(
         size_t                       op_index    ,
@@ -114,7 +115,7 @@ namespace ad_tensor { namespace dev {
         const vector<adten_t>&       var_vec     ,
         vector<adten_t>&             for_der
     ) const {
-        assert( ! for_der[op_index].defined() );
+        assert( no_elements(for_der[op_index]) );
     }
     // ------------------------------------------------------------------------
     // reverse_der

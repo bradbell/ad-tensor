@@ -157,7 +157,7 @@ R"|(        if( dom_par.size() != par_shapes.size() ) {
         }
         for(size_t i = 0; i < par_shapes.size(); ++i) {
             c10::IntArrayRef shape = par_shapes[i];
-            if( dom_par[i].defined() ) {
+            if( has_elements(dom_par[i]) ) {
                 if( ! dom_par[i].sizes().equals( shape ) ) {
                     msg += "dom_par[" + std::to_string(i) + "] shape is ";
                     msg += dev::to_string( dom_par[i].sizes() );
@@ -179,7 +179,7 @@ R"|(        if( dom_var.size() != var_shapes.size() ) {
         }
         for(size_t i = 0; i < var_shapes.size(); ++i) {
             c10::IntArrayRef shape = var_shapes[i];
-            if( dom_var[i].defined() ) {
+            if( has_elements(dom_var[i]) ) {
                 if( ! dom_var[i].sizes().equals( shape ) ) {
                     msg += "dom_var[" + std::to_string(i) + "] shape is ";
                     msg += dev::to_string( dom_var[i].sizes() );

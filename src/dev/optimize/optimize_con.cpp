@@ -54,6 +54,7 @@ Test
 */
 #include <map>
 #include <ad_tensor/adten.hpp>
+#include <ad_tensor/no_elements.hpp>
 //
 namespace ad_tensor { // BEGIN_AD_TENSOR_NAMESPACE
 //
@@ -78,8 +79,8 @@ void adfn_t::optimize_con(const vector<bool>& depend_old)
     vector<size_t> old2new_con(n_old, not_used);
     //
     // old2new_con[0], hash2new_con[0]
-    // always keep the undefined tensor at constant index 0
-    assert( ! m_con[0].defined() );
+    // always keep the no element tensor at constant index 0
+    assert( no_elements(m_con[0]) );
     old2new_con[0]  = 0;
     hash2new_con[0] = 0;
     //
@@ -90,7 +91,7 @@ void adfn_t::optimize_con(const vector<bool>& depend_old)
         //
         // hash
         int64_t hash = 0;
-        if( m_con[i_old].defined() ) {
+        if( has_elements(m_con[i_old]) ) {
             hash = torch::hash_tensor( m_con[i_old] ).item<int64_t>();
         }
         //
@@ -123,7 +124,7 @@ void adfn_t::optimize_con(const vector<bool>& depend_old)
     // m_con
     // shrink to fit is non-binding, so ensure this memory gets freed
     for(size_t i_old = n_new; i_old < n_old; ++i_old) {
-        m_con[i_old] = at::Tensor();
+        m_con[i_old] = no_elements();
     }
     m_con.resize(n_new);
     //

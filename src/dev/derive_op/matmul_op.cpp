@@ -7,6 +7,7 @@
 #include <ad_tensor/dev/broadcast.hpp>
 #include <ad_tensor/dev/plus_minus_equal.hpp>
 #include <ad_tensor/dev/tensor_at_index.hpp>
+#include <ad_tensor/no_elements.hpp>
 //
 namespace ad_tensor { namespace dev {
     // ------------------------------------------------------------------------
@@ -123,10 +124,10 @@ namespace ad_tensor { namespace dev {
         // lhs_type, rhs_type
         adtype_t lhs_type = agraph.m_arg_type[arg_start];
         adtype_t rhs_type = agraph.m_arg_type[arg_start + 1];
-        if( lhs_type == variable && ! for_der[lhs_index].defined() ) {
+        if( lhs_type == variable && no_elements(for_der[lhs_index]) ) {
             lhs_type = adtype_t::constant;
         }
-        if( rhs_type == variable && ! for_der[rhs_index].defined() ) {
+        if( rhs_type == variable && no_elements(for_der[rhs_index]) ) {
             rhs_type = adtype_t::constant;
         }
         //
