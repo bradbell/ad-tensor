@@ -249,6 +249,10 @@ void adfn_t::src_gen(const std::string& dir) const
     // adfn_name
     string adfn_name = get_name();
     //
+    // n_par_dom, n_var_dom
+    size_t n_par_dom = m_par.m_dom_shapes.size();
+    size_t n_var_dom = m_var.m_dom_shapes.size();
+    //
     // dir_path
     fs::path dir_path(dir);
     //
@@ -274,11 +278,12 @@ void adfn_t::src_gen(const std::string& dir) const
         m_var.m_dom_shapes
     );
     //
-    // file_cpp: adfn_name
+    // file_cpp: adfn_name, no_elem
     {   constexpr const char* fmt =
 R"|(    //
-    // adfn_name
+    // adfn_name, no_elem
     string adfn_name = "{}";
+    Tensor no_elem = ad_tensor::no_elements();
 )|";
         file_cpp << std::format(fmt, adfn_name);
     }
@@ -296,17 +301,37 @@ R"|(    //
         }} catch (...) {{
             dev::user_assert(false,
                 adfn_name + "_plugin could not load " + file_name
+            );
         }}
     }}
 )|";
         file_cpp << std::format(fmt, file_name);
     }
+    //
+    // file.cpp: par_dep, var_dep
+    {
+        assert( n_par_dom <= m_par.m_op_seq.size() );
+        assert( n_var_dom <= m_var.m_op_seq.size() );
+        //
+        size_t n_par_dep = m_par.m_op_seq.size() - n_par_dom;
+        size_t n_var_dep = m_var.m_op_seq.size() - n_var_dom;
+        //
+        constexpr const char* fmt =
+R"|(    //
+    // par_dep, var_dep
+    size_t n_par_dep = {};
+    size_t n_var_dep = {};
+    vector<Tensor> par_dep(n_par_dep, no_elem);
+    vector<Tensor> var_dep(n_var_dep, no_elem);
+)|";
+        file_cpp << std::format(fmt, n_par_dep, n_var_dep);
+    }
+    // ------------------------------------------------------------------------
     // ------------------------------------------------------------------------
     // file_cpp: range
     {   constexpr const char* fmt =
 R"|(    //
     // range
-    Tensor no_elem = ad_tensor::no_elements();
     size_t n_range = {};
     vector<Tensor> range(n_range, no_elem);
     //
