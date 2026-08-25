@@ -47,23 +47,23 @@ This maps op_enum_t values to the corresponding base_op_t<TensorType> value:
             size_t                       op_index    , \
             const agraph_t&              agraph      , \
             const vector<at::Tensor>&    con_vec     , \
-            vector<TensorType>&          par_vec \
+            vector<TensorType>&          par_all \
         ) const override; \
         \
         void forward_var( \
             size_t                       op_index    , \
             const agraph_t&              agraph      , \
             const vector<at::Tensor>&    con_vec     , \
-            const vector<TensorType>&    par_vec     , \
-            vector<TensorType>&          var_vec \
+            const vector<TensorType>&    par_all     , \
+            vector<TensorType>&          var_all \
         ) const override; \
         \
         void forward_der( \
             size_t                       op_index    , \
             const agraph_t&              agraph      , \
             const vector<at::Tensor>&    con_vec     , \
-            const vector<TensorType>&    par_vec     , \
-            const vector<TensorType>&    var_vec     , \
+            const vector<TensorType>&    par_all     , \
+            const vector<TensorType>&    var_all     , \
             vector<TensorType>&          for_der \
         ) const override; \
         \
@@ -71,8 +71,8 @@ This maps op_enum_t values to the corresponding base_op_t<TensorType> value:
             size_t                       op_index    , \
             const agraph_t&              agraph      , \
             const vector<at::Tensor>&    con_vec     , \
-            const vector<TensorType>&    par_vec     , \
-            const vector<TensorType>&    var_vec     , \
+            const vector<TensorType>&    par_all     , \
+            const vector<TensorType>&    var_all     , \
             vector<TensorType>&          rev_der \
         ) const override; \
     };

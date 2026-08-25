@@ -13,7 +13,7 @@ namespace ad_tensor { namespace dev {
         size_t                       op_index    ,
         const agraph_t&              agraph      ,
         const vector<at::Tensor>&    con_vec     ,
-        vector<TensorType>&          par_vec
+        vector<TensorType>&          par_all
     ) const {
         //
         // arg_start
@@ -32,20 +32,20 @@ namespace ad_tensor { namespace dev {
         // operand_index
         size_t operand_index  = agraph.m_arg_value[arg_start];
         //
-        // par_vec
-        par_vec[op_index] = par_vec[operand_index].logdet();
+        // par_all
+        par_all[op_index] = par_all[operand_index].logdet();
     }
     template void logdet_op_t<adten_t>::forward_par(
         size_t                       op_index    ,
         const agraph_t&              agraph      ,
         const vector<at::Tensor>&    con_vec     ,
-        vector<adten_t>&             par_vec
+        vector<adten_t>&             par_all
     ) const;
     template void logdet_op_t<at::Tensor>::forward_par(
         size_t                       op_index    ,
         const agraph_t&              agraph      ,
         const vector<at::Tensor>&    con_vec     ,
-        vector<at::Tensor>&          par_vec
+        vector<at::Tensor>&          par_all
     ) const;
     // ------------------------------------------------------------------------
     // forward_var
@@ -54,8 +54,8 @@ namespace ad_tensor { namespace dev {
         size_t                       op_index    ,
         const agraph_t&              agraph      ,
         const vector<at::Tensor>&    con_vec     ,
-        const vector<TensorType>&    par_vec     ,
-        vector<TensorType>&          var_vec
+        const vector<TensorType>&    par_all     ,
+        vector<TensorType>&          var_all
     ) const {
         //
         // arg_start
@@ -74,22 +74,22 @@ namespace ad_tensor { namespace dev {
         // operand_index
         size_t operand_index  = agraph.m_arg_value[arg_start];
         //
-        // var_vec
-        var_vec[op_index] = var_vec[operand_index].logdet();
+        // var_all
+        var_all[op_index] = var_all[operand_index].logdet();
     }
     template void logdet_op_t<adten_t>::forward_var(
         size_t                       op_index    ,
         const agraph_t&              agraph      ,
         const vector<at::Tensor>&    con_vec     ,
-        const vector<adten_t>&       par_vec     ,
-        vector<adten_t>&             var_vec
+        const vector<adten_t>&       par_all     ,
+        vector<adten_t>&             var_all
     ) const;
     template void logdet_op_t<at::Tensor>::forward_var(
         size_t                       op_index    ,
         const agraph_t&              agraph      ,
         const vector<at::Tensor>&    con_vec     ,
-        const vector<at::Tensor>&    par_vec     ,
-        vector<at::Tensor>&          var_vec
+        const vector<at::Tensor>&    par_all     ,
+        vector<at::Tensor>&          var_all
     ) const;
     // ------------------------------------------------------------------------
     // forward_der
@@ -98,8 +98,8 @@ namespace ad_tensor { namespace dev {
         size_t                       op_index    ,
         const agraph_t&              agraph      ,
         const vector<at::Tensor>&    con_vec     ,
-        const vector<TensorType>&    par_vec     ,
-        const vector<TensorType>&    var_vec     ,
+        const vector<TensorType>&    par_all     ,
+        const vector<TensorType>&    var_all     ,
         vector<TensorType>&          for_der
     ) const {
         //
@@ -121,7 +121,7 @@ namespace ad_tensor { namespace dev {
         if( ! for_der[operand_index].defined() ) {
             return;
         }
-        const TensorType& operand = var_vec[operand_index];
+        const TensorType& operand = var_all[operand_index];
         //
         // for_der
         size_t n_dim = operand.sizes().size();
@@ -139,16 +139,16 @@ namespace ad_tensor { namespace dev {
         size_t                       op_index    ,
         const agraph_t&              agraph      ,
         const vector<at::Tensor>&    con_vec     ,
-        const vector<adten_t>&       par_vec     ,
-        const vector<adten_t>&       var_vec     ,
+        const vector<adten_t>&       par_all     ,
+        const vector<adten_t>&       var_all     ,
         vector<adten_t>&             for_der
     ) const;
     template void logdet_op_t<at::Tensor>::forward_der(
         size_t                       op_index    ,
         const agraph_t&              agraph      ,
         const vector<at::Tensor>&    con_vec     ,
-        const vector<at::Tensor>&    par_vec     ,
-        const vector<at::Tensor>&    var_vec     ,
+        const vector<at::Tensor>&    par_all     ,
+        const vector<at::Tensor>&    var_all     ,
         vector<at::Tensor>&          for_der
     ) const;
     // ------------------------------------------------------------------------
@@ -158,8 +158,8 @@ namespace ad_tensor { namespace dev {
         size_t                       op_index    ,
         const agraph_t&              agraph      ,
         const vector<at::Tensor>&    con_vec     ,
-        const vector<TensorType>&    par_vec     ,
-        const vector<TensorType>&    var_vec     ,
+        const vector<TensorType>&    par_all     ,
+        const vector<TensorType>&    var_all     ,
         vector<TensorType>&          rev_der
     ) const {
         //
@@ -186,7 +186,7 @@ namespace ad_tensor { namespace dev {
 #endif
         // operand_index, operand
         size_t            operand_index = agraph.m_arg_value[arg_start];
-        const TensorType& operand       = var_vec[operand_index];
+        const TensorType& operand       = var_all[operand_index];
         //
         // rev_der[operand_index]
         c10::IntArrayRef  ref = operand.sizes();
@@ -208,16 +208,16 @@ namespace ad_tensor { namespace dev {
         size_t                       op_index    ,
         const agraph_t&              agraph      ,
         const vector<at::Tensor>&    con_vec     ,
-        const vector<adten_t>&       par_vec     ,
-        const vector<adten_t>&       var_vec     ,
+        const vector<adten_t>&       par_all     ,
+        const vector<adten_t>&       var_all     ,
         vector<adten_t>&             rev_der
     ) const;
     template void logdet_op_t<at::Tensor>::reverse_der(
         size_t                       op_index    ,
         const agraph_t&              agraph      ,
         const vector<at::Tensor>&    con_vec     ,
-        const vector<at::Tensor>&    par_vec     ,
-        const vector<at::Tensor>&    var_vec     ,
+        const vector<at::Tensor>&    par_all     ,
+        const vector<at::Tensor>&    var_all     ,
         vector<at::Tensor>&          rev_der
     ) const;
 } }

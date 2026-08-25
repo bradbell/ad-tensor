@@ -16,7 +16,7 @@ namespace ad_tensor { namespace dev {
         size_t                       op_index    ,
         const agraph_t&              agraph      ,
         const vector<at::Tensor>&    con_vec     ,
-        vector<TensorType>&          par_vec
+        vector<TensorType>&          par_all
     ) const {
         //
         // arg_start
@@ -29,26 +29,26 @@ namespace ad_tensor { namespace dev {
         //
         // lhs_tensor, rhs_tensor
         TensorType lhs_tensor  = tensor_at_arg_index(
-            arg_start, agraph, con_vec, par_vec
+            arg_start, agraph, con_vec, par_all
         );
         TensorType rhs_tensor  = tensor_at_arg_index(
-            arg_start + 1, agraph, con_vec, par_vec
+            arg_start + 1, agraph, con_vec, par_all
         );
         //
-        // par_vec
-        par_vec[op_index] = lhs_tensor.matmul(rhs_tensor);
+        // par_all
+        par_all[op_index] = lhs_tensor.matmul(rhs_tensor);
     }
     template void matmul_op_t<adten_t>::forward_par(
         size_t                       op_index    ,
         const agraph_t&              agraph      ,
         const vector<at::Tensor>&    con_vec     ,
-        vector<adten_t>&             par_vec
+        vector<adten_t>&             par_all
     ) const;
     template void matmul_op_t<at::Tensor>::forward_par(
         size_t                       op_index    ,
         const agraph_t&              agraph      ,
         const vector<at::Tensor>&    con_vec     ,
-        vector<at::Tensor>&          par_vec
+        vector<at::Tensor>&          par_all
     ) const;
     // ------------------------------------------------------------------------
     // forward_var
@@ -57,8 +57,8 @@ namespace ad_tensor { namespace dev {
         size_t                       op_index    ,
         const agraph_t&              agraph      ,
         const vector<at::Tensor>&    con_vec     ,
-        const vector<TensorType>&    par_vec     ,
-        vector<TensorType>&          var_vec
+        const vector<TensorType>&    par_all     ,
+        vector<TensorType>&          var_all
     ) const {
         //
         // arg_start
@@ -71,28 +71,28 @@ namespace ad_tensor { namespace dev {
         //
         // lhs_tensor, rhs_tensor
         TensorType lhs_tensor  = tensor_at_arg_index(
-            arg_start, agraph, con_vec, par_vec, var_vec
+            arg_start, agraph, con_vec, par_all, var_all
         );
         TensorType rhs_tensor  = tensor_at_arg_index(
-            arg_start + 1, agraph, con_vec, par_vec, var_vec
+            arg_start + 1, agraph, con_vec, par_all, var_all
         );
         //
-        // var_vec
-        var_vec[op_index] = lhs_tensor.matmul(rhs_tensor);
+        // var_all
+        var_all[op_index] = lhs_tensor.matmul(rhs_tensor);
     }
     template void matmul_op_t<adten_t>::forward_var(
         size_t                       op_index    ,
         const agraph_t&              agraph      ,
         const vector<at::Tensor>&    con_vec     ,
-        const vector<adten_t>&       par_vec     ,
-        vector<adten_t>&             var_vec
+        const vector<adten_t>&       par_all     ,
+        vector<adten_t>&             var_all
     ) const;
     template void matmul_op_t<at::Tensor>::forward_var(
         size_t                       op_index    ,
         const agraph_t&              agraph      ,
         const vector<at::Tensor>&    con_vec     ,
-        const vector<at::Tensor>&    par_vec     ,
-        vector<at::Tensor>&          var_vec
+        const vector<at::Tensor>&    par_all     ,
+        vector<at::Tensor>&          var_all
     ) const;
     // ------------------------------------------------------------------------
     // forward_der
@@ -101,8 +101,8 @@ namespace ad_tensor { namespace dev {
         size_t                       op_index    ,
         const agraph_t&              agraph      ,
         const vector<at::Tensor>&    con_vec     ,
-        const vector<TensorType>&    par_vec     ,
-        const vector<TensorType>&    var_vec     ,
+        const vector<TensorType>&    par_all     ,
+        const vector<TensorType>&    var_all     ,
         vector<TensorType>&          for_der
     ) const {
         //
@@ -136,7 +136,7 @@ namespace ad_tensor { namespace dev {
             //
             // lhs_tensor
             TensorType lhs_tensor  = tensor_at_arg_index(
-                arg_start, agraph, con_vec, par_vec, var_vec
+                arg_start, agraph, con_vec, par_all, var_all
             );
             //
             // for_der
@@ -147,7 +147,7 @@ namespace ad_tensor { namespace dev {
             //
             // rhs_tensor
             TensorType rhs_tensor  = tensor_at_arg_index(
-                arg_start + 1, agraph, con_vec, par_vec, var_vec
+                arg_start + 1, agraph, con_vec, par_all, var_all
             );
             //
             // for_der
@@ -157,24 +157,24 @@ namespace ad_tensor { namespace dev {
             //
             // for_der
             for_der[op_index] =
-                var_vec[lhs_index].matmul( for_der[rhs_index] ) +
-                for_der[lhs_index].matmul( var_vec[rhs_index] );
+                var_all[lhs_index].matmul( for_der[rhs_index] ) +
+                for_der[lhs_index].matmul( var_all[rhs_index] );
         };
     }
     template void matmul_op_t<adten_t>::forward_der(
         size_t                       op_index    ,
         const agraph_t&              agraph      ,
         const vector<at::Tensor>&    con_vec     ,
-        const vector<adten_t>&       par_vec     ,
-        const vector<adten_t>&       var_vec     ,
+        const vector<adten_t>&       par_all     ,
+        const vector<adten_t>&       var_all     ,
         vector<adten_t>&             for_der
     ) const;
     template void matmul_op_t<at::Tensor>::forward_der(
         size_t                       op_index    ,
         const agraph_t&              agraph      ,
         const vector<at::Tensor>&    con_vec     ,
-        const vector<at::Tensor>&    par_vec     ,
-        const vector<at::Tensor>&    var_vec     ,
+        const vector<at::Tensor>&    par_all     ,
+        const vector<at::Tensor>&    var_all     ,
         vector<at::Tensor>&          for_der
     ) const;
     // ------------------------------------------------------------------------
@@ -185,8 +185,8 @@ namespace ad_tensor { namespace dev {
         size_t                       op_index    ,
         const agraph_t&              agraph      ,
         const vector<at::Tensor>&    con_vec     ,
-        const vector<TensorType>&    par_vec     ,
-        const vector<TensorType>&    var_vec     ,
+        const vector<TensorType>&    par_all     ,
+        const vector<TensorType>&    var_all     ,
         vector<TensorType>&          rev_der
     ) const {
         //
@@ -214,14 +214,14 @@ namespace ad_tensor { namespace dev {
             //
             // rhs_tensor
             TensorType rhs_tensor  = tensor_at_arg_index(
-                arg_start + 1, agraph, con_vec, par_vec, var_vec
+                arg_start + 1, agraph, con_vec, par_all, var_all
             );
             //
             // dim
             size_t skip = 2;
             broadcast(
-                var_vec[op_index].sizes(),
-                var_vec[lhs_index].sizes(),
+                var_all[op_index].sizes(),
+                var_all[lhs_index].sizes(),
                 array,
                 skip
             );
@@ -243,14 +243,14 @@ namespace ad_tensor { namespace dev {
             //
             // lhs_tensor
             TensorType lhs_tensor  = tensor_at_arg_index(
-                arg_start, agraph, con_vec, par_vec, var_vec
+                arg_start, agraph, con_vec, par_all, var_all
             );
             //
             // dim
             size_t skip = 2;
             broadcast(
-                var_vec[op_index].sizes(),
-                var_vec[rhs_index].sizes(),
+                var_all[op_index].sizes(),
+                var_all[rhs_index].sizes(),
                 array,
                 skip
             );
@@ -271,16 +271,16 @@ namespace ad_tensor { namespace dev {
         size_t                       op_index    ,
         const agraph_t&              agraph      ,
         const vector<at::Tensor>&    con_vec     ,
-        const vector<adten_t>&       par_vec     ,
-        const vector<adten_t>&       var_vec     ,
+        const vector<adten_t>&       par_all     ,
+        const vector<adten_t>&       var_all     ,
         vector<adten_t>&             rev_der
     ) const;
     template void matmul_op_t<at::Tensor>::reverse_der(
         size_t                       op_index    ,
         const agraph_t&              agraph      ,
         const vector<at::Tensor>&    con_vec     ,
-        const vector<at::Tensor>&    par_vec     ,
-        const vector<at::Tensor>&    var_vec     ,
+        const vector<at::Tensor>&    par_all     ,
+        const vector<at::Tensor>&    var_all     ,
         vector<at::Tensor>&          rev_der
     ) const;
 } }
