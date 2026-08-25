@@ -115,9 +115,9 @@ adten_t::start_recording(
     tape.m_tape_id   = tape_id;
     tape.m_recording = true;
     //
-    // tape.m_con
+    // tape.m_con_vec
     // The constant at index zero is always a no element tensor
-    tape.m_con.push_back( no_elements() );
+    tape.m_con_vec.push_back( no_elements() );
     //
     // tape.m_par.m_dom_shapes
     tape.m_par.m_dom_shapes.resize( dom_par.size() );
@@ -248,8 +248,8 @@ adfn_t adten_t::stop_recording(
     // adfn
     adfn_t adfn;
     //
-    // adfn, tape: m_con, m_par, m_var
-    dev::move_swap( adfn.m_con, tape.m_con );
+    // adfn, tape: m_con_vec, m_par, m_var
+    dev::move_swap( adfn.m_con_vec, tape.m_con_vec );
     dev::move_swap( adfn.m_par, tape.m_par );
     dev::move_swap( adfn.m_var, tape.m_var );
     //

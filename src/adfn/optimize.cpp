@@ -61,7 +61,7 @@ void adfn_t::optimize(void)
         std::cout << "depend_var = " << dev::to_string( depend_var ) << "\n";
     }
     //
-    // m_con, m_par, m_var, m_rng_index
+    // m_con_vec, m_par, m_var, m_rng_index
     // constants do not depend on parameters or variables so do this first
     optimize_con( depend_con );
     //

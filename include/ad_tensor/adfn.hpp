@@ -107,8 +107,8 @@ m_var
 *****
 is the acyclic graph for the dependent variables.
 
-m_con
-*****
+m_con_vec
+*********
 is the vector of constant tensors.
 
 m_rng_index
@@ -164,7 +164,7 @@ namespace ad_tensor { class adfn_t
     //
 private:
 // BEGIN_MEMBER_DATA
-    vector<at::Tensor>        m_con;
+    vector<at::Tensor>        m_con_vec;
     dev::agraph_t             m_par;
     dev::agraph_t             m_var;
     vector<size_t>            m_rng_index;
@@ -195,7 +195,7 @@ public:
     // BEGIN_DEFAULT_CTOR
     adfn_t()
     // END_DEFAULT_CTOR
-    : m_con()
+    : m_con_vec()
     , m_par()
     , m_var()
     , m_rng_index()
@@ -211,7 +211,7 @@ public:
     { return
         m_par.is_empty() &&
         m_var.is_empty() &&
-        m_con.empty() &&
+        m_con_vec.empty() &&
         m_rng_index.empty() &&
         m_rng_adtype.empty() &&
         m_rng_shapes.empty() &&
@@ -222,7 +222,7 @@ public:
     // BEGIN_N_CON
     size_t n_con(void) const
     {   // END_N_CON
-        return m_con.size();
+        return m_con_vec.size();
     }
     //
     // BEGIN_N_PAR

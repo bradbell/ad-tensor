@@ -161,9 +161,9 @@ adten_t adten_t::index_put(
     size_t res_index;
     //
     if( res_adtype == adtype_t::constant ) {
-        // res_index, tape.m_con
-        res_index = tape.m_con.size();
-        tape.m_con.push_back( res_tensor.clone() );
+        // res_index, tape.m_con_vec
+        res_index = tape.m_con_vec.size();
+        tape.m_con_vec.push_back( res_tensor.clone() );
     } else {
         //
         // agraph
@@ -204,8 +204,8 @@ adten_t adten_t::index_put(
                 "index_put: one of the index tensors does not have the same "
                 "number of elements as replace"
             );
-            size_t con_index  = tape.m_con.size();
-            tape.m_con.push_back( index.value().clone() );
+            size_t con_index  = tape.m_con_vec.size();
+            tape.m_con_vec.push_back( index.value().clone() );
             agraph->m_arg_value.push_back( con_index );
             agraph->m_arg_type.push_back( adtype_t::constant );
         }

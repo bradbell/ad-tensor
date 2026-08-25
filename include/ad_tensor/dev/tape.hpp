@@ -61,7 +61,7 @@ is the thread local tape used to record AD operations (on this thread).
 namespace ad_tensor { namespace dev { class tape_t {
     friend class ad_tensor::adten_t;
 private:
-    vector<at::Tensor>    m_con;
+    vector<at::Tensor>    m_con_vec;
     agraph_t              m_par;
     agraph_t              m_var;
     size_t                m_tape_id;
@@ -69,7 +69,7 @@ private:
 public:
     //
     // default constructor
-    tape_t() : m_con(), m_par(), m_var(), m_tape_id(0), m_recording(false)
+    tape_t() : m_con_vec(), m_par(), m_var(), m_tape_id(0), m_recording(false)
     { }
     //
     // tape_id, recording
@@ -78,7 +78,7 @@ public:
     //
     // is_empty
     bool is_empty(void) const {
-        return m_con.empty() && m_par.is_empty() && m_var.is_empty();
+        return m_con_vec.empty() && m_par.is_empty() && m_var.is_empty();
     }
 }; } }
 //

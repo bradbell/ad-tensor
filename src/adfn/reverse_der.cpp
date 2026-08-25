@@ -152,7 +152,7 @@ vector<TensorType> adfn_t::reverse_der(
             //
             // all_der
             base_op.reverse_der(
-                op_index, m_var, m_con, par_all, var_all, all_der
+                op_index, m_var, m_con_vec, par_all, var_all, all_der
             );
             //
             if( m_trace) {

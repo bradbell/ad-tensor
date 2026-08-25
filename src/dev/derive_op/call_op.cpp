@@ -160,7 +160,7 @@ template<> void call_op_t<at::Tensor>::forward_par(
     size_t                       op_index    ,
     const agraph_t&              agraph      ,
     const vector<at::Tensor>&    con_vec     ,
-    vector<at::Tensor>&          par_vec
+    vector<at::Tensor>&          par_all
 ) const {
     //
     // rng_used, domain
@@ -181,7 +181,7 @@ template<> void call_op_t<at::Tensor>::forward_par(
     for(size_t j = 0; j < n_domain; ++j) {
         size_t arg_index = arg_start + 4 + j;
         domain.push_back( tensor_at_arg_index(
-            arg_index, agraph, con_vec, par_vec
+            arg_index, agraph, con_vec, par_all
         ) );
     };
     //
@@ -205,18 +205,18 @@ template<> void call_op_t<at::Tensor>::forward_par(
     }
     vector<at::Tensor> range = opt.value();
     //
-    // par_vec
+    // par_all
     for(size_t k = 0; k < n_result; ++k) {
         size_t arg_index      = arg_start + 4 + n_domain + k;
         size_t rng_index      = agraph.m_arg_value[arg_index];
-        par_vec[op_index + k] = range[ rng_index ];
+        par_all[op_index + k] = range[ rng_index ];
     }
 }
 template<> void call_op_t<adten_t>::forward_par(
     size_t                       op_index    ,
     const agraph_t&              agraph      ,
     const vector<at::Tensor>&    con_vec     ,
-    vector<adten_t>&             par_vec
+    vector<adten_t>&             par_all
 ) const {
     assert(false && "call_op: ad_forward_par not implemented");
 }
@@ -226,8 +226,8 @@ template<> void call_op_t<at::Tensor>::forward_var(
     size_t                       op_index    ,
     const agraph_t&              agraph      ,
     const vector<at::Tensor>&    con_vec     ,
-    const vector<at::Tensor>&    par_vec     ,
-    vector<at::Tensor>&          var_vec
+    const vector<at::Tensor>&    par_all     ,
+    vector<at::Tensor>&          var_all
 ) const {
     //
     // rng_used, domain
@@ -248,7 +248,7 @@ template<> void call_op_t<at::Tensor>::forward_var(
     for(size_t j = 0; j < n_domain; ++j) {
         size_t arg_index = arg_start + 4 + j;
         domain.push_back( tensor_at_arg_index(
-            arg_index, agraph, con_vec, par_vec, var_vec
+            arg_index, agraph, con_vec, par_all, var_all
         ) );
     };
     //
@@ -272,19 +272,19 @@ template<> void call_op_t<at::Tensor>::forward_var(
     }
     vector<at::Tensor> range = opt.value();
     //
-    // par_vec
+    // par_all
     for(size_t k = 0; k < n_result; ++k) {
         size_t arg_index      = arg_start + 4 + n_domain + k;
         size_t rng_index      = agraph.m_arg_value[arg_index];
-        var_vec[op_index + k] = range[ rng_index ];
+        var_all[op_index + k] = range[ rng_index ];
     }
 }
 template<> void call_op_t<adten_t>::forward_var(
     size_t                       op_index    ,
     const agraph_t&              agraph      ,
     const vector<at::Tensor>&    con_vec     ,
-    const vector<adten_t>&       par_vec     ,
-    vector<adten_t>&             var_vec
+    const vector<adten_t>&       par_all     ,
+    vector<adten_t>&             var_all
 ) const {
     //
     // domain
@@ -300,18 +300,18 @@ template<> void call_op_t<adten_t>::forward_var(
     for(size_t j = 0; j < n_domain; ++j) {
         size_t arg_index = arg_start + 4 + j;
         domain.push_back( tensor_at_arg_index(
-            arg_index, agraph, con_vec, par_vec, var_vec
+            arg_index, agraph, con_vec, par_all, var_all
         ) );
     };
     //
     // range
     vector<adten_t>  range = call_atom(atom_id, domain);
     //
-    // par_vec
+    // par_all
     for(size_t k = 0; k < n_result; ++k) {
         size_t arg_index      = arg_start + 4 + n_domain + k;
         size_t rng_index      = agraph.m_arg_value[arg_index];
-        var_vec[op_index + k] = range[ rng_index ];
+        var_all[op_index + k] = range[ rng_index ];
     }
 }
 // ------------------------------------------------------------------------
@@ -321,8 +321,8 @@ void call_op_t<TensorType>::forward_der(
     size_t                       op_index    ,
     const agraph_t&              agraph      ,
     const vector<at::Tensor>&    con_vec     ,
-    const vector<TensorType>&    par_vec     ,
-    const vector<TensorType>&    var_vec     ,
+    const vector<TensorType>&    par_all     ,
+    const vector<TensorType>&    var_all     ,
     vector<TensorType>&          for_der
 ) const {
     //
@@ -364,13 +364,13 @@ void call_op_t<TensorType>::forward_der(
             }
             break;
             case adtype_t::parameter: {
-                const TensorType& domain_j = par_vec[vec_index];
+                const TensorType& domain_j = par_all[vec_index];
                 domain.push_back( domain_j );
                 dom_der.push_back( TensorType( no_elements() ) );
             }
             break;
             case adtype_t::variable: {
-                const TensorType& domain_j = var_vec[vec_index];
+                const TensorType& domain_j = var_all[vec_index];
                 domain.push_back( domain_j );
                 dom_der.push_back( for_der[vec_index] );
             }
@@ -404,16 +404,16 @@ template void call_op_t<adten_t>::forward_der(
     size_t                       op_index    ,
     const agraph_t&              agraph      ,
     const vector<at::Tensor>&    con_vec     ,
-    const vector<adten_t>&       par_vec     ,
-    const vector<adten_t>&       var_vec     ,
+    const vector<adten_t>&       par_all     ,
+    const vector<adten_t>&       var_all     ,
     vector<adten_t>&             for_der
 ) const;
 template void call_op_t<at::Tensor>::forward_der(
     size_t                       op_index    ,
     const agraph_t&              agraph      ,
     const vector<at::Tensor>&    con_vec     ,
-    const vector<at::Tensor>&    par_vec     ,
-    const vector<at::Tensor>&    var_vec     ,
+    const vector<at::Tensor>&    par_all     ,
+    const vector<at::Tensor>&    var_all     ,
     vector<at::Tensor>&          for_der
 ) const;
 // ------------------------------------------------------------------------
@@ -423,8 +423,8 @@ void call_op_t<TensorType>::reverse_der(
     size_t                       op_index    ,
     const agraph_t&              agraph      ,
     const vector<at::Tensor>&    con_vec     ,
-    const vector<TensorType>&    par_vec     ,
-    const vector<TensorType>&    var_vec     ,
+    const vector<TensorType>&    par_all     ,
+    const vector<TensorType>&    var_all     ,
     vector<TensorType>&          rev_der
 ) const {
     //
@@ -460,7 +460,7 @@ void call_op_t<TensorType>::reverse_der(
     for(size_t j = 0; j < n_domain; ++j) {
         size_t arg_index = arg_start + 4 + j;
         domain.push_back( tensor_at_arg_index(
-            arg_index, agraph, con_vec, par_vec, var_vec
+            arg_index, agraph, con_vec, par_all, var_all
         ) );
     };
     //
@@ -489,16 +489,16 @@ template void call_op_t<adten_t>::reverse_der(
     size_t                       op_index    ,
     const agraph_t&              agraph      ,
     const vector<at::Tensor>&    con_vec     ,
-    const vector<adten_t>&       par_vec     ,
-    const vector<adten_t>&       var_vec     ,
+    const vector<adten_t>&       par_all     ,
+    const vector<adten_t>&       var_all     ,
     vector<adten_t>&             rev_der
 ) const;
 template void call_op_t<at::Tensor>::reverse_der(
     size_t                       op_index    ,
     const agraph_t&              agraph      ,
     const vector<at::Tensor>&    con_vec     ,
-    const vector<at::Tensor>&    par_vec     ,
-    const vector<at::Tensor>&    var_vec     ,
+    const vector<at::Tensor>&    par_all     ,
+    const vector<at::Tensor>&    var_all     ,
     vector<at::Tensor>&          rev_der
 ) const;
 } } // END_AD_TENSOR_DEV_NAMESPACE

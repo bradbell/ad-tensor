@@ -17,7 +17,7 @@ namespace ad_tensor { namespace dev {
         size_t                       op_index    ,
         const agraph_t&              agraph      ,
         const vector<at::Tensor>&    con_vec     ,
-        vector<TensorType>&          par_vec
+        vector<TensorType>&          par_all
     ) const {
         //
         // index_list
@@ -43,26 +43,26 @@ namespace ad_tensor { namespace dev {
         //
         // before, replace
         TensorType before  = tensor_at_arg_index(
-            arg_start, agraph, con_vec, par_vec
+            arg_start, agraph, con_vec, par_all
         );
         TensorType replace  = tensor_at_arg_index(
-            arg_start + 1, agraph, con_vec, par_vec
+            arg_start + 1, agraph, con_vec, par_all
         );
         //
-        // par_vec
-        par_vec[op_index] = before.index_put( index_list, replace );
+        // par_all
+        par_all[op_index] = before.index_put( index_list, replace );
     }
     template void index_put_op_t<adten_t>::forward_par(
         size_t                       op_index    ,
         const agraph_t&              agraph      ,
         const vector<at::Tensor>&    con_vec     ,
-        vector<adten_t>&             par_vec
+        vector<adten_t>&             par_all
     ) const;
     template void index_put_op_t<at::Tensor>::forward_par(
         size_t                       op_index    ,
         const agraph_t&              agraph      ,
         const vector<at::Tensor>&    con_vec     ,
-        vector<at::Tensor>&          par_vec
+        vector<at::Tensor>&          par_all
     ) const;
     // ------------------------------------------------------------------------
     // forward_var
@@ -71,8 +71,8 @@ namespace ad_tensor { namespace dev {
         size_t                       op_index    ,
         const agraph_t&              agraph      ,
         const vector<at::Tensor>&    con_vec     ,
-        const vector<TensorType>&    par_vec     ,
-        vector<TensorType>&          var_vec
+        const vector<TensorType>&    par_all     ,
+        vector<TensorType>&          var_all
     ) const {
         //
         // index_list
@@ -98,28 +98,28 @@ namespace ad_tensor { namespace dev {
         //
         // before, replace
         TensorType before  = tensor_at_arg_index(
-            arg_start, agraph, con_vec, par_vec, var_vec
+            arg_start, agraph, con_vec, par_all, var_all
         );
         TensorType replace  = tensor_at_arg_index(
-            arg_start + 1, agraph, con_vec, par_vec, var_vec
+            arg_start + 1, agraph, con_vec, par_all, var_all
         );
         //
-        // par_vec
-        var_vec[op_index] = before.index_put( index_list, replace );
+        // par_all
+        var_all[op_index] = before.index_put( index_list, replace );
     }
     template void index_put_op_t<adten_t>::forward_var(
         size_t                       op_index    ,
         const agraph_t&              agraph      ,
         const vector<at::Tensor>&    con_vec     ,
-        const vector<adten_t>&       par_vec     ,
-        vector<adten_t>&             var_vec
+        const vector<adten_t>&       par_all     ,
+        vector<adten_t>&             var_all
     ) const;
     template void index_put_op_t<at::Tensor>::forward_var(
         size_t                       op_index    ,
         const agraph_t&              agraph      ,
         const vector<at::Tensor>&    con_vec     ,
-        const vector<at::Tensor>&    par_vec     ,
-        vector<at::Tensor>&          var_vec
+        const vector<at::Tensor>&    par_all     ,
+        vector<at::Tensor>&          var_all
     ) const;
     // ------------------------------------------------------------------------
     // forward_der
@@ -128,8 +128,8 @@ namespace ad_tensor { namespace dev {
         size_t                       op_index    ,
         const agraph_t&              agraph      ,
         const vector<at::Tensor>&    con_vec     ,
-        const vector<TensorType>&    par_vec     ,
-        const vector<TensorType>&    var_vec     ,
+        const vector<TensorType>&    par_all     ,
+        const vector<TensorType>&    var_all     ,
         vector<TensorType>&          for_der
     ) const {
         //
@@ -156,10 +156,10 @@ namespace ad_tensor { namespace dev {
         //
         // before_shape, replace_shape
         c10::IntArrayRef before_shape  = shape_at_arg_index(
-            arg_start, agraph, con_vec, par_vec, var_vec
+            arg_start, agraph, con_vec, par_all, var_all
         );
         c10::IntArrayRef replace_shape  = shape_at_arg_index(
-            arg_start+1, agraph, con_vec, par_vec, var_vec
+            arg_start+1, agraph, con_vec, par_all, var_all
         );
         //
         // before_index, replace_index
@@ -195,16 +195,16 @@ namespace ad_tensor { namespace dev {
         size_t                       op_index    ,
         const agraph_t&              agraph      ,
         const vector<at::Tensor>&    con_vec     ,
-        const vector<adten_t>&       par_vec     ,
-        const vector<adten_t>&       var_vec     ,
+        const vector<adten_t>&       par_all     ,
+        const vector<adten_t>&       var_all     ,
         vector<adten_t>&             for_der
     ) const;
     template void index_put_op_t<at::Tensor>::forward_der(
         size_t                       op_index    ,
         const agraph_t&              agraph      ,
         const vector<at::Tensor>&    con_vec     ,
-        const vector<at::Tensor>&    par_vec     ,
-        const vector<at::Tensor>&    var_vec     ,
+        const vector<at::Tensor>&    par_all     ,
+        const vector<at::Tensor>&    var_all     ,
         vector<at::Tensor>&          for_der
     ) const;
     // ------------------------------------------------------------------------
@@ -214,8 +214,8 @@ namespace ad_tensor { namespace dev {
         size_t                       op_index    ,
         const agraph_t&              agraph      ,
         const vector<at::Tensor>&    con_vec     ,
-        const vector<TensorType>&    par_vec     ,
-        const vector<TensorType>&    var_vec     ,
+        const vector<TensorType>&    par_all     ,
+        const vector<TensorType>&    var_all     ,
         vector<TensorType>&          rev_der
     ) const {
         //
@@ -242,7 +242,7 @@ namespace ad_tensor { namespace dev {
         //
         // before_shape
         c10::IntArrayRef before_shape  = shape_at_arg_index(
-            arg_start, agraph, con_vec, par_vec, var_vec
+            arg_start, agraph, con_vec, par_all, var_all
         );
         //
         // before_index, replace_index
@@ -279,16 +279,16 @@ namespace ad_tensor { namespace dev {
         size_t                       op_index    ,
         const agraph_t&              agraph      ,
         const vector<at::Tensor>&    con_vec     ,
-        const vector<adten_t>&       par_vec     ,
-        const vector<adten_t>&       var_vec     ,
+        const vector<adten_t>&       par_all     ,
+        const vector<adten_t>&       var_all     ,
         vector<adten_t>&             rev_der
     ) const;
     template void index_put_op_t<at::Tensor>::reverse_der(
         size_t                       op_index    ,
         const agraph_t&              agraph      ,
         const vector<at::Tensor>&    con_vec     ,
-        const vector<at::Tensor>&    par_vec     ,
-        const vector<at::Tensor>&    var_vec     ,
+        const vector<at::Tensor>&    par_all     ,
+        const vector<at::Tensor>&    var_all     ,
         vector<at::Tensor>&          rev_der
     ) const;
 } }

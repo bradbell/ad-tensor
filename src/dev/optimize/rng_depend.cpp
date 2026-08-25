@@ -226,7 +226,7 @@ namespace ad_tensor {
         vector<bool> depend_con, depend_par, depend_var;
         //
         // n_con, n_par, n_var, n_rng
-        size_t n_con = m_con.size();
+        size_t n_con = m_con_vec.size();
         size_t n_par = m_par.m_op_seq.size();
         size_t n_var = m_var.m_op_seq.size();
         size_t n_rng = m_rng_index.size();

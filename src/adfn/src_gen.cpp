@@ -261,8 +261,8 @@ void adfn_t::src_gen(const std::string& dir) const
     //
     // adfn_name.binary
     {   string file_name = file_binary_path.string();
-        auto vec_ten_ptr = 
-            dynamic_cast< const std::vector<at::Tensor>* >(&m_con);
+        auto vec_ten_ptr =
+            dynamic_cast< const std::vector<at::Tensor>* >(&m_con_vec);
         torch::save( *vec_ten_ptr, file_name);
     }
     //
@@ -284,18 +284,18 @@ R"|(    //
     }
     //
     // file_cpp: con_vec
-    {   string file_name = fs::canonical(file_binary_path).string();   
+    {   string file_name = fs::canonical(file_binary_path).string();
         constexpr const char* fmt =
 R"|(    //
     // con_vec
     vector<Tensor> con_vec;
     {{   string file_name = "{}";
-        auto vec_ptr = dynamic_cast< std::vector<Tensor>* > (&con_vec); 
+        auto vec_ptr = dynamic_cast< std::vector<Tensor>* > (&con_vec);
         try {{
             torch::load(*vec_ptr, file_name);
         }} catch (...) {{
             dev::user_assert(false,
-                adfn_name + "_plugin couuld not load " + file_name
+                adfn_name + "_plugin could not load " + file_name
         }}
     }}
 )|";
