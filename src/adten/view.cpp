@@ -77,7 +77,7 @@ where start is the length of arg_value and arg_type before this call to
 
 {xrst_end adten_view_dev}
 */
-namespace ad_tensor { // BEGIN_NAMESPACE_AD_TENSOR
+namespace ad_tensor { // Begin ad_tensor::dev
 //
 // BEGIN_VIEW BEGIN_DEV_VIEW
 // aview = adten.view(shape)
@@ -145,4 +145,4 @@ adten_t adten_t::view(const c10::IntArrayRef& shape) const
     return adten_t(res_tape_id, res_index, res_tensor, res_adtype);
 }
 // ---------------------------------------------------------------------------
-} // END_NAMESPACE_AD_TENSOR
+} // End ad_tensor

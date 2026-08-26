@@ -73,7 +73,7 @@ Test
 #include <ad_tensor/dev/optimize.hpp>
 #include <ad_tensor/dev/new_operator.hpp>
 //
-namespace ad_tensor { namespace dev { // BEGIN_AD_TENSOR_DEV_NAMESPACE
+namespace ad_tensor { namespace dev { // Begin ad_tensor::dev
 //
 // )
 // BEGIN_NEW_AGRAPH
@@ -220,4 +220,4 @@ std::tuple< agraph_t, vector<size_t> > new_agraph(
     }
     return std::tuple< agraph_t, vector<size_t> >(agraph_new, rng_index_new);
 }
-} } // END_AD_TENSOR_DEV_NAMESPACE
+} } // End ad_tensor::dev

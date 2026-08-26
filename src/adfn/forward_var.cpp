@@ -61,7 +61,7 @@ Example
 }
 {xrst_end adfn_forward_var}
 */
-namespace ad_tensor { // BEGIN_NAMESPACE_AD_TENSOR
+namespace ad_tensor { // Begin ad_tensor::dev
 //
 template <class TensorType>
 vector<TensorType> adfn_t::forward_var(
@@ -149,4 +149,4 @@ template vector<at::Tensor> adfn_t::forward_var(
     const vector<at::Tensor>& par_al
 ) const;
 
-} // END_NAMESPACE_AD_TENSOR
+} // End ad_tensor

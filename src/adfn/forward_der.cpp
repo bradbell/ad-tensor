@@ -79,7 +79,7 @@ Example
 }
 {xrst_end adfn_forward_der}
 */
-namespace ad_tensor { // BEGIN_NAMESPACE_AD_TENSOR
+namespace ad_tensor { // Begin ad_tensor::dev
 //
 template <class TensorType>
 vector<TensorType> adfn_t::forward_der(
@@ -198,4 +198,4 @@ template vector<adten_t> adfn_t::forward_der(
     const vector<adten_t>&    par_all
 ) const;
 
-} // END_NAMESPACE_AD_TENSOR
+} // End ad_tensor

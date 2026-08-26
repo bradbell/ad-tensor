@@ -82,7 +82,7 @@ Test
 #include <ad_tensor/dev/unpack_call.hpp>
 #include <ad_tensor/dev/new_operator.hpp>
 //
-namespace ad_tensor { namespace dev { // BEGIN_AD_TENSOR_DEV_NAMESPACE
+namespace ad_tensor { namespace dev { // Begin ad_tensor::dev
 //
 // BEGIN_NEW_CALL
 size_t new_call(
@@ -197,4 +197,4 @@ size_t new_call(
     return op_index_old + n_result_old;
 }
 //
-} } // END_AD_TENSOR_DEV_NAMESPACE
+} } // End ad_tensor::dev

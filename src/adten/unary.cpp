@@ -42,7 +42,7 @@ where start is the length of arg_value and arg_type before this call to
 
 {xrst_end adten_unary_dev}
 */
-namespace ad_tensor { // BEGIN_NAMESPACE_AD_TENSOR
+namespace ad_tensor { // Begin ad_tensor::dev
 // BEGIN_UNARY
 adten_t adten_t::unary( dev::op_enum_t op_enum, const adten_t& operand )
 // END_UNARY
@@ -116,4 +116,4 @@ adten_t adten_t::unary( dev::op_enum_t op_enum, const adten_t& operand )
     return adten_t(res_tape_id, res_index, res_at_ten, res_adtype);
 }
 // ---------------------------------------------------------------------------
-} // END_NAMESPACE_AD_TENSOR
+} // End ad_tensor

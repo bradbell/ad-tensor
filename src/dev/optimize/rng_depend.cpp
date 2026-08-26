@@ -57,7 +57,7 @@ depends (does not depend) in the k-th variable in var_all.
 #include <ad_tensor/dev/atom.hpp>
 #include <ad_tensor/dev/user_assert.hpp>
 //
-namespace ad_tensor { namespace dev { // BEGIN_AD_TENSOR_DEV_NAMESPACE
+namespace ad_tensor { namespace dev { // Begin ad_tensor::dev
 //
 // atom_depend
 void atom_depend(
@@ -213,7 +213,7 @@ rng_depend(const adfn_t* adfn)
 {   // END_RNG_DEPEND
     return adfn->rng_depend();
 }
-} } // BEGIN_AD_TENSOR_DEV_NAMESPACE
+} } // Begin ad_tensor::dev
 //
 namespace ad_tensor {
     //

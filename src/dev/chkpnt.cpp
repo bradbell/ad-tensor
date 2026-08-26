@@ -9,7 +9,7 @@
 #include <ad_tensor/chkpnt.hpp>
 #
 //
-namespace ad_tensor { namespace dev { // BEGIN_AD_TENSOR_DEV_NAMESPACE
+namespace ad_tensor { namespace dev { // Begin ad_tensor::dev
 // ------------------------------------------------------------------------
 // derive_chkpnt_t
 // ------------------------------------------------------------------------
@@ -130,4 +130,4 @@ std::optional< vector<adten_t> > derive_chkpnt_t::reverse_der(
     return opt;
 }
 // ------------------------------------------------------------------------
-} }  // END_AD_TENSOR_DEV_NAMESPACE
+} }  // End ad_tensor::dev

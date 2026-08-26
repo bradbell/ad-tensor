@@ -72,7 +72,7 @@ Only the first operation has entries in arg_value and arg_type
 #include<ad_tensor/dev/agraph.hpp>
 #include<ad_tensor/dev/user_assert.hpp>
 
-namespace ad_tensor { // BEGIN_AD_TENSOR_NAMESPACE
+namespace ad_tensor { // Begin ad_tensor
 
 // call_atom
 vector<adten_t> adten_t::call_atom(
@@ -229,4 +229,4 @@ vector<adten_t> adten_t::call_atom(
     return arange;
 }
 
-} // END_AD_TENSOR_NAMESPACE
+} // End ad_tensor::dev

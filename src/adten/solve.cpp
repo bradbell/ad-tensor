@@ -105,7 +105,7 @@ where start be the length of arg_value and arg_type before this call to
 #include <ad_tensor/dev/tape.hpp>
 #include <ad_tensor/dev/user_assert.hpp>
 
-namespace ad_tensor { // BEGIN_NAMESPACE_AD_TENSOR
+namespace ad_tensor { // Begin ad_tensor::dev
 
 adten_t adten_t::solve(const adten_t& rhs, bool left) const
 {
@@ -189,4 +189,4 @@ adten_t linalg_solve(const adten_t& linear, const adten_t& rhs, bool left)
 {   return linear.solve(rhs, left);
 }
 // ---------------------------------------------------------------------------
-} // END_NAMESPACE_AD_TENSOR
+} // End ad_tensor

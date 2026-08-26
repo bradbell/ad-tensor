@@ -42,7 +42,7 @@ The name for the function will be changed to its old name plus "_optimize" .
 #include <ad_tensor/dev/to_string.hpp>
 #include <ad_tensor/dev/move_swap.hpp>
 //
-namespace ad_tensor { // BEGIN_AD_TENSOR_NAMESPACE
+namespace ad_tensor { // Begin ad_tensor
 //
 // BEGIN_OPTIMIZE
 void adfn_t::optimize(void)
@@ -105,4 +105,4 @@ void adfn_t::optimize(void)
     }
 }
 
-} // END_AD_TENSOR_NAMESPACE
+} // End ad_tensor::dev

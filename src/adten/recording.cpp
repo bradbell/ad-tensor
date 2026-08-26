@@ -73,7 +73,7 @@ Example
 
 {xrst_end start_recording}
 */
-namespace ad_tensor { // BEGIN_NAMESPACE_AD_TENSOR
+namespace ad_tensor { // Begin ad_tensor::dev
 
 vector<adten_t> adten_t::start_recording(const vector<at::Tensor>& dom_var)
 {   //
@@ -276,4 +276,4 @@ adfn_t adten_t::stop_recording(
     return adfn;
 }
 // ---------------------------------------------------------------------------
-} // END_NAMESPACE_AD_TENSOR
+} // End ad_tensor

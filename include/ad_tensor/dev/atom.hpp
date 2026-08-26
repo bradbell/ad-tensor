@@ -58,7 +58,7 @@ A call to get will wait until it can lock out any calls to store.
 #include <ad_tensor/adfn.hpp>
 #include <ad_tensor/base_atom.hpp>
 //
-namespace ad_tensor { namespace dev {  // BEGIN_AD_TENSOR_DEV_NAMESPACE
+namespace ad_tensor { namespace dev {  // Begin ad_tensor::dev
 //
 // atom_global_t
 class atom_global_t {
@@ -92,4 +92,4 @@ public:
     // END_GET_BASE_ATOM
 };
 
-} } // END_AD_TENSOR_DEV_NAMESPACE
+} } // End ad_tensor::dev

@@ -98,7 +98,7 @@ has been converted to an element-wise multiply and sum.
 #include <ad_tensor/dev/tape.hpp>
 #include <ad_tensor/dev/user_assert.hpp>
 
-namespace ad_tensor { // BEGIN_NAMESPACE_AD_TENSOR
+namespace ad_tensor { // Begin ad_tensor::dev
 
 // BEGIN_MATMUL BEGIN_DEV_MATMUL
 adten_t adten_t::matmul(const adten_t& rhs) const
@@ -176,4 +176,4 @@ adten_t adten_t::matmul(const adten_t& rhs) const
     return adten_t(res_tape_id, res_index, res_tensor, res_adtype);
 }
 // ---------------------------------------------------------------------------
-} // END_NAMESPACE_AD_TENSOR
+} // End ad_tensor
