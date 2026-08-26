@@ -39,6 +39,5 @@ TEST(examples_adfn, src_gen)  {
     // dir_path/f.cpp, dir_path/f.binary
     f.src_gen(dir_path.string());
     //
-    std::cout << "dir_path = " << dir_path << "\n";
 }
 // END_CPP

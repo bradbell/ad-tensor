@@ -316,24 +316,13 @@ R"|(    //
         file_cpp << std::format(fmt, file_name);
     }
     //
-    // file.cpp: par_dep, var_dep
-    {
-        assert( n_par_dom <= m_par.m_op_seq.size() );
-        assert( n_var_dom <= m_var.m_op_seq.size() );
-        //
-        size_t n_par_dep = m_par.m_op_seq.size() - n_par_dom;
-        size_t n_var_dep = m_var.m_op_seq.size() - n_var_dom;
-        //
-        constexpr const char* fmt =
-R"|(    //
-    // par_dep, var_dep
-    size_t n_par_dep = {};
-    size_t n_var_dep = {};
-    vector<Tensor> par_dep(n_par_dep, no_elem);
-    vector<Tensor> var_dep(n_var_dep, no_elem);
-)|";
-        file_cpp << std::format(fmt, n_par_dep, n_var_dep);
-    }
+    // n_par_dep, n_var_dep
+    assert( n_par_dom <= m_par.m_op_seq.size() );
+    assert( n_var_dom <= m_var.m_op_seq.size() );
+    //
+    size_t n_par_dep = m_par.m_op_seq.size() - n_par_dom;
+    size_t n_var_dep = m_var.m_op_seq.size() - n_var_dom;
+    //
     // ------------------------------------------------------------------------
     // tensor_src
     // src = tensor_src(index, adtype)
@@ -381,7 +370,17 @@ R"|(    //
         constexpr const char* fmt = "n_par_dom = {}, n_var_dom = {}\n";
         cout << std::format(fmt, n_par_dom, n_var_dom);
     }
+    //
     // file_cpp: par_dep
+    {
+        constexpr const char* fmt =
+R"|(    //
+    //  par_dep
+    size_t n_par_dep = {};
+    vector<Tensor> par_dep(n_par_dep, no_elem);
+)|";
+        file_cpp << std::format(fmt, n_par_dep);
+    }
     size_t n_par_op        = m_par.m_op_seq.size();
     size_t variable_agraph = false;
     for(size_t op_index = n_par_dom; op_index < n_par_op; op_index++) {
@@ -411,7 +410,17 @@ R"|(    //
             file_cpp << indent + src + "\n";
         }
     }
+    //
     // file_cpp: var_dep
+    {
+        constexpr const char* fmt =
+R"|(    //
+    //  var_dep
+    size_t n_var_dep = {};
+    vector<Tensor> var_dep(n_var_dep, no_elem);
+)|";
+        file_cpp << std::format(fmt, n_var_dep);
+    }
     size_t n_var_op = m_var.m_op_seq.size();
     variable_agraph = true;
     for(size_t op_index = n_var_dom; op_index < n_var_op; op_index++) {
