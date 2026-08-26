@@ -455,15 +455,21 @@ R"|(    //
     }
     // ------------------------------------------------------------------------
     // file_cpp: range
+    size_t n_range = m_rng_index.size();
     {   constexpr const char* fmt =
 R"|(    //
     // range
     size_t n_range = {};
     vector<Tensor> range(n_range, no_elem);
-    //
-    return range;
 )|";
-        file_cpp << std::format(fmt, m_rng_index.size());
+        file_cpp << std::format(fmt, n_range);
+    }
+    for(size_t i = 0; i < n_range; ++i) {
+        size_t    index  = m_rng_index[i];
+        adtype_t  adtype = m_rng_adtype[i];
+        string    rhs    = tensor_src(index, adtype);
+        constexpr const char* fmt = "range[{}] = {};\n";
+        file_cpp << indent + std::format(fmt, i, rhs);
     }
     //
     // file_cpp

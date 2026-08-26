@@ -8,6 +8,7 @@
 {xrst_spell
     der
     src
+    newline
 }
 
 The Operator Base Class
@@ -127,6 +128,7 @@ The function call
 returns a source code representation of a
 constant, parameter of variable (depending on adtype) with the specified index.
 The return, src, can be used to set or get the corresponding value.
+There are no newline characters in src; hence it is one line of source code.
 
 {xrst_end base_op}
 */
