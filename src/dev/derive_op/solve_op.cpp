@@ -11,293 +11,293 @@
 #include <ad_tensor/no_elements.hpp>
 //
 namespace {
-    using at::linalg_solve;         // used for at::Tensor equations
-    using ad_tensor::linalg_solve;  // user for ad_tensor::adten_t equations
+using at::linalg_solve;         // used for at::Tensor equations
+using ad_tensor::linalg_solve;  // user for ad_tensor::adten_t equations
 }
-namespace ad_tensor { namespace dev {
-    // ------------------------------------------------------------------------
-    // forward_par
-    template<class TensorType>
-    void solve_op_t<TensorType>::forward_par(
-        size_t                       op_index    ,
-        const agraph_t&              agraph      ,
-        const vector<at::Tensor>&    con_vec     ,
-        vector<TensorType>&          par_all
-    ) const {
-        //
-        // arg_start
-        size_t arg_start = agraph.m_arg_start[op_index];
-        //
-        // left
-        bool left = bool( agraph.m_arg_value[arg_start + 2] );
-        //
+namespace ad_tensor { namespace dev { // Begin ad_tensor::dev
+// ------------------------------------------------------------------------
+// forward_par
+template<class TensorType>
+void solve_op_t<TensorType>::forward_par(
+    size_t                       op_index    ,
+    const agraph_t&              agraph      ,
+    const vector<at::Tensor>&    con_vec     ,
+    vector<TensorType>&          par_all
+) const {
+    //
+    // arg_start
+    size_t arg_start = agraph.m_arg_start[op_index];
+    //
+    // left
+    bool left = bool( agraph.m_arg_value[arg_start + 2] );
+    //
 #ifndef NDEBUG
-        size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
-        assert( n_arg == 3  );
-        assert( agraph.m_arg_type[arg_start+2] == adtype_t::none );
+    size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
+    assert( n_arg == 3  );
+    assert( agraph.m_arg_type[arg_start+2] == adtype_t::none );
 # endif
-        //
-        // linear_ten, rhs_ten
-        TensorType linear_ten  = tensor_at_arg_index(
-            arg_start, agraph, con_vec, par_all
-        );
-        TensorType rhs_ten  = tensor_at_arg_index(
-            arg_start + 1, agraph, con_vec, par_all
-        );
-        //
-        // par_all
-        par_all[op_index] = linalg_solve(linear_ten, rhs_ten, left);
-    }
-    template void solve_op_t<adten_t>::forward_par(
-        size_t                       op_index    ,
-        const agraph_t&              agraph      ,
-        const vector<at::Tensor>&    con_vec     ,
-        vector<adten_t>&             par_all
-    ) const;
-    template void solve_op_t<at::Tensor>::forward_par(
-        size_t                       op_index    ,
-        const agraph_t&              agraph      ,
-        const vector<at::Tensor>&    con_vec     ,
-        vector<at::Tensor>&          par_all
-    ) const;
-    // ------------------------------------------------------------------------
-    // forward_var
-    template<class TensorType>
-    void solve_op_t<TensorType>::forward_var(
-        size_t                       op_index    ,
-        const agraph_t&              agraph      ,
-        const vector<at::Tensor>&    con_vec     ,
-        const vector<TensorType>&    par_all     ,
-        vector<TensorType>&          var_all
-    ) const {
-        //
-        // arg_start
-        size_t arg_start = agraph.m_arg_start[op_index];
-        //
-        // left
-        bool left = bool( agraph.m_arg_value[arg_start + 2] );
-        //
+    //
+    // linear_ten, rhs_ten
+    TensorType linear_ten  = tensor_at_arg_index(
+        arg_start, agraph, con_vec, par_all
+    );
+    TensorType rhs_ten  = tensor_at_arg_index(
+        arg_start + 1, agraph, con_vec, par_all
+    );
+    //
+    // par_all
+    par_all[op_index] = linalg_solve(linear_ten, rhs_ten, left);
+}
+template void solve_op_t<adten_t>::forward_par(
+    size_t                       op_index    ,
+    const agraph_t&              agraph      ,
+    const vector<at::Tensor>&    con_vec     ,
+    vector<adten_t>&             par_all
+) const;
+template void solve_op_t<at::Tensor>::forward_par(
+    size_t                       op_index    ,
+    const agraph_t&              agraph      ,
+    const vector<at::Tensor>&    con_vec     ,
+    vector<at::Tensor>&          par_all
+) const;
+// ------------------------------------------------------------------------
+// forward_var
+template<class TensorType>
+void solve_op_t<TensorType>::forward_var(
+    size_t                       op_index    ,
+    const agraph_t&              agraph      ,
+    const vector<at::Tensor>&    con_vec     ,
+    const vector<TensorType>&    par_all     ,
+    vector<TensorType>&          var_all
+) const {
+    //
+    // arg_start
+    size_t arg_start = agraph.m_arg_start[op_index];
+    //
+    // left
+    bool left = bool( agraph.m_arg_value[arg_start + 2] );
+    //
 #ifndef NDEBUG
-        size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
-        assert( n_arg == 3 );
-        assert( agraph.m_arg_type[arg_start+2] == adtype_t::none );
+    size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
+    assert( n_arg == 3 );
+    assert( agraph.m_arg_type[arg_start+2] == adtype_t::none );
 # endif
-        //
-        // linear_ten, rhs_ten
-        TensorType linear_ten  = tensor_at_arg_index(
-            arg_start, agraph, con_vec, par_all, var_all
-        );
-        TensorType rhs_ten  = tensor_at_arg_index(
-            arg_start + 1, agraph, con_vec, par_all, var_all
-        );
-        //
-        // var_all
-        var_all[op_index] = linalg_solve(linear_ten, rhs_ten, left);
-    }
-    template void solve_op_t<adten_t>::forward_var(
-        size_t                       op_index    ,
-        const agraph_t&              agraph      ,
-        const vector<at::Tensor>&    con_vec     ,
-        const vector<adten_t>&       par_all     ,
-        vector<adten_t>&             var_all
-    ) const;
-    template void solve_op_t<at::Tensor>::forward_var(
-        size_t                       op_index    ,
-        const agraph_t&              agraph      ,
-        const vector<at::Tensor>&    con_vec     ,
-        const vector<at::Tensor>&    par_all     ,
-        vector<at::Tensor>&          var_all
-    ) const;
-    // ------------------------------------------------------------------------
-    // forward_der
-    // see Guiles-2008 Section 2.3.1
-    // linear * solution_dot = rsh_dot - linear_dot * solution   (left)
-    // solution_dot * linear = rsh_dot - solution * linear_dot   (! left)
-    template<class TensorType>
-    void solve_op_t<TensorType>::forward_der(
-        size_t                       op_index    ,
-        const agraph_t&              agraph      ,
-        const vector<at::Tensor>&    con_vec     ,
-        const vector<TensorType>&    par_all     ,
-        const vector<TensorType>&    var_all     ,
-        vector<TensorType>&          for_der
-    ) const {
-        //
-        // arg_start
-        size_t arg_start = agraph.m_arg_start[op_index];
-        //
-        // left, transpose
-        bool left      = bool( agraph.m_arg_value[arg_start + 2] );
-        //
+    //
+    // linear_ten, rhs_ten
+    TensorType linear_ten  = tensor_at_arg_index(
+        arg_start, agraph, con_vec, par_all, var_all
+    );
+    TensorType rhs_ten  = tensor_at_arg_index(
+        arg_start + 1, agraph, con_vec, par_all, var_all
+    );
+    //
+    // var_all
+    var_all[op_index] = linalg_solve(linear_ten, rhs_ten, left);
+}
+template void solve_op_t<adten_t>::forward_var(
+    size_t                       op_index    ,
+    const agraph_t&              agraph      ,
+    const vector<at::Tensor>&    con_vec     ,
+    const vector<adten_t>&       par_all     ,
+    vector<adten_t>&             var_all
+) const;
+template void solve_op_t<at::Tensor>::forward_var(
+    size_t                       op_index    ,
+    const agraph_t&              agraph      ,
+    const vector<at::Tensor>&    con_vec     ,
+    const vector<at::Tensor>&    par_all     ,
+    vector<at::Tensor>&          var_all
+) const;
+// ------------------------------------------------------------------------
+// forward_der
+// see Guiles-2008 Section 2.3.1
+// linear * solution_dot = rsh_dot - linear_dot * solution   (left)
+// solution_dot * linear = rsh_dot - solution * linear_dot   (! left)
+template<class TensorType>
+void solve_op_t<TensorType>::forward_der(
+    size_t                       op_index    ,
+    const agraph_t&              agraph      ,
+    const vector<at::Tensor>&    con_vec     ,
+    const vector<TensorType>&    par_all     ,
+    const vector<TensorType>&    var_all     ,
+    vector<TensorType>&          for_der
+) const {
+    //
+    // arg_start
+    size_t arg_start = agraph.m_arg_start[op_index];
+    //
+    // left, transpose
+    bool left      = bool( agraph.m_arg_value[arg_start + 2] );
+    //
 #ifndef NDEBUG
-        size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
-        assert( n_arg == 3 );
-        assert( agraph.m_arg_type[arg_start+2] == adtype_t::none );
+    size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
+    assert( n_arg == 3 );
+    assert( agraph.m_arg_type[arg_start+2] == adtype_t::none );
 # endif
-        // variable
-        adtype_t variable = adtype_t::variable;
-        //
-        // linear_index, rhs_index
-        size_t linear_index = agraph.m_arg_value[arg_start];
-        size_t rhs_index = agraph.m_arg_value[arg_start + 1];
-        //
-        // linear_type, rhs_type
-        adtype_t linear_type = agraph.m_arg_type[arg_start];
-        adtype_t rhs_type = agraph.m_arg_type[arg_start + 1];
-        if( linear_type == variable && no_elements(for_der[linear_index]) ) {
-            linear_type = adtype_t::constant;
-        }
-        if( rhs_type == variable && no_elements(for_der[rhs_index]) ) {
-            rhs_type = adtype_t::constant;
-        }
-        //
-        // linear
-        TensorType linear = tensor_at_arg_index(
-            arg_start, agraph, con_vec, par_all, var_all
-        );
-        //
-        // prod
-        TensorType prod = TensorType( no_elements() );
-        if( left && linear_type == adtype_t::variable ) {
-            prod = for_der[linear_index].matmul( var_all[op_index] );
-        } else if( ! left && linear_type == adtype_t::variable ) {
-            prod = var_all[op_index].matmul( for_der[linear_index] );
-        }
-        // diff
-        TensorType diff = TensorType( no_elements() );
-        if( rhs_type == adtype_t::variable ) {
-            diff = for_der[rhs_index];
-        }
-        minus_equal(diff, prod);
-        assert( has_elements(diff) );
-        //
-        // solution_dot
-        for_der[op_index] = linalg_solve(linear, diff, left);
+    // variable
+    adtype_t variable = adtype_t::variable;
+    //
+    // linear_index, rhs_index
+    size_t linear_index = agraph.m_arg_value[arg_start];
+    size_t rhs_index = agraph.m_arg_value[arg_start + 1];
+    //
+    // linear_type, rhs_type
+    adtype_t linear_type = agraph.m_arg_type[arg_start];
+    adtype_t rhs_type = agraph.m_arg_type[arg_start + 1];
+    if( linear_type == variable && no_elements(for_der[linear_index]) ) {
+        linear_type = adtype_t::constant;
     }
-    template void solve_op_t<adten_t>::forward_der(
-        size_t                       op_index    ,
-        const agraph_t&              agraph      ,
-        const vector<at::Tensor>&    con_vec     ,
-        const vector<adten_t>&       par_all     ,
-        const vector<adten_t>&       var_all     ,
-        vector<adten_t>&             for_der
-    ) const;
-    template void solve_op_t<at::Tensor>::forward_der(
-        size_t                       op_index    ,
-        const agraph_t&              agraph      ,
-        const vector<at::Tensor>&    con_vec     ,
-        const vector<at::Tensor>&    par_all     ,
-        const vector<at::Tensor>&    var_all     ,
-        vector<at::Tensor>&          for_der
-    ) const;
-    /* ------------------------------------------------------------------------
-    reverse_der
-    see Guiles-2008 Section 2.3.1
-    left:
-        rhs_bar    = linear^-T * solution_bar
-        linear_bar = - rhs_bar * solution^T
-    ! left:
-        rhs_bar     = solution_bar * linear^-T
-        linear_bar  = - solution^T * rhs_bar
-    */
-    template<class TensorType>
-    void solve_op_t<TensorType>::reverse_der(
-        size_t                       op_index    ,
-        const agraph_t&              agraph      ,
-        const vector<at::Tensor>&    con_vec     ,
-        const vector<TensorType>&    par_all     ,
-        const vector<TensorType>&    var_all     ,
-        vector<TensorType>&          rev_der
-    ) const {
-        //
-        // array
-        thread_local vector<int64_t> array;
-        //
-        // arg_start
-        size_t arg_start = agraph.m_arg_start[op_index];
-        //
-        // left, transpose
-        bool left      = bool( agraph.m_arg_value[arg_start + 2] );
-        //
+    if( rhs_type == variable && no_elements(for_der[rhs_index]) ) {
+        rhs_type = adtype_t::constant;
+    }
+    //
+    // linear
+    TensorType linear = tensor_at_arg_index(
+        arg_start, agraph, con_vec, par_all, var_all
+    );
+    //
+    // prod
+    TensorType prod = TensorType( no_elements() );
+    if( left && linear_type == adtype_t::variable ) {
+        prod = for_der[linear_index].matmul( var_all[op_index] );
+    } else if( ! left && linear_type == adtype_t::variable ) {
+        prod = var_all[op_index].matmul( for_der[linear_index] );
+    }
+    // diff
+    TensorType diff = TensorType( no_elements() );
+    if( rhs_type == adtype_t::variable ) {
+        diff = for_der[rhs_index];
+    }
+    minus_equal(diff, prod);
+    assert( has_elements(diff) );
+    //
+    // solution_dot
+    for_der[op_index] = linalg_solve(linear, diff, left);
+}
+template void solve_op_t<adten_t>::forward_der(
+    size_t                       op_index    ,
+    const agraph_t&              agraph      ,
+    const vector<at::Tensor>&    con_vec     ,
+    const vector<adten_t>&       par_all     ,
+    const vector<adten_t>&       var_all     ,
+    vector<adten_t>&             for_der
+) const;
+template void solve_op_t<at::Tensor>::forward_der(
+    size_t                       op_index    ,
+    const agraph_t&              agraph      ,
+    const vector<at::Tensor>&    con_vec     ,
+    const vector<at::Tensor>&    par_all     ,
+    const vector<at::Tensor>&    var_all     ,
+    vector<at::Tensor>&          for_der
+) const;
+/* ------------------------------------------------------------------------
+reverse_der
+see Guiles-2008 Section 2.3.1
+left:
+    rhs_bar    = linear^-T * solution_bar
+    linear_bar = - rhs_bar * solution^T
+! left:
+    rhs_bar     = solution_bar * linear^-T
+    linear_bar  = - solution^T * rhs_bar
+*/
+template<class TensorType>
+void solve_op_t<TensorType>::reverse_der(
+    size_t                       op_index    ,
+    const agraph_t&              agraph      ,
+    const vector<at::Tensor>&    con_vec     ,
+    const vector<TensorType>&    par_all     ,
+    const vector<TensorType>&    var_all     ,
+    vector<TensorType>&          rev_der
+) const {
+    //
+    // array
+    thread_local vector<int64_t> array;
+    //
+    // arg_start
+    size_t arg_start = agraph.m_arg_start[op_index];
+    //
+    // left, transpose
+    bool left      = bool( agraph.m_arg_value[arg_start + 2] );
+    //
 #ifndef NDEBUG
-        size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
-        assert( n_arg == 3 );
-        assert( agraph.m_arg_type[arg_start+2] == adtype_t::none );
+    size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
+    assert( n_arg == 3 );
+    assert( agraph.m_arg_type[arg_start+2] == adtype_t::none );
 # endif
+    //
+    // linear_type, rhs_type
+    adtype_t linear_type     = agraph.m_arg_type[arg_start];
+    adtype_t rhs_type        = agraph.m_arg_type[arg_start + 1];
+    //
+    // linear_index, rhs_index
+    size_t linear_index = agraph.m_arg_value[arg_start];
+    size_t rhs_index = agraph.m_arg_value[arg_start + 1];
+    //
+    // linear, linear_shape
+    TensorType linear = tensor_at_arg_index(
+        arg_start, agraph, con_vec, par_all, var_all
+    );
+    c10::IntArrayRef linear_shape = shape_at_arg_index(
+        arg_start, agraph, con_vec, par_all, var_all
+    );
+    //
+    // solution, solution_shape
+    TensorType solution = var_all[op_index];
+    c10::IntArrayRef solution_shape = solution.sizes();
+    //
+    // linear_tra
+    size_t n_lin = linear_shape.size();
+    TensorType linear_tra   = linear.transpose(n_lin-2, n_lin-1);
+    //
+    // solution_tra
+    size_t n_sol = solution_shape.size();
+    TensorType solution_tra = solution.transpose(n_sol-2, n_sol-1);
+    //
+    // rhs_bar
+    TensorType rhs_bar = linalg_solve(linear_tra, rev_der[op_index], left);
+    if( rhs_type == adtype_t::variable ) {
         //
-        // linear_type, rhs_type
-        adtype_t linear_type     = agraph.m_arg_type[arg_start];
-        adtype_t rhs_type        = agraph.m_arg_type[arg_start + 1];
-        //
-        // linear_index, rhs_index
-        size_t linear_index = agraph.m_arg_value[arg_start];
-        size_t rhs_index = agraph.m_arg_value[arg_start + 1];
-        //
-        // linear, linear_shape
-        TensorType linear = tensor_at_arg_index(
-            arg_start, agraph, con_vec, par_all, var_all
+        // dim
+        c10::IntArrayRef rhs_shape = shape_at_arg_index(
+            arg_start+1, agraph, con_vec, par_all, var_all
         );
-        c10::IntArrayRef linear_shape = shape_at_arg_index(
-            arg_start, agraph, con_vec, par_all, var_all
-        );
+        size_t skip = 2;
+        broadcast(solution_shape, rhs_shape, array, skip);
+        c10::IntArrayRef dim(array);
         //
-        // solution, solution_shape
-        TensorType solution = var_all[op_index];
-        c10::IntArrayRef solution_shape = solution.sizes();
+        plus_equal(rev_der[rhs_index], rhs_bar, dim);
+    }
+    //
+    // linear_bar
+    if( linear_type == adtype_t::variable ) {
+        // dim
+        size_t skip = 2;
+        broadcast( solution_shape, linear_shape, array, skip);
+        c10::IntArrayRef dim(array);
         //
-        // linear_tra
-        size_t n_lin = linear_shape.size();
-        TensorType linear_tra   = linear.transpose(n_lin-2, n_lin-1);
-        //
-        // solution_tra
-        size_t n_sol = solution_shape.size();
-        TensorType solution_tra = solution.transpose(n_sol-2, n_sol-1);
-        //
-        // rhs_bar
-        TensorType rhs_bar = linalg_solve(linear_tra, rev_der[op_index], left);
-        if( rhs_type == adtype_t::variable ) {
-            //
-            // dim
-            c10::IntArrayRef rhs_shape = shape_at_arg_index(
-                arg_start+1, agraph, con_vec, par_all, var_all
-            );
-            size_t skip = 2;
-            broadcast(solution_shape, rhs_shape, array, skip);
-            c10::IntArrayRef dim(array);
-            //
-            plus_equal(rev_der[rhs_index], rhs_bar, dim);
-        }
-        //
-        // linear_bar
-        if( linear_type == adtype_t::variable ) {
-            // dim
-            size_t skip = 2;
-            broadcast( solution_shape, linear_shape, array, skip);
-            c10::IntArrayRef dim(array);
-            //
-            if( left ) {
-                TensorType prod = rhs_bar.matmul(solution_tra);
-                minus_equal(rev_der[linear_index], prod, dim);
-            } else {
-                TensorType prod = solution_tra.matmul( rhs_bar );
-                minus_equal(rev_der[linear_index], prod, dim);
-            }
+        if( left ) {
+            TensorType prod = rhs_bar.matmul(solution_tra);
+            minus_equal(rev_der[linear_index], prod, dim);
+        } else {
+            TensorType prod = solution_tra.matmul( rhs_bar );
+            minus_equal(rev_der[linear_index], prod, dim);
         }
     }
-    template void solve_op_t<adten_t>::reverse_der(
-        size_t                       op_index    ,
-        const agraph_t&              agraph      ,
-        const vector<at::Tensor>&    con_vec     ,
-        const vector<adten_t>&       par_all     ,
-        const vector<adten_t>&       var_all     ,
-        vector<adten_t>&             rev_der
-    ) const;
-    template void solve_op_t<at::Tensor>::reverse_der(
-        size_t                       op_index    ,
-        const agraph_t&              agraph      ,
-        const vector<at::Tensor>&    con_vec     ,
-        const vector<at::Tensor>&    par_all     ,
-        const vector<at::Tensor>&    var_all     ,
-        vector<at::Tensor>&          rev_der
-    ) const;
-} }
+}
+template void solve_op_t<adten_t>::reverse_der(
+    size_t                       op_index    ,
+    const agraph_t&              agraph      ,
+    const vector<at::Tensor>&    con_vec     ,
+    const vector<adten_t>&       par_all     ,
+    const vector<adten_t>&       var_all     ,
+    vector<adten_t>&             rev_der
+) const;
+template void solve_op_t<at::Tensor>::reverse_der(
+    size_t                       op_index    ,
+    const agraph_t&              agraph      ,
+    const vector<at::Tensor>&    con_vec     ,
+    const vector<at::Tensor>&    par_all     ,
+    const vector<at::Tensor>&    var_all     ,
+    vector<at::Tensor>&          rev_der
+) const;
+} } // End ad_tensor::dev

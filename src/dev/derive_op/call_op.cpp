@@ -61,7 +61,7 @@ variable result for this atomic function.
 #include <ad_tensor/dev/unpack_call.hpp>
 #include <ad_tensor/no_elements.hpp>
 //
-namespace ad_tensor { namespace dev { // BEGIN_AD_TENSOR_DEV_NAMESPACE
+namespace ad_tensor { namespace dev { // Begin ad_tensor::dev
 // ------------------------------------------------------------------------
 // BEGIN_CALL_OP_DEPEND
 void call_op_depend(
@@ -501,4 +501,4 @@ template void call_op_t<at::Tensor>::reverse_der(
     const vector<at::Tensor>&    var_all     ,
     vector<at::Tensor>&          rev_der
 ) const;
-} } // END_AD_TENSOR_DEV_NAMESPACE
+} } // End ad_tensor::dev
