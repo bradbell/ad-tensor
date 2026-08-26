@@ -75,6 +75,14 @@ This maps op_enum_t values to the corresponding base_op_t<TensorType> value:
             const vector<TensorType>&    var_all     , \
             vector<TensorType>&          rev_der \
         ) const override; \
+        \
+        virtual std::string src_gen(  \
+            size_t                       op_index        , \
+            const agraph_t&              agraph          , \
+            bool                         variable_agraph , \
+            const std::function< std::string(size_t, adtype_t) >& tensor_src \
+        ) const override;  \
+        \
     };
 //
 namespace ad_tensor { namespace dev {

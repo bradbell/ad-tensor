@@ -328,8 +328,8 @@ R"|(    //
         file_cpp << std::format(fmt, n_par_dep, n_var_dep);
     }
     //
-    // tensor_ref
-    auto tensor_ref = [n_par_dom, n_var_dom] (size_t index, adtype_t adtype) {
+    // tensor_src
+    auto tensor_src = [n_par_dom, n_var_dom] (size_t index, adtype_t adtype) {
         string result;
         switch(adtype) {
             //

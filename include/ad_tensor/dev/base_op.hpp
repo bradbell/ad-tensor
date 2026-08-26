@@ -7,6 +7,7 @@
 {xrst_begin base_op dev}
 {xrst_spell
     der
+    src
 }
 
 The Operator Base Class
@@ -105,6 +106,28 @@ reverse_der
     cases where for_der[op_index] has no elements; hence for_der[op_index]
     has elements when this routine is called.
 
+src_gen
+=======
+{xrst_literal ,
+    BEGIN_SRC_GEN, END_SRC_GEN
+}
+The string returned by src_gen sets the value for the corresponding
+operator, operator index, and acyclic graph.
+
+variable_agraph
+---------------
+if this is true (false) the acyclic graph is for variables (parameters).
+
+tensor_src
+----------
+The function call
+{xrst_code cpp}
+    src = tensor_src(index, adtype)
+{xrst_code}
+returns a source code representation of a
+constant, parameter of variable (depending on adtype) with the specified index.
+The return, src, can be used to set or get the corresponding value.
+
 {xrst_end base_op}
 */
 #include <cassert>
@@ -160,5 +183,14 @@ template<class TensorType> struct base_op_t
         vector<TensorType>&          rev_der
     ) const = 0;
     // END_REVERSE_DER
+    //
+    // BEGIN_SRC_GEN
+    virtual std::string src_gen(
+        size_t                       op_index        ,
+        const agraph_t&              agraph          ,
+        bool                         variable_agraph ,
+        const std::function< std::string(size_t, adtype_t) >& tensor_src
+    ) const = 0;
+    // END_SRC_GEN
 };
 } }
