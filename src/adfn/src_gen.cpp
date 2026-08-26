@@ -106,6 +106,7 @@ namespace { // BEGIN_EMPTY_NAMESPACE
 using std::string;
 using std::format;
 using ad_tensor::vector;
+using ad_tensor::adtype_t;
 //
 // -----------------------------------------------------------------------
 // preamble
@@ -326,6 +327,40 @@ R"|(    //
 )|";
         file_cpp << std::format(fmt, n_par_dep, n_var_dep);
     }
+    //
+    // tensor_ref
+    auto tensor_ref = [n_par_dom, n_var_dom] (size_t index, adtype_t adtype) {
+        string result;
+        switch(adtype) {
+            //
+            case adtype_t::constant: {
+                constexpr const char* fmt = "con_vec[{}]";\
+                result = std::format(fmt, index);
+            }
+            //
+            case adtype_t::parameter: {
+                if( index < n_par_dom ) {
+                    constexpr const char* fmt = "dom_par[{}]";\
+                    result = std::format(fmt, index);
+                } else {
+                    constexpr const char* fmt = "par_dep[{}]";\
+                    result = std::format(fmt, index - n_par_dom);
+                }
+            }
+            //
+            case adtype_t::variable: {
+                if( index < n_var_dom ) {
+                    constexpr const char* fmt = "dom_var[{}]";\
+                    result = std::format(fmt, index);
+                } else {
+                    constexpr const char* fmt = "var_dep[{}]";\
+                    result = std::format(fmt, index - n_var_dom);
+                }
+            }
+            default:
+            assert( false );
+        }
+    };
     // ------------------------------------------------------------------------
     // ------------------------------------------------------------------------
     // file_cpp: range
