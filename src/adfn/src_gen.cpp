@@ -100,9 +100,13 @@ is the vector of range tensors and has the following prototype:
 #include <fstream>
 #include <format>
 #include <ad_tensor/adfn.hpp>
+#include <ad_tensor/dev/base_op.hpp>
+#include <ad_tensor/dev/derive_op.hpp>
+#include <ad_tensor/dev/to_string.hpp>
 //
 namespace { // BEGIN_EMPTY_NAMESPACE
 // string, format
+using std::cout;
 using std::string;
 using std::format;
 using ad_tensor::vector;
@@ -250,6 +254,9 @@ void adfn_t::src_gen(const std::string& dir) const
     // adfn_name
     string adfn_name = get_name();
     //
+    // indent
+    string indent = "    ";
+    //
     // n_par_dom, n_var_dom
     size_t n_par_dom = m_par.m_dom_shapes.size();
     size_t n_var_dom = m_var.m_dom_shapes.size();
@@ -327,41 +334,116 @@ R"|(    //
 )|";
         file_cpp << std::format(fmt, n_par_dep, n_var_dep);
     }
-    //
+    // ------------------------------------------------------------------------
     // tensor_src
+    // src = tensor_src(index, adtype)
     auto tensor_src = [n_par_dom, n_var_dom] (size_t index, adtype_t adtype) {
-        string result;
+        string src;
         switch(adtype) {
             //
             case adtype_t::constant: {
                 constexpr const char* fmt = "con_vec[{}]";\
-                result = std::format(fmt, index);
+                src = std::format(fmt, index);
             }
+            break;
             //
             case adtype_t::parameter: {
                 if( index < n_par_dom ) {
                     constexpr const char* fmt = "dom_par[{}]";\
-                    result = std::format(fmt, index);
+                    src = std::format(fmt, index);
                 } else {
                     constexpr const char* fmt = "par_dep[{}]";\
-                    result = std::format(fmt, index - n_par_dom);
+                    src = std::format(fmt, index - n_par_dom);
                 }
             }
+            break;
             //
             case adtype_t::variable: {
                 if( index < n_var_dom ) {
                     constexpr const char* fmt = "dom_var[{}]";\
-                    result = std::format(fmt, index);
+                    src = std::format(fmt, index);
                 } else {
                     constexpr const char* fmt = "var_dep[{}]";\
-                    result = std::format(fmt, index - n_var_dom);
+                    src = std::format(fmt, index - n_var_dom);
                 }
             }
+            break;
+            //
             default:
             assert( false );
         }
+        return src;
     };
     // ------------------------------------------------------------------------
+    //
+    if( m_trace ) {
+        cout << "Begin tracing " + get_name() + ".src_gen\n";
+        constexpr const char* fmt = "n_par_dom = {}, n_var_dom = {}\n";
+        cout << std::format(fmt, n_par_dom, n_var_dom);
+    }
+    // file_cpp: par_dep
+    size_t n_par_op        = m_par.m_op_seq.size();
+    size_t variable_agraph = false;
+    for(size_t op_index = n_par_dom; op_index < n_par_op; op_index++) {
+        //
+        // base_op
+        dev::op_enum_t op_enum = m_par.m_op_seq[ op_index ];
+        const dev::base_op_t<at::Tensor>& base_op =
+            dev::op_enum2derive_op<at::Tensor>( op_enum );
+        //
+        // src
+        string src = base_op.src_gen(
+            op_index, m_par, variable_agraph, tensor_src
+        );
+        if( m_trace) {
+            cout << src << " , " << dev::to_string(op_enum)  << "(";
+            size_t start = m_par.m_arg_start[op_index];
+            size_t stop  = m_par.m_arg_start[op_index + 1];
+            for(size_t i = start; i < stop; ++i) {
+                cout << "[" << m_par.m_arg_value[i] << ",";
+                cout << dev::to_string( m_par.m_arg_type[i] ) << "]";
+            }
+            cout << ")\n";
+        }
+        //
+        // file_cpp: par_dep
+        if( src != "" ) {
+            file_cpp << indent + src + "\n";
+        }
+    }
+    // file_cpp: var_dep
+    size_t n_var_op = m_var.m_op_seq.size();
+    variable_agraph = true;
+    for(size_t op_index = n_var_dom; op_index < n_var_op; op_index++) {
+        //
+        // base_op
+        dev::op_enum_t op_enum = m_var.m_op_seq[ op_index ];
+        const dev::base_op_t<at::Tensor>& base_op =
+            dev::op_enum2derive_op<at::Tensor>( op_enum );
+        //
+        // src
+        string src = base_op.src_gen(
+            op_index, m_var, variable_agraph, tensor_src
+        );
+        if( m_trace) {
+            cout << src << " , " << dev::to_string(op_enum)  << "(";
+            size_t start = m_var.m_arg_start[op_index];
+            size_t stop  = m_var.m_arg_start[op_index + 1];
+            for(size_t i = start; i < stop; ++i) {
+                cout << "[" << m_var.m_arg_value[i] << ",";
+                cout << dev::to_string( m_var.m_arg_type[i] ) << "]";
+            }
+            cout << ")\n";
+        }
+        //
+        // file_cpp: var_dep
+        if( src != "" ) {
+            file_cpp << indent + src + "\n";
+        }
+    }
+    if( m_trace ) {
+        cout << "End tracing " + get_name() + ".src_gen\n";
+    }
     // ------------------------------------------------------------------------
     // file_cpp: range
     {   constexpr const char* fmt =

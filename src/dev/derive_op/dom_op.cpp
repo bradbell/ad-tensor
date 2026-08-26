@@ -92,7 +92,6 @@ std::string dom_op_t<TensorType>::src_gen(
     bool                                                  variable_agraph ,
     const std::function< std::string(size_t, adtype_t) >& tensor_src
 ) const {
-    user_assert(false, "src_gen not yet implemented for dom operator" );
     return "";
 }
 template std::string dom_op_t<adten_t>::src_gen(
