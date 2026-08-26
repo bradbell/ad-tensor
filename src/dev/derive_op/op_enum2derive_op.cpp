@@ -5,77 +5,77 @@
 #include <ad_tensor/adten.hpp>
 #include <ad_tensor/dev/derive_op.hpp>
 //
-namespace ad_tensor { namespace dev {
+namespace ad_tensor { namespace dev { // Begin ad_tensor::dev
+//
+template <class TensorType>
+const base_op_t<TensorType>& op_enum2derive_op(op_enum_t op_enum) {
+    // BEGIN_SORT_THIS_LINE_PLUS_1
+    static const add_op_t<TensorType>         add_op;
+    static const call_op_t<TensorType>        call_op;
+    static const call_result_op_t<TensorType> call_result_op;
+    static const div_op_t<TensorType>         div_op;
+    static const dom_op_t<TensorType>         dom_op;
+    static const eq_op_t<TensorType>          eq_op;
+    static const exp_op_t<TensorType>         exp_op;
+    static const ge_op_t<TensorType>          ge_op;
+    static const gt_op_t<TensorType>          gt_op;
+    static const index_op_t<TensorType>       index_op;
+    static const index_put_op_t<TensorType>   index_put_op;
+    static const inverse_op_t<TensorType>     inverse_op;
+    static const le_op_t<TensorType>          le_op;
+    static const logdet_op_t<TensorType>      logdet_op;
+    static const lt_op_t<TensorType>          lt_op;
+    static const matmul_op_t<TensorType>      matmul_op;
+    static const minus_op_t<TensorType>       minus_op;
+    static const mul_op_t<TensorType>         mul_op;
+    static const ne_op_t<TensorType>          ne_op;
+    static const solve_op_t<TensorType>       solve_op;
+    static const sub_op_t<TensorType>         sub_op;
+    static const sum_op_t<TensorType>         sum_op;
+    static const transpose_op_t<TensorType>   transpose_op;
+    static const view_op_t<TensorType>        view_op;
+    static const where_op_t<TensorType>       where_op;
+    // END_SORT_THIS_LINE_MINUS_1
     //
-    template <class TensorType>
-    const base_op_t<TensorType>& op_enum2derive_op(op_enum_t op_enum) {
+    switch(op_enum) {
         // BEGIN_SORT_THIS_LINE_PLUS_1
-        static const add_op_t<TensorType>         add_op;
-        static const call_op_t<TensorType>        call_op;
-        static const call_result_op_t<TensorType> call_result_op;
-        static const div_op_t<TensorType>         div_op;
-        static const dom_op_t<TensorType>         dom_op;
-        static const eq_op_t<TensorType>          eq_op;
-        static const exp_op_t<TensorType>         exp_op;
-        static const ge_op_t<TensorType>          ge_op;
-        static const gt_op_t<TensorType>          gt_op;
-        static const index_op_t<TensorType>       index_op;
-        static const index_put_op_t<TensorType>   index_put_op;
-        static const inverse_op_t<TensorType>     inverse_op;
-        static const le_op_t<TensorType>          le_op;
-        static const logdet_op_t<TensorType>      logdet_op;
-        static const lt_op_t<TensorType>          lt_op;
-        static const matmul_op_t<TensorType>      matmul_op;
-        static const minus_op_t<TensorType>       minus_op;
-        static const mul_op_t<TensorType>         mul_op;
-        static const ne_op_t<TensorType>          ne_op;
-        static const solve_op_t<TensorType>       solve_op;
-        static const sub_op_t<TensorType>         sub_op;
-        static const sum_op_t<TensorType>         sum_op;
-        static const transpose_op_t<TensorType>   transpose_op;
-        static const view_op_t<TensorType>        view_op;
-        static const where_op_t<TensorType>       where_op;
+        case op_enum_t::add:         return add_op;
+        case op_enum_t::call:        return call_op;
+        case op_enum_t::call_result: return call_result_op;
+        case op_enum_t::div:         return div_op;
+        case op_enum_t::dom:         return dom_op;
+        case op_enum_t::eq:          return eq_op;
+        case op_enum_t::exp:         return exp_op;
+        case op_enum_t::ge:          return ge_op;
+        case op_enum_t::gt:          return gt_op;
+        case op_enum_t::index:       return index_op;
+        case op_enum_t::index_put:   return index_put_op;
+        case op_enum_t::inverse:     return inverse_op;
+        case op_enum_t::le:          return le_op;
+        case op_enum_t::logdet:      return logdet_op;
+        case op_enum_t::lt:          return lt_op;
+        case op_enum_t::matmul:      return matmul_op;
+        case op_enum_t::minus:       return minus_op;
+        case op_enum_t::mul:         return mul_op;
+        case op_enum_t::ne:          return ne_op;
+        case op_enum_t::solve:       return solve_op;
+        case op_enum_t::sub:         return sub_op;
+        case op_enum_t::sum:         return sum_op;
+        case op_enum_t::transpose:   return transpose_op;
+        case op_enum_t::view:        return view_op;
+        case op_enum_t::where:       return where_op;
         // END_SORT_THIS_LINE_MINUS_1
         //
-        switch(op_enum) {
-            // BEGIN_SORT_THIS_LINE_PLUS_1
-            case op_enum_t::add:         return add_op;
-            case op_enum_t::call:        return call_op;
-            case op_enum_t::call_result: return call_result_op;
-            case op_enum_t::div:         return div_op;
-            case op_enum_t::dom:         return dom_op;
-            case op_enum_t::eq:          return eq_op;
-            case op_enum_t::exp:         return exp_op;
-            case op_enum_t::ge:          return ge_op;
-            case op_enum_t::gt:          return gt_op;
-            case op_enum_t::index:       return index_op;
-            case op_enum_t::index_put:   return index_put_op;
-            case op_enum_t::inverse:     return inverse_op;
-            case op_enum_t::le:          return le_op;
-            case op_enum_t::logdet:      return logdet_op;
-            case op_enum_t::lt:          return lt_op;
-            case op_enum_t::matmul:      return matmul_op;
-            case op_enum_t::minus:       return minus_op;
-            case op_enum_t::mul:         return mul_op;
-            case op_enum_t::ne:          return ne_op;
-            case op_enum_t::solve:       return solve_op;
-            case op_enum_t::sub:         return sub_op;
-            case op_enum_t::sum:         return sum_op;
-            case op_enum_t::transpose:   return transpose_op;
-            case op_enum_t::view:        return view_op;
-            case op_enum_t::where:       return where_op;
-            // END_SORT_THIS_LINE_MINUS_1
-            //
-            default:
-            assert( false && "op_enum2derive_op: invalid op_enum value" );
-        }
-        // should not get here
-        return dom_op;
+        default:
+        assert( false && "op_enum2derive_op: invalid op_enum value" );
     }
-    template const base_op_t<adten_t>& op_enum2derive_op<adten_t>(
-        op_enum_t op_enum
-    );
-    template const base_op_t<at::Tensor>& op_enum2derive_op<at::Tensor>(
-        op_enum_t op_enum
-    );
-} }
+    // should not get here
+    return dom_op;
+}
+template const base_op_t<adten_t>& op_enum2derive_op<adten_t>(
+    op_enum_t op_enum
+);
+template const base_op_t<at::Tensor>& op_enum2derive_op<at::Tensor>(
+    op_enum_t op_enum
+);
+} } // End ad_tensor::dev
