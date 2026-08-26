@@ -51,7 +51,7 @@ Example
 */
 #include <ad_tensor/adfn.hpp>
 #include <ad_tensor/dev/to_string.hpp>
-namespace ad_tensor { // BEGIN_NAMESPACE_AD_TENSOR
+namespace ad_tensor { // Begin ad_tensor::dev
 //
 template <class TensorType>
 vector<TensorType> adfn_t::get_range(
@@ -109,4 +109,4 @@ template vector<at::Tensor> adfn_t::get_range(
     const vector<at::Tensor>& var_all
 ) const;
 
-} // END_NAMESPACE_AD_TENSOR
+} // End ad_tensor

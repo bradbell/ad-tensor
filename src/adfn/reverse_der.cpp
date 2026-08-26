@@ -76,7 +76,7 @@ Example
 }
 {xrst_end adfn_reverse_der}
 */
-namespace ad_tensor { // BEGIN_NAMESPACE_AD_TENSOR
+namespace ad_tensor { // Begin ad_tensor::dev
 //
 // BEGIN_REVERSE_DER
 template <class TensorType>
@@ -197,4 +197,4 @@ template vector<at::Tensor> adfn_t::reverse_der(
     const vector<at::Tensor>& par_all
 ) const;
 
-} // END_NAMESPACE_AD_TENSOR
+} // End ad_tensor

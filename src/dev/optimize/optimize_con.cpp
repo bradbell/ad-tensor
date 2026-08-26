@@ -55,7 +55,7 @@ Test
 #include <map>
 #include <ad_tensor/adten.hpp>
 //
-namespace ad_tensor { // BEGIN_AD_TENSOR_NAMESPACE
+namespace ad_tensor { // Begin ad_tensor
 //
 // BEGIN_OPTIMIZE_CON
 void adfn_t::optimize_con(const vector<bool>& depend_old)
@@ -166,4 +166,4 @@ void adfn_t::optimize_con(const vector<bool>& depend_old)
         }
     }
 }
-} // END_AD_TENSOR_NAMESPACE
+} // End ad_tensor::dev

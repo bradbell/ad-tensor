@@ -8,7 +8,7 @@
 #include <ad_tensor/dev/agraph.hpp>
 #include <ad_tensor/dev/user_assert.hpp>
 //
-namespace ad_tensor { // BEGIN_NAMESPACE_AD_TENSOR
+namespace ad_tensor { // Begin ad_tensor::dev
 // ----------------------------------------------------------------------------
 adten_t::adten_t(void)
 : m_tape_id(0)
@@ -33,4 +33,4 @@ adten_t::adten_t( const at::Tensor& tensor )
     }
 }
 // ---------------------------------------------------------------------------
-} // END_NAMESPACE_AD_TENSOR
+} // End ad_tensor

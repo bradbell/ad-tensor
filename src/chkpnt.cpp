@@ -150,7 +150,7 @@ is the AD tensor version of the range for this checkpoint function call.
 #include <ad_tensor/chkpnt.hpp>
 //
 //
-namespace ad_tensor { // BEGIN_AD_TENSOR_NAMESPACE
+namespace ad_tensor { // Begin ad_tensor
 //
 // make_chkpnt
 size_t make_chkpnt(
@@ -264,4 +264,4 @@ vector<adten_t> call_chkpnt(
     return call_atom(atom_id, adomain);
 }
 
-}  // END_AD_TENSOR_NAMESPACE
+}  // End ad_tensor::dev

@@ -8,7 +8,7 @@
 #include <ad_tensor/dev/agraph.hpp>
 #include <ad_tensor/dev/user_assert.hpp>
 //
-namespace ad_tensor { // BEGIN_NAMESPACE_AD_TENSOR
+namespace ad_tensor { // Begin ad_tensor::dev
 /*
 -------------------------------------------------------------------------------
 {xrst_begin adten_binary_dev dev}
@@ -164,4 +164,4 @@ adten_t adten_t::binary(
     return adten_t(res_tape_id, res_index, res_at_ten, res_adtype);
 }
 // ---------------------------------------------------------------------------
-} // END_NAMESPACE_AD_TENSOR
+} // End ad_tensor

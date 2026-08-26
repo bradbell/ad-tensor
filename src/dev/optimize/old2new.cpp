@@ -96,7 +96,7 @@ old2new_var[k] == not_used.
 #include <array>
 #include <ad_tensor/dev/optimize.hpp>
 //
-namespace ad_tensor { namespace dev { // BEGIN_AD_TENSOR_DEV_NAMESPACE
+namespace ad_tensor { namespace dev { // Begin ad_tensor::dev
 //
 // BEGIN_OLD2NEW
 std::array< vector<size_t>, 3 > old2new(
@@ -155,4 +155,4 @@ std::array< vector<size_t>, 3 > old2new(
     );
 }
 //
-} } // END_AD_TENSOR_DEV_NAMESPACE
+} } // End ad_tensor::dev

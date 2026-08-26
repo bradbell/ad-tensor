@@ -86,7 +86,7 @@ where start is the length of arg_value and arg_type before this call to
 #include <ad_tensor/dev/agraph.hpp>
 #include <ad_tensor/dev/user_assert.hpp>
 //
-namespace ad_tensor { // BEGIN_AD_TENSOR_NAMESPACE
+namespace ad_tensor { // Begin ad_tensor
 adten_t adten_t::where(
     const adten_t& cond,
     const adten_t& true_case,
@@ -154,4 +154,4 @@ adten_t adten_t::where(
     return adten_t(res_tape_id, res_index, res_at_ten, res_adtype);
 }
 // ---------------------------------------------------------------------------
-} // END_NAMESPACE_AD_TENSOR
+} // End ad_tensor

@@ -42,7 +42,7 @@ so the it will properly broadcast to the argument shape.
 
 {xrst_end rev_sum_view}
 */
-namespace ad_tensor { namespace dev { // BEGIN_NAMESPACE_AD_TENSOR_DEV
+namespace ad_tensor { namespace dev { // Begin ad_tensor::dev
 // BEGIN_REV_SUM_VIEW
 // rev_sum_view(dim, res_shape, arg_shape, new_shape)
 void rev_sum_view(
@@ -89,4 +89,4 @@ void rev_sum_view(
     //
     return;
 }
-} } // END_NAMESPACE_AD_TENSOR_DEV
+} } // End ad_tensor::dev

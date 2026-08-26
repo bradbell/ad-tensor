@@ -50,7 +50,7 @@ Example
 
 {xrst_end adfn_forward_dep}
 */
-namespace ad_tensor { // BEGIN_NAMESPACE_AD_TENSOR
+namespace ad_tensor { // Begin ad_tensor::dev
 //
 std::array<sparsity_t, 2> adfn_t::forward_dep(void) const
 {   //
@@ -258,4 +258,4 @@ std::array<sparsity_t, 2> adfn_t::forward_dep(void) const
     }
     return std::array<sparsity_t, 2>( {depend_par, depend_var} );
 }
-} // END_NAMESPACE_AD_TENSOR
+} // End ad_tensor

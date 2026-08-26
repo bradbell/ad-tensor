@@ -128,7 +128,7 @@ for all the arg_index values corresponding to an operator.
 #include <ad_tensor/dev/agraph.hpp>
 #include <ad_tensor/dev/optimize.hpp>
 //
-namespace ad_tensor { namespace dev { // BEGIN_AD_TENSOR_DEV_NAMESPACE
+namespace ad_tensor { namespace dev { // Begin ad_tensor::dev
 //
 // BEGIN_NEW_OP_HASH
 // stackoverflow.com/questions/20511347/a-good-hash-function-for-a-vector
@@ -205,4 +205,4 @@ bool new_op_equal(
     }
     return true;
 }
-} } // END_AD_TENSOR_DEV_NAMESPACE
+} } // End ad_tensor::dev
