@@ -1,6 +1,5 @@
 #! /usr/bin/env bash
 set -e -u
-# !! EDITS TO THIS FILE ARE LOST DURING UPDATES BY xrst.git/tools/dev_tools.sh !!
 # SPDX-License-Identifier: EPL-2.0 OR GPL-2.0-or-later
 # SPDX-FileCopyrightText: Bradley M. Bell <bradbell@seanet.com>
 # SPDX-FileContributor: 2026 Bradley M. Bell
@@ -86,40 +85,32 @@ d
 EOF
 #
 # cxx_flags
-cxx_flags='-std=c++23 -Wall -pedantic-errors -Wshadow -Wfloat-conversion -Wconversion'
+cxx_flags='-Wall -pedantic-errors -Wshadow -Wfloat-conversion -Wconversion'
 #
 # cmake
-cat << EOF
+cat << EOF > temp.cmd
 cmake -S .. -B . \\
     -G Ninja \\
     -D include_tests=true \\
     -D include_plugin=true \\
-    -D CMAKE_BUILD_TYPE=$cmake_build_type \\
     -D Torch_DIR=$torch_dir \\
-    -D CMAKE_CXX_FLAGS="'$cxx_flags'" \\
-    -D CMAKE_C_COMPILER="$cmake_c_compiler" \\
-    -D CMAKE_CXX_COMPILER="$cmake_cxx_compiler" \\
+    -D CMAKE_BUILD_TYPE=$cmake_build_type \\
+    -D CMAKE_CXX_FLAGS='$cxx_flags' \\
+    -D CMAKE_C_COMPILER=$cmake_c_compiler \\
+    -D CMAKE_CXX_COMPILER=$cmake_cxx_compiler \\
+    -D CMAKE_INSTALL_PREFIX=$HOME/prefix/ad_tensor
 EOF
-if ! cmake -S .. -B . \
-    -G Ninja \
-    -D include_tests=true \
-    -D include_plugin=true \
-    -D CMAKE_BUILD_TYPE=$cmake_build_type \
-    -D Torch_DIR=$torch_dir \
-    -D CMAKE_CXX_FLAGS="'$cxx_flags'" \
-    -D CMAKE_C_COMPILER="$cmake_c_compiler" \
-    -D CMAKE_CXX_COMPILER="$cmake_cxx_compiler" \
-    2> temp.err
+cat temp.cmd
+if ! source temp.cmd 2> cmake.err
 then
-    sed -f temp.sed temp.err
-    echo 'run_cmake.sh: errors in cmake output above'
+    echo 'run_cmake.sh: errors in cmake output see build/cmake.err'
     exit 1
-fi
-#
-if sed -f temp.sed temp.err | grep 'CMake Warning' > /dev/null
-then
-    echo 'run_cmake.sh: warnings in cmake output above'
-    exit 1
+else
+    if sed -f temp.sed cmake.err | grep 'CMake Warning' > /dev/null
+    then
+        echo 'run_cmake.sh: warnings in cmake output; see build/cmake.err'
+        exit 1
+    fi
 fi
 #
 echo "$script_path: OK"

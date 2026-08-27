@@ -17,6 +17,7 @@ TODO
     void adten::current_recording(adten_t& adten)
 
 {xrst_toc_table
+    CMakeLists.txt
     include/ad_tensor/vector.hpp
     include/ad_tensor/sparsity.hpp
     include/ad_tensor/adten.hpp
