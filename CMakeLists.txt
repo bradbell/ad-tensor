@@ -88,6 +88,11 @@ The following command will install ad_tensor:
 
 {xrst_end cmake_command}
 ]]
+# ---------------------------------------------------------------------------
+# print_variable
+MACRO(print_variable variable)
+    MESSAGE(STATUS "${variable} = ${${variable}}" )
+ENDMACRO(print_variable)
 #
 # cmake_minimum_required
 # version 3.12 is required for c++20
@@ -101,10 +106,11 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 #
-# TORCH_INCLUDE_DIRS, TORCH_CXX_FLAGS, TORCH_LIBRARIES
+# TORCH_INCLUDE_DIRS, TORCH_LIBRARIES, TORCH_CXX_FLAGS
 find_package(Torch REQUIRED)
-message(STATUS "TORCH_INCLUDE_DIRS = ${TORCH_INCLUDE_DIRS}")
-message(STATUS "TORCH_LIBRARIES = ${TORCH_LIBRARIES}")
+print_variable(TORCH_INCLUDE_DIRS)
+print_variable(TORCH_LIBRARIES)
+print_variable(TORCH_CXX_FLAGS)
 #
 # CMAKE_CXX_FLAGS
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${TORCH_CXX_FLAGS}")

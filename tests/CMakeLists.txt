@@ -11,8 +11,8 @@ if( include_plugin )
     # Boost_INCLUDE_DIRS, Boost_LIBRARIES
     cmake_policy(SET CMP0167 NEW)
     find_package(Boost REQUIRED COMPONENTS filesystem system)
-    message( STATUS "Boost_INCLUDE_DIRS = ${Boost_INCLUDE_DIRS}" )
-    message( STATUS "Boost_LIBRARIES = ${Boost_LIBRARIES}" )
+    print_variable(Boost_INCLUDE_DIRS)
+    print_variable(Boost_LIBRARIES)
     #
     # include_directories
     include_directories( ${Boost_INCLUDE_DIRS} )
