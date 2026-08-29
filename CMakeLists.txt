@@ -101,16 +101,20 @@ cmake_minimum_required(VERSION 3.12)
 # project
 project(ad_tensor VERSION "2026.8.26")
 #
+# CMAKE_INSTALL_INCLUDEDIR, CMAKE_INSTALL_LIBDIR
+include(GNUInstallDirs)
+print_variable(CMAKE_INSTALL_INCLUDEDIR)
+print_variable(CMAKE_INSTALL_LIBDIR)
+#
 # CXX_STANDARD
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 #
-# TORCH_INCLUDE_DIRS, TORCH_LIBRARIES, TORCH_CXX_FLAGS
+# TORCH_INCLUDE_DIRS, TORCH_CXX_FLAGS, TORCH_LIBRARIES
 find_package(Torch REQUIRED)
 print_variable(TORCH_INCLUDE_DIRS)
 print_variable(TORCH_LIBRARIES)
-print_variable(TORCH_CXX_FLAGS)
 #
 # CMAKE_CXX_FLAGS
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${TORCH_CXX_FLAGS}")
@@ -119,7 +123,8 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${TORCH_CXX_FLAGS}")
 include_directories( SYSTEM ${TORCH_INCLUDE_DIRS} )
 include_directories( ${ad_tensor_SOURCE_DIR}/include )
 #
-# src
+# pkgconfig, src
+add_subdirectory(pkgconfig)
 add_subdirectory(src)
 #
 # examples, tests
