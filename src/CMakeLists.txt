@@ -2,8 +2,16 @@
 # SPDX-FileCopyrightText: Bradley M. Bell <bradbell@seanet.com>
 # SPDX-FileContributor: 2026 Bradley M. Bell
 # -----------------------------------------------------------------------------
+# build_lib.cpp
+configure_file(
+    ${CMAKE_CURRENT_SOURCE_DIR}/plugin/build_lib.cpp.in
+    ${CMAKE_CURRENT_BINARY_DIR}/plugin/build_lib.cpp
+    @ONLY
+)
+#
 add_library(ad_tensor SHARED
     # BEGIN_SORT_THIS_LINE_PLUS_1
+    ${CMAKE_CURRENT_BINARY_DIR}/plugin/build_lib.cpp
     adfn/forward_dep.cpp
     adfn/forward_der.cpp
     adfn/forward_par.cpp

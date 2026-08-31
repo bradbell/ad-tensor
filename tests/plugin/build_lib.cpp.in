@@ -4,86 +4,21 @@
 // -----------------------------------------------------------------------------
 //
 #include <filesystem>
-#include <fstream>
 #include <gtest/gtest.h>
 #include <torch/torch.h>
 #include <ad_tensor/vector.hpp>
 #include <ad_tensor/dev/user_assert.hpp>
+#include <ad_tensor/plugin.hpp>
 #include "@CMAKE_CURRENT_SOURCE_DIR@/get_plugin.hpp"
 //
-namespace { // Begin empty namespace
-// --------------------------------------------------------------------------
-//
-// fs, string, vector, user_assert
-namespace fs = std::filesystem;
-using std::string;
-using ad_tensor::vector;
-using ad_tensor::dev::user_assert;
-// --------------------------------------------------------------------------
-// cmake_lists_txt
-const char* cmake_lists_txt = R"|(
-#
-# print_variable
-MACRO(print_variable variable)
-    MESSAGE(STATUS "${variable} = ${${variable}}" )
-ENDMACRO(print_variable)
-#
-# project
-cmake_minimum_required(VERSION 3.10)
-project(plugin_lib)
-#
-#
-# AD_TENSOR_LIBRARY_DIR, AD_TENSOR_INCLUDE_DIR
-set(AD_TENSOR_LIBRARY_DIR  "@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@")
-set(AD_TENSOR_INCLUDE_DIR  "@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_INCLUDEDIR@")
-#
-# AD_TENSOR_LIBRARY
-find_library(AD_TENSOR_LIBRARY
-    NAME ad_tensor
-    PATHS ${AD_TENSOR_LIBRARY_DIR}
-)
-print_variable(AD_TENSOR_LIBRARY)
-#
-# TORCH_INCLUDE_DIRS, TORCH_LIBRARIES, TORCH_CXX_FLAGS
-SET(Torch_DIR @Torch_DIR@)
-find_package(Torch REQUIRED)
-print_variable(TORCH_INCLUDE_DIRS)
-print_variable(TORCH_LIBRARIES)
-print_variable(TORCH_CXX_FLAGS)
-#
-# Boost_INCLUDE_DIRS, Boost_LIBRARIES
-cmake_policy(SET CMP0167 NEW)
-find_package(Boost REQUIRED COMPONENTS filesystem system)
-print_variable(Boost_INCLUDE_DIRS)
-print_variable(Boost_LIBRARIES)
-#
-# include_directories
-include_directories(
-    ${Boost_INCLUDE_DIRS}
-    ${TORCH_INCLUDE_DIRS}
-    ${AD_TENSOR_INCLUDE_DIR}
-)
-#
-# cpp_files
-file(GLOB cpp_files "${CMAKE_SOURCE_DIR}/*.cpp")
-#
-# plugin_lib
-add_library(plugin_lib MODULE ${cpp_files} )
-target_link_libraries(plugin_lib
-    ${AD_TENSOR_LIBRARY}
-    ${Boost_LIBRARIES}
-    ${TORCH_LIBRARIES}
-)
-)|";
-// --------------------------------------------------------------------------
-// use_ad_tensor_repo
-const char* use_ad_tensor_repo_txt =
-R"|(set(AD_TENSOR_LIBRARY_DIR "@CMAKE_BINARY_DIR@/src")
-set(AD_TENSOR_INCLUDE_DIR "@CMAKE_SOURCE_DIR@/include")
-)|";
-} // End empty namespace
 // --------------------------------------------------------------------------
 TEST(tests_plugin, build_lib) {
+    //
+    // fs, string, vector, user_assert
+    namespace fs = std::filesystem;
+    using std::string;
+    using ad_tensor::vector;
+    using ad_tensor::dev::user_assert;
     //
     // plugin_path
     fs::path plugin_path  = fs::temp_directory_path() / "plugin";
@@ -98,70 +33,14 @@ TEST(tests_plugin, build_lib) {
         fs::copy(from_path, to_path, fs::copy_options::overwrite_existing);
     }
     // quiet
-    bool quiet = false;
+    bool quiet = true;
     //
     // use_ad_tensor_repo
     bool use_ad_tensor_repo = true;
     //
-    // cmake_file
-    string cmake_file = cmake_lists_txt;
-    if( use_ad_tensor_repo ) {
-        size_t start  = cmake_file.find( "set(AD_TENSOR_LIBRARY_DIR" );
-        size_t end    = cmake_file.find( "\n" , start) + 1;
-        end           = cmake_file.find( "\n", end) + 1;
-        size_t n_char = end - start;
-        cmake_file.replace(start, n_char, use_ad_tensor_repo_txt);
-    }
-    //
-    // build_path
-    fs::path build_path  = plugin_path / "build";
-    if( ! fs::is_directory(build_path) )
-    try {
-        fs::create_directory( build_path );
-    } catch (const std::exception& e) {
-        string msg = "build_plugin_lib: Can't create the following directory\n";
-        msg += build_path.string() + "\n";
-        msg += e.what();
-        user_assert(false, msg);
-    }
-    try {
-        fs::current_path(build_path);
-    } catch (const std::exception& e) {
-        string msg = "build_plugin_lib: Can't change current directory to\n";
-        msg += build_path.string() + "\n";
-        msg += e.what();
-        user_assert(false, msg);
-    }
-    try {
-        std::ofstream file( "../CMakeLists.txt" );
-        file << cmake_file;
-        file.close();
-    } catch (const std::exception& e) {
-        string msg = "build_plugin_lib: Can't create the file\n";
-        msg += plugin_path.string() + "\n";
-        msg += e.what();
-        user_assert(false, msg);
-    }
-    //
-    // build sub-directory
-    std::string cmake_cmd = "cmake -B . -S ..";
-    if( quiet ) {
-        cmake_cmd += " --log-level=ERROR";
-    }
-    int return_code = std::system(cmake_cmd.c_str());
-    if( return_code != 0 ) {
-        string msg = "build_plugin_lib: The following command failed\n";
-        msg += cmake_cmd;
-        user_assert(false, msg);
-    };
-    //
-    // plugin_lib
-    return_code = std::system("cmake --build .");
-    if( return_code != 0 ) {
-        string msg = "build_plugin_lib: The following command failed\n";
-        msg += "cmake --build .";
-        user_assert(false, msg);
-    }
+    ad_tensor::plugin::build_lib(
+        plugin_path.string(), quiet, use_ad_tensor_repo 
+    );
     //
     auto add_int = get_plugin<int(int, int)>( "./plugin_lib", "add_int");
     EXPECT_EQ(add_int(2, 3), 5);
