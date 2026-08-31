@@ -4,12 +4,13 @@
 // -----------------------------------------------------------------------------
 //
 #include <filesystem>
+#include <source_location>
 #include <gtest/gtest.h>
 #include <torch/torch.h>
 #include <ad_tensor/vector.hpp>
 #include <ad_tensor/dev/user_assert.hpp>
 #include <ad_tensor/plugin.hpp>
-#include "@CMAKE_CURRENT_SOURCE_DIR@/get_plugin.hpp"
+#include "get_plugin.hpp"
 //
 // --------------------------------------------------------------------------
 TEST(tests_plugin, build_lib) {
@@ -25,10 +26,14 @@ TEST(tests_plugin, build_lib) {
     if( ! fs::is_directory(plugin_path) ) {
         fs::create_directory( plugin_path );
     }
-    fs::path cmake_source_path = "@CMAKE_CURRENT_SOURCE_DIR@";
+    //
+    // plugin_path
+    std::source_location location      = std::source_location::current();
+    fs::path location_path             = location.file_name();
+    fs::path cmake_current_source_path = location_path.parent_path();
     vector<string> source_name = { "add_int.cpp", "add_tensor.cpp" };
     for(size_t i = 0; i < source_name.size(); ++i) {
-        fs::path  from_path  = cmake_source_path / source_name[i];
+        fs::path  from_path  = cmake_current_source_path / source_name[i];
         fs::path  to_path    = plugin_path / source_name[i];
         fs::copy(from_path, to_path, fs::copy_options::overwrite_existing);
     }
