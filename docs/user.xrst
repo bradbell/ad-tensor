@@ -24,6 +24,7 @@ TODO
     include/ad_tensor/adtype.hpp
     include/ad_tensor/adfn.hpp
     include/ad_tensor/no_elements.hpp
+    src/plugin/build_lib.cpp.in
     src/chkpnt.cpp
     src/atom.cpp
     docs/bib.xrst
