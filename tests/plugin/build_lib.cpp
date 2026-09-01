@@ -37,14 +37,15 @@ TEST(tests_plugin, build_lib) {
         fs::path  to_path    = plugin_path / source_name[i];
         fs::copy(from_path, to_path, fs::copy_options::overwrite_existing);
     }
+    //
     // quiet
     bool quiet = true;
     //
-    // use_ad_tensor_repo
-    bool use_ad_tensor_repo = true;
+    // use_installed_ad_tensor
+    bool use_installed_ad_tensor = false;
     //
     ad_tensor::plugin::build_lib(
-        plugin_path.string(), quiet, use_ad_tensor_repo 
+        plugin_path.string(), quiet, use_installed_ad_tensor
     );
     //
     auto add_int = get_plugin<int(int, int)>( "./plugin_lib", "add_int");

@@ -6,10 +6,11 @@
 //
 namespace ad_tensor { namespace plugin {
     //
-    // build_lib
+    // BEGIN_BUILD_LIB
     void build_lib(
-        const std::string& plugin_dir          ,
-        bool               quiet               ,
-        bool               use_ad_tensor_repo
+        const std::string& plugin_dir                     ,
+        bool               quiet                          ,
+        bool               use_installed_ad_tensor = true
     );
+    // END_BUILD_LIB
 } }
