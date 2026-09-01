@@ -42,4 +42,5 @@ target_link_libraries(examples
     ad_tensor
     GTest::gtest_main
     ${TORCH_LIBRARIES}
+    ${plugin_LIBRARIES}
 )

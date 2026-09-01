@@ -3,23 +3,9 @@
 # SPDX-FileContributor: 2026 Bradley M. Bell
 # -----------------------------------------------------------------------------
 #
-# plugin_TESTS, plugin_LIBRARIES
+# plugin_TESTS
 set(plugin_TESTS "")
-set(plugin_LIBRARIES "")
 if( include_plugin )
-    #
-    # Boost_INCLUDE_DIRS, Boost_LIBRARIES
-    cmake_policy(SET CMP0167 NEW)
-    find_package(Boost REQUIRED COMPONENTS filesystem system)
-    print_variable(Boost_INCLUDE_DIRS)
-    print_variable(Boost_LIBRARIES)
-    #
-    # include_directories
-    include_directories( ${Boost_INCLUDE_DIRS} )
-    include_directories( ${CMAKE_CURRENT_BINARY_DIR} )
-    #
-    # plugin_LIBRARIES, plugin_TESTS
-    set(plugin_LIBRARIES "${Boost_LIBRARIES}")
     set(plugin_TESTS
         plugin/build_lib.cpp
     )

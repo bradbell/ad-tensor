@@ -123,6 +123,24 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${TORCH_CXX_FLAGS}")
 include_directories( SYSTEM ${TORCH_INCLUDE_DIRS} )
 include_directories( ${ad_tensor_SOURCE_DIR}/include )
 #
+# plugin_LIBRARIES, include_directories
+set(plugin_LIBRARIES "")
+if( include_plugin )
+    #
+    # Boost_INCLUDE_DIRS, Boost_LIBRARIES
+    cmake_policy(SET CMP0167 NEW)
+    find_package(Boost REQUIRED COMPONENTS filesystem system)
+    print_variable(Boost_INCLUDE_DIRS)
+    print_variable(Boost_LIBRARIES)
+    #
+    # include_directories
+    include_directories( ${Boost_INCLUDE_DIRS} )
+    include_directories( ${CMAKE_CURRENT_BINARY_DIR} )
+    #
+    # plugin_LIBRARIES
+    set(plugin_LIBRARIES "${Boost_LIBRARIES}")
+endif()
+#
 # pkgconfig, src
 add_subdirectory(pkgconfig)
 add_subdirectory(src)
