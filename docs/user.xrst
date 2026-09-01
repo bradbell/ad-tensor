@@ -6,6 +6,8 @@
 {xrst_begin public usr}
 {xrst_spell
     adten
+    adfn
+    typedefs
 }
 
 AD Tensor User Documentation
@@ -13,8 +15,11 @@ AD Tensor User Documentation
 
 TODO
 ****
+#.  Change typedefs to using statements.
+#.  Change adfn::get_name -> adfn::name (because it does not change).
 #.  Use a special routine that ensures a value is in current recording:
     void adten::current_recording(adten_t& adten)
+
 
 {xrst_toc_table
     CMakeLists.txt

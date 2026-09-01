@@ -12,6 +12,7 @@ TEST(examples_adfn, src_gen)  {
     using ad_tensor::adfn_t;
     using at::Tensor;
     using ad_tensor::vector;
+    namespace fs =  std::filesystem;
     //
     // p
     // We use p for the domain parameters
@@ -33,10 +34,32 @@ TEST(examples_adfn, src_gen)  {
     // r = f(v, p)
     adfn_t f = adten_t::stop_recording(ar, "f");
     //
-    // dir_path
-    std::filesystem::path dir_path = std::filesystem::temp_directory_path();
+    // src_gen_path
+    fs::path src_gen_path  = fs::temp_directory_path() / "src_gen_path";
+    if( ! fs::is_directory(src_gen_path) ) {
+        fs::create_directory( src_gen_path );
+    }
     //
-    // dir_path/f.cpp, dir_path/f.binary
-    f.src_gen(dir_path.string());
+    // src_gen_path: f.cpp, f.con
+    f.src_gen(src_gen_path.string());
+    //
+    // src_gen_path/build
+    bool quiet                   = true;
+    bool use_installed_ad_tensor = false;
+    ad_tensor::plugin::build_lib(
+        src_gen_path, quiet, use_installed_ad_tensor
+    );
+    //
+    // f_plugin
+    fs::path plugin_path       = src_gen_path / "build/plugin_lib";
+    std::string plugin_lib     = plugin_path.string();
+    std::string function_name  = f.get_name();
+    auto f_plugin = ad_tensor::plugin::src_gen_fun(plugin_lib, function_name);
+    //
+    // r
+    vector<Tensor> r = f_plugin(v, p);
+    EXPECT_EQ( r.size(), 1 );
+    EXPECT_TRUE( r[0].equal( v[0] + p[0] ) );
+    //
 }
 // END_CPP

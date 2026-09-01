@@ -11,6 +11,7 @@
 #include <ad_tensor/chkpnt.hpp>
 #include <ad_tensor/direction.hpp>
 #include <ad_tensor/no_elements.hpp>
+#include <ad_tensor/plugin.hpp>
 #include <ad_tensor/sparsity.hpp>
 #include <ad_tensor/to_string.hpp>
 #include <ad_tensor/vector.hpp>
