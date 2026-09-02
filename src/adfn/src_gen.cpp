@@ -7,6 +7,7 @@
 {xrst_spell
     dir
     cpp
+    dll
 }
 
 Generate C++ Source Code A AD Function
@@ -27,6 +28,10 @@ Prototype
 adfn
 ****
 We use adfn for this AD function object.
+We use adfn_name for the name attached to this function; see
+:ref:`stop_recording@name` .
+This must be a valid C identifier (because it is used
+for dll linking).
 
 plugin_dir
 **********
@@ -88,6 +93,17 @@ is the vector of range tensors and has the following prototype:
 {xrst_code cpp}
     ad_tensor::vector<at::Tensor> range
 {xrst_code}
+
+Linking
+*******
+If this source code is compiled as part of a shared library,
+it can be linked to the currently running program using
+function_object with :ref:`function_object@function_alias`
+equal to adfn_name.
+{xrst_toc_table
+    src/plugin/build_lib.cpp.in
+    src/plugin/function_object.cpp
+}
 
 Example
 *******

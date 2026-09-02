@@ -35,7 +35,7 @@ TEST(examples_adfn, src_gen)  {
     // r = f(v, p)
     adfn_t f = adten_t::stop_recording(ar, "f");
     //
-    // src_gen_path
+    // plugin_path
     fs::path src_gen_path  = fs::temp_directory_path() / "src_gen";
     if( ! fs::is_directory(src_gen_path) ) {
         fs::create_directory( src_gen_path );

@@ -3,7 +3,7 @@
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
 /*
-{xrst_begin plugin_build_lib usr}
+{xrst_begin build_lib usr}
 {xrst_spell
     dir
     cpp
@@ -66,7 +66,7 @@ and its build subdirectory,
 are used for include files and library dependencies.
 
 
-{xrst_end plugin_build_lib}
+{xrst_end build_lib}
 ------------------------------------------------------------------------------
 */
 #include <string>
@@ -99,6 +99,12 @@ find_library(AD_TENSOR_LIBRARY
     PATHS ${AD_TENSOR_LIBRARY_DIR}
 )
 print_variable(AD_TENSOR_LIBRARY)
+if( NOT AD_TENSOR_LIBRARY )
+    MESSAGE(FATAL_ERROR
+        "Can't find ad_tensor library in the directory\n"
+        "${AD_TENSOR_LIBRARY_DIR}"
+    )
+endif( )
 #
 # TORCH_INCLUDE_DIRS, TORCH_LIBRARIES, TORCH_CXX_FLAGS
 SET(Torch_DIR @Torch_DIR@)
@@ -188,7 +194,7 @@ void build_lib(
         user_assert(false, msg);
     }
     //
-    // plugin_path
+    // plugin_path/CMakeLists.txt
     try {
         std::ofstream file( "../CMakeLists.txt" );
         file << cmake_file;
@@ -198,6 +204,11 @@ void build_lib(
         msg += plugin_path.string() + "\n";
         msg += e.what();
         user_assert(false, msg);
+    }
+    //
+    // build_path/CMakeCache.txt
+    if( fs::is_directory( build_path / "CMakeCache.txt" ) ) {
+        fs::remove( build_path / "CMakeCache.txt" );
     }
     //
     // build_path
