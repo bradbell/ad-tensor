@@ -35,27 +35,29 @@ TEST(examples_adfn, src_gen)  {
     // r = f(v, p)
     adfn_t f = adten_t::stop_recording(ar, "f");
     //
-    // plugin_path
-    fs::path src_gen_path  = fs::temp_directory_path() / "src_gen";
-    if( ! fs::is_directory(src_gen_path) ) {
-        fs::create_directory( src_gen_path );
+    // source_path
+    fs::path source_path  = fs::temp_directory_path() / "src_gen";
+    if( ! fs::is_directory(source_path) ) {
+        fs::create_directory( source_path );
     }
     //
-    // src_gen_path: f.cpp, f.con
-    f.src_gen(src_gen_path.string());
+    // source_path: f.cpp, f.con
+    f.src_gen(source_path.string());
     //
     // src_gen_path/build
     bool quiet                   = true;
     bool use_installed_ad_tensor = false;
     plugin::build_lib(
-        src_gen_path, quiet, use_installed_ad_tensor
+        source_path, quiet, use_installed_ad_tensor
     );
     //
     // f_plugin
-    fs::path plugin_path       = src_gen_path / "build/plugin_lib";
-    std::string plugin_lib     = plugin_path.string();
+    fs::path build_path        = source_path / "build";
+    std::string plugin_lib     = "plugin_lib";
     std::string function_name  = f.get_name();
-    auto f_plugin = plugin::function_object(plugin_lib, function_name);
+    auto f_plugin = plugin::function_object(
+        build_path, plugin_lib, function_name
+    );
     //
     // r
     vector<Tensor> r = f_plugin(v, p);

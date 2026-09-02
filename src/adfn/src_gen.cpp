@@ -16,7 +16,7 @@ Generate C++ Source Code A AD Function
 Syntax
 ******
 {xrst_code cpp}
-    adfn.src_gen(plugin_dir)
+    adfn.src_gen(src_gen_dir)
 {xrst_code}
 
 Prototype
@@ -33,8 +33,8 @@ We use adfn_name for the name attached to this function; see
 This must be a valid C identifier (because it is used
 for dll linking).
 
-plugin_dir
-**********
+src_gen_dir
+***********
 is the directory where the C++ source and binary constant
 output files are output.
 
@@ -267,7 +267,7 @@ R"|(        if( dom_var.size() != var_shapes.size() ) {
 // -------------------------------------------------------------------------
 namespace ad_tensor { // BEGIN_AD_TENSOR_NAMESPACE
 // BEGIN_SRC_GEN
-void adfn_t::src_gen(const std::string& plugin_dir) const
+void adfn_t::src_gen(const std::string& src_gen_dir) const
 {   // END_SRC_GEN
     //
     // fs
@@ -283,15 +283,15 @@ void adfn_t::src_gen(const std::string& plugin_dir) const
     size_t n_par_dom = m_par.m_dom_shapes.size();
     size_t n_var_dom = m_var.m_dom_shapes.size();
     //
-    // plugin_path
-    fs::path plugin_path(plugin_dir);
+    // src_gen_path
+    fs::path src_gen_path(src_gen_dir);
     //
     // file_cpp
-    fs::path file_cpp_path = plugin_path / ( adfn_name + ".cpp" );
+    fs::path file_cpp_path = src_gen_path / ( adfn_name + ".cpp" );
     std::ofstream file_cpp(file_cpp_path);
     //
     // file_con_path
-    fs::path file_con_path = plugin_path / ( adfn_name + ".con" );
+    fs::path file_con_path = src_gen_path / ( adfn_name + ".con" );
     //
     // adfn_name.con
     {   string file_name = file_con_path.string();

@@ -8,6 +8,7 @@
     obj
     dll
     libmy
+    dir
 }
 
 Linking Plugin Functions to Current Program
@@ -16,7 +17,9 @@ Linking Plugin Functions to Current Program
 Syntax
 ******
 {xrst_code cpp}
-    fun_obj = ad_tensor::plugin::function_object(plugin_lib. function_alias)
+    fun_obj = ad_tensor::plugin::function_object(
+            plugin_dir, plugin_lib. function_alias
+    )
 {xrst_code}
 
 Prototype
@@ -31,13 +34,16 @@ function_type
     // BEGIN_FUNCTION_TYPE, END_FUNCTION_TYPE
 }
 
+plugin_dir
+**********
+This is the directory where the plugin library is located
+
 plugin_lib
 **********
-This is the location of the shared library that has the function
-we are linking.
-The path ends with the system independent part of the library file name.
+This is the name of the plugin library.
+It only contains the system independent part of the library file name.
 For example, if on Linux the library file is ``libmy_lib.so``,
-plugin_lib will end with ``my_lib`` .
+plugin_lib is ``my_lib`` .
 
 function_alias
 **************
@@ -56,10 +62,12 @@ function_type above.
 
 {xrst_end function_object}
 */
+#include <filesystem>
 #include <ad_tensor/plugin.hpp>
 #include <ad_tensor/dev/user_assert.hpp>
 //
 namespace {
+    namespace fs = std::filesystem;
     //
     // BEGIN_FUNCTION_TYPE
     using function_type = ad_tensor::vector<at::Tensor>(
@@ -103,9 +111,13 @@ namespace {
 namespace ad_tensor { namespace plugin {
     // BEGIN_FUNCTION_OBJECT
     boost::function<function_type> function_object(
+        const std::string& plugin_dir     ,
         const std::string& plugin_lib     ,
         const std::string& function_alias )
     {   // END_FUNCTION_OBJECT
-        return link_function<function_type>(plugin_lib, function_alias);
+        fs::path plugin_path = fs::path(plugin_dir) / plugin_lib;
+        return link_function<function_type>(
+            plugin_path.string(), function_alias
+        );
     }
 } }

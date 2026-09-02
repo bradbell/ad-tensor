@@ -25,6 +25,7 @@ namespace ad_tensor { namespace plugin {
         const ad_tensor::vector<at::Tensor>& ,
         const ad_tensor::vector<at::Tensor>&
     ) > function_object(
+        const std::string& plugin_dir     ,
         const std::string& plugin_lib     ,
         const std::string& function_alias
     );
