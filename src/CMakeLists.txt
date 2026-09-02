@@ -79,7 +79,7 @@ add_library(ad_tensor SHARED
     dev/tensor_at_index.cpp
     dev/to_string.cpp
     dev/vec_sets.cpp
-    plugin/src_gen_fun.cpp
+    plugin/function_object.cpp
     sparsity.cpp
     to_string.cpp
     # END_SORT_THIS_LINE_MINUS_1

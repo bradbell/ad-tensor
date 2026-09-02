@@ -251,7 +251,7 @@ R"|(        if( dom_var.size() != var_shapes.size() ) {
 // -------------------------------------------------------------------------
 namespace ad_tensor { // BEGIN_AD_TENSOR_NAMESPACE
 // BEGIN_SRC_GEN
-void adfn_t::src_gen(const std::string& dir) const
+void adfn_t::src_gen(const std::string& plugin_dir) const
 {   // END_SRC_GEN
     //
     // fs
@@ -267,15 +267,15 @@ void adfn_t::src_gen(const std::string& dir) const
     size_t n_par_dom = m_par.m_dom_shapes.size();
     size_t n_var_dom = m_var.m_dom_shapes.size();
     //
-    // dir_path
-    fs::path dir_path(dir);
+    // plugin_path
+    fs::path plugin_path(plugin_dir);
     //
     // file_cpp
-    fs::path file_cpp_path = dir_path / ( adfn_name + ".cpp" );
+    fs::path file_cpp_path = plugin_path / ( adfn_name + ".cpp" );
     std::ofstream file_cpp(file_cpp_path);
     //
     // file_con_path
-    fs::path file_con_path = dir_path / ( adfn_name + ".con" );
+    fs::path file_con_path = plugin_path / ( adfn_name + ".con" );
     //
     // adfn_name.con
     {   string file_name = file_con_path.string();

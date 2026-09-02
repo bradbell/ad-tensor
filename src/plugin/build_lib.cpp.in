@@ -158,7 +158,7 @@ void build_lib(
     //
     // cmake_file
     string cmake_file = cmake_lists_txt;
-    if( use_installed_ad_tensor_txt ) {
+    if( use_installed_ad_tensor ) {
         size_t start  = cmake_file.find( "set(AD_TENSOR_LIBRARY_DIR" );
         size_t end    = cmake_file.find( "\n" , start) + 1;
         end           = cmake_file.find( "\n", end) + 1;

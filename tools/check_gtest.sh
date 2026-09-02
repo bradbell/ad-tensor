@@ -41,19 +41,31 @@ else
     tools/run_cmake.sh
 fi
 #
+# n_job
+if which nproc >& /dev/null
+then
+   n_job=$(nproc)
+else
+   n_job=$(sysctl -n hw.ncpu)
+fi
+if (( n_job > 1 ))
+then
+    n_job=$(( n_job - 1 ))
+fi
+#
 # build
 cd build
 #
 # build/examples/examples
-echo_eval ninja examples
+echo_eval ninja -j $n_job examples
 echo_eval ./examples/examples
 #
 # build/tests/tests
-echo_eval ninja tests
+echo_eval ninja -j $n_job tests
 echo_eval ./tests/tests
 #
 # build/benchmarks/benchmarks
-echo_eval ninja benchmarks
+echo_eval ninja -j $n_job benchmarks
 echo_eval ./benchmarks/benchmarks
 #
 echo "$script_path: OK"

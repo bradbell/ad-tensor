@@ -12,7 +12,8 @@ TEST(examples_adfn, src_gen)  {
     using ad_tensor::adfn_t;
     using at::Tensor;
     using ad_tensor::vector;
-    namespace fs =  std::filesystem;
+    namespace plugin = ad_tensor::plugin;
+    namespace fs     =  std::filesystem;
     //
     // p
     // We use p for the domain parameters
@@ -35,7 +36,7 @@ TEST(examples_adfn, src_gen)  {
     adfn_t f = adten_t::stop_recording(ar, "f");
     //
     // src_gen_path
-    fs::path src_gen_path  = fs::temp_directory_path() / "src_gen_path";
+    fs::path src_gen_path  = fs::temp_directory_path() / "src_gen";
     if( ! fs::is_directory(src_gen_path) ) {
         fs::create_directory( src_gen_path );
     }
@@ -46,7 +47,7 @@ TEST(examples_adfn, src_gen)  {
     // src_gen_path/build
     bool quiet                   = true;
     bool use_installed_ad_tensor = false;
-    ad_tensor::plugin::build_lib(
+    plugin::build_lib(
         src_gen_path, quiet, use_installed_ad_tensor
     );
     //
@@ -54,7 +55,7 @@ TEST(examples_adfn, src_gen)  {
     fs::path plugin_path       = src_gen_path / "build/plugin_lib";
     std::string plugin_lib     = plugin_path.string();
     std::string function_name  = f.get_name();
-    auto f_plugin = ad_tensor::plugin::src_gen_fun(plugin_lib, function_name);
+    auto f_plugin = plugin::function_object(plugin_lib, function_name);
     //
     // r
     vector<Tensor> r = f_plugin(v, p);

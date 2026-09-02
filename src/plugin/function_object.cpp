@@ -7,15 +7,15 @@
 //
 namespace {
     //
-    // src_gen_fun_t
-    using src_gen_fun_t = ad_tensor::vector<at::Tensor>(
+    // function_type
+    using function_type = ad_tensor::vector<at::Tensor>(
         const ad_tensor::vector<at::Tensor>& dom_par ,
         const ad_tensor::vector<at::Tensor>& dom_var
     );
     //
-    // function_object
+    // link_function
     template <class FunctionType>
-    boost::function<FunctionType> function_object(
+    boost::function<FunctionType> link_function(
         std::string plugin_lib     ,
         std::string function_alias ) {
         //
@@ -46,9 +46,9 @@ namespace {
 }
 
 namespace ad_tensor { namespace plugin {
-    boost::function<src_gen_fun_t> src_gen_fun(
+    boost::function<function_type> function_object(
         const std::string& plugin_lib     ,
         const std::string& function_alias ) {
-            return function_object<src_gen_fun_t>(plugin_lib, function_alias);
+            return link_function<function_type>(plugin_lib, function_alias);
     }
 } }

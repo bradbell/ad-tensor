@@ -3,8 +3,17 @@
 # SPDX-FileContributor: 2026 Bradley M. Bell
 # -----------------------------------------------------------------------------
 #
+# plugin_TESTS
+set(plugin_TESTS "")
+if( include_plugin )
+    set(plugin_TESTS
+        adfn/src_gen.cpp
+    )
+endif()
+#
 # BEGIN_SORT_THIS_LINE_PLUS_2
 add_executable(examples
+    ${plugin_TESTS}
     adfn/forward_dep.cpp
     adfn/forward_der.cpp
     adfn/forward_par.cpp
@@ -13,7 +22,6 @@ add_executable(examples
     adfn/get_started.cpp
     adfn/optimize.cpp
     adfn/reverse_der.cpp
-    adfn/src_gen.cpp
     adten/binary.cpp
     adten/compound.cpp
     adten/index.cpp

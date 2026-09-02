@@ -190,7 +190,7 @@ public:
     void optimize(void);
     //
     // src_gen
-    void src_gen(const std::string& dir) const;
+    void src_gen(const std::string& plugin_dir) const;
     //
     // BEGIN_DEFAULT_CTOR
     adfn_t()

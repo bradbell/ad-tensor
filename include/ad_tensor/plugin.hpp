@@ -20,11 +20,11 @@ namespace ad_tensor { namespace plugin {
     );
     // END_BUILD_LIB
     //
-    // src_gen_fun
+    // function_object
     boost::function< ad_tensor::vector<at::Tensor>(
         const ad_tensor::vector<at::Tensor>& ,
         const ad_tensor::vector<at::Tensor>&
-    ) > src_gen_fun(
+    ) > function_object(
         const std::string& plugin_lib     ,
         const std::string& function_alias
     );
