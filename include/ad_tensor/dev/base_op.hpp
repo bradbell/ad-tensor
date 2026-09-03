@@ -38,7 +38,7 @@ op_index
 ========
 is the index of this operator in the operation sequence.
 It is also the index of the result for this operator.
-It must be greater than zero, because the first result is the
+It must be greater than zero, because the first result is an
 independent parameter tensor.
 
 agraph

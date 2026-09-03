@@ -3,6 +3,7 @@
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
 #include <ad_tensor/dev/derive_op.hpp>
+#include <ad_tensor/dev/src_gen_binary.hpp>
 #include <ad_tensor/adten.hpp>
 #include <ad_tensor/dev/broadcast.hpp>
 #include <ad_tensor/dev/plus_minus_equal.hpp>
@@ -242,38 +243,7 @@ std::string add_op_t<TensorType>::src_gen(
     bool                                                  variable_agraph ,
     const std::function< std::string(size_t, adtype_t) >& tensor_src
 ) const {
-    //
-    // string
-    using std::string;
-    //
-    // arg_start
-    size_t arg_start = agraph.m_arg_start[op_index];
-    //
-#ifndef NDEBUG
-    size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
-    assert( n_arg == 2 && "add: n_arg != 2" );
-# endif
-    //
-    // lhs_src
-    size_t   lhs_index   = agraph.m_arg_value[arg_start];
-    adtype_t lhs_adtype  = agraph.m_arg_type[arg_start];
-    string   lhs_src     = tensor_src(lhs_index, lhs_adtype);
-    //
-    // rhs_src
-    size_t   rhs_index   = agraph.m_arg_value[arg_start + 1];
-    adtype_t rhs_adtype  = agraph.m_arg_type[arg_start + 1];
-    string   rhs_src     = tensor_src(rhs_index, rhs_adtype);
-    //
-    // target_src
-    size_t   target_index  = op_index;
-    adtype_t target_adtype =
-        variable_agraph ? adtype_t::variable : adtype_t::parameter;
-    string   target_src    = tensor_src(target_index, target_adtype);
-    //
-    // src
-    constexpr const char* fmt = "{} = {} + {};";
-    string src = std::format(fmt, target_src, lhs_src, rhs_src);
-    return src;
+    return src_gen_binary(op_index, agraph, variable_agraph, tensor_src);
 }
 template std::string add_op_t<adten_t>::src_gen(
     size_t                                                op_index        ,

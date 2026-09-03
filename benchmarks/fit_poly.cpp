@@ -55,6 +55,7 @@ AD Tensor With Optimization
 {xrst_end fit_poly_benchmark}
 */
 // BEGIN_COMMON
+#include <filesystem>
 #include <gtest/gtest.h>
 #include <torch/torch.h>
 #include <ad_tensor/ad_tensor.hpp>
@@ -245,3 +246,95 @@ TEST(benchmarks, fit_poly_optimize) {
     EXPECT_LT(relative_loss, expected_relative_loss);
 }
 // END_OPTIMIZE
+//
+// BEGIN_SRC_GEN
+TEST(benchmarks, fit_poly_src_gen) {
+    //
+    // adten_t, adfn_t, fs, plugin
+    using ad_tensor::adten_t;
+    using ad_tensor::adfn_t;
+    namespace fs     = std::filesystem;
+    namespace plugin = ad_tensor::plugin;
+    //
+    // c
+    vector<at::Tensor> c;
+    for(size_t j = 0; j < number_coefficients; ++j) {
+        c.push_back( torch::randn( {1} ) );
+    }
+    //
+    // ac
+    vector<adten_t> ac = adten_t::start_recording(c);
+    //
+    // agrid, adata
+    adten_t agrid(grid);
+    adten_t adata(data);
+    //
+    // f_loss
+    vector<adten_t> aloss = { loss(ac, agrid, adata) };
+    adfn_t f_loss = adten_t::stop_recording(aloss, "f_loss");
+    //
+    // ac
+    ac = adten_t::start_recording(c);
+    //
+    // adloss
+    vector<adten_t> adloss = { adten_t( torch::tensor(1.0) ) };
+    //
+    // avar_all
+    vector<adten_t> avar_all = f_loss.forward_var(ac);
+    //
+    // agrad
+    vector<adten_t> agrad  = f_loss.reverse_der(adloss, avar_all);
+    //
+    // f_grad
+    adfn_t f_grad = adten_t::stop_recording(agrad, "f_grad");
+    f_grad.optimize();
+#if 0
+    // TODO: extend src_gen operators so the code below works
+    //
+    // source_path
+    fs::path source_path  = fs::temp_directory_path() / "fit_poly";
+    if( ! fs::is_directory(source_path) ) {
+        fs::create_directory( source_path );
+    }
+    //
+    // source_path: f_grad.cpp, f_grad.con
+    f_grad.src_gen(source_path.string());
+    //
+    // src_gen_path/build
+    bool quiet                   = true;
+    bool use_installed_ad_tensor = false;
+    plugin::build_lib(
+        source_path, quiet, use_installed_ad_tensor
+    );
+    //
+    // f_grad_plugin
+    fs::path build_path        = source_path / "build";
+    std::string plugin_lib     = "plugin_lib";
+    std::string function_name  = f_grad.get_name();
+    auto f_plugin = plugin::function_object(
+        build_path, plugin_lib, function_name
+    );
+    //
+    // dom_par, dloss, initial_loss, t
+    vector<at::Tensor> dom_par;
+    double initial_loss      = loss(c, grid, data).item<double>();
+    for(size_t t = 0; t < number_learning_steps; ++t) {
+        //
+        // var_all
+        vector<at::Tensor> var_all = f_grad.forward_var(c);
+        //
+        // grad
+        vector<at::Tensor> grad  = f_plugin(c, dom_par);
+        //
+        // c
+        for(size_t j = 0; j < number_coefficients; ++j) {
+            c[j] -= learning_rate * grad[j];
+        }
+    }
+    //
+    // relative_loss
+    double relative_loss = loss(c, grid, data).item<double>() / initial_loss;
+    EXPECT_LT(relative_loss, expected_relative_loss);
+#endif
+}
+// END_SRC_GEN

@@ -66,7 +66,7 @@ was recording using AD Tensors and derivatives of another AD function.
 Syntax
 ======
 {xrst_code cpp}
-   range = adfn_name_plugin(dom_par, dom_var )
+   range = adfn_name_plugin(dom_var, dom_par )
 {xrst_code}
 
 adfn_name_plugin
@@ -158,8 +158,8 @@ R"|(// {}_plugin
 #include <ad_tensor/dev/to_string.hpp>
 //
 ad_tensor::vector<at::Tensor> {}_plugin(
-const ad_tensor::vector<at::Tensor>& dom_par ,
-const ad_tensor::vector<at::Tensor>& dom_var )
+    const ad_tensor::vector<at::Tensor>& dom_var ,
+    const ad_tensor::vector<at::Tensor>& dom_par )
 {{   //
     // dev, string, Tensor, vector, has_elements
     namespace dev = ad_tensor::dev;
