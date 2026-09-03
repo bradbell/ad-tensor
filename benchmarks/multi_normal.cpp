@@ -92,16 +92,22 @@ Common Code
     BEGIN_COMMON, END_COMMON
 }
 
-Autograd Benchmark
-******************
+Autograd Code
+*************
 {xrst_literal ,
     BEGIN_AUTOGRAD, END_AUTOGRAD
 }
 
-AD Tensor Benchmark
-*******************
+AD Tensor Code
+**************
 {xrst_literal ,
     BEGIN_AD_TENSOR, END_AD_TENSOR
+}
+
+AD Tensor With Optimization
+***************************
+{xrst_literal ,
+    BEGIN_OPTIMIZE, END_OPTIMIZE
 }
 
 
@@ -225,7 +231,7 @@ TEST(benchmarks, multi_normal_ad_tensor) {
     // L
     vector<at::Tensor> L     = { initial_L.clone() };
     //
-    // aL
+    // adfn
     vector<adten_t> aL    = adten_t::start_recording(L);
     vector<adten_t> aloss = { loss( aL[0] ) };
     adfn_t          adfn  = adten_t::stop_recording(aloss, "adfn");
@@ -255,3 +261,57 @@ TEST(benchmarks, multi_normal_ad_tensor) {
     EXPECT_LT(relative_loss, expected_relative_loss);
 }
 // END_AD_TENSOR
+//
+// BEGIN_OPTIMIZE
+TEST(benchmarks, multi_normal_optimize) {
+    //
+    // adten_t, adfn_t
+    using ad_tensor::adten_t;
+    using ad_tensor::adfn_t;
+    //
+    // L
+    vector<at::Tensor> L     = { initial_L.clone() };
+    //
+    // f_loss
+    vector<adten_t> aL     = adten_t::start_recording(L);
+    vector<adten_t> aloss  = { loss( aL[0] ) };
+    adfn_t          f_loss = adten_t::stop_recording(aloss, "f_loss");
+    //
+    // aL
+    aL     = adten_t::start_recording(L);
+    //
+    // avar_all
+    vector<adten_t> avar_all = f_loss.forward_var(aL);
+    //
+    // agrad
+    vector<adten_t> adloss = { adten_t( torch::tensor(1.0) ) };
+    vector<adten_t> agrad  = f_loss.reverse_der(adloss, avar_all);
+    //
+    // f_grad
+    adfn_t f_grad = adten_t::stop_recording(agrad, "f_grad");
+    f_grad.optimize();
+    //
+    // dloss, initial_loss, t
+    double initial_loss      = loss(L[0]).item<double>();
+    for(size_t t = 0; t < number_learning_steps; ++t) {
+        //
+        // var_all
+        vector<at::Tensor> var_all = f_grad.forward_var(L);
+        //
+        // grad
+        vector<at::Tensor> grad = f_grad.get_range(var_all);
+        //
+        // L
+        {   torch::NoGradGuard no_grad;
+            //
+            L[0] = L[0] - learning_rate * grad[0];
+            L[0] = torch::tril( L[0] );
+            L[0] = torch::maximum(L[0], minimum_L);
+        }
+    }
+    //
+    // relative_loss
+    double relative_loss = loss(L[0]).item<double>() / initial_loss;
+    EXPECT_LT(relative_loss, expected_relative_loss);
+}
+// END_OPTIMIZE

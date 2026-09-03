@@ -63,12 +63,13 @@ void adfn_t::optimize(void)
     //
     // m_con_vec, m_par, m_var, m_rng_index
     // constants do not depend on parameters or variables so do this first
-    optimize_con( depend_con );
+    optimize_con( depend_con , depend_par, depend_var );
     //
     //
     // m_par, m_rng_index
-    // The constants have been mapped to their new values
     // Parameters do not have variable arguments so we optimize them next.
+    // The constants have been mapped to their new values so detection
+    // of equivalent operators is easier.
     {   // Start a block so that the old m_par and m_rng_index get freeded
         // before we optimize the variables...
         adtype_t agraph_type = adtype_t::parameter;

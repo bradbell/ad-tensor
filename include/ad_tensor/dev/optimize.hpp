@@ -50,10 +50,10 @@ namespace ad_tensor { namespace dev {
     //
     // new_agraph
     std::tuple< agraph_t, vector<size_t> > new_agraph(
-        adtype_t                agraph_type     ,
+        adtype_t                 agraph_type     ,
         const agraph_t&          agraph_old      ,
         const vector<size_t>&    rng_index_old   ,
-        const vector<adtype_t>& rng_adtype_old ,
+        const vector<adtype_t>&  rng_adtype_old ,
         const vector<bool>&      depend_old
     );
 } }

@@ -184,7 +184,11 @@ private:
     (void) const;
     //
     // renumber_con
-    void optimize_con(const vector<bool>& depend_con);
+    void optimize_con(
+        const vector<bool>& depend_con ,
+        const vector<bool>& depend_par ,
+        const vector<bool>& depend_var
+    );
 public:
     // optimize
     void optimize(void);

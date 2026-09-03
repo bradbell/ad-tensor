@@ -45,6 +45,7 @@ namespace ad_tensor { namespace dev {
             case op_enum_t::solve:        return "solve";
             case op_enum_t::sub:          return "sub";
             case op_enum_t::sum:          return "sum";
+            case op_enum_t::transpose:    return "transpose";
             case op_enum_t::view:         return "view";
             // END_SORT_THIS_LINE_MINUS_1
             default:
@@ -79,6 +80,9 @@ namespace ad_tensor { namespace dev {
     //
     // at::Tensor
     std::string to_string(const at::Tensor& tensor) {
+        if( ! tensor.defined() ) {
+            return "not defined";
+        }
         at::IntArrayRef shape  = tensor.sizes();
         std::string res = to_string(shape);
         //

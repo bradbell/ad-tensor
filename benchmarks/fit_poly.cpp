@@ -34,16 +34,22 @@ Common Code
     BEGIN_COMMON, END_COMMON
 }
 
-Autograd Benchmark
-******************
+Autograd Code
+*************
 {xrst_literal ,
     BEGIN_AUTOGRAD, END_AUTOGRAD
 }
 
-AD Tensor Benchmark
-*******************
+AD Tensor Code
+**************
 {xrst_literal ,
     BEGIN_AD_TENSOR, END_AD_TENSOR
+}
+
+AD Tensor With Optimization
+***************************
+{xrst_literal ,
+    BEGIN_OPTIMIZE, END_OPTIMIZE
 }
 
 {xrst_end fit_poly_benchmark}
@@ -181,3 +187,69 @@ TEST(benchmarks, fit_poly_ad_tensor) {
     EXPECT_LT(relative_loss, expected_relative_loss);
 }
 // END_AD_TENSOR
+//
+// BEGIN_OPTIMIZE
+TEST(benchmarks, fit_poly_optimize) {
+    //
+    // adten_t, adfn_t
+    using ad_tensor::adten_t;
+    using ad_tensor::adfn_t;
+    //
+    // x, y
+    at::Tensor x = torch::linspace(-1.0, 1.0, number_grid_points);
+    at::Tensor y = x.exp();
+    //
+    // c
+    vector<at::Tensor> c;
+    for(size_t j = 0; j < number_coefficients; ++j) {
+        c.push_back( torch::randn( {1} ) );
+    }
+    //
+    // ac
+    vector<adten_t> ac = adten_t::start_recording(c);
+    //
+    // ax, ay
+    adten_t ax(x);
+    adten_t ay(y);
+    //
+    // f_loss
+    vector<adten_t> aloss = { loss(ac, ax, ay) };
+    adfn_t f_loss = adten_t::stop_recording(aloss, "f_loss");
+    //
+    // ac
+    ac = adten_t::start_recording(c);
+    //
+    // adloss
+    vector<adten_t> adloss = { adten_t( torch::tensor(1.0) ) };
+    //
+    // avar_all
+    vector<adten_t> avar_all = f_loss.forward_var(ac);
+    //
+    // agrad
+    vector<adten_t> agrad  = f_loss.reverse_der(adloss, avar_all);
+    //
+    // f_grad
+    adfn_t f_grad = adten_t::stop_recording(agrad, "f_grad");
+    f_grad.optimize();
+    //
+    // dloss, initial_loss, t
+    double initial_loss      = loss(c, x, y).item<double>();
+    for(size_t t = 0; t < number_learning_steps; ++t) {
+        //
+        // var_all
+        vector<at::Tensor> var_all = f_grad.forward_var(c);
+        //
+        // grad
+        vector<at::Tensor> grad  = f_grad.get_range(var_all);
+        //
+        // c
+        for(size_t j = 0; j < number_coefficients; ++j) {
+            c[j] -= learning_rate * grad[j];
+        }
+    }
+    //
+    // relative_loss
+    double relative_loss = loss(c, x, y).item<double>() / initial_loss;
+    EXPECT_LT(relative_loss, expected_relative_loss);
+}
+// END_OPTIMIZE
