@@ -147,12 +147,14 @@ void index_op_t<TensorType>::forward_der(
         index_list.push_back( index );
     }
     //
-    // from_index, from_type
+    // from_index
     size_t from_index  = agraph.m_arg_value[arg_start];
+#ifndef NDEBUG
     adtype_t from_type = agraph.m_arg_type[arg_start];
+    assert( from_type == adtype_t::variable );
+#endif
     //
     // for_der[op_index]
-    assert( from_type == adtype_t::variable );
     for_der[op_index] = for_der[from_index].index(index_list);
 }
 template void index_op_t<adten_t>::forward_der(

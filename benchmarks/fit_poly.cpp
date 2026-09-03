@@ -82,30 +82,30 @@ namespace {
     template<class TensorType>
     TensorType loss(
         const vector<TensorType>& c ,
-        const TensorType&         x ,
-        const TensorType&         y ) {
-        assert( size_t( x.numel() ) == number_grid_points );
-        assert( size_t( y.numel() ) == number_grid_points );
+        const TensorType&         grid ,
+        const TensorType&         data ) {
+        assert( size_t( grid.numel() ) == number_grid_points );
+        assert( size_t( data.numel() ) == number_grid_points );
         assert( size_t( c.size() )  == number_coefficients );
-        int64_t n_y = y.numel();
-        TensorType xp      = TensorType( torch::ones( {n_y} ) );
-        TensorType predict = c[0] * xp;
+        int64_t n_data = data.numel();
+        TensorType grid_p      = TensorType( torch::ones( {n_data} ) );
+        TensorType predict = c[0] * grid_p;
         for(size_t j = 1; j < number_coefficients; ++j) {
-            xp       = xp * x;
-            predict  = predict + c[j] * xp;
+            grid_p       = grid_p * grid;
+            predict  = predict + c[j] * grid_p;
         }
-        TensorType residual = (y - predict);
+        TensorType residual = (data - predict);
         return (residual * residual).sum();
     }
+    //
+    // grid, data
+    torch::Tensor grid = torch::linspace(-1.0, 1.0, number_grid_points);
+    torch::Tensor data = grid.exp();
 }
 // END_COMMON
 //
 // BEGIN_AUTOGRAD
 TEST(benchmarks, fit_poly_autograd) {
-    //
-    // x, y
-    torch::Tensor x = torch::linspace(-1.0, 1.0, number_grid_points);
-    torch::Tensor y = x.exp();
     //
     // c
     vector<torch::Tensor> c;
@@ -114,11 +114,11 @@ TEST(benchmarks, fit_poly_autograd) {
     }
     //
     // initial_loss, t
-    double initial_loss      = loss(c, x, y).item<double>();
+    double initial_loss      = loss(c, grid, data).item<double>();
     for(size_t t = 0; t < number_learning_steps; ++t) {
         //
         // loss_t
-        torch::Tensor loss_t = loss(c, x, y);
+        torch::Tensor loss_t = loss(c, grid, data);
         //
         // c
         loss_t.backward();
@@ -132,7 +132,7 @@ TEST(benchmarks, fit_poly_autograd) {
     }
     //
     // relative_loss
-    double relative_loss = loss(c, x, y).item<double>() / initial_loss;
+    double relative_loss = loss(c, grid, data).item<double>() / initial_loss;
     EXPECT_LT(relative_loss, expected_relative_loss);
 }
 // END_AUTOGRAD
@@ -144,10 +144,6 @@ TEST(benchmarks, fit_poly_ad_tensor) {
     using ad_tensor::adten_t;
     using ad_tensor::adfn_t;
     //
-    // x, y
-    at::Tensor x = torch::linspace(-1.0, 1.0, number_grid_points);
-    at::Tensor y = x.exp();
-    //
     // c
     vector<at::Tensor> c;
     for(size_t j = 0; j < number_coefficients; ++j) {
@@ -157,17 +153,17 @@ TEST(benchmarks, fit_poly_ad_tensor) {
     // ac
     vector<adten_t> ac = adten_t::start_recording(c);
     //
-    // ax, ay
-    adten_t ax(x);
-    adten_t ay(y);
+    // agrid, adtat
+    adten_t agrid(grid);
+    adten_t adata(data);
     //
     // adfn
-    vector<adten_t> aloss = { loss(ac, ax, ay) };
+    vector<adten_t> aloss = { loss(ac, agrid, adata) };
     adfn_t adfn = adten_t::stop_recording(aloss, "adfn");
     //
     // dloss, initial_loss, t
     vector<at::Tensor> dloss = { torch::tensor(1.0) };
-    double initial_loss      = loss(c, x, y).item<double>();
+    double initial_loss      = loss(c, grid, data).item<double>();
     for(size_t t = 0; t < number_learning_steps; ++t) {
         //
         // var_all
@@ -183,7 +179,7 @@ TEST(benchmarks, fit_poly_ad_tensor) {
     }
     //
     // relative_loss
-    double relative_loss = loss(c, x, y).item<double>() / initial_loss;
+    double relative_loss = loss(c, grid, data).item<double>() / initial_loss;
     EXPECT_LT(relative_loss, expected_relative_loss);
 }
 // END_AD_TENSOR
@@ -195,10 +191,6 @@ TEST(benchmarks, fit_poly_optimize) {
     using ad_tensor::adten_t;
     using ad_tensor::adfn_t;
     //
-    // x, y
-    at::Tensor x = torch::linspace(-1.0, 1.0, number_grid_points);
-    at::Tensor y = x.exp();
-    //
     // c
     vector<at::Tensor> c;
     for(size_t j = 0; j < number_coefficients; ++j) {
@@ -208,12 +200,12 @@ TEST(benchmarks, fit_poly_optimize) {
     // ac
     vector<adten_t> ac = adten_t::start_recording(c);
     //
-    // ax, ay
-    adten_t ax(x);
-    adten_t ay(y);
+    // agrid, adata
+    adten_t agrid(grid);
+    adten_t adata(data);
     //
     // f_loss
-    vector<adten_t> aloss = { loss(ac, ax, ay) };
+    vector<adten_t> aloss = { loss(ac, agrid, adata) };
     adfn_t f_loss = adten_t::stop_recording(aloss, "f_loss");
     //
     // ac
@@ -233,7 +225,7 @@ TEST(benchmarks, fit_poly_optimize) {
     f_grad.optimize();
     //
     // dloss, initial_loss, t
-    double initial_loss      = loss(c, x, y).item<double>();
+    double initial_loss      = loss(c, grid, data).item<double>();
     for(size_t t = 0; t < number_learning_steps; ++t) {
         //
         // var_all
@@ -249,7 +241,7 @@ TEST(benchmarks, fit_poly_optimize) {
     }
     //
     // relative_loss
-    double relative_loss = loss(c, x, y).item<double>() / initial_loss;
+    double relative_loss = loss(c, grid, data).item<double>() / initial_loss;
     EXPECT_LT(relative_loss, expected_relative_loss);
 }
 // END_OPTIMIZE
