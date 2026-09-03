@@ -3,19 +3,19 @@
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
 /*
-{xrst_begin src_gen_binary dev}
+{xrst_begin src_gen_unary dev}
 {xrst_spell
     op
     newline
 }
 
-Generate Source Code for Binary Operators
-#########################################
+Generate Source Code for Unary Operators
+########################################
 
 Syntax
 ******
 {xrst_code cpp}
-    src = src_gen_binary(op_index, agraph, variable_agraph, tensor_src);
+    src = src_gen_unary(op_index, agraph, variable_agraph, tensor_src);
 {xrst_code}
 
 Prototype
@@ -52,14 +52,15 @@ There are no newline characters in src; hence it is one line of source code.
 
 src
 ===
-Is the source code corresponding to the binary operator at index op_index.
+Is the source code corresponding to the unary operator at index op_index.
 
-{xrst_end src_gen_binary}
+{xrst_end src_gen_unary}
 */
 #include <cassert>
 #include <format>
 #include <string>
 #include <functional>
+#include <iostream>
 #include <ad_tensor/adtype.hpp>
 #include <ad_tensor/dev/agraph.hpp>
 #include <ad_tensor/dev/op_enum.hpp>
@@ -68,7 +69,7 @@ Is the source code corresponding to the binary operator at index op_index.
 namespace ad_tensor { namespace dev { // ad_tensor::dev
 //
 // BEGIN_SRC_GEN_BINARY
-std::string src_gen_binary(
+std::string src_gen_unary(
     size_t                                                op_index        ,
     const agraph_t&                                       agraph          ,
     bool                                                  variable_agraph ,
@@ -83,18 +84,13 @@ std::string src_gen_binary(
     //
 #ifndef NDEBUG
     size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
-    assert( n_arg == 2 && "add: n_arg != 2" );
+    assert( n_arg == 1 && "add: n_arg != 1" );
 # endif
     //
-    // lhs_src
-    size_t   lhs_index   = agraph.m_arg_value[arg_start];
-    adtype_t lhs_adtype  = agraph.m_arg_type[arg_start];
-    string   lhs_src     = tensor_src(lhs_index, lhs_adtype);
-    //
-    // rhs_src
-    size_t   rhs_index   = agraph.m_arg_value[arg_start + 1];
-    adtype_t rhs_adtype  = agraph.m_arg_type[arg_start + 1];
-    string   rhs_src     = tensor_src(rhs_index, rhs_adtype);
+    // operand_src
+    size_t   operand_index  = agraph.m_arg_value[arg_start];
+    adtype_t operand_adtype = agraph.m_arg_type[arg_start];
+    string   operand_src    = tensor_src(operand_index, operand_adtype);
     //
     // target_src
     size_t   target_index  = op_index;
@@ -109,32 +105,36 @@ std::string src_gen_binary(
     string src;
     switch( op_enum ) {
         //
-        case op_enum_t::add: {
-            constexpr const char* fmt = "{} = {} + {};";
-            src = std::format(fmt, target_src, lhs_src, rhs_src);
+        // exp
+        case op_enum_t::exp: {
+            constexpr const char* fmt = "{} = {}.exp();";
+            src = std::format(fmt, target_src, operand_src);
         }
         break;
         //
-        case op_enum_t::sub: {
-            constexpr const char* fmt = "{} = {} - {};";
-            src = std::format(fmt, target_src, lhs_src, rhs_src);
+        // minus
+        case op_enum_t::minus: {
+            constexpr const char* fmt = "{} = - {};";
+            src = std::format(fmt, target_src, operand_src);
         }
         break;
         //
-        case op_enum_t::mul: {
-            constexpr const char* fmt = "{} = {} * {};";
-            src = std::format(fmt, target_src, lhs_src, rhs_src);
+        // inverse
+        case op_enum_t::inverse: {
+            constexpr const char* fmt = "{} = {}.inverse();";
+            src = std::format(fmt, target_src, operand_src);
         }
         break;
         //
-        case op_enum_t::div: {
-            constexpr const char* fmt = "{} = {} / {};";
-            src = std::format(fmt, target_src, lhs_src, rhs_src);
+        // logdet
+        case op_enum_t::logdet: {
+            constexpr const char* fmt = "{} = {}.logdet();";
+            src = std::format(fmt, target_src, operand_src);
         }
         break;
         //
         default: {
-            std::cerr << "src_gen_binary: the " << to_string(op_enum);
+            std::cerr << "src_gen_unary: the " << to_string(op_enum);
             std::cerr << " is not implemented\n";
             assert(false);
         }

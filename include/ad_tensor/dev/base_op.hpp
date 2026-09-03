@@ -27,6 +27,8 @@ and its derived classes, are static or like static functions
 that are grouped by derived class.
 {xrst_toc_table
     include/ad_tensor/dev/derive_op.hpp
+    src/dev/derive_op/src_gen_binary.cpp
+    src/dev/derive_op/src_gen_unary.cpp
 }
 
 Common Arguments

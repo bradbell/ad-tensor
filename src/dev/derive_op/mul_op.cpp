@@ -3,6 +3,7 @@
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
 #include <ad_tensor/dev/derive_op.hpp>
+#include <ad_tensor/dev/src_gen_binary.hpp>
 #include <ad_tensor/adten.hpp>
 #include <ad_tensor/dev/broadcast.hpp>
 #include <ad_tensor/dev/plus_minus_equal.hpp>
@@ -278,8 +279,7 @@ std::string mul_op_t<TensorType>::src_gen(
     bool                                                  variable_agraph ,
     const std::function< std::string(size_t, adtype_t) >& tensor_src
 ) const {
-    user_assert(false, "src_gen not yet implemented for mul operator" );
-    return "";
+    return src_gen_binary(op_index, agraph, variable_agraph, tensor_src);
 }
 template std::string mul_op_t<adten_t>::src_gen(
     size_t                                                op_index        ,

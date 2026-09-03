@@ -16,6 +16,7 @@ add_executable(tests
     ${plugin_TESTS}
     adfn/optimize.cpp
     adfn/reverse_der.cpp
+    adfn/src_gen.cpp
     adten/matmul.cpp
     adten/solve.cpp
     dev/base_op.cpp
