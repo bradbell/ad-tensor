@@ -6,6 +6,8 @@
 {xrst_begin optimize_con dev}{
 {xrst_spell
     adfn
+    op
+    seq
 }
 
 Remove Unnecessary Constants From an AD function
@@ -14,7 +16,7 @@ Remove Unnecessary Constants From an AD function
 Syntax
 ******
 {xrst_code cpp}
-    adfn.optimized_con( depend_old )
+    adfn.optimized_con( depend_con, depend_par, depend_var )
 {xrst_code}
 
 Prototype
@@ -23,11 +25,23 @@ Prototype
     BEGIN_OPTIMIZE_CON, END_OPTIMIZE_CON
 }
 
-depend_old
+depend_con
 **********
-If depend_old[i_old] is true (false) then the range values for adfn depend
+If depend_con[i_old] is true (false) then the range values for adfn depend
 on the constant with index i_old in the input value of adfn.m_con_vec.
 The size of this vector is equal the size of the input value of adfn.m_con_vec.
+
+depend_par
+**********
+If depend_par[op_index] is true (false) then the range values for adfn depend
+on the parameter with index op_seq in the value of adfn.m_par.
+The size of this vector is equal the size of adfn.m_par.m_op_seq.
+
+depend_var
+**********
+If depend_var[op_index] is true (false) then the range values for adfn depend
+on the variable with index op_seq in the value of adfn.m_var.
+The size of this vector is equal the size of adfn.m_var.m_op_seq.
 
 adfn
 ****
@@ -59,17 +73,20 @@ Test
 namespace ad_tensor { // Begin ad_tensor
 //
 // BEGIN_OPTIMIZE_CON
-void adfn_t::optimize_con(const vector<bool>& depend_old)
+void adfn_t::optimize_con(
+    const vector<bool>& depend_con ,
+    const vector<bool>& depend_par ,
+    const vector<bool>& depend_var )
 {   // END_OPTIMIZE_CON
     //
     // hash2new_con, const_iterator
     // multimap would be more complicated, but it might be better when
     // collisions occur.
-    std::map<int64_t, size_t>                         hash2new_con;
-    typedef std::map<int64_t, size_t>::const_iterator const_iterator;
+    std::map<uint64_t, size_t>                         hash2new_con;
+    typedef std::map<uint64_t, size_t>::const_iterator const_iterator;
     //
     // n_old
-    size_t n_old = depend_old.size();
+    size_t n_old = depend_con.size();
     assert( n_old == m_con_vec.size() );
     //
     // not_used
@@ -86,13 +103,15 @@ void adfn_t::optimize_con(const vector<bool>& depend_old)
     //
     // n_new, i_old
     size_t n_new = 1;
-    for(size_t i_old = 1; i_old < n_old; ++i_old) { if( depend_old[i_old] ) {
+    for(size_t i_old = 1; i_old < n_old; ++i_old) { if( depend_con[i_old] ) {
         assert( n_new <= i_old );
         //
         // hash
-        int64_t hash = 0;
-        if( has_elements(m_con_vec[i_old]) ) {
-            hash = torch::hash_tensor( m_con_vec[i_old] ).item<int64_t>();
+        uint64_t hash = 0;
+        if( has_elements( m_con_vec[i_old] ) ) {
+            at::Tensor hash_ten = torch::hash_tensor( m_con_vec[i_old] );
+            uint64_t*  hash_ptr = hash_ten.data_ptr<uint64_t>();
+            hash                = *hash_ptr;
         }
         //
         //
@@ -129,12 +148,15 @@ void adfn_t::optimize_con(const vector<bool>& depend_old)
     m_con_vec.resize(n_new);
     //
     // agraph
-    dev::agraph_t* agraph = nullptr;
+    dev::agraph_t*      agraph        = nullptr;
+    const vector<bool>* depend_agraph = nullptr;
     for(size_t ig = 0; ig < 2; ++ig) {
         if( ig == 0 ) {
-            agraph = &m_par;
+            agraph        = &m_par;
+            depend_agraph = &depend_par;
         } else {
             agraph = &m_var;
+            depend_agraph = &depend_var;
         }
         //
         // agraph->m_arg_value
@@ -151,10 +173,14 @@ void adfn_t::optimize_con(const vector<bool>& depend_old)
                 if( arg_type == adtype_t::constant ) {
                     //
                     // argraph->m_arg_value[arg_index]
-                    size_t arg_value = agraph->m_arg_value[arg_index];
-                    arg_value        = old2new_con[arg_value];
-                    agraph->m_arg_value[arg_index] = arg_value;
-                    assert( arg_value < n_new );
+                    if( ! (*depend_agraph)[op_index] ) {
+                        agraph->m_arg_value[arg_index] = not_used;
+                    } else {
+                        size_t arg_value = agraph->m_arg_value[arg_index];
+                        arg_value        = old2new_con[arg_value];
+                        agraph->m_arg_value[arg_index] = arg_value;
+                        assert( arg_value < n_new );
+                    }
                 }
             }
         }
