@@ -147,9 +147,8 @@ adten_t adten_t::index_put(
         "index_put: replace is not one dimensional"
     );
     //
-#ifndef NDEBUG
+    // n_replace
     int64_t n_replace = replace.numel();
-#endif
     //
     // res_adtype
     adtype_t res_adtype = std::max( before.m_adtype, replace.m_adtype );

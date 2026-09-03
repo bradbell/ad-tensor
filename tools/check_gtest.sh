@@ -29,6 +29,7 @@ then
         release='yes'
     else
         echo 'usage: tools/check_gtest.sh [--release]'
+        exit 1
     fi
 fi
 # -----------------------------------------------------------------------------
