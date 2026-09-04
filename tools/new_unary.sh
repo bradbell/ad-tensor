@@ -16,6 +16,7 @@ set -e -u
 #   include/ad_tensor/dev/op_enum.hpp
 #   include/ad_tensor/dev/derive_op.hpp
 #   src/adten/unary.cpp
+#   src/dev/derive_op/src_gen_unary.cpp
 #   src/CMakeLists.txt
 #   src/dev/derive_op/op_enum2derive_op.cpp
 #   src/dev/to_string.cpp
@@ -125,6 +126,27 @@ s|^\\( *\\).*|&\\
 \\1res_at_ten = operand.at_ten().$fun_name();\\
 \\1break;\\
 \\1//|
+: end
+EOF
+git checkout --quiet $file
+echo "$file"
+sed -i $file -f temp.sed
+# -----------------------------------------------------------------------------
+file='src/dev/derive_op/src_gen_unary.cpp'
+cat << EOF > temp.sed
+/[/][/] exp/! b end
+N
+N
+N
+N
+N
+s|^\\( *\\).*|&\\
+\\1//\\
+\\1// $fun_name\\
+\\1case dev::op_enum_t::$fun_name: {\\
+\\1    constexpr const char* fmt = "{} = {}.$fun_name();";\\
+\\1    src = std::format(fmt, target_src, operand_src);\\
+\\1}|
 : end
 EOF
 git checkout --quiet $file
