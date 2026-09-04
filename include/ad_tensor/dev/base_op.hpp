@@ -116,6 +116,8 @@ src_gen
 }
 The string returned by src_gen sets the value for the corresponding
 operator, operator index, and acyclic graph.
+It does not start or end with an newline and if it creates any new objects,
+they must be inside a local scope; i.e.,  inside of {}.
 
 variable_agraph
 ---------------
@@ -130,7 +132,7 @@ The function call
 returns a source code representation of a
 constant, parameter of variable (depending on adtype) with the specified index.
 The return, src, can be used to set or get the corresponding value.
-There are no newline characters in src; hence it is one line of source code.
+There are no newline characters in src.
 
 {xrst_end base_op}
 */

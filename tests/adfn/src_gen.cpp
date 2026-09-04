@@ -15,6 +15,9 @@ TEST(tests_adfn, src_gen)  {
     namespace plugin = ad_tensor::plugin;
     namespace fs     =  std::filesystem;
     //
+    // dim
+    vector<int64_t> dim = { 1 };
+    //
     // p
     // We use p for the domain parameters
     vector<Tensor> p;
@@ -40,6 +43,7 @@ TEST(tests_adfn, src_gen)  {
     ar.push_back( av[0].exp()     + ap[0].exp() );
     ar.push_back( av[0].logdet()  + ap[0].logdet() );
     ar.push_back( av[0].inverse() + ap[0].inverse() );
+    ar.push_back( av[0].sum(dim)  + ap[0].sum(dim) );
     //
     // r = f(v, p)
     adfn_t f = adten_t::stop_recording(ar, "f");
@@ -70,13 +74,12 @@ TEST(tests_adfn, src_gen)  {
     //
     // r
     vector<Tensor> r = f_plugin(v, p);
-    std::cout << "r[2] =\n" << r[2] << "\n";
-    std::cout << "check =\n" << v[0].logdet() + p[0].logdet() << "\n";
-    EXPECT_EQ( r.size(), 4 );
+    EXPECT_EQ( r.size(), 5 );
     EXPECT_TRUE( r[0].equal( (-v[0])         + (-p[0]) ) );
     EXPECT_TRUE( r[1].equal( v[0].exp()      + p[0].exp() ) );
     EXPECT_TRUE( r[2].equal( v[0].logdet()   + p[0].logdet() ) );
     EXPECT_TRUE( r[3].equal( v[0].inverse()  + p[0].inverse() ) );
+    EXPECT_TRUE( r[4].equal( v[0].sum(dim)   + p[0].sum(dim) ) );
     //
 }
 // END_CPP

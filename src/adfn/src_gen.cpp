@@ -133,6 +133,34 @@ using ad_tensor::vector;
 using ad_tensor::adtype_t;
 //
 // -----------------------------------------------------------------------
+// src_out = indent(src_in)
+// Add four spaces of indentation at the beginning of each line in src_in
+// where src_in and src_out do not start or end with a newline.
+string indent_lines(const string& src_in) {
+    if( src_in.size() == 0 ) {
+        return "";
+    }
+    //
+    // indent
+    string indent = "    ";
+    //
+    char   newline = '\n';
+    assert( src_in[0] != newline );
+    assert( src_in[ src_in.size() - 1] != newline );
+    string src_out = "";
+    size_t pos      = 0;
+    size_t next_pos = src_in.find(newline, pos);
+    while( next_pos != string::npos ) {
+        src_out += indent + src_in.substr(pos, next_pos + 1 - pos);
+        pos      = next_pos + 1;
+        next_pos = src_in.find(newline, pos);
+    }
+    src_out += indent + src_in.substr(pos, src_in.size() - pos);
+    //
+    return src_out;
+}
+//
+// -----------------------------------------------------------------------
 // preamble
 std::string preamble(
     const std::string&               adfn_name ,
@@ -469,7 +497,7 @@ R"|(    //
         //
         // file_cpp: var_dep
         if( src != "" ) {
-            file_cpp << indent + src + "\n";
+            file_cpp << indent_lines(src) + "\n";
         }
     }
     if( m_trace ) {

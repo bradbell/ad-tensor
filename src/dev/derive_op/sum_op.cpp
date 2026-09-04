@@ -288,8 +288,65 @@ std::string sum_op_t<TensorType>::src_gen(
     bool                                                  variable_agraph ,
     const std::function< std::string(size_t, adtype_t) >& tensor_src
 ) const {
-    user_assert(false, "src_gen not yet implemented for sum operator" );
-    return "";
+    //
+    // string
+    using std::string;
+    //
+    // arg_start
+    size_t    arg_start = agraph.m_arg_start[op_index];
+    //
+    // n_dim
+    size_t n_dim = agraph.m_arg_value[arg_start + 1];
+    assert( adtype_t::none ==  agraph.m_arg_type[arg_start + 1] );
+    //
+    //
+    // adtype
+    adtype_t adtype   = agraph.m_arg_type[arg_start];
+    //
+#ifndef NDEBUG
+    if( variable_agraph ) {
+        assert( adtype  == adtype_t::variable );
+    } else {
+        assert( adtype  == adtype_t::parameter );
+    }
+    //
+    // n_arg
+    size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
+    assert( n_arg == 2 + n_dim && "sum_op: n_arg != 2 + n_dim" );
+#endif
+    //
+    // operand_src
+    size_t   operand_index  = agraph.m_arg_value[arg_start];
+    adtype_t operand_adtype = agraph.m_arg_type[arg_start];
+    string   operand_src    = tensor_src(operand_index, operand_adtype);
+    //
+    // target_src
+    size_t   target_index  = op_index;
+    adtype_t target_adtype = adtype;
+    string   target_src    = tensor_src(target_index, target_adtype);
+    //
+    // src
+    string src;
+    if( n_dim == 0 ) {
+        constexpr const char* fmt = "{} = {}.sum();";
+        src = std::format(fmt, target_src, operand_src);
+    } else {
+        constexpr const char* fmt1 = "{{   std::array<int64_t,{}> dim = {{";
+        src += std::format(fmt1, n_dim);
+        for(size_t i = 0; i < n_dim; ++i) {
+            assert( agraph.m_arg_type[arg_start + 2 + i] == adtype_t::none );
+            size_t index = agraph.m_arg_value[arg_start + 2 + i];
+            if( 0 < i ) {
+                src += ", ";
+            }
+            src += std::to_string(index);
+        }
+        src += "};\n";
+        constexpr const char* fmt2 = "    {} = {}.sum(dim);\n";
+        src += std::format(fmt2, target_src, operand_src);
+        src += "}";
+    }
+    return src;
 }
 template std::string sum_op_t<adten_t>::src_gen(
     size_t                                                op_index        ,
