@@ -52,9 +52,16 @@ AD Tensor With Optimization
     BEGIN_OPTIMIZE, END_OPTIMIZE
 }
 
+AD Tensor With Source Generation
+********************************
+{xrst_literal ,
+    BEGIN_SRC_GEN, END_SRC_GEN
+}
+
 {xrst_end fit_poly_benchmark}
 */
 // BEGIN_COMMON
+#include <chrono>
 #include <filesystem>
 #include <gtest/gtest.h>
 #include <torch/torch.h>
@@ -62,8 +69,23 @@ AD Tensor With Optimization
 //
 namespace {
     //
-    // vector
+    // chrono, vector, adten_t, adfn_t
+    namespace chrono = std::chrono;
     using ad_tensor::vector;
+    using ad_tensor::adten_t;
+    using ad_tensor::adfn_t;
+    //
+    // previous_time, elapsed_ms
+    chrono::time_point previous_time = chrono::steady_clock::now();
+    double elapsed_ms(void) {
+        chrono::time_point current_time = chrono::steady_clock::now();
+        auto microseconds = chrono::duration_cast<chrono::microseconds>(
+            current_time - previous_time
+        ).count();
+        double ms = double(microseconds) / 1000.0;
+        previous_time = current_time;
+        return ms;
+    }
     //
     // double_nan
     const double double_nan = std::numeric_limits<double>::quiet_NaN();
@@ -114,6 +136,9 @@ TEST(benchmarks, fit_poly_autograd) {
         c.push_back( torch::randn( {1}, torch::requires_grad() ) );
     }
     //
+    // previous_time
+    elapsed_ms();
+    //
     // initial_loss, t
     double initial_loss      = loss(c, grid, data).item<double>();
     for(size_t t = 0; t < number_learning_steps; ++t) {
@@ -132,6 +157,10 @@ TEST(benchmarks, fit_poly_autograd) {
         }
     }
     //
+    // learn_ms
+    double learn_ms = elapsed_ms();
+    std::cout << "learn_ms = " << learn_ms << "\n";
+    //
     // relative_loss
     double relative_loss = loss(c, grid, data).item<double>() / initial_loss;
     EXPECT_LT(relative_loss, expected_relative_loss);
@@ -140,10 +169,6 @@ TEST(benchmarks, fit_poly_autograd) {
 //
 // BEGIN_AD_TENSOR
 TEST(benchmarks, fit_poly_ad_tensor) {
-    //
-    // adten_t, adfn_t
-    using ad_tensor::adten_t;
-    using ad_tensor::adfn_t;
     //
     // c
     vector<at::Tensor> c;
@@ -162,6 +187,9 @@ TEST(benchmarks, fit_poly_ad_tensor) {
     vector<adten_t> aloss = { loss(ac, agrid, adata) };
     adfn_t adfn = adten_t::stop_recording(aloss, "adfn");
     //
+    // previous_time
+    elapsed_ms();
+    //
     // dloss, initial_loss, t
     vector<at::Tensor> dloss = { torch::tensor(1.0) };
     double initial_loss      = loss(c, grid, data).item<double>();
@@ -179,6 +207,10 @@ TEST(benchmarks, fit_poly_ad_tensor) {
         }
     }
     //
+    // learn_ms
+    double learn_ms = elapsed_ms();
+    std::cout << "learn_ms = " << learn_ms << "\n";
+    //
     // relative_loss
     double relative_loss = loss(c, grid, data).item<double>() / initial_loss;
     EXPECT_LT(relative_loss, expected_relative_loss);
@@ -187,10 +219,6 @@ TEST(benchmarks, fit_poly_ad_tensor) {
 //
 // BEGIN_OPTIMIZE
 TEST(benchmarks, fit_poly_optimize) {
-    //
-    // adten_t, adfn_t
-    using ad_tensor::adten_t;
-    using ad_tensor::adfn_t;
     //
     // c
     vector<at::Tensor> c;
@@ -225,6 +253,9 @@ TEST(benchmarks, fit_poly_optimize) {
     adfn_t f_grad = adten_t::stop_recording(agrad, "f_grad");
     f_grad.optimize();
     //
+    // previous_time
+    elapsed_ms();
+    //
     // dloss, initial_loss, t
     double initial_loss      = loss(c, grid, data).item<double>();
     for(size_t t = 0; t < number_learning_steps; ++t) {
@@ -241,6 +272,10 @@ TEST(benchmarks, fit_poly_optimize) {
         }
     }
     //
+    // learn_ms
+    double learn_ms = elapsed_ms();
+    std::cout << "learn_ms = " << learn_ms << "\n";
+    //
     // relative_loss
     double relative_loss = loss(c, grid, data).item<double>() / initial_loss;
     EXPECT_LT(relative_loss, expected_relative_loss);
@@ -250,9 +285,7 @@ TEST(benchmarks, fit_poly_optimize) {
 // BEGIN_SRC_GEN
 TEST(benchmarks, fit_poly_src_gen) {
     //
-    // adten_t, adfn_t, fs, plugin
-    using ad_tensor::adten_t;
-    using ad_tensor::adfn_t;
+    // fs, plugin
     namespace fs     = std::filesystem;
     namespace plugin = ad_tensor::plugin;
     //
@@ -288,8 +321,6 @@ TEST(benchmarks, fit_poly_src_gen) {
     // f_grad
     adfn_t f_grad = adten_t::stop_recording(agrad, "f_grad");
     f_grad.optimize();
-#if 0
-    // TODO: extend src_gen operators so the code below works
     //
     // source_path
     fs::path source_path  = fs::temp_directory_path() / "fit_poly";
@@ -315,6 +346,9 @@ TEST(benchmarks, fit_poly_src_gen) {
         build_path, plugin_lib, function_name
     );
     //
+    // previous_time
+    elapsed_ms();
+    //
     // dom_par, dloss, initial_loss, t
     vector<at::Tensor> dom_par;
     double initial_loss      = loss(c, grid, data).item<double>();
@@ -332,9 +366,12 @@ TEST(benchmarks, fit_poly_src_gen) {
         }
     }
     //
+    // learn_ms
+    double learn_ms = elapsed_ms();
+    std::cout << "learn_ms = " << learn_ms << "\n";
+    //
     // relative_loss
     double relative_loss = loss(c, grid, data).item<double>() / initial_loss;
     EXPECT_LT(relative_loss, expected_relative_loss);
-#endif
 }
 // END_SRC_GEN
