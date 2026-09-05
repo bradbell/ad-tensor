@@ -87,6 +87,8 @@ ENDMACRO(print_variable)
 cmake_minimum_required(VERSION 3.10)
 project(plugin_lib)
 #
+# CMAKE_BUILD_TYPE
+set(CMAKE_BUILD_TYPE "@CMAKE_BUILD_TYPE@")
 #
 # AD_TENSOR_LIBRARY_DIR, AD_TENSOR_INCLUDE_DIR
 set(AD_TENSOR_LIBRARY_DIR "@CMAKE_BINARY_DIR@/src")

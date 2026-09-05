@@ -121,8 +121,10 @@ AD Tensor With Optimization
 // BEGIN_COMMON
 namespace {
     //
-    // vector
+    // vector, adten_t, adfn_t
     using ad_tensor::vector;
+    using ad_tensor::adten_t;
+    using ad_tensor::adfn_t;
     //
     // inf
     const double inf = std::numeric_limits<double>::infinity();
@@ -224,10 +226,6 @@ TEST(benchmarks, multi_normal_autograd) {
 // BEGIN_AD_TENSOR
 TEST(benchmarks, multi_normal_ad_tensor) {
     //
-    // adten_t, adfn_t
-    using ad_tensor::adten_t;
-    using ad_tensor::adfn_t;
-    //
     // L
     vector<at::Tensor> L     = { initial_L.clone() };
     //
@@ -264,10 +262,6 @@ TEST(benchmarks, multi_normal_ad_tensor) {
 //
 // BEGIN_OPTIMIZE
 TEST(benchmarks, multi_normal_optimize) {
-    //
-    // adten_t, adfn_t
-    using ad_tensor::adten_t;
-    using ad_tensor::adfn_t;
     //
     // L
     vector<at::Tensor> L     = { initial_L.clone() };
