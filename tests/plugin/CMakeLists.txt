@@ -15,4 +15,8 @@ add_library(plugin_lib MODULE
     add_int.cpp
     add_tensor.cpp
 )
-target_link_libraries(plugin_lib PRIVATE ${Boost_LIBRARIES} )
+target_link_libraries(plugin_lib
+    PRIVATE
+    ${Boost_LIBRARIES}
+    ${TORCH_LIBRARIES}
+)

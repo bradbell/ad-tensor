@@ -10,11 +10,25 @@
 
 template <class FunctionType>
 boost::function<FunctionType> get_plugin(
-    std::string plugin_file    ,
+    std::string plugin_dir     ,
+    std::string library_name   ,
     std::string function_alias ) {
     //
+    // fs
+    namespace fs = boost::filesystem;
+    //
+    // prefix
+#if defined(_WIN32) || defined(_WIN64)
+    std::string prefix    = "";
+    std::string extension = ".dll";
+#else
+    // CMake builds shared modules as *.so on Linux and Mac
+    std::string prefix    = "lib";
+    std::string extension = ".so";
+#endif
+    //
     // plugin_path
-    boost::filesystem::path plugin_path(plugin_file);
+    fs::path plugin_path = fs::path(plugin_dir) / (prefix + library_name + extension);
     //
     try {
         // plugin

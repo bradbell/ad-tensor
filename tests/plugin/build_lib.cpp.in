@@ -17,6 +17,11 @@ TEST(tests_plugin, build_lib) {
 cmake_minimum_required(VERSION 3.10)
 project(build_plugin_lib)
 #
+# CXX_STANDARD
+set(CMAKE_CXX_STANDARD @CMAKE_CXX_STANDARD@)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+#
 find_package(Torch REQUIRED)
 message(STATUS "TORCH_INCLUDE_DIRS = ${TORCH_INCLUDE_DIRS}")
 message(STATUS "TORCH_LIBRARIES = ${TORCH_LIBRARIES}")
@@ -73,7 +78,7 @@ target_link_libraries(plugin_lib
     return_code = std::system("cmake --build .");
     EXPECT_EQ(return_code, 0);
     //
-    auto add_int = get_plugin<int(int, int)>( "./plugin_lib", "add_int");
+    auto add_int = get_plugin<int(int, int)>( ".", "plugin_lib", "add_int");
     EXPECT_EQ(add_int(2, 3), 5);
     //
     // at_tensor_vector_t, return_t
@@ -86,7 +91,7 @@ target_link_libraries(plugin_lib
     //
     auto add_tensor = get_plugin<
         return_t(const at_tensor_vector_t&, const at_tensor_vector_t&)
-    >( "./plugin_lib", "add_tensor" );
+    >( ".", "plugin_lib", "add_tensor" );
     //
     // range
     auto [range, message] = add_tensor(dom_par, dom_var);
