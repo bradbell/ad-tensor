@@ -18,7 +18,7 @@ Syntax
 ******
 {xrst_code cpp}
     fun_obj = ad_tensor::plugin::function_object(
-            plugin_dir, plugin_lib. function_alias
+            plugin_dir, library_name. function_alias
     )
 {xrst_code}
 
@@ -38,12 +38,12 @@ plugin_dir
 **********
 This is the directory where the plugin library is located
 
-plugin_lib
-**********
+library_name
+************
 This is the name of the plugin library.
 It only contains the system independent part of the library file name.
 For example, if on Linux the library file is ``libmy_lib.so``,
-plugin_lib is ``my_lib`` .
+library_name is ``my_lib`` .
 
 function_alias
 **************
@@ -62,12 +62,12 @@ function_type above.
 
 {xrst_end function_object}
 */
-#include <filesystem>
+#include <boost/filesystem.hpp>
 #include <ad_tensor/plugin.hpp>
 #include <ad_tensor/dev/user_assert.hpp>
 //
 namespace {
-    namespace fs = std::filesystem;
+    namespace fs = boost::filesystem;
     //
     // BEGIN_FUNCTION_TYPE
     using function_type = ad_tensor::vector<at::Tensor>(
@@ -79,11 +79,8 @@ namespace {
     // link_function
     template <class FunctionType>
     boost::function<FunctionType> link_function(
-        std::string plugin_lib     ,
+        const fs::path& plugin_path  ,
         std::string function_alias ) {
-        //
-        // plugin_path
-        boost::filesystem::path plugin_path(plugin_lib);
         //
         try {
             // plugin
@@ -94,8 +91,8 @@ namespace {
              );
              return plugin;
         } catch(const std::exception& e) {
-            std::string msg = "link_plugin: failed to link ";
-            msg +=  function_alias + " in library " + plugin_lib;
+            std::string msg = "function_object: failed to link ";
+            msg +=  function_alias + " in library " + plugin_path.string();
             ad_tensor::dev::user_assert(false, msg);
         }
         //
@@ -112,12 +109,26 @@ namespace ad_tensor { namespace plugin {
     // BEGIN_FUNCTION_OBJECT
     boost::function<function_type> function_object(
         const std::string& plugin_dir     ,
-        const std::string& plugin_lib     ,
+        const std::string& library_name   ,
         const std::string& function_alias )
     {   // END_FUNCTION_OBJECT
-        fs::path plugin_path = fs::path(plugin_dir) / plugin_lib;
+        //
+        // prefix, extension
+#if defined(_WIN32) || defined(_WIN64)
+        std::string prefix    = "";
+        std::string extension = ".dll";
+#else
+        // CMake builds shared modules as *.so on Linux and Mac
+        std::string prefix    = "lib";
+        std::string extension = ".so";
+#endif
+        //
+        // plugin_path
+        fs::path plugin_path =
+            fs::path(plugin_dir) / (prefix + library_name + extension);
+        //
         return link_function<function_type>(
-            plugin_path.string(), function_alias
+            plugin_path, function_alias
         );
     }
 } }

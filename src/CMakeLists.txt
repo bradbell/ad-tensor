@@ -86,4 +86,8 @@ add_library(ad_tensor SHARED
     to_string.cpp
     # END_SORT_THIS_LINE_MINUS_1
 )
-target_link_libraries( ad_tensor PRIVATE ${TORCH_LIBRARIES} )
+target_link_libraries( ad_tensor
+    PRIVATE
+    ${TORCH_LIBRARIES}
+    ${plugin_LIBRARIES}
+)
