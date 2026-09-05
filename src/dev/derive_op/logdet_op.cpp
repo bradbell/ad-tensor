@@ -191,11 +191,12 @@ void logdet_op_t<TensorType>::reverse_der(
     // rev_der[operand_index]
     c10::IntArrayRef  ref = operand.sizes();
     vector<int64_t> shape( ref.begin(), ref.end() );
-    int64_t n_dim = static_cast<int64_t>( shape.size() );
+    size_t n_dim = shape.size();
     assert( 2 <= n_dim );
     shape[n_dim - 1] = 1;
     shape[n_dim - 2] = 1;
-    TensorType inv_tran = operand.inverse().transpose(n_dim-1, n_dim-2);
+    TensorType inv_tran =
+        operand.inverse().transpose(int64_t(n_dim-1), int64_t(n_dim-2));
     if( ! rev_der[operand_index].defined() ) {
         rev_der[operand_index]  =
             inv_tran * rev_der[op_index].view(shape);
