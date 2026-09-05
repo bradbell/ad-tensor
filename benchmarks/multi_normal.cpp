@@ -7,6 +7,7 @@
 {xrst_spell
     cholesky
     autograd
+    gtest
 }
 
 Fitting a Multivariate Normal Distribution
@@ -85,6 +86,12 @@ We define our loss function as
     +
     \frac{1}{n} \sum_{i=0}^{n-1} ( y_i - \hat{\mu} )^T L L^T (y_i - \hat{\mu} )
 
+learn_ms
+********
+In the code below, gtest reports the total time for each test.
+Each test also prints the value learn_ms, which is the time
+in milliseconds for the learning loop; i.e., it does not include
+the time to setup the calculation of the gradients in the learning loop.
 
 Common Code
 ***********
@@ -110,22 +117,41 @@ AD Tensor With Optimization
     BEGIN_OPTIMIZE, END_OPTIMIZE
 }
 
+AD Tensor With Source Generation
+********************************
+{xrst_literal ,
+    BEGIN_SRC_GEN, END_SRC_GEN
+}
 
 {xrst_end multi_normal_benchmark}
 */
 //
 //
 // BEGIN_COMMON
+#include <chrono>
 #include <filesystem>
 #include <gtest/gtest.h>
 #include <torch/torch.h>
 #include <ad_tensor/ad_tensor.hpp>
 namespace {
     //
-    // vector, adten_t, adfn_t
+    // chrono, vector, adten_t, adfn_t
+    namespace chrono = std::chrono;
     using ad_tensor::vector;
     using ad_tensor::adten_t;
     using ad_tensor::adfn_t;
+    //
+    // previous_time, elapsed_ms
+    chrono::time_point previous_time = chrono::steady_clock::now();
+    double elapsed_ms(void) {
+        chrono::time_point current_time = chrono::steady_clock::now();
+        auto microseconds = chrono::duration_cast<chrono::microseconds>(
+            current_time - previous_time
+        ).count();
+        double ms = double(microseconds) / 1000.0;
+        previous_time = current_time;
+        return ms;
+    }
     //
     // inf
     const double inf = std::numeric_limits<double>::infinity();
@@ -197,6 +223,9 @@ namespace {
 // BEGIN_AUTOGRAD
 TEST(benchmarks, multi_normal_autograd) {
     //
+    // previous_time
+    elapsed_ms();
+    //
     // L, initial_loss
     torch::Tensor L      = initial_L.clone();
     double initial_loss  = loss(L).item<double>();
@@ -218,6 +247,10 @@ TEST(benchmarks, multi_normal_autograd) {
         }
     }
     //
+    // learn_ms
+    double learn_ms = elapsed_ms();
+    std::cout << "learn_ms = " << learn_ms << "\n";
+    //
     // relative_loss
     double relative_loss = loss(L).item<double>() / initial_loss;
     EXPECT_LT(relative_loss, expected_relative_loss);
@@ -234,6 +267,9 @@ TEST(benchmarks, multi_normal_ad_tensor) {
     vector<adten_t> aL    = adten_t::start_recording(L);
     vector<adten_t> aloss = { loss( aL[0] ) };
     adfn_t          adfn  = adten_t::stop_recording(aloss, "adfn");
+    //
+    // previous_time
+    elapsed_ms();
     //
     // dloss, initial_loss, t
     vector<at::Tensor> dloss = { torch::tensor(1.0) };
@@ -254,6 +290,10 @@ TEST(benchmarks, multi_normal_ad_tensor) {
             L[0] = torch::maximum(L[0], minimum_L);
         }
     }
+    //
+    // learn_ms
+    double learn_ms = elapsed_ms();
+    std::cout << "learn_ms = " << learn_ms << "\n";
     //
     // relative_loss
     double relative_loss = loss(L[0]).item<double>() / initial_loss;
@@ -286,6 +326,9 @@ TEST(benchmarks, multi_normal_optimize) {
     adfn_t f_grad = adten_t::stop_recording(agrad, "f_grad");
     f_grad.optimize();
     //
+    // previous_time
+    elapsed_ms();
+    //
     // initial_loss, t
     double initial_loss      = loss(L[0]).item<double>();
     for(size_t t = 0; t < number_learning_steps; ++t) {
@@ -304,6 +347,10 @@ TEST(benchmarks, multi_normal_optimize) {
             L[0] = torch::maximum(L[0], minimum_L);
         }
     }
+    //
+    // learn_ms
+    double learn_ms = elapsed_ms();
+    std::cout << "learn_ms = " << learn_ms << "\n";
     //
     // relative_loss
     double relative_loss = loss(L[0]).item<double>() / initial_loss;
@@ -364,6 +411,9 @@ TEST(benchmarks, multi_normal_src_gen) {
         build_path, plugin_lib, function_name
     );
     //
+    // previous_time
+    elapsed_ms();
+    //
     // dom_par, initial_loss, t
    vector<at::Tensor> dom_par;
     double initial_loss      = loss(L[0]).item<double>();
@@ -383,6 +433,10 @@ TEST(benchmarks, multi_normal_src_gen) {
             L[0] = torch::maximum(L[0], minimum_L);
         }
     }
+    //
+    // learn_ms
+    double learn_ms = elapsed_ms();
+    std::cout << "learn_ms = " << learn_ms << "\n";
     //
     // relative_loss
     double relative_loss = loss(L[0]).item<double>() / initial_loss;

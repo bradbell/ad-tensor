@@ -7,6 +7,7 @@
 {xrst_spell
     pytorch
     autograd
+    gtest
 }
 
 Fitting A Polynomial Benchmark
@@ -27,6 +28,14 @@ for this example is defined by
 This objective comes from the pytorch tutorial
 `Pytorch Tensors and autograd
 <https://docs.pytorch.org/tutorials/beginner/ pytorch_with_examples.html#pytorch-tensors-and-autograd>`_ ,
+
+learn_ms
+********
+In the code below, gtest reports the total time for each test.
+Each test also prints the value learn_ms, which is the time
+in milliseconds for the learning loop; i.e., it does not include
+the time to setup the calculation of the gradients in the learning loop.
+
 
 Common Code
 ***********
