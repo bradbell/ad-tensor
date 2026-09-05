@@ -7,7 +7,7 @@
 set(plugin_TESTS "")
 if( include_plugin )
     set(plugin_TESTS
-        plugin/build_lib.cpp
+        ${CMAKE_CURRENT_BINARY_DIR}/plugin/build_lib.cpp
     )
 endif()
 #

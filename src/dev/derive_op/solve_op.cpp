@@ -246,11 +246,11 @@ void solve_op_t<TensorType>::reverse_der(
     c10::IntArrayRef solution_shape = solution.sizes();
     //
     // linear_tra
-    size_t n_lin = linear_shape.size();
+    int64_t n_lin = static_cast<int64_t> ( linear_shape.size() );
     TensorType linear_tra   = linear.transpose(n_lin-2, n_lin-1);
     //
     // solution_tra
-    size_t n_sol = solution_shape.size();
+    int64_t n_sol = static_cast<int64_t>( solution_shape.size() );
     TensorType solution_tra = solution.transpose(n_sol-2, n_sol-1);
     //
     // rhs_bar

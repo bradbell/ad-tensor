@@ -126,12 +126,12 @@ void logdet_op_t<TensorType>::forward_der(
     const TensorType& operand = var_all[operand_index];
     //
     // for_der
-    size_t n_dim = operand.sizes().size();
+    int64_t n_dim = static_cast<int64_t>( operand.sizes().size() );
     user_assert(
         2 <= n_dim,
         "logdet: operand must have 2 or more dimensions"
     );
-    vector<int64_t> dim = { int64_t(n_dim - 2), int64_t(n_dim-1) };
+    vector<int64_t> dim = { n_dim - 2, n_dim-1 };
     TensorType  inv_tran = operand.inverse().transpose(n_dim-2, n_dim-1);
     for_der[op_index] = (
         for_der[operand_index] * inv_tran
@@ -197,7 +197,8 @@ void logdet_op_t<TensorType>::reverse_der(
     assert( 2 <= n_dim );
     shape[n_dim - 1] = 1;
     shape[n_dim - 2] = 1;
-    TensorType inv_tran = operand.inverse().transpose(n_dim-1, n_dim-2);
+    TensorType inv_tran =
+        operand.inverse().transpose(int64_t(n_dim-1), int64_t(n_dim-2));
     if( no_elements(rev_der[operand_index]) ) {
         rev_der[operand_index]  =
             inv_tran * rev_der[op_index].view(shape);

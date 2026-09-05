@@ -154,7 +154,7 @@ TEST(examples_adten, solve)  {
     vector<Tensor> dv(1), dr(1);
     //
     // (partial of f w.r.t v_j) (v, p)
-    for(size_t j = 0; j < 3; ++j) {
+    for(int64_t j = 0; j < 3; ++j) {
         dv[0] = torch::eye(3).select(0, j);
         dr    = f.forward_der(dv, var_all, par_all);
         check = Jacobian.select(1, j);
@@ -163,7 +163,7 @@ TEST(examples_adten, solve)  {
     }
     //
     // (derivative of f_i w.r.t. v) (v, p)
-    for(size_t i = 0; i < 4; ++i) {
+    for(int64_t i = 0; i < 4; ++i) {
         dr[0] = torch::eye(4).select(0, i).view( {2,2} );
         dv    = f.reverse_der(dr, var_all, par_all);
         check = Jacobian.select(0, i);

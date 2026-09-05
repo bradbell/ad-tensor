@@ -1,0 +1,104 @@
+// SPDX-License-Identifier: EPL-2.0 OR GPL-2.0-or-later
+// SPDX-FileCopyrightText: Bradley M. Bell <bradbell@seanet.com>
+// SPDX-FileContributor: 2026 Bradley M. Bell
+// -----------------------------------------------------------------------------
+//
+#include <filesystem>
+#include <fstream>
+#include <gtest/gtest.h>
+#include <torch/torch.h>
+#include <ad_tensor/vector.hpp>
+#include "@CMAKE_CURRENT_SOURCE_DIR@/get_plugin.hpp"
+//
+TEST(tests_plugin, build_lib) {
+    //
+    // CMAKE_CURRENT_BINARY_DIR/CMakeLists.txt
+    std::string text = R"(
+cmake_minimum_required(VERSION 3.10)
+project(build_plugin_lib)
+#
+# CXX_STANDARD
+set(CMAKE_CXX_STANDARD @CMAKE_CXX_STANDARD@)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+#
+find_package(Torch REQUIRED)
+message(STATUS "TORCH_INCLUDE_DIRS = ${TORCH_INCLUDE_DIRS}")
+message(STATUS "TORCH_LIBRARIES = ${TORCH_LIBRARIES}")
+#
+cmake_policy(SET CMP0167 NEW)
+find_package(Boost REQUIRED COMPONENTS filesystem system)
+message( STATUS "Boost_INCLUDE_DIRS = ${Boost_INCLUDE_DIRS}" )
+message( STATUS "Boost_LIBRARIES = ${Boost_LIBRARIES}" )
+#
+# include_directories
+include_directories(
+    ${Boost_INCLUDE_DIRS}
+    ${TORCH_INCLUDE_DIRS}
+    @CMAKE_SOURCE_DIR@/include
+)
+#
+# plugin_lib
+add_library(plugin_lib MODULE
+    @CMAKE_CURRENT_SOURCE_DIR@/add_int.cpp
+    @CMAKE_CURRENT_SOURCE_DIR@/add_tensor.cpp
+)
+target_link_libraries(plugin_lib
+    ${Boost_LIBRARIES}
+    ${TORCH_LIBRARIES}
+)
+    )";
+    //
+    //
+    try {
+        //
+        // build_dir
+        const char* build_dir = "@CMAKE_CURRENT_BINARY_DIR@/build";
+        if( ! std::filesystem::is_directory( build_dir ) ) {
+            std::filesystem::create_directory( build_dir );
+        }
+        std::filesystem::current_path(build_dir);
+        //
+        // ../CMakeLists.txt
+        std::ofstream file( "../CMakeLists.txt" );
+        file << text;
+        file.close();
+    } catch(const std::exception& e) {
+        EXPECT_TRUE( false );
+    }
+    //
+    // cmake
+    int return_code = std::system(
+        "cmake -B . -S .. -D Torch_DIR='@Torch_DIR@' --log-level=ERROR"
+    );
+    EXPECT_EQ(return_code, 0);
+    //
+    // ninja
+    return_code = std::system("cmake --build .");
+    EXPECT_EQ(return_code, 0);
+    //
+    auto add_int = get_plugin<int(int, int)>( ".", "plugin_lib", "add_int");
+    EXPECT_EQ(add_int(2, 3), 5);
+    //
+    // at_tensor_vector_t, return_t
+    typedef ad_tensor::vector<at::Tensor>               at_tensor_vector_t;
+    typedef std::tuple<at_tensor_vector_t, std::string> return_t;
+    //
+    // dom_par, dom_var
+    ad_tensor::vector<at::Tensor> dom_par = { torch::tensor( {1, 2} ) };
+    ad_tensor::vector<at::Tensor> dom_var = { torch::tensor( {3, 4} ) };
+    //
+    auto add_tensor = get_plugin<
+        return_t(const at_tensor_vector_t&, const at_tensor_vector_t&)
+    >( ".", "plugin_lib", "add_tensor" );
+    //
+    // range
+    auto [range, message] = add_tensor(dom_par, dom_var);
+    //
+    EXPECT_EQ(message, "");
+    EXPECT_EQ(range.size(), 1);
+    //
+    // check
+    at::Tensor check = dom_par[0] + dom_var[0];
+    EXPECT_TRUE( check.equal( range[0] ) );
+}

@@ -205,7 +205,7 @@ TEST(tests_adten, solve_batch) {
     vector<Tensor> dx(1), dy(1);
     //
     // (partial of f w.r.t x_j) (x)
-    for(size_t j = 0; j < 2; ++j) {
+    for(int64_t j = 0; j < 2; ++j) {
         dx[0] = torch::eye(2).select(0, j);
         dy    = f.forward_der(dx, v_all);
         check = Jacobian.select(1, j);
@@ -214,7 +214,7 @@ TEST(tests_adten, solve_batch) {
     }
     //
     // (deriverive of f_i) (x)
-    for(size_t i = 0; i < 6; ++i) {
+    for(int64_t i = 0; i < 6; ++i) {
         dy[0] = torch::eye(6).select(0, i);
         dx    = f.reverse_der(dy, v_all);
         check = Jacobian.select(0, i);

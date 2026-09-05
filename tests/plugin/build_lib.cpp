@@ -48,7 +48,7 @@ TEST(tests_plugin, build_lib) {
         plugin_path.string(), quiet, use_installed_ad_tensor
     );
     //
-    auto add_int = get_plugin<int(int, int)>( "./plugin_lib", "add_int");
+    auto add_int = get_plugin<int(int, int)>( ".", "plugin_lib", "add_int");
     EXPECT_EQ(add_int(2, 3), 5);
     //
     // at_tensor_vector_t, return_t
@@ -61,7 +61,7 @@ TEST(tests_plugin, build_lib) {
     //
     auto add_tensor = get_plugin<
         return_t(const at_tensor_vector_t&, const at_tensor_vector_t&)
-    >( "./plugin_lib", "add_tensor" );
+    >( ".", "plugin_lib", "add_tensor" );
     //
     // range
     auto [range, message] = add_tensor(dom_par, dom_var);
