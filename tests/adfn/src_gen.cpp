@@ -2,7 +2,6 @@
 // SPDX-FileCopyrightText: Bradley M. Bell <bradbell@seanet.com>
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
-// BEGIN_CPP
 #include <filesystem>
 #include <gtest/gtest.h>
 #include <ad_tensor/ad_tensor.hpp>
@@ -39,12 +38,13 @@ TEST(tests_adfn, src_gen)  {
     //
     // ar
     vector<adten_t> ar;
-    ar.push_back( (-av[0])        + (-ap[0]) );
-    ar.push_back( av[0].exp()     + ap[0].exp() );
-    ar.push_back( av[0].logdet()  + ap[0].logdet() );
-    ar.push_back( av[0].inverse() + ap[0].inverse() );
-    ar.push_back( av[0].sum(dim)  + ap[0].sum(dim) );
+    ar.push_back( (-av[0])               + (-ap[0]) );
+    ar.push_back( av[0].exp()            + ap[0].exp() );
+    ar.push_back( av[0].logdet()         + ap[0].logdet() );
+    ar.push_back( av[0].inverse()        + ap[0].inverse() );
+    ar.push_back( av[0].sum(dim)         + ap[0].sum(dim) );
     ar.push_back( av[0].transpose(0, 1)  + ap[0].transpose(0, 1) );
+    ar.push_back( av[0].matmul( ap[0] ) );
     //
     // r = f(v, p)
     adfn_t f = adten_t::stop_recording(ar, "f");
@@ -75,13 +75,13 @@ TEST(tests_adfn, src_gen)  {
     //
     // r
     vector<Tensor> r = f_plugin(v, p);
-    EXPECT_EQ( r.size(), 6 );
-    EXPECT_TRUE( r[0].equal( (-v[0])         + (-p[0]) ) );
-    EXPECT_TRUE( r[1].equal( v[0].exp()      + p[0].exp() ) );
-    EXPECT_TRUE( r[2].equal( v[0].logdet()   + p[0].logdet() ) );
-    EXPECT_TRUE( r[3].equal( v[0].inverse()  + p[0].inverse() ) );
-    EXPECT_TRUE( r[4].equal( v[0].sum(dim)   + p[0].sum(dim) ) );
+    EXPECT_EQ( r.size(), 7 );
+    EXPECT_TRUE( r[0].equal( (-v[0])                + (-p[0]) ) );
+    EXPECT_TRUE( r[1].equal( v[0].exp()             + p[0].exp() ) );
+    EXPECT_TRUE( r[2].equal( v[0].logdet()          + p[0].logdet() ) );
+    EXPECT_TRUE( r[3].equal( v[0].inverse()         + p[0].inverse() ) );
+    EXPECT_TRUE( r[4].equal( v[0].sum(dim)          + p[0].sum(dim) ) );
     EXPECT_TRUE( r[5].equal( v[0].transpose(0, 1)   + p[0].transpose(0, 1) ) );
+    EXPECT_TRUE( r[6].equal( v[0].matmul( p[0] ) ) );
     //
 }
-// END_CPP

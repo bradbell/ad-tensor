@@ -346,9 +346,6 @@ TEST(benchmarks, multi_normal_src_gen) {
         fs::create_directory( source_path );
     }
     //
-# if 0
-    // TODO: implement src_gen for necessary operators for code below
-    //
     // source_path: f_grad.cpp, f_grad.con
     f_grad.src_gen(source_path.string());
     //
@@ -390,6 +387,5 @@ TEST(benchmarks, multi_normal_src_gen) {
     // relative_loss
     double relative_loss = loss(L[0]).item<double>() / initial_loss;
     EXPECT_LT(relative_loss, expected_relative_loss);
-# endif
 }
 // END_SRC_GEN
