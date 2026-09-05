@@ -234,8 +234,40 @@ std::string transpose_op_t<TensorType>::src_gen(
     bool                                                  variable_agraph ,
     const std::function< std::string(size_t, adtype_t) >& tensor_src
 ) const {
-    user_assert(false, "src_gen not yet implemented for transpose operator" );
-    return "";
+    //
+    // string
+    using std::string;
+    //
+    // arg_start
+    size_t arg_start = agraph.m_arg_start[op_index];
+    //
+#ifndef NDEBUG
+    size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
+    assert( n_arg == 3 && "add: n_arg != 1" );
+# endif
+    //
+    // operand_src
+    size_t   operand_index  = agraph.m_arg_value[arg_start];
+    adtype_t operand_adtype = agraph.m_arg_type[arg_start];
+    string   operand_src    = tensor_src(operand_index, operand_adtype);
+    //
+    // target_src
+    size_t   target_index  = op_index;
+    adtype_t target_adtype =
+        variable_agraph ? adtype_t::variable : adtype_t::parameter;
+    string   target_src    = tensor_src(target_index, target_adtype);
+    //
+    // dim1, dim_2
+    assert( agraph.m_arg_type[arg_start + 1] == adtype_t::none );
+    size_t dim1 = agraph.m_arg_value[arg_start + 1];
+    assert( agraph.m_arg_type[arg_start + 2] == adtype_t::none );
+    size_t dim2 = agraph.m_arg_value[arg_start + 2];
+    //
+    // src
+    constexpr const char* fmt = "{} = {}.transpose({}, {});";
+    string src = std::format(fmt, target_src, operand_src, dim1, dim2);
+    //
+    return src;
 }
 template std::string transpose_op_t<adten_t>::src_gen(
     size_t                                                op_index        ,

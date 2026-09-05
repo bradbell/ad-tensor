@@ -256,7 +256,7 @@ TEST(benchmarks, fit_poly_optimize) {
     // previous_time
     elapsed_ms();
     //
-    // dloss, initial_loss, t
+    // initial_loss, t
     double initial_loss      = loss(c, grid, data).item<double>();
     for(size_t t = 0; t < number_learning_steps; ++t) {
         //
@@ -349,7 +349,7 @@ TEST(benchmarks, fit_poly_src_gen) {
     // previous_time
     elapsed_ms();
     //
-    // dom_par, dloss, initial_loss, t
+    // dom_par, initial_loss, t
     vector<at::Tensor> dom_par;
     double initial_loss      = loss(c, grid, data).item<double>();
     for(size_t t = 0; t < number_learning_steps; ++t) {

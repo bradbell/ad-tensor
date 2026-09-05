@@ -44,6 +44,7 @@ TEST(tests_adfn, src_gen)  {
     ar.push_back( av[0].logdet()  + ap[0].logdet() );
     ar.push_back( av[0].inverse() + ap[0].inverse() );
     ar.push_back( av[0].sum(dim)  + ap[0].sum(dim) );
+    ar.push_back( av[0].transpose(0, 1)  + ap[0].transpose(0, 1) );
     //
     // r = f(v, p)
     adfn_t f = adten_t::stop_recording(ar, "f");
@@ -74,12 +75,13 @@ TEST(tests_adfn, src_gen)  {
     //
     // r
     vector<Tensor> r = f_plugin(v, p);
-    EXPECT_EQ( r.size(), 5 );
+    EXPECT_EQ( r.size(), 6 );
     EXPECT_TRUE( r[0].equal( (-v[0])         + (-p[0]) ) );
     EXPECT_TRUE( r[1].equal( v[0].exp()      + p[0].exp() ) );
     EXPECT_TRUE( r[2].equal( v[0].logdet()   + p[0].logdet() ) );
     EXPECT_TRUE( r[3].equal( v[0].inverse()  + p[0].inverse() ) );
     EXPECT_TRUE( r[4].equal( v[0].sum(dim)   + p[0].sum(dim) ) );
+    EXPECT_TRUE( r[5].equal( v[0].transpose(0, 1)   + p[0].transpose(0, 1) ) );
     //
 }
 // END_CPP

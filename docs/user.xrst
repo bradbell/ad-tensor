@@ -8,6 +8,8 @@
     adten
     adfn
     typedefs
+    multi
+    cpp
 }
 
 AD Tensor User Documentation
@@ -18,7 +20,8 @@ TODO
 #.  Change typedefs to using statements.
 #.  Change adfn::get_name -> adfn::name (because it does not change).
 #.  Use a special routine that ensures a value is in current recording:
-    void adten::current_recording(adten_t& adten)
+    void adten::current_recording(void)
+#.  Move includes into COMMON in multi_normal.cpp
 
 
 {xrst_toc_table
