@@ -131,7 +131,7 @@ TEST(tests_adten, matmul_batch)  {
     EXPECT_EQ( y[0].sizes()[0], 3 );
     EXPECT_EQ( y[0].sizes()[1], 1 );
     EXPECT_EQ( y[0].sizes()[2], 2);
-    for(size_t k = 0; k < 3; ++k) {
+    for(int64_t k = 0; k < 3; ++k) {
         Tensor yk = y[0][k];
         Tensor vk = batch_vec[k];
         SCALAR_EQ( yk[0][0], vk[0][0] * mat[0][0] + vk[0][1] * mat[1][0] );
@@ -143,7 +143,7 @@ TEST(tests_adten, matmul_batch)  {
     Tensor dmat = torch::tensor( { {20.0, 21.0}, {22.0, 23.0} } );
     dv[1]       = dmat;
     vector<Tensor> dy = f.forward_der(dv, var_all);
-    for(size_t k = 0; k < 3; ++k) {
+    for(int64_t k = 0; k < 3; ++k) {
         Tensor dyk = dy[0][k];
         Tensor vk  = batch_vec[k];
         SCALAR_EQ( dyk[0][0], vk[0][0] * dmat[0][0] + vk[0][1] * dmat[1][0] );
@@ -157,7 +157,7 @@ TEST(tests_adten, matmul_batch)  {
     dv         = f.reverse_der(dy, var_all);
     //
     // dv[0]
-    for(size_t k = 0; k < 3; ++k) {
+    for(int64_t k = 0; k < 3; ++k) {
         Tensor dyk   = dy[0][k];
         Tensor dvk   = dv[0][k];
         //
@@ -167,7 +167,7 @@ TEST(tests_adten, matmul_batch)  {
     //
     // dv[1]
     Tensor sum = torch::zeros( {2, 2} );
-    for(size_t k = 0; k < 3; ++k) {
+    for(int64_t k = 0; k < 3; ++k) {
         Tensor dyk   = dy[0][k];
         Tensor vk    = batch_vec[k];
         //

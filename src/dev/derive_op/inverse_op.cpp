@@ -179,7 +179,7 @@ void inverse_op_t<TensorType>::reverse_der(
     size_t           operand_index  = agraph.m_arg_value[arg_start];
     //
     // inv_tran
-    size_t n_dim = var_all[op_index].sizes().size();
+    int64_t n_dim = static_cast<int64_t>( var_all[op_index].sizes().size() );
     TensorType inv_tran = var_all[op_index].transpose(n_dim-2, n_dim-1);
     TensorType prod     = inv_tran.matmul(
         rev_der[op_index].matmul( inv_tran )

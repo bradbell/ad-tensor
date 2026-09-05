@@ -228,7 +228,7 @@ void matmul_op_t<TensorType>::reverse_der(
         c10::IntArrayRef dim(array);
         //
         // rhs_transpose
-        size_t n_dim = rhs_tensor.sizes().size();
+        int64_t n_dim = static_cast<int64_t>( rhs_tensor.sizes().size() );
         TensorType rhs_transpose = rhs_tensor.transpose(n_dim-2, n_dim-1);
         //
         // prod
@@ -257,7 +257,7 @@ void matmul_op_t<TensorType>::reverse_der(
         c10::IntArrayRef dim(array);
         //
         // lhs_transpose
-        size_t n_dim = lhs_tensor.sizes().size();
+        int64_t n_dim = static_cast<int64_t>( lhs_tensor.sizes().size() );
         TensorType lhs_transpose = lhs_tensor.transpose(n_dim-2, n_dim-1);
         //
         // prod
