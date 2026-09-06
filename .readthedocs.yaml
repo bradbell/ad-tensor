@@ -39,7 +39,7 @@ build:
          --page_source
          --html_theme furo
          --group_list ben usr dev
-         --index_page_name public
+         --index_page_name user
          --suppress_spell_warnings
       #
       # _readthedocs/html
