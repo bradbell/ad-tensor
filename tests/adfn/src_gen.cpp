@@ -54,6 +54,12 @@ TEST(tests_adfn, src_gen)  {
     if( ! fs::is_directory(source_path) ) {
         fs::create_directory( source_path );
     }
+    try { fs::permissions(
+        source_path, fs::perms::owner_all, fs::perm_options::replace
+    ); } catch (...) {
+        // cannot change permissions for source_path directory
+        EXPECT_TRUE(false);
+    }
     //
     // source_path: f.cpp, f.con
     f.src_gen(source_path.string());

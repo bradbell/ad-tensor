@@ -32,6 +32,9 @@ Prototype
 source_dir
 **********
 is the directory where the plugin library source code is located.
+We suggest that you restrict the permissions on this directory
+so that it is not possible for other people to change your plugin library.
+
 
 Source Files
 ============

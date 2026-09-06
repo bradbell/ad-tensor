@@ -37,6 +37,8 @@ src_gen_dir
 ***********
 is the directory where the C++ source and binary constant
 output files are output.
+We suggest that you restrict the permissions on this directory so that
+it is not possible for other people to change your generated source code.
 
 adfn_name.cpp
 =============

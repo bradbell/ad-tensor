@@ -398,6 +398,12 @@ TEST(benchmarks, multi_normal_src_gen) {
     if( ! fs::is_directory(source_path) ) {
         fs::create_directory( source_path );
     }
+    try{ fs::permissions(
+        source_path, fs::perms::owner_all, fs::perm_options::replace
+    ); }  catch (...) {
+        // cannot change permissions for source_path directory
+        EXPECT_TRUE(false);
+    }
     //
     // source_path: f_grad.cpp, f_grad.con
     f_grad.src_gen(source_path.string());
