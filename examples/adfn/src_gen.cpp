@@ -65,7 +65,7 @@ TEST(examples_adfn, src_gen)  {
     fs::path build_path        = source_path / "build";
     std::string plugin_lib     = "plugin_lib";
     std::string function_name  = f.get_name();
-    auto f_plugin = plugin::function_object(
+    auto f_plugin = plugin::src_gen_fun(
         build_path, plugin_lib, function_name
     );
     //

@@ -100,11 +100,11 @@ Linking
 *******
 If this source code is compiled as part of a shared library,
 it can be linked to the currently running program using
-function_object with :ref:`function_object@function_alias`
+src_gen_fun with :ref:`src_gen_fun@function_alias`
 equal to adfn_name.
 {xrst_toc_table
     src/plugin/build_lib.cpp.in
-    src/plugin/function_object.cpp
+    src/plugin/src_gen_fun.cpp
 }
 
 Example

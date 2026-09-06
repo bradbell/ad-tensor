@@ -14,7 +14,7 @@ if( include_plugin )
     )
     set(plugin_SRCS
         "${CMAKE_CURRENT_BINARY_DIR}/plugin/build_lib.cpp"
-        plugin/function_object.cpp
+        plugin/src_gen_fun.cpp
     )
 endif()
 #

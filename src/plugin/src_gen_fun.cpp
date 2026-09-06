@@ -3,7 +3,7 @@
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
 /*
-{xrst_begin function_object usr}
+{xrst_begin src_gen_fun usr}
 {xrst_spell
     obj
     dll
@@ -11,13 +11,13 @@
     dir
 }
 
-Linking Plugin Functions to Current Program
-###########################################
+Linking Source Generated Functions to Current Program
+#####################################################
 
 Syntax
 ******
 {xrst_code cpp}
-    fun_obj = ad_tensor::plugin::function_object(
+    fun_obj = ad_tensor::plugin::src_gen_fun(
             plugin_dir, library_name. function_alias
     )
 {xrst_code}
@@ -25,11 +25,13 @@ Syntax
 Prototype
 *********
 {xrst_literal ,
-    // BEGIN_FUNCTION_OBJECT, END_FUNCTION_OBJECT
+    // BEGIN_SRC_GEN_FUN, END_SRC_GEN_FUN
 }
 
 function_type
 *************
+This is the function type for the functions created by
+:ref:`adfn_src_gen-name` :
 {xrst_literal ,
     // BEGIN_FUNCTION_TYPE, END_FUNCTION_TYPE
 }
@@ -60,7 +62,7 @@ The prototype for dom_par, dom_var, and range are given under
 function_type above.
 
 
-{xrst_end function_object}
+{xrst_end src_gen_fun}
 */
 #include <boost/filesystem.hpp>
 #include <ad_tensor/plugin.hpp>
@@ -91,7 +93,7 @@ namespace {
              );
              return plugin;
         } catch(const std::exception& e) {
-            std::string msg = "function_object: failed to link ";
+            std::string msg = "src_gen_fun: failed to link ";
             msg +=  function_alias + " in library " + plugin_path.string();
             ad_tensor::dev::user_assert(false, msg);
         }
@@ -106,12 +108,12 @@ namespace {
 }
 
 namespace ad_tensor { namespace plugin {
-    // BEGIN_FUNCTION_OBJECT
-    boost::function<function_type> function_object(
+    // BEGIN_SRC_GEN_FUN
+    boost::function<function_type> src_gen_fun(
         const std::string& plugin_dir     ,
         const std::string& library_name   ,
         const std::string& function_alias )
-    {   // END_FUNCTION_OBJECT
+    {   // END_SRC_GEN_FUN
         //
         // prefix, extension
 #if defined(_WIN32) || defined(_WIN64)

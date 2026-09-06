@@ -3,17 +3,20 @@
 # SPDX-FileCopyrightText: Bradley M. Bell <bradbell@seanet.com>
 # SPDX-FileContributor: 2026 Bradley M. Bell
 # ---------------------------------------------------------------------------
-{xrst_begin public usr}
+{xrst_begin user usr}
 {xrst_spell
     adten
     adfn
     typedefs
-    multi
-    cpp
 }
 
 AD Tensor User Documentation
 ############################
+
+API
+***
+This user API is not yet stable; i.e., it may change in ways
+that are not backward compatible.
 
 TODO
 ****
@@ -21,7 +24,6 @@ TODO
 #.  Change adfn::get_name -> adfn::name (because it does not change).
 #.  Use a special routine that ensures a value is in current recording:
     void adten::current_recording(void)
-#.  Move includes into COMMON in multi_normal.cpp
 
 
 {xrst_toc_table
@@ -37,4 +39,4 @@ TODO
     docs/bib.xrst
 }
 
-{xrst_end public}
+{xrst_end user}
