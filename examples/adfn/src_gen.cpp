@@ -1,0 +1,81 @@
+// SPDX-License-Identifier: EPL-2.0 OR GPL-2.0-or-later
+// SPDX-FileCopyrightText: Bradley M. Bell <bradbell@seanet.com>
+// SPDX-FileContributor: 2026 Bradley M. Bell
+// ----------------------------------------------------------------------------
+// BEGIN_CPP
+#include <filesystem>
+#include <gtest/gtest.h>
+#include <ad_tensor/ad_tensor.hpp>
+//
+TEST(examples_adfn, src_gen)  {
+    using ad_tensor::adten_t;
+    using ad_tensor::adfn_t;
+    using at::Tensor;
+    using ad_tensor::vector;
+    namespace plugin = ad_tensor::plugin;
+    namespace fs     =  std::filesystem;
+    //
+    // p
+    // We use p for the domain parameters
+    vector<Tensor> p;
+    p.push_back( torch::tensor( {1.0, 2.0} ) );
+    //
+    // v
+    // We use v for the domain variables
+    vector<Tensor> v;
+    v.push_back( torch::tensor( {3.0, 4.0} ) );
+    //
+    // ap, av
+    auto [av, ap] = adten_t::start_recording(v, p);
+    //
+    // ar
+    vector<adten_t> ar;
+    ar.push_back( av[0] + ap[0] );
+    ar.push_back( av[0] - ap[0] );
+    ar.push_back( av[0] * ap[0] );
+    ar.push_back( av[0] / ap[0] );
+    //
+    // r = f(v, p)
+    adfn_t f = adten_t::stop_recording(ar, "f");
+    //
+    // source_path
+    fs::path source_path  = fs::temp_directory_path() / "src_gen";
+    if( ! fs::is_directory(source_path) ) {
+        fs::create_directory( source_path );
+    }
+    try { fs::permissions(
+        source_path, fs::perms::owner_all, fs::perm_options::replace
+    ); } catch (...) {
+        // cannot change permissions for source_path directory
+        EXPECT_TRUE(false);
+    }
+    //
+    // source_path: f.cpp, f.con
+    // You can view f.cpp in the source_path directory
+    f.src_gen(source_path.string());
+    //
+    // src_gen_path/build
+    bool quiet                   = true;
+    bool use_installed_ad_tensor = false;
+    plugin::build_lib(
+        source_path, quiet, use_installed_ad_tensor
+    );
+    //
+    // f_plugin
+    fs::path build_path        = source_path / "build";
+    std::string plugin_lib     = "plugin_lib";
+    std::string function_name  = f.get_name();
+    auto f_plugin = plugin::src_gen_fun(
+        build_path, plugin_lib, function_name
+    );
+    //
+    // r
+    vector<Tensor> r = f_plugin(v, p);
+    EXPECT_EQ( r.size(), 4 );
+    EXPECT_TRUE( r[0].equal( v[0] + p[0] ) );
+    EXPECT_TRUE( r[1].equal( v[0] - p[0] ) );
+    EXPECT_TRUE( r[2].equal( v[0] * p[0] ) );
+    EXPECT_TRUE( r[3].equal( v[0] / p[0] ) );
+    //
+}
+// END_CPP

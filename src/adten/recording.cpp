@@ -8,6 +8,7 @@
 #include <ad_tensor/dev/agraph.hpp>
 #include <ad_tensor/dev/user_assert.hpp>
 #include <ad_tensor/dev/move_swap.hpp>
+#include <ad_tensor/no_elements.hpp>
 //
 /*
 ------------------------------------------------------------------------------
@@ -58,7 +59,7 @@ The recording can be used to compute derivatives with respect to these tensors.
 
 First Constant
 **************
-Each recording starts with an undefined tensor as its first constant.
+Each recording starts with an no element tensor as its first constant.
 This is used as a place holder for values that are not needed; e.g.,
 see the heading :ref:`atom_forward@domain` in the documentation
 for atomic functions.
@@ -115,8 +116,8 @@ adten_t::start_recording(
     tape.m_recording = true;
     //
     // tape.m_con_vec
-    // The constant at index zero is always a ! defined() tensor
-    tape.m_con_vec.push_back( at::Tensor() );
+    // The constant at index zero is always a no element tensor
+    tape.m_con_vec.push_back( no_elements() );
     //
     // tape.m_par.m_dom_shapes
     tape.m_par.m_dom_shapes.resize( dom_par.size() );

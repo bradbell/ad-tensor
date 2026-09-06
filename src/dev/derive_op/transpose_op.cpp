@@ -5,6 +5,7 @@
 #include <ad_tensor/dev/derive_op.hpp>
 #include <ad_tensor/adten.hpp>
 #include <ad_tensor/dev/plus_minus_equal.hpp>
+#include <ad_tensor/no_elements.hpp>
 //
 namespace ad_tensor { namespace dev { // Begin ad_tensor::dev
 // ------------------------------------------------------------------------
@@ -145,7 +146,7 @@ void transpose_op_t<TensorType>::forward_der(
     size_t operand_index  = agraph.m_arg_value[arg_start];
     //
     // for_der[op_index]
-    if( for_der[operand_index].defined() ) {
+    if( has_elements(for_der[operand_index]) ) {
         for_der[op_index] = for_der[operand_index].transpose(dim1, dim2);
     }
 }
@@ -202,7 +203,7 @@ void transpose_op_t<TensorType>::reverse_der(
     size_t operand_index  = agraph.m_arg_value[arg_start];
     //
     // rev_der
-    if( ! rev_der[operand_index].defined() ) {
+    if( no_elements(rev_der[operand_index]) ) {
         rev_der[operand_index] = rev_der[op_index].transpose(dim2, dim1);
     } else {
         rev_der[operand_index] += rev_der[op_index].transpose(dim2, dim1);
@@ -223,5 +224,61 @@ template void transpose_op_t<at::Tensor>::reverse_der(
     const vector<at::Tensor>&    par_all     ,
     const vector<at::Tensor>&    var_all     ,
     vector<at::Tensor>&          rev_der
+) const;
+// ---------------------------------------------------------------------------
+// src_gen
+template <class TensorType>
+std::string transpose_op_t<TensorType>::src_gen(
+    size_t                                                op_index        ,
+    const agraph_t&                                       agraph          ,
+    bool                                                  variable_agraph ,
+    const std::function< std::string(size_t, adtype_t) >& tensor_src
+) const {
+    //
+    // string
+    using std::string;
+    //
+    // arg_start
+    size_t arg_start = agraph.m_arg_start[op_index];
+    //
+#ifndef NDEBUG
+    size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
+    assert( n_arg == 3 && "add: n_arg != 1" );
+# endif
+    //
+    // operand_src
+    size_t   operand_index  = agraph.m_arg_value[arg_start];
+    adtype_t operand_adtype = agraph.m_arg_type[arg_start];
+    string   operand_src    = tensor_src(operand_index, operand_adtype);
+    //
+    // target_src
+    size_t   target_index  = op_index;
+    adtype_t target_adtype =
+        variable_agraph ? adtype_t::variable : adtype_t::parameter;
+    string   target_src    = tensor_src(target_index, target_adtype);
+    //
+    // dim1, dim_2
+    assert( agraph.m_arg_type[arg_start + 1] == adtype_t::none );
+    size_t dim1 = agraph.m_arg_value[arg_start + 1];
+    assert( agraph.m_arg_type[arg_start + 2] == adtype_t::none );
+    size_t dim2 = agraph.m_arg_value[arg_start + 2];
+    //
+    // src
+    constexpr const char* fmt = "{} = {}.transpose({}, {});";
+    string src = std::format(fmt, target_src, operand_src, dim1, dim2);
+    //
+    return src;
+}
+template std::string transpose_op_t<adten_t>::src_gen(
+    size_t                                                op_index        ,
+    const agraph_t&                                       agraph          ,
+    bool                                                  variable_agraph ,
+    const std::function< std::string(size_t, adtype_t) >& tensor_src
+) const;
+template std::string transpose_op_t<at::Tensor>::src_gen(
+    size_t                                                op_index        ,
+    const agraph_t&                                       agraph          ,
+    bool                                                  variable_agraph ,
+    const std::function< std::string(size_t, adtype_t) >& tensor_src
 ) const;
 } } // End ad_tensor::dev

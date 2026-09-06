@@ -2,8 +2,25 @@
 # SPDX-FileCopyrightText: Bradley M. Bell <bradbell@seanet.com>
 # SPDX-FileContributor: 2026 Bradley M. Bell
 # -----------------------------------------------------------------------------
+#
+# plugin_SRCS
+set(plugin_SRCS "")
+if( include_plugin )
+    # build_lib.cpp
+    configure_file(
+        ${CMAKE_CURRENT_SOURCE_DIR}/plugin/build_lib.cpp.in
+        ${CMAKE_CURRENT_BINARY_DIR}/plugin/build_lib.cpp
+        @ONLY
+    )
+    set(plugin_SRCS
+        "${CMAKE_CURRENT_BINARY_DIR}/plugin/build_lib.cpp"
+        plugin/src_gen_fun.cpp
+    )
+endif()
+#
 add_library(ad_tensor SHARED
     # BEGIN_SORT_THIS_LINE_PLUS_1
+    ${plugin_SRCS}
     adfn/forward_dep.cpp
     adfn/forward_der.cpp
     adfn/forward_par.cpp
@@ -12,6 +29,7 @@ add_library(ad_tensor SHARED
     adfn/optimize.cpp
     adfn/print_con.cpp
     adfn/reverse_der.cpp
+    adfn/src_gen.cpp
     adten/binary.cpp
     adten/call_atom.cpp
     adten/ctor.cpp
@@ -53,6 +71,8 @@ add_library(ad_tensor SHARED
     dev/derive_op/ne_op.cpp
     dev/derive_op/op_enum2derive_op.cpp
     dev/derive_op/solve_op.cpp
+    dev/derive_op/src_gen_binary.cpp
+    dev/derive_op/src_gen_unary.cpp
     dev/derive_op/sub_op.cpp
     dev/derive_op/sum_op.cpp
     dev/derive_op/transpose_op.cpp
@@ -74,4 +94,8 @@ add_library(ad_tensor SHARED
     to_string.cpp
     # END_SORT_THIS_LINE_MINUS_1
 )
-target_link_libraries( ad_tensor ${TORCH_LIBRARIES} )
+target_link_libraries( ad_tensor
+    PRIVATE
+    ${TORCH_LIBRARIES}
+    ${plugin_LIBRARIES}
+)

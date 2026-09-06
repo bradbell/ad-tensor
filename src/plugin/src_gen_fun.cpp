@@ -1,0 +1,136 @@
+// SPDX-License-Identifier: EPL-2.0 OR GPL-2.0-or-later
+// SPDX-FileCopyrightText: Bradley M. Bell <bradbell@seanet.com>
+// SPDX-FileContributor: 2026 Bradley M. Bell
+// ----------------------------------------------------------------------------
+/*
+{xrst_begin src_gen_fun usr}
+{xrst_spell
+    obj
+    dll
+    libmy
+    dir
+}
+
+Linking Source Generated Functions to Current Program
+#####################################################
+
+Syntax
+******
+{xrst_code cpp}
+    fun_obj = ad_tensor::plugin::src_gen_fun(
+            plugin_dir, library_name. function_alias
+    )
+{xrst_code}
+
+Prototype
+*********
+{xrst_literal ,
+    // BEGIN_SRC_GEN_FUN, END_SRC_GEN_FUN
+}
+
+function_type
+*************
+This is the function type for the functions created by
+:ref:`adfn_src_gen-name` :
+{xrst_literal ,
+    // BEGIN_FUNCTION_TYPE, END_FUNCTION_TYPE
+}
+
+plugin_dir
+**********
+This is the directory where the plugin library is located
+
+library_name
+************
+This is the name of the plugin library.
+It only contains the system independent part of the library file name.
+For example, if on Linux the library file is ``libmy_lib.so``,
+library_name is ``my_lib`` .
+
+function_alias
+**************
+This is the Boost dll alias for this function.
+
+fun_obj
+*******
+is a function object that can evaluate the function corresponding
+to function_alias using the syntax
+{xrst_code cpp}
+    range = fun_obj(dom_par, dom_var)
+{xrst_code}
+The prototype for dom_par, dom_var, and range are given under
+function_type above.
+
+
+{xrst_end src_gen_fun}
+*/
+#include <boost/filesystem.hpp>
+#include <ad_tensor/plugin.hpp>
+#include <ad_tensor/dev/user_assert.hpp>
+//
+namespace {
+    namespace fs = boost::filesystem;
+    //
+    // BEGIN_FUNCTION_TYPE
+    using function_type = ad_tensor::vector<at::Tensor>(
+        const ad_tensor::vector<at::Tensor>& dom_par ,
+        const ad_tensor::vector<at::Tensor>& dom_var
+    );
+    // END_FUNCTION_TYPE
+    //
+    // link_function
+    template <class FunctionType>
+    boost::function<FunctionType> link_function(
+        const fs::path& plugin_path  ,
+        std::string function_alias ) {
+        //
+        try {
+            // plugin
+            auto plugin = boost::dll::import_alias<FunctionType>(
+                plugin_path,
+                function_alias,
+                boost::dll::load_mode::append_decorations
+             );
+             return plugin;
+        } catch(const std::exception& e) {
+            std::string msg = "src_gen_fun: failed to link ";
+            msg +=  function_alias + " in library " + plugin_path.string();
+            ad_tensor::dev::user_assert(false, msg);
+        }
+        //
+        // This already failed above so it will fail again
+        return  boost::dll::import_alias<FunctionType>(
+            plugin_path,
+            function_alias,
+            boost::dll::load_mode::append_decorations
+        );
+    }
+}
+
+namespace ad_tensor { namespace plugin {
+    // BEGIN_SRC_GEN_FUN
+    boost::function<function_type> src_gen_fun(
+        const std::string& plugin_dir     ,
+        const std::string& library_name   ,
+        const std::string& function_alias )
+    {   // END_SRC_GEN_FUN
+        //
+        // prefix, extension
+#if defined(_WIN32) || defined(_WIN64)
+        std::string prefix    = "";
+        std::string extension = ".dll";
+#else
+        // CMake builds shared modules as *.so on Linux and Mac
+        std::string prefix    = "lib";
+        std::string extension = ".so";
+#endif
+        //
+        // plugin_path
+        fs::path plugin_path =
+            fs::path(plugin_dir) / (prefix + library_name + extension);
+        //
+        return link_function<function_type>(
+            plugin_path, function_alias
+        );
+    }
+} }

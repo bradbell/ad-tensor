@@ -59,6 +59,7 @@ variable result for this atomic function.
 #include <ad_tensor/dev/plus_minus_equal.hpp>
 #include <ad_tensor/dev/tensor_at_index.hpp>
 #include <ad_tensor/dev/unpack_call.hpp>
+#include <ad_tensor/no_elements.hpp>
 //
 namespace ad_tensor { namespace dev { // Begin ad_tensor::dev
 // ------------------------------------------------------------------------
@@ -359,13 +360,13 @@ void call_op_t<TensorType>::forward_der(
             case adtype_t::constant: {
                 TensorType domain_j = TensorType( con_vec[vec_index] );
                 domain.push_back( domain_j );
-                dom_der.push_back( TensorType( at::Tensor() ) );
+                dom_der.push_back( TensorType( no_elements() ) );
             }
             break;
             case adtype_t::parameter: {
                 const TensorType& domain_j = par_all[vec_index];
                 domain.push_back( domain_j );
-                dom_der.push_back( TensorType( at::Tensor() ) );
+                dom_der.push_back( TensorType( no_elements() ) );
             }
             break;
             case adtype_t::variable: {
@@ -445,7 +446,7 @@ void call_op_t<TensorType>::reverse_der(
     rng_used.resize(0);
     rng_used.resize(n_range, false);
     rng_der.resize(0);
-    rng_der.resize( n_range, TensorType( at::Tensor() ) );
+    rng_der.resize( n_range, TensorType( no_elements() ) );
     for(size_t k = 0; k < n_result; ++k) {
         size_t rev_index    = op_index + k;
         size_t arg_index    = arg_start + 4 + n_domain + k;
@@ -499,5 +500,29 @@ template void call_op_t<at::Tensor>::reverse_der(
     const vector<at::Tensor>&    par_all     ,
     const vector<at::Tensor>&    var_all     ,
     vector<at::Tensor>&          rev_der
+) const;
+// ---------------------------------------------------------------------------
+// src_gen
+template <class TensorType>
+std::string call_op_t<TensorType>::src_gen(
+    size_t                                                op_index        ,
+    const agraph_t&                                       agraph          ,
+    bool                                                  variable_agraph ,
+    const std::function< std::string(size_t, adtype_t) >& tensor_src
+) const {
+    user_assert(false, "src_gen not yet implemented for call operator" );
+    return "";
+}
+template std::string call_op_t<adten_t>::src_gen(
+    size_t                                                op_index        ,
+    const agraph_t&                                       agraph          ,
+    bool                                                  variable_agraph ,
+    const std::function< std::string(size_t, adtype_t) >& tensor_src
+) const;
+template std::string call_op_t<at::Tensor>::src_gen(
+    size_t                                                op_index        ,
+    const agraph_t&                                       agraph          ,
+    bool                                                  variable_agraph ,
+    const std::function< std::string(size_t, adtype_t) >& tensor_src
 ) const;
 } } // End ad_tensor::dev

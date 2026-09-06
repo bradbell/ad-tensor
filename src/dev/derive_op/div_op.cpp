@@ -3,10 +3,12 @@
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
 #include <ad_tensor/dev/derive_op.hpp>
+#include <ad_tensor/dev/src_gen_binary.hpp>
 #include <ad_tensor/adten.hpp>
 #include <ad_tensor/dev/broadcast.hpp>
 #include <ad_tensor/dev/plus_minus_equal.hpp>
 #include <ad_tensor/dev/tensor_at_index.hpp>
+#include <ad_tensor/no_elements.hpp>
 //
 namespace ad_tensor { namespace dev { // Begin ad_tensor::dev
 // ------------------------------------------------------------------------
@@ -123,10 +125,10 @@ void div_op_t<TensorType>::forward_der(
     // lhs_type, rhs_type
     adtype_t lhs_type = agraph.m_arg_type[arg_start];
     adtype_t rhs_type = agraph.m_arg_type[arg_start + 1];
-    if( lhs_type == variable && ! for_der[lhs_index].defined() ) {
+    if( lhs_type == variable && no_elements(for_der[lhs_index]) ) {
         lhs_type = adtype_t::constant;
     }
-    if( rhs_type == variable && ! for_der[rhs_index].defined() ) {
+    if( rhs_type == variable && no_elements(for_der[rhs_index]) ) {
         rhs_type = adtype_t::constant;
     }
     //
@@ -252,5 +254,28 @@ template void div_op_t<at::Tensor>::reverse_der(
     const vector<at::Tensor>&    par_all     ,
     const vector<at::Tensor>&    var_all     ,
     vector<at::Tensor>&          rev_der
+) const;
+// ---------------------------------------------------------------------------
+// src_gen
+template <class TensorType>
+std::string div_op_t<TensorType>::src_gen(
+    size_t                                                op_index        ,
+    const agraph_t&                                       agraph          ,
+    bool                                                  variable_agraph ,
+    const std::function< std::string(size_t, adtype_t) >& tensor_src
+) const {
+    return src_gen_binary(op_index, agraph, variable_agraph, tensor_src);
+}
+template std::string div_op_t<adten_t>::src_gen(
+    size_t                                                op_index        ,
+    const agraph_t&                                       agraph          ,
+    bool                                                  variable_agraph ,
+    const std::function< std::string(size_t, adtype_t) >& tensor_src
+) const;
+template std::string div_op_t<at::Tensor>::src_gen(
+    size_t                                                op_index        ,
+    const agraph_t&                                       agraph          ,
+    bool                                                  variable_agraph ,
+    const std::function< std::string(size_t, adtype_t) >& tensor_src
 ) const;
 } } // End ad_tensor::dev

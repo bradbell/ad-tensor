@@ -4,12 +4,14 @@
 // ----------------------------------------------------------------------------
 #include <gtest/gtest.h>
 #include <torch/torch.h>
+#include <ad_tensor/no_elements.hpp>
 //
 #include <ad_tensor/vector.hpp>
 #include <ad_tensor/adtype.hpp>
 #include <ad_tensor/dev/op_enum.hpp>
 #include <ad_tensor/dev/agraph.hpp>
 #include <ad_tensor/dev/derive_op.hpp>
+#include <ad_tensor/no_elements.hpp>
 //
 // empty namespace
 namespace {
@@ -37,11 +39,11 @@ TEST(tests_dev, op_base)  {
     op_enum_t              dom         = op_enum_t::dom;
     op_enum_t              add         = op_enum_t::add;
     adtype_t              par         = adtype_t::parameter;
-    Tensor                undefined   = at::Tensor();
+    Tensor                no_elem     = ad_tensor::no_elements();
     Tensor                ones        = torch::ones( {2} );
     size_t                op_index    = 1;
     ad_tensor::vector<Tensor>    con_vec     = {};
-    ad_tensor::vector<Tensor>    par_vec     = {ones, undefined};
+    ad_tensor::vector<Tensor>    par_vec     = {ones, no_elem };
     agraph_t               agraph;
     agraph.m_op_seq     = ad_tensor::vector<op_enum_t>( {dom, add} );
     agraph.m_arg_start  = ad_tensor::vector<size_t>( {0, 0, 2} );

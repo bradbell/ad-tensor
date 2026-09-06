@@ -79,11 +79,13 @@ Source Code
 */
 // BEGIN_CPP
 #include <ad_tensor/ad_tensor.hpp>
+#include <ad_tensor/no_elements.hpp>
 namespace {
     //
     // BEGIN_USING
     using ad_tensor::vector;
     using ad_tensor::adten_t;
+    using ad_tensor::has_elements;
     using at::Tensor;
     using std::cout;
     // END_USING
@@ -163,8 +165,8 @@ namespace {
             vector<adten_t> rng_der;
             //
             // rng_der
-            if( ! dom_der[0].defined() ) {
-                rng_der.push_back( adten_t( at::Tensor() ) );
+            if( ad_tensor::no_elements(dom_der[0]) ) {
+                rng_der.push_back( adten_t( ad_tensor::no_elements() ) );
             } else {
                 vector<adten_t> domain_z;
                 domain_z.push_back( domain[0] );
@@ -192,8 +194,8 @@ namespace {
             vector<adten_t> dom_der;
             //
             // dom_der
-            if( ! rng_der[0].defined() ) {
-                dom_der.push_back( adten_t( at::Tensor() ) );
+            if( ad_tensor::no_elements(rng_der[0]) ) {
+                dom_der.push_back( adten_t( ad_tensor::no_elements() ) );
             } else {
                 vector<adten_t> domain_z;
                 domain_z.push_back( domain[0] );
@@ -263,12 +265,12 @@ namespace {
             Tensor u    = domain[1];
             Tensor dx   = dom_der[0];
             Tensor du   = dom_der[1];
-            Tensor dz   = at::Tensor();
-            if( dx.defined() && du.defined() ) {
+            Tensor dz   = ad_tensor::no_elements();
+            if( has_elements(dx) && has_elements(du) ) {
                 dz   = 6.0 * x * u * dx + 3.0 * x * x * du;
-            } else if( dx.defined() ) {
+            } else if( has_elements(dx) ) {
                 dz   = 6.0 * x * u * dx;
-            } else if( du.defined() ) {
+            } else if( has_elements(du) ) {
                 dz   = 3.0 * x * x * du;
             }
             //

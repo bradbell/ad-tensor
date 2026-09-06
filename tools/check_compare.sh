@@ -27,6 +27,7 @@ do
     operator=$(echo $pair | $sed -e 's|.*:||')
     out_file=$(echo $gt_file | $sed -e "s|gt_op|${name}_op|")
     $sed $gt_file > temp.$$ \
+    -e "s|gt operator|$name operator|g" \
     -e "s|gt_op|${name}_op|g" \
     -e "s|lhs_tensor *> *rhs_tensor|lhs_tensor $operator rhs_tensor|"
     if ! diff $out_file temp.$$

@@ -8,7 +8,7 @@
 #include <gtest/gtest.h>
 #include <torch/torch.h>
 #include <ad_tensor/vector.hpp>
-#include "@CMAKE_CURRENT_SOURCE_DIR@/get_plugin.hpp"
+#include "get_plugin.hpp"
 //
 TEST(tests_plugin, build_lib) {
     //

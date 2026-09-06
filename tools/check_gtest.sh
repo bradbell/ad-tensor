@@ -21,26 +21,32 @@ then
    echo "tools/check_gtest.sh: must be executed from its parent directory"
    exit 1
 fi
-release='no'
-if [ "$#" != 0 ]
-then
-    if [ "$#" == 1 ] && [ "$1" == '--release' ]
-    then
-        release='yes'
-    else
-        echo 'usage: tools/check_gtest.sh [--release]'
+#
+# release_flag, plugin_flag
+release_flag=''
+plugin_flag=''
+while [ $# -ge 1 ]
+do
+    case "$1" in
+        #
+        --release)
+        release_flag='--release'
+        ;;
+        --no_plugin)
+        plugin_flag='--no_plugin'
+        ;;
+        *)
+cat << EOF
+usage: tools/check_gtest.sh [--release] [--no_plugin]
+EOF
         exit 1
-    fi
-fi
-# -----------------------------------------------------------------------------
+    esac
+    #
+    shift
+done
 #
 # run_cmake.sh
-if [ "$release" == 'yes' ]
-then
-    tools/run_cmake.sh --release
-else
-    tools/run_cmake.sh
-fi
+tools/run_cmake.sh $release_flag $plugin_flag
 #
 # n_job
 if which nproc >& /dev/null

@@ -24,8 +24,8 @@ Returns true if there are no operations in this AD function:
     BEGIN_IS_EMPTY, END_IS_EMPTY
 }
 
-name
-****
+get_name
+********
 get_name returns the name chosen by :ref`stop_recording-name` :
 {xrst_literal ,
     BEGIN_GET_NAME, END_GET_NAME
@@ -82,7 +82,7 @@ Other Public Members
     src/adfn/forward_der.cpp
     src/adfn/reverse_der.cpp
     src/adfn/optimize.cpp
-    examples/adfn/source_gen.cpp
+    src/adfn/src_gen.cpp
 }
 
 
@@ -183,7 +183,7 @@ private:
     std::array< vector<bool>, 3 > rng_depend
     (void) const;
     //
-    // renumber_con
+    // optimize_con
     void optimize_con(
         const vector<bool>& depend_con ,
         const vector<bool>& depend_par ,
@@ -192,6 +192,9 @@ private:
 public:
     // optimize
     void optimize(void);
+    //
+    // src_gen
+    void src_gen(const std::string& plugin_dir) const;
     //
     // BEGIN_DEFAULT_CTOR
     adfn_t()

@@ -6,6 +6,7 @@
 #include <gtest/gtest.h>
 #include <torch/torch.h>
 #include <ad_tensor/adten.hpp>
+#include <ad_tensor/no_elements.hpp>
 //
 #define SCALAR_EQ(x, y) \
     EXPECT_EQ( (x).item<double>(), (y).item<double>() )
@@ -57,8 +58,8 @@ TEST(tests_adten, matmul_mat_vec)  {
     // y
     vector<Tensor> y = f.get_range(var_all);
     //
-    // undefined
-    Tensor undefined = Tensor();
+    // no_elem
+    Tensor no_elem   = ad_tensor::no_elements();
     //
     // y[0]
     EXPECT_EQ( y[0].sizes().size(), 1);
@@ -66,7 +67,7 @@ TEST(tests_adten, matmul_mat_vec)  {
     SCALAR_EQ( y[0][1], mat[1][0] * vec[0] + mat[1][1] * vec[1] );
     //
     // dy[0]
-    vector<Tensor> dv( v.size(), undefined );
+    vector<Tensor> dv( v.size(), no_elem );
     dv[0] = torch::tensor( {8.0, 9.0} );
     vector<Tensor> dy = f.forward_der(dv, var_all);
     EXPECT_EQ( dy[0].sizes().size(), 1);
@@ -123,8 +124,8 @@ TEST(tests_adten, matmul_batch)  {
     // y
     vector<Tensor> y = f.get_range(var_all);
     //
-    // undefined
-    Tensor undefined = Tensor();
+    // no_elem
+    Tensor no_elem   = ad_tensor::no_elements();
     //
     // y[0]
     EXPECT_EQ( y[0].sizes().size(), 3);
@@ -139,7 +140,7 @@ TEST(tests_adten, matmul_batch)  {
     }
     //
     // dy[0]
-    vector<Tensor> dv( v.size(), undefined );
+    vector<Tensor> dv( v.size(), no_elem );
     Tensor dmat = torch::tensor( { {20.0, 21.0}, {22.0, 23.0} } );
     dv[1]       = dmat;
     vector<Tensor> dy = f.forward_der(dv, var_all);

@@ -7,6 +7,7 @@
 {xrst_spell
     pytorch
     autograd
+    gtest
 }
 
 Fitting A Polynomial Benchmark
@@ -27,6 +28,14 @@ for this example is defined by
 This objective comes from the pytorch tutorial
 `Pytorch Tensors and autograd
 <https://docs.pytorch.org/tutorials/beginner/ pytorch_with_examples.html#pytorch-tensors-and-autograd>`_ ,
+
+learn_ms
+********
+In the code below, gtest reports the total time for each test.
+Each test also prints the value learn_ms, which is the time
+in milliseconds for the learning loop; i.e., it does not include
+the time to setup the calculation of the gradients in the learning loop.
+
 
 Common Code
 ***********
@@ -52,20 +61,40 @@ AD Tensor With Optimization
     BEGIN_OPTIMIZE, END_OPTIMIZE
 }
 
+AD Tensor With Source Generation
+********************************
+{xrst_literal ,
+    BEGIN_SRC_GEN, END_SRC_GEN
+}
+
 {xrst_end fit_poly_benchmark}
 */
 // BEGIN_COMMON
+#include <chrono>
+#include <filesystem>
 #include <gtest/gtest.h>
 #include <torch/torch.h>
 #include <ad_tensor/ad_tensor.hpp>
 //
 namespace {
     //
-    // vector
+    // chrono, vector, adten_t, adfn_t
+    namespace chrono = std::chrono;
     using ad_tensor::vector;
+    using ad_tensor::adten_t;
+    using ad_tensor::adfn_t;
     //
-    // double_nan
-    const double double_nan = std::numeric_limits<double>::quiet_NaN();
+    // previous_time, elapsed_ms
+    chrono::time_point previous_time = chrono::steady_clock::now();
+    double elapsed_ms(void) {
+        chrono::time_point current_time = chrono::steady_clock::now();
+        auto microseconds = chrono::duration_cast<chrono::microseconds>(
+            current_time - previous_time
+        ).count();
+        double ms = double(microseconds) / 1000.0;
+        previous_time = current_time;
+        return ms;
+    }
     //
     // number_coefficients, number_grid_points
     const size_t number_coefficients   = 4;
@@ -113,6 +142,9 @@ TEST(benchmarks, fit_poly_autograd) {
         c.push_back( torch::randn( {1}, torch::requires_grad() ) );
     }
     //
+    // previous_time
+    elapsed_ms();
+    //
     // initial_loss, t
     double initial_loss      = loss(c, grid, data).item<double>();
     for(size_t t = 0; t < number_learning_steps; ++t) {
@@ -131,6 +163,11 @@ TEST(benchmarks, fit_poly_autograd) {
         }
     }
     //
+    // learn_ms
+    // For this case learn_ms is near equal the total time reported by gtest
+    // double learn_ms = elapsed_ms();
+    // std::cout << "learn_ms = " << learn_ms << "\n";
+    //
     // relative_loss
     double relative_loss = loss(c, grid, data).item<double>() / initial_loss;
     EXPECT_LT(relative_loss, expected_relative_loss);
@@ -139,10 +176,6 @@ TEST(benchmarks, fit_poly_autograd) {
 //
 // BEGIN_AD_TENSOR
 TEST(benchmarks, fit_poly_ad_tensor) {
-    //
-    // adten_t, adfn_t
-    using ad_tensor::adten_t;
-    using ad_tensor::adfn_t;
     //
     // c
     vector<at::Tensor> c;
@@ -161,6 +194,9 @@ TEST(benchmarks, fit_poly_ad_tensor) {
     vector<adten_t> aloss = { loss(ac, agrid, adata) };
     adfn_t adfn = adten_t::stop_recording(aloss, "adfn");
     //
+    // previous_time
+    elapsed_ms();
+    //
     // dloss, initial_loss, t
     vector<at::Tensor> dloss = { torch::tensor(1.0) };
     double initial_loss      = loss(c, grid, data).item<double>();
@@ -178,6 +214,11 @@ TEST(benchmarks, fit_poly_ad_tensor) {
         }
     }
     //
+    // learn_ms
+    // For this case learn_ms is near equal the total time reported by gtest
+    // double learn_ms = elapsed_ms();
+    //std::cout << "learn_ms = " << learn_ms << "\n";
+    //
     // relative_loss
     double relative_loss = loss(c, grid, data).item<double>() / initial_loss;
     EXPECT_LT(relative_loss, expected_relative_loss);
@@ -186,10 +227,6 @@ TEST(benchmarks, fit_poly_ad_tensor) {
 //
 // BEGIN_OPTIMIZE
 TEST(benchmarks, fit_poly_optimize) {
-    //
-    // adten_t, adfn_t
-    using ad_tensor::adten_t;
-    using ad_tensor::adfn_t;
     //
     // c
     vector<at::Tensor> c;
@@ -224,7 +261,10 @@ TEST(benchmarks, fit_poly_optimize) {
     adfn_t f_grad = adten_t::stop_recording(agrad, "f_grad");
     f_grad.optimize();
     //
-    // dloss, initial_loss, t
+    // previous_time
+    elapsed_ms();
+    //
+    // initial_loss, t
     double initial_loss      = loss(c, grid, data).item<double>();
     for(size_t t = 0; t < number_learning_steps; ++t) {
         //
@@ -240,8 +280,115 @@ TEST(benchmarks, fit_poly_optimize) {
         }
     }
     //
+    // learn_ms
+    // For this case learn_ms is near equal the total time reported by gtest
+    // double learn_ms = elapsed_ms();
+    // std::cout << "learn_ms = " << learn_ms << "\n";
+    //
     // relative_loss
     double relative_loss = loss(c, grid, data).item<double>() / initial_loss;
     EXPECT_LT(relative_loss, expected_relative_loss);
 }
 // END_OPTIMIZE
+//
+// BEGIN_SRC_GEN
+#if INCLUDE_PLUGIN
+TEST(benchmarks, fit_poly_src_gen) {
+    //
+    // fs, plugin
+    namespace fs     = std::filesystem;
+    namespace plugin = ad_tensor::plugin;
+    //
+    // c
+    vector<at::Tensor> c;
+    for(size_t j = 0; j < number_coefficients; ++j) {
+        c.push_back( torch::randn( {1} ) );
+    }
+    //
+    // ac
+    vector<adten_t> ac = adten_t::start_recording(c);
+    //
+    // agrid, adata
+    adten_t agrid(grid);
+    adten_t adata(data);
+    //
+    // f_loss
+    vector<adten_t> aloss = { loss(ac, agrid, adata) };
+    adfn_t f_loss = adten_t::stop_recording(aloss, "f_loss");
+    //
+    // ac
+    ac = adten_t::start_recording(c);
+    //
+    // adloss
+    vector<adten_t> adloss = { adten_t( torch::tensor(1.0) ) };
+    //
+    // avar_all
+    vector<adten_t> avar_all = f_loss.forward_var(ac);
+    //
+    // agrad
+    vector<adten_t> agrad  = f_loss.reverse_der(adloss, avar_all);
+    //
+    // f_grad
+    adfn_t f_grad = adten_t::stop_recording(agrad, "f_grad");
+    f_grad.optimize();
+    //
+    // source_path
+    fs::path source_path  = fs::temp_directory_path() / "fit_poly";
+    if( ! fs::is_directory(source_path) ) {
+        fs::create_directory( source_path );
+    }
+    try { fs::permissions(
+        source_path, fs::perms::owner_all, fs::perm_options::replace
+    ); } catch (...) {
+        // cannot change permissions for source_path directory
+        EXPECT_TRUE(false);
+    }
+    //
+    // source_path: f_grad.cpp, f_grad.con
+    f_grad.src_gen(source_path.string());
+    //
+    // src_gen_path/build
+    bool quiet                   = true;
+    bool use_installed_ad_tensor = false;
+    plugin::build_lib(
+        source_path, quiet, use_installed_ad_tensor
+    );
+    //
+    // f_grad_plugin
+    fs::path build_path        = source_path / "build";
+    std::string plugin_lib     = "plugin_lib";
+    std::string function_name  = f_grad.get_name();
+    auto f_plugin = plugin::src_gen_fun(
+        build_path, plugin_lib, function_name
+    );
+    //
+    // previous_time
+    elapsed_ms();
+    //
+    // dom_par, initial_loss, t
+    vector<at::Tensor> dom_par;
+    double initial_loss      = loss(c, grid, data).item<double>();
+    for(size_t t = 0; t < number_learning_steps; ++t) {
+        //
+        // var_all
+        vector<at::Tensor> var_all = f_grad.forward_var(c);
+        //
+        // grad
+        vector<at::Tensor> grad  = f_plugin(c, dom_par);
+        //
+        // c
+        for(size_t j = 0; j < number_coefficients; ++j) {
+            c[j] -= learning_rate * grad[j];
+        }
+    }
+    //
+    // learn_ms
+    double learn_ms = elapsed_ms();
+    std::cout << "learn_ms = " << learn_ms << "\n";
+    //
+    // relative_loss
+    double relative_loss = loss(c, grid, data).item<double>() / initial_loss;
+    EXPECT_LT(relative_loss, expected_relative_loss);
+}
+#endif
+// END_SRC_GEN

@@ -3,10 +3,10 @@
 # SPDX-FileCopyrightText: Bradley M. Bell <bradbell@seanet.com>
 # SPDX-FileContributor: 2026 Bradley M. Bell
 # ---------------------------------------------------------------------------
-{xrst_begin private dev}
+{xrst_begin developer dev}
 
-The AD Tensor Private Documentation
-###################################
+The AD Tensor Developer Documentation
+#####################################
 
 Contents
 ********
@@ -31,4 +31,4 @@ Contents
 }
 {xrst_comment END_SORT_THIS_LINE_MINUS_2}
 
-{xrst_end private}
+{xrst_end developer}

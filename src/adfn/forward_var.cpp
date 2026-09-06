@@ -8,6 +8,7 @@
 #include <ad_tensor/dev/derive_op.hpp>
 #include <ad_tensor/dev/to_string.hpp>
 #include <ad_tensor/dev/user_assert.hpp>
+#include <ad_tensor/no_elements.hpp>
 /*
 {xrst_begin adfn_forward_var usr}
 
@@ -85,7 +86,7 @@ vector<TensorType> adfn_t::forward_var(
     }
     for(size_t i = 0; i < shapes.size(); ++i) {
         c10::IntArrayRef shape = shapes[i];
-        if( dom_var[i].defined() ) {
+        if( has_elements(dom_var[i]) ) {
             if( ! dom_var[i].sizes().equals( shape ) ) {
                 msg += "dom_var[" + std::to_string(i) + "] shape is ";
                 msg += dev::to_string( dom_var[i].sizes() );
@@ -102,13 +103,13 @@ vector<TensorType> adfn_t::forward_var(
         cout << "Begin tracing " + get_name() + ".forward_var\n";
     }
     //
-    // n_op, undefined
+    // n_op, no_elem
     size_t     n_op      = m_var.m_op_seq.size();
-    TensorType undefined = TensorType( at::Tensor() );
+    TensorType no_elem   = TensorType( no_elements() );
     //
     // var_all
     vector<TensorType> var_all =  dom_var ;
-    var_all.resize(n_op, undefined);
+    var_all.resize(n_op, no_elem);
     //
     // var_all
     for(size_t op_index = 0; op_index < n_op; ++op_index) {

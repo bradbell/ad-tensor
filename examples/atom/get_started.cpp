@@ -65,6 +65,7 @@ Source Code
 // BEGIN_CPP
 #include <gtest/gtest.h>
 #include <ad_tensor/ad_tensor.hpp>
+#include <ad_tensor/no_elements.hpp>
 namespace {
     //
     using std::optional;
@@ -111,8 +112,8 @@ namespace {
             //
             // rng_der
             vector<Tensor> rng_der;
-            if( ! dom_der[0].defined() ) {
-                rng_der.push_back( at::Tensor() );
+            if( ad_tensor::no_elements(dom_der[0]) ) {
+                rng_der.push_back( ad_tensor::no_elements() );
             } else {
                 rng_der.push_back( 2.0 * domain[0] * dom_der[0] );
             }
@@ -128,8 +129,8 @@ namespace {
             //
             // dom_der
             vector<Tensor> dom_der;
-            if( ! rng_der[0].defined() ) {
-                dom_der.push_back( at::Tensor() );
+            if( ad_tensor::no_elements(rng_der[0]) ) {
+                dom_der.push_back( ad_tensor::no_elements() );
             } else {
                 dom_der.push_back( 2.0 * domain[0] * rng_der[0] );
             }

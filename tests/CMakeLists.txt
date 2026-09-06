@@ -3,28 +3,13 @@
 # SPDX-FileContributor: 2026 Bradley M. Bell
 # -----------------------------------------------------------------------------
 #
-# plugin_TESTS, plugin_LIBRARIES
+# plugin_TESTS
 set(plugin_TESTS "")
-set(plugin_LIBRARIES "")
 if( include_plugin )
-    #
-    # Boost_INCLUDE_DIRS, Boost_LIBRARIES
-    cmake_policy(SET CMP0167 NEW)
-    find_package(Boost REQUIRED COMPONENTS filesystem system)
-    message( STATUS "Boost_INCLUDE_DIRS = ${Boost_INCLUDE_DIRS}" )
-    message( STATUS "Boost_LIBRARIES = ${Boost_LIBRARIES}" )
-    #
-    # include_directories
-    include_directories( ${Boost_INCLUDE_DIRS} )
-    include_directories( ${CMAKE_CURRENT_BINARY_DIR} )
-    #
-    # plugin_LIBRARIES, plugin_TESTS
-    set(plugin_LIBRARIES "${Boost_LIBRARIES}")
     set(plugin_TESTS
         ${CMAKE_CURRENT_BINARY_DIR}/plugin/build_lib.cpp
+        adfn/src_gen.cpp
     )
-    #
-    add_subdirectory(plugin)
 endif()
 #
 # BEGIN_SORT_THIS_LINE_PLUS_2
@@ -39,6 +24,7 @@ add_executable(tests
     dev/rng_depend.cpp
     dev/tape.cpp
     dev/vec_sets.cpp
+    fileio.cpp
 )
 # END_SORT_THIS_LINE_MINUS_2
 #
@@ -48,6 +34,3 @@ target_link_libraries(tests
     ${TORCH_LIBRARIES}
     ${plugin_LIBRARIES}
 )
-if( include_plugin )
-    add_dependencies(tests plugin_lib)
-endif()

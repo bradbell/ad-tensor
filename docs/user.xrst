@@ -3,28 +3,40 @@
 # SPDX-FileCopyrightText: Bradley M. Bell <bradbell@seanet.com>
 # SPDX-FileContributor: 2026 Bradley M. Bell
 # ---------------------------------------------------------------------------
-{xrst_begin public usr}
+{xrst_begin user usr}
 {xrst_spell
     adten
+    adfn
+    typedefs
 }
 
 AD Tensor User Documentation
 ############################
 
+API
+***
+This user API is not yet stable; i.e., it may change in ways
+that are not backward compatible.
+
 TODO
 ****
+#.  Change typedefs to using statements.
+#.  Change adfn::get_name -> adfn::name (because it does not change).
 #.  Use a special routine that ensures a value is in current recording:
-    void adten::current_recording(adten_t& adten)
+    void adten::current_recording(void)
+
 
 {xrst_toc_table
+    CMakeLists.txt
     include/ad_tensor/vector.hpp
     include/ad_tensor/sparsity.hpp
     include/ad_tensor/adten.hpp
     include/ad_tensor/adtype.hpp
     include/ad_tensor/adfn.hpp
+    include/ad_tensor/no_elements.hpp
     src/chkpnt.cpp
     src/atom.cpp
     docs/bib.xrst
 }
 
-{xrst_end public}
+{xrst_end user}

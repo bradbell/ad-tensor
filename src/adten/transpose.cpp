@@ -80,7 +80,6 @@ where start is the length of arg_value and arg_type before this call to
 {xrst_end adten_transpose_dev}
 */
 // BEGIN_TRANSPOSE BEGIN_DEV_TRANSPOSE
-// atranspose = adten.transpose(shape)
 adten_t adten_t::transpose(int64_t dim1, int64_t dim2) const
 // END_TRANSPOSE END_DEV_TRANSPOSE
 {

@@ -68,7 +68,7 @@ Test
 */
 #include <map>
 #include <ad_tensor/adten.hpp>
-#include <ad_tensor/dev/to_string.hpp>
+#include <ad_tensor/no_elements.hpp>
 //
 namespace ad_tensor { // Begin ad_tensor
 //
@@ -96,8 +96,8 @@ void adfn_t::optimize_con(
     vector<size_t> old2new_con(n_old, not_used);
     //
     // old2new_con[0], hash2new_con[0]
-    // always keep the undefined tensor at constant index 0
-    assert( ! m_con_vec[0].defined() );
+    // always keep the no element tensor at constant index 0
+    assert( no_elements(m_con_vec[0]) );
     old2new_con[0]  = 0;
     hash2new_con[0] = 0;
     //
@@ -108,7 +108,7 @@ void adfn_t::optimize_con(
         //
         // hash
         uint64_t hash = 0;
-        if( m_con_vec[i_old].defined() ) {
+        if( has_elements( m_con_vec[i_old] ) ) {
             at::Tensor hash_ten = torch::hash_tensor( m_con_vec[i_old] );
             uint64_t*  hash_ptr = hash_ten.data_ptr<uint64_t>();
             hash                = *hash_ptr;
@@ -143,7 +143,7 @@ void adfn_t::optimize_con(
     // m_con_vec
     // shrink to fit is non-binding, so ensure this memory gets freed
     for(size_t i_old = n_new; i_old < n_old; ++i_old) {
-        m_con_vec[i_old] = at::Tensor();
+        m_con_vec[i_old] = no_elements();
     }
     m_con_vec.resize(n_new);
     //

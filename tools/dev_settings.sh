@@ -27,7 +27,7 @@ package_name='ad_tensor'
 #
 # index_page_name
 # is the xrst index page_name for this projects documentation.
-index_page_name='public'
+index_page_name='user'
 #
 # version_file_list
 # The possible patterns for a latest version number are:
@@ -78,6 +78,7 @@ contributor_list='
 no_copyright_list='
     .gitignore
     .readthedocs.yaml
+    pkgconfig/ad_tensor.pc.in
     typos.toml
     xrst.toml
 '

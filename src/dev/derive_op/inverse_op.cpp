@@ -3,7 +3,9 @@
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
 #include <ad_tensor/dev/derive_op.hpp>
+#include <ad_tensor/dev/src_gen_unary.hpp>
 #include <ad_tensor/adten.hpp>
+#include <ad_tensor/no_elements.hpp>
 //
 namespace ad_tensor { namespace dev { // Begin ad_tensor::dev
 // ------------------------------------------------------------------------
@@ -118,7 +120,7 @@ void inverse_op_t<TensorType>::forward_der(
 #endif
     // operand_index
     size_t operand_index  = agraph.m_arg_value[arg_start];
-    if( ! for_der[operand_index].defined() ) {
+    if( no_elements(for_der[operand_index]) ) {
         return;
     }
     // for_der
@@ -158,7 +160,7 @@ void inverse_op_t<TensorType>::reverse_der(
     thread_local vector<int64_t> array;
     //
     // check for case where this operation is not connected to the range
-    if( ! rev_der[op_index].defined() ) {
+    if( no_elements(rev_der[op_index]) ) {
         return;
     }
     //
@@ -186,7 +188,7 @@ void inverse_op_t<TensorType>::reverse_der(
     );
     //
     // rev_der[operand_index]
-    if( ! rev_der[operand_index].defined() ) {
+    if( no_elements(rev_der[operand_index]) ) {
         rev_der[operand_index]  = - prod;
     } else {
         rev_der[operand_index] -= prod;
@@ -207,5 +209,28 @@ template void inverse_op_t<at::Tensor>::reverse_der(
     const vector<at::Tensor>&    par_all     ,
     const vector<at::Tensor>&    var_all     ,
     vector<at::Tensor>&          rev_der
+) const;
+// ---------------------------------------------------------------------------
+// src_gen
+template <class TensorType>
+std::string inverse_op_t<TensorType>::src_gen(
+    size_t                                                op_index        ,
+    const agraph_t&                                       agraph          ,
+    bool                                                  variable_agraph ,
+    const std::function< std::string(size_t, adtype_t) >& tensor_src
+) const {
+    return src_gen_unary(op_index, agraph, variable_agraph, tensor_src);
+}
+template std::string inverse_op_t<adten_t>::src_gen(
+    size_t                                                op_index        ,
+    const agraph_t&                                       agraph          ,
+    bool                                                  variable_agraph ,
+    const std::function< std::string(size_t, adtype_t) >& tensor_src
+) const;
+template std::string inverse_op_t<at::Tensor>::src_gen(
+    size_t                                                op_index        ,
+    const agraph_t&                                       agraph          ,
+    bool                                                  variable_agraph ,
+    const std::function< std::string(size_t, adtype_t) >& tensor_src
 ) const;
 } } // End ad_tensor::dev

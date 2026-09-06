@@ -7,6 +7,7 @@
 #include <ad_tensor/dev/broadcast.hpp>
 #include <ad_tensor/dev/plus_minus_equal.hpp>
 #include <ad_tensor/dev/tensor_at_index.hpp>
+#include <ad_tensor/no_elements.hpp>
 //
 namespace ad_tensor { namespace dev { // Begin ad_tensor::dev
 // ------------------------------------------------------------------------
@@ -104,7 +105,7 @@ template<> void eq_op_t<at::Tensor>::forward_der(
     const vector<at::Tensor>&    var_all     ,
     vector<at::Tensor>&          for_der
 ) const {
-    assert( ! for_der[op_index].defined() );
+    assert( no_elements(for_der[op_index]) );
 }
 template<> void eq_op_t<adten_t>::forward_der(
     size_t                       op_index    ,
@@ -114,7 +115,7 @@ template<> void eq_op_t<adten_t>::forward_der(
     const vector<adten_t>&       var_all     ,
     vector<adten_t>&             for_der
 ) const {
-    assert( ! for_der[op_index].defined() );
+    assert( no_elements(for_der[op_index]) );
 }
 // ------------------------------------------------------------------------
 // reverse_der
@@ -136,4 +137,28 @@ template<> void eq_op_t<adten_t>::reverse_der(
     vector<adten_t>&             rev_der
 ) const {
 }
+// ---------------------------------------------------------------------------
+// src_gen
+template <class TensorType>
+std::string eq_op_t<TensorType>::src_gen(
+    size_t                                                op_index        ,
+    const agraph_t&                                       agraph          ,
+    bool                                                  variable_agraph ,
+    const std::function< std::string(size_t, adtype_t) >& tensor_src
+) const {
+    user_assert(false, "src_gen not yet implemented for eq operator" );
+    return "";
+}
+template std::string eq_op_t<adten_t>::src_gen(
+    size_t                                                op_index        ,
+    const agraph_t&                                       agraph          ,
+    bool                                                  variable_agraph ,
+    const std::function< std::string(size_t, adtype_t) >& tensor_src
+) const;
+template std::string eq_op_t<at::Tensor>::src_gen(
+    size_t                                                op_index        ,
+    const agraph_t&                                       agraph          ,
+    bool                                                  variable_agraph ,
+    const std::function< std::string(size_t, adtype_t) >& tensor_src
+) const;
 } } // End ad_tensor::dev

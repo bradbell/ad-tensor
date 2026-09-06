@@ -4,6 +4,7 @@
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
 #include <torch/torch.h>
+#include <ad_tensor/no_elements.hpp>
 //
 /*
 {xrst_begin plus_minus_equal dev}
@@ -25,13 +26,13 @@ Prototype
 target
 ******
 This is the target we are adding to (or subtracting from).
-The special case where on input target.defined() is false
+The special case where on input has_elements(target) is false
 corresponds to a zero target value.
 
 rhs
 ***
 this is the right hand side that was are adding to (or subtracting from).
-The special case where rhs.defined() is false
+The special case where has_elements(rhs) is false
 corresponds to a zero right hand side.
 In this case, target does not change.
 
@@ -51,18 +52,18 @@ namespace ad_tensor { namespace dev {
         const c10::IntArrayRef&        dim  = c10::IntArrayRef() )
 // END_PLUS_EQUAL
     {   //
-        if( ! rhs.defined() ) {
+        if( no_elements(rhs) ) {
             return;
         }
         if( dim.size() == 0 ) {
-            if( ! target.defined() ) {
+            if( no_elements(target) ) {
                 target = rhs.clone();
             } else {
                 target += rhs;
                 }
                 } else {
             TensorType compress = rhs.sum(dim);
-            if( ! target.defined() ) {
+            if( no_elements(target) ) {
                 target = compress;
             } else {
                 target += compress;
@@ -76,18 +77,18 @@ namespace ad_tensor { namespace dev {
         const c10::IntArrayRef&        dim  = c10::IntArrayRef() )
 // END_MINUS_EQUAL
     {   //
-        if( ! rhs.defined() ) {
+        if( no_elements(rhs) ) {
             return;
         }
         if( dim.size() == 0 ) {
-            if( ! target.defined() ) {
+            if( no_elements(target) ) {
                 target = - rhs;
             } else {
                 target -= rhs;
             }
         } else {
             TensorType compress = rhs.sum(dim);
-            if( ! target.defined() ) {
+            if( no_elements(target) ) {
                 target = - compress;
             } else {
                 target -= compress;

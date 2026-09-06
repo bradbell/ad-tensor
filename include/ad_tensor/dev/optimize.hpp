@@ -39,7 +39,7 @@ namespace ad_tensor { namespace dev {
     //
     // new_call
     size_t new_call(
-        adtype_t                 agraph_type,
+        adtype_t                  agraph_type,
         agraph_t&                 agraph_new,
         const agraph_t&           agraph_old,
         size_t                    op_index_old,

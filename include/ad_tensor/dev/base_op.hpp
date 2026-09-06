@@ -7,6 +7,8 @@
 {xrst_begin base_op dev}
 {xrst_spell
     der
+    src
+    newline
 }
 
 The Operator Base Class
@@ -25,6 +27,8 @@ and its derived classes, are static or like static functions
 that are grouped by derived class.
 {xrst_toc_table
     include/ad_tensor/dev/derive_op.hpp
+    src/dev/derive_op/src_gen_binary.cpp
+    src/dev/derive_op/src_gen_unary.cpp
 }
 
 Common Arguments
@@ -36,7 +40,7 @@ op_index
 ========
 is the index of this operator in the operation sequence.
 It is also the index of the result for this operator.
-It must be greater than zero, because the first result is the
+It must be greater than zero, because the first result is an
 independent parameter tensor.
 
 agraph
@@ -100,10 +104,35 @@ reverse_der
     Hence for_der[index] for index < op_index are outputs to this routine.
     Actually all the outputs correspond to index values that are
     arguments to the operator at index op_index.
-#.  The undefined matrix, ! for_der[index].defined(), corresponds to zero
-    derivative for the corresponding variable. There is not reason to process
-    cases where for_der[op_index] is undefined; hence for_der[op_index]
-    is defined when this routine is called.
+#.  The no element tensor corresponds to zero
+    derivative for the corresponding variable. There is no reason to process
+    cases where for_der[op_index] has no elements; hence for_der[op_index]
+    has elements when this routine is called.
+
+src_gen
+=======
+{xrst_literal ,
+    BEGIN_SRC_GEN, END_SRC_GEN
+}
+The string returned by src_gen sets the value for the corresponding
+operator, operator index, and acyclic graph.
+It does not start or end with an newline and if it creates any new objects,
+they must be inside a local scope; i.e.,  inside of {}.
+
+variable_agraph
+---------------
+if this is true (false) the acyclic graph is for variables (parameters).
+
+tensor_src
+----------
+The function call
+{xrst_code cpp}
+    src = tensor_src(index, adtype)
+{xrst_code}
+returns a source code representation of a
+constant, parameter of variable (depending on adtype) with the specified index.
+The return, src, can be used to set or get the corresponding value.
+There are no newline characters in src.
 
 {xrst_end base_op}
 */
@@ -160,5 +189,14 @@ template<class TensorType> struct base_op_t
         vector<TensorType>&          rev_der
     ) const = 0;
     // END_REVERSE_DER
+    //
+    // BEGIN_SRC_GEN
+    virtual std::string src_gen(
+        size_t                       op_index        ,
+        const agraph_t&              agraph          ,
+        bool                         variable_agraph ,
+        const std::function< std::string(size_t, adtype_t) >& tensor_src
+    ) const = 0;
+    // END_SRC_GEN
 };
 } }

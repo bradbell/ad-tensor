@@ -25,10 +25,11 @@ fi
 # sed
 source tools/grep_and_sed.sh
 #
-# skip_check_copy, external_links
+# skip_check_copy, external_links, release
 external_links='no'
 skip_check_copy='no'
-release='no'
+release_flag=''
+plugin_flag=''
 while [ $# -ge 1 ]
 do
     case "$1" in
@@ -40,11 +41,15 @@ do
         external_links='yes'
         ;;
         --release)
-        release='yes'
+        release_flag='--release'
+        ;;
+        --no_plugin)
+        plugin_flag='--no_plugin'
         ;;
         *)
 cat << EOF
-usage: tools/check_all.sh [-skip_check_copy] [--external_links] [--release]
+usage: tools/check_all.sh \
+    [-skip_check_copy] [--external_links] [--release] [--no_plugin]
 EOF
         exit 1
     esac
@@ -85,13 +90,9 @@ do
 done
 #
 # check_gtest.sh
-# Do last because other tests may change things that require this to re-run.
-if [ "$release" == 'yes' ]
-then
-    echo_eval check_gtest.sh --release
-else
-    echo_eval check_gtest.sh
-fi
+# Do last because it takes longer and other tests may change things
+# that require this to re-run.
+echo_eval check_gtest.sh $release_flag $plugin_flag
 #
 echo "$script_path: OK"
 exit 0
