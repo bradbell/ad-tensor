@@ -204,7 +204,7 @@ namespace {
             {matrix_size, matrix_size}, -inf, options
         );
         for(size_t j = 0; j < matrix_size; ++j) {
-            minimum_L[j][j] = 1e-1;
+            minimum_L[j][int64_t(j)] = 1e-1;
         }
         minimum_L = torch::tril( minimum_L );
         return minimum_L;

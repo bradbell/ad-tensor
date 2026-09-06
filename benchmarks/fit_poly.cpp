@@ -96,9 +96,6 @@ namespace {
         return ms;
     }
     //
-    // double_nan
-    const double double_nan = std::numeric_limits<double>::quiet_NaN();
-    //
     // number_coefficients, number_grid_points
     const size_t number_coefficients   = 4;
     const size_t number_grid_points    = 2000;
