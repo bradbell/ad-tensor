@@ -58,7 +58,6 @@ target_link_libraries(plugin_lib
             std::filesystem::create_directory( build_dir );
         }
         std::filesystem::current_path(build_dir);
-        std::cout << "current_path = " << std::filesystem::current_path() << "\n";
         //
         // ../CMakeLists.txt
         std::ofstream file( "../CMakeLists.txt" );

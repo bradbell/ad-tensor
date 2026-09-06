@@ -7,7 +7,7 @@
 cmake_minimum_required(VERSION 3.10)
 #
 # ad_tensor_SOURCE_DIR
-project(ad_tensor VERSION "2026.9.5")
+project(ad_tensor VERSION "2026.9.6")
 #
 # CXX_STANDARD
 set(CMAKE_CXX_STANDARD 20)
