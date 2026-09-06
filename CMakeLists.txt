@@ -10,6 +10,7 @@
     Config
     libtorch
     build build
+    gtest
 }
 
 Using CMake to Build, Test, and Install ad_tensor
@@ -20,7 +21,7 @@ Command
 {xrst_code sh}
     cmake -S source_dir -B build_dir \
         -G generator \
-        -D include_tests=(true|false) \
+        -D include_gtest=(true|false) \
         -D include_plugin=(true|false) \
         -D Torch_DIR=torch_dir
 {xrst_code}
@@ -43,17 +44,17 @@ generator
 =========
 is which cmake generator to use; e.g. Ninja.
 
-include_tests
+include_gtest
 =============
-If include_tests is true (false), the following google test targets
+If include_gtest is true (false), the following google targets
 will be included (will not be included) in the build:
 examples, benchmarks, and tests.
-This will require the google test package.
+These targets require the google test package.
 
 include_plugin
 ==============
-If include_plugin is true (false), the ability to compile and link
-generated source code will be included in the build.
+If include_plugin is true (false), the ability to link
+source code generated using :ref:`adfn_src_gen-name` is included in the build.
 This will require the system and filesystem components of the boost library.
 
 torch_dir
@@ -71,11 +72,12 @@ where build_dir is the same as above.
 
 Test
 ****
-The following command will run the tests:
+The following command will run the examples, tests and benchmarks.
+These require that include_gtest to be true:
 {xrst_code sh}
     build_dir/examples/examples
-    build_dir/benchmarks/benchmarks
     build_dir/tests/tests
+    build_dir/benchmarks/benchmarks
 {xrst_code}
 Note that on windows you will have to change '/' to '\' .
 
@@ -146,7 +148,7 @@ add_subdirectory(pkgconfig)
 add_subdirectory(src)
 #
 # examples, tests
-if( include_tests )
+if( include_gtest )
     find_package(GTest REQUIRED)
     add_subdirectory(examples)
     add_subdirectory(tests)

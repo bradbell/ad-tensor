@@ -45,6 +45,7 @@ TEST(examples_adfn, src_gen)  {
     }
     //
     // source_path: f.cpp, f.con
+    // You can view f.cpp in the source_path directory
     f.src_gen(source_path.string());
     //
     // src_gen_path/build

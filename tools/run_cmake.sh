@@ -24,13 +24,15 @@ fi
 cmake_build_type='debug'
 cmake_c_compiler='gcc'
 cmake_cxx_compiler='g++'
+include_gtest="true"
+include_plugin='true'
 while [ "$#" -ge 1 ]
 do
     case $1 in
 
         --help)
         echo 'usage: tools/run_cmake.sh [flag1 [flag2 .. ] ]'
-        echo 'possible flags: --help --release --clang'
+        echo 'possible flags: --help --release --clang --no_gtest --no_plugin'
         exit 0
         ;;
 
@@ -41,6 +43,14 @@ do
         --clang)
         cmake_c_compiler='clang'
         cmake_cxx_compiler='clang++'
+        ;;
+
+        --no_gtest)
+        include_gtest='false'
+        ;;
+
+        --no_plugin)
+        include_plugin='false'
         ;;
 
         *)
@@ -91,8 +101,8 @@ cxx_flags='-Wall -pedantic-errors -Wshadow -Wfloat-conversion -Wconversion'
 cat << EOF > temp.cmd
 cmake -S .. -B . \\
     -G Ninja \\
-    -D include_tests=true \\
-    -D include_plugin=true \\
+    -D include_gtest=$include_gtest \\
+    -D include_plugin=$include_plugin \\
     -D Torch_DIR=$torch_dir \\
     -D CMAKE_BUILD_TYPE=$cmake_build_type \\
     -D CMAKE_CXX_FLAGS='$cxx_flags' \\
