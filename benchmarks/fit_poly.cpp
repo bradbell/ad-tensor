@@ -292,6 +292,7 @@ TEST(benchmarks, fit_poly_optimize) {
 // END_OPTIMIZE
 //
 // BEGIN_SRC_GEN
+#if INCLUDE_PLUGIN
 TEST(benchmarks, fit_poly_src_gen) {
     //
     // fs, plugin
@@ -383,4 +384,5 @@ TEST(benchmarks, fit_poly_src_gen) {
     double relative_loss = loss(c, grid, data).item<double>() / initial_loss;
     EXPECT_LT(relative_loss, expected_relative_loss);
 }
+#endif
 // END_SRC_GEN

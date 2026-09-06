@@ -2,16 +2,25 @@
 # SPDX-FileCopyrightText: Bradley M. Bell <bradbell@seanet.com>
 # SPDX-FileContributor: 2026 Bradley M. Bell
 # -----------------------------------------------------------------------------
-# build_lib.cpp
-configure_file(
-    ${CMAKE_CURRENT_SOURCE_DIR}/plugin/build_lib.cpp.in
-    ${CMAKE_CURRENT_BINARY_DIR}/plugin/build_lib.cpp
-    @ONLY
-)
+#
+# plugin_SRCS
+set(plugin_SRCS "")
+if( include_plugin )
+    # build_lib.cpp
+    configure_file(
+        ${CMAKE_CURRENT_SOURCE_DIR}/plugin/build_lib.cpp.in
+        ${CMAKE_CURRENT_BINARY_DIR}/plugin/build_lib.cpp
+        @ONLY
+    )
+    set(plugin_SRCS
+        "${CMAKE_CURRENT_BINARY_DIR}/plugin/build_lib.cpp"
+        plugin/function_object.cpp
+    )
+endif()
 #
 add_library(ad_tensor SHARED
     # BEGIN_SORT_THIS_LINE_PLUS_1
-    ${CMAKE_CURRENT_BINARY_DIR}/plugin/build_lib.cpp
+    ${plugin_SRCS}
     adfn/forward_dep.cpp
     adfn/forward_der.cpp
     adfn/forward_par.cpp
@@ -81,7 +90,6 @@ add_library(ad_tensor SHARED
     dev/tensor_at_index.cpp
     dev/to_string.cpp
     dev/vec_sets.cpp
-    plugin/function_object.cpp
     sparsity.cpp
     to_string.cpp
     # END_SORT_THIS_LINE_MINUS_1

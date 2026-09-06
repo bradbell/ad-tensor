@@ -3,17 +3,17 @@
 # SPDX-FileContributor: 2026 Bradley M. Bell
 # -----------------------------------------------------------------------------
 #
-# plugin_TESTS
-set(plugin_TESTS "")
+# plugin_EXAMPLES
+set(plugin_EXAMPLES "")
 if( include_plugin )
-    set(plugin_TESTS
+    set(plugin_EXAMPLES
         adfn/src_gen.cpp
     )
 endif()
 #
 # BEGIN_SORT_THIS_LINE_PLUS_2
 add_executable(examples
-    ${plugin_TESTS}
+    ${plugin_EXAMPLES}
     adfn/forward_dep.cpp
     adfn/forward_der.cpp
     adfn/forward_par.cpp

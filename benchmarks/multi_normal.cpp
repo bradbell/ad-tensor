@@ -119,6 +119,8 @@ AD Tensor With Optimization
 
 AD Tensor With Source Generation
 ********************************
+This benchmark will only run when
+:ref:`cmake@Command@include_plugin` is true:
 {xrst_literal ,
     BEGIN_SRC_GEN, END_SRC_GEN
 }
@@ -359,6 +361,7 @@ TEST(benchmarks, multi_normal_optimize) {
 // END_OPTIMIZE
 //
 // BEGIN_SRC_GEN
+#if INCLUDE_PLUGIN
 TEST(benchmarks, multi_normal_src_gen) {
     //
     // fs, plugin
@@ -442,4 +445,5 @@ TEST(benchmarks, multi_normal_src_gen) {
     double relative_loss = loss(L[0]).item<double>() / initial_loss;
     EXPECT_LT(relative_loss, expected_relative_loss);
 }
+#endif
 // END_SRC_GEN

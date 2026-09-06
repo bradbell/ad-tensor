@@ -8,6 +8,7 @@ set(plugin_TESTS "")
 if( include_plugin )
     set(plugin_TESTS
         ${CMAKE_CURRENT_BINARY_DIR}/plugin/build_lib.cpp
+        adfn/src_gen.cpp
     )
 endif()
 #
@@ -16,7 +17,6 @@ add_executable(tests
     ${plugin_TESTS}
     adfn/optimize.cpp
     adfn/reverse_der.cpp
-    adfn/src_gen.cpp
     adten/matmul.cpp
     adten/solve.cpp
     dev/base_op.cpp

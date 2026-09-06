@@ -3,7 +3,7 @@
 # SPDX-FileContributor: 2026 Bradley M. Bell
 # -----------------------------------------------------------------------------
 #[[
-{xrst_begin cmake_command usr}
+{xrst_begin cmake usr}
 {xrst_spell
     dir
     filesystem
@@ -88,7 +88,7 @@ The following command will install ad_tensor:
     cmake --install build_dir
 {xrst_code}
 
-{xrst_end cmake_command}
+{xrst_end cmake}
 ]]
 # ---------------------------------------------------------------------------
 # print_variable
@@ -124,6 +124,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${TORCH_CXX_FLAGS}")
 # include_directories
 include_directories( SYSTEM ${TORCH_INCLUDE_DIRS} )
 include_directories( ${ad_tensor_SOURCE_DIR}/include )
+include_directories( ${ad_tensor_BINARY_DIR}/include )
 #
 # plugin_LIBRARIES, include_directories
 set(plugin_LIBRARIES "")
@@ -143,11 +144,12 @@ if( include_plugin )
     set(plugin_LIBRARIES "${Boost_LIBRARIES}")
 endif()
 #
-# pkgconfig, src
+# ad_tensor, pkgconfig, src
+add_subdirectory(include/ad_tensor)
 add_subdirectory(pkgconfig)
 add_subdirectory(src)
 #
-# examples, tests
+# examples, tests, benchmarks
 if( include_gtest )
     find_package(GTest REQUIRED)
     add_subdirectory(examples)

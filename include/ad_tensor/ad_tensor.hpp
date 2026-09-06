@@ -9,6 +9,7 @@
 #include <ad_tensor/atom.hpp>
 #include <ad_tensor/base_atom.hpp>
 #include <ad_tensor/chkpnt.hpp>
+#include <ad_tensor/configure.hpp>
 #include <ad_tensor/direction.hpp>
 #include <ad_tensor/no_elements.hpp>
 #include <ad_tensor/plugin.hpp>
