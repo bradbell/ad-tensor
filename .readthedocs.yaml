@@ -38,7 +38,7 @@ build:
       - xrst
          --page_source
          --html_theme furo
-         --group_list usr
+         --group_list ben usr dev
          --index_page_name public
          --suppress_spell_warnings
       #
