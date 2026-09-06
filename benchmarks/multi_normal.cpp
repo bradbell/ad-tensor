@@ -250,8 +250,9 @@ TEST(benchmarks, multi_normal_autograd) {
     }
     //
     // learn_ms
-    double learn_ms = elapsed_ms();
-    std::cout << "learn_ms = " << learn_ms << "\n";
+    // For this case learn_ms is near equal the total time reported by gtest
+    // double learn_ms = elapsed_ms();
+    // std::cout << "learn_ms = " << learn_ms << "\n";
     //
     // relative_loss
     double relative_loss = loss(L).item<double>() / initial_loss;
@@ -294,8 +295,9 @@ TEST(benchmarks, multi_normal_ad_tensor) {
     }
     //
     // learn_ms
-    double learn_ms = elapsed_ms();
-    std::cout << "learn_ms = " << learn_ms << "\n";
+    // For this case learn_ms is near equal the total time reported by gtest
+    // double learn_ms = elapsed_ms();
+    // std::cout << "learn_ms = " << learn_ms << "\n";
     //
     // relative_loss
     double relative_loss = loss(L[0]).item<double>() / initial_loss;
@@ -351,8 +353,9 @@ TEST(benchmarks, multi_normal_optimize) {
     }
     //
     // learn_ms
-    double learn_ms = elapsed_ms();
-    std::cout << "learn_ms = " << learn_ms << "\n";
+    // For this case learn_ms is near equal the total time reported by gtest
+    // double learn_ms = elapsed_ms();
+    // std::cout << "learn_ms = " << learn_ms << "\n";
     //
     // relative_loss
     double relative_loss = loss(L[0]).item<double>() / initial_loss;
