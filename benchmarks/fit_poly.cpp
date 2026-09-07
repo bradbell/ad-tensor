@@ -8,6 +8,7 @@
     pytorch
     autograd
     gtest
+    libtorch
 }
 
 Fitting A Polynomial Benchmark
@@ -32,10 +33,9 @@ This objective comes from the pytorch tutorial
 learn_ms
 ********
 In the code below, gtest reports the total time for each test.
-Each test also prints the value learn_ms, which is the time
+The plugin test also prints the value learn_ms, which is the time
 in milliseconds for the learning loop; i.e., it does not include
-the time to setup the calculation of the gradients in the learning loop.
-
+the time to compile and link the plugin.
 
 Common Code
 ***********
@@ -45,26 +45,33 @@ Common Code
 
 Autograd Code
 *************
+This case uses Libtorch's autograd to compute gradients of the loss function.
 {xrst_literal ,
     BEGIN_AUTOGRAD, END_AUTOGRAD
 }
 
 AD Tensor Code
 **************
+This case records the loss function and
+uses reverse mode to compute gradients.
 {xrst_literal ,
     BEGIN_AD_TENSOR, END_AD_TENSOR
 }
 
-AD Tensor With Optimization
-***************************
+AD Tensor Record Gradient
+*************************
+This case records the reverse mode gradient and uses it to compute gradients,
 {xrst_literal ,
-    BEGIN_OPTIMIZE, END_OPTIMIZE
+    BEGIN_RECORD_GRADIENT, END_RECORD_GRADIENT
 }
 
-AD Tensor With Source Generation
-********************************
+AD Tensor With Plugin
+*********************
+This case records the reverse mode gradient,
+generates its source code, compiles and links its source code,
+and then uses its plugin to compute gradients,
 {xrst_literal ,
-    BEGIN_SRC_GEN, END_SRC_GEN
+    BEGIN_PLUGIN, END_PLUGIN
 }
 
 {xrst_end fit_poly_benchmark}
@@ -193,6 +200,7 @@ TEST(benchmarks, fit_poly_ad_tensor) {
     // adfn
     vector<adten_t> aloss = { loss(ac, agrid, adata) };
     adfn_t adfn = adten_t::stop_recording(aloss, "adfn");
+    adfn.optimize();
     //
     // previous_time
     elapsed_ms();
@@ -225,8 +233,8 @@ TEST(benchmarks, fit_poly_ad_tensor) {
 }
 // END_AD_TENSOR
 //
-// BEGIN_OPTIMIZE
-TEST(benchmarks, fit_poly_optimize) {
+// BEGIN_RECORD_GRADIENT
+TEST(benchmarks, fit_poly_record_gradient) {
     //
     // c
     vector<at::Tensor> c;
@@ -289,11 +297,11 @@ TEST(benchmarks, fit_poly_optimize) {
     double relative_loss = loss(c, grid, data).item<double>() / initial_loss;
     EXPECT_LT(relative_loss, expected_relative_loss);
 }
-// END_OPTIMIZE
+// END_RECORD_GRADIENT
 //
-// BEGIN_SRC_GEN
+// BEGIN_PLUGIN
 #if INCLUDE_PLUGIN
-TEST(benchmarks, fit_poly_src_gen) {
+TEST(benchmarks, fit_poly_plugin) {
     //
     // fs, plugin
     namespace fs     = std::filesystem;
@@ -391,4 +399,4 @@ TEST(benchmarks, fit_poly_src_gen) {
     EXPECT_LT(relative_loss, expected_relative_loss);
 }
 #endif
-// END_SRC_GEN
+// END_PLUGIN

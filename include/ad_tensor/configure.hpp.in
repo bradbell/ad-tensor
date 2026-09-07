@@ -4,4 +4,5 @@
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
 //
-# define INCLUDE_PLUGIN   @include_plugin@
+# define AD_TENSOR_VERSION   @ad_tensor_VERSION@
+# define INCLUDE_PLUGIN      @include_plugin@

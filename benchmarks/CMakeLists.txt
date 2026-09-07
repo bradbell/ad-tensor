@@ -7,12 +7,13 @@
 add_executable(benchmarks
     fit_poly.cpp
     multi_normal.cpp
+    version.cpp
 )
 # END_SORT_THIS_LINE_MINUS_2
 #
-target_link_libraries(benchmarks
+target_link_libraries(benchmarks PRIVATE
     ad_tensor
-    GTest::gtest_main
+    GTest::Main
     ${TORCH_LIBRARIES}
     ${plugin_LIBRARIES}
 )
