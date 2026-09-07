@@ -10,10 +10,12 @@ script_dir="$( cd -- "$script_dir" &> /dev/null && pwd )"
 script_path="$script_dir/$(basename $0)"
 # -----------------------------------------------------------------------------
 program='build/benchmarks/benchmarks'
-$program --gtest_filter=benchmarks.version  | \
-    sed -n -e '/^ad-tensor version/p'
-$program --gtest_filter=*:-benchmarks.version  | \
-    sed -n -e '/OK *\]/p' -e '/^learn_ms =/p'
+$program --gtest_filter=benchmarks.version  | sed -n \
+    -e '/^ad-tensor version/p' \
+    -e '/^cmake build type/p'
+$program --gtest_filter=*:-benchmarks.version  | sed -n \
+    -e '/OK *\]/p' \
+    -e '/^learn_ms =/p'
 # -----------------------------------------------------------------------------
 echo "$script_path: OK"
 exit 0

@@ -15,4 +15,5 @@
 
 TEST(benchmarks, version) {
     std::cout << "ad-tensor version = " << STRING(AD_TENSOR_VERSION) << "\n";
+    std::cout << "cmake build type  = " << STRING(CMAKE_BUILD_TYPE) << "\n";
 }
