@@ -73,7 +73,8 @@ where build_dir is the same as above.
 Test
 ****
 The following command will run the examples, tests and benchmarks.
-These require that include_gtest to be true:
+These require that include_gtest to be true.
+Some of the tests will be skipped unless include_plugin is also true.
 {xrst_code sh}
     build_dir/examples/examples
     build_dir/tests/tests
