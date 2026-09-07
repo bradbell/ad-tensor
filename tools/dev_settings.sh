@@ -79,6 +79,7 @@ no_copyright_list='
     .gitignore
     .readthedocs.yaml
     pkgconfig/ad_tensor.pc.in
+    readme.md
     typos.toml
     xrst.toml
 '

@@ -15,9 +15,9 @@ meant for testing.
     -   AD Checkpointing with arbitrary order derivatives.
     -   User defined atomic function with arbitrary order derivatives.
 
-## Testing
+## Benchmarks
 The benchmarks seem to indicate that some of the ad-tensor options
 are faster than Libtorch's autograd.
-You can rum them on your own machine; see
+You can run them on your own machine; see
 https://ad-tensor.readthedocs.io/en/latest/cmake.html#test
 
