@@ -7,7 +7,6 @@
 add_executable(benchmarks
     fit_poly.cpp
     multi_normal.cpp
-    version.cpp
 )
 # END_SORT_THIS_LINE_MINUS_2
 #
