@@ -32,6 +32,7 @@ add_library(ad_tensor SHARED
     adfn/src_gen.cpp
     adten/binary.cpp
     adten/call_atom.cpp
+    adten/conv1d.cpp
     adten/ctor.cpp
     adten/index.cpp
     adten/index_put.cpp

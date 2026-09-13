@@ -32,13 +32,14 @@ This returns the at:Tensor corresponding to this object.
     BEGIN_AT_TEN, END_AT_TEN
 }
 
-sizes, numel
-************
-For *fun* equals ``sizes``, ``numel``
+sizes, numel, defined
+*********************
+For *fun* equals ``sizes``, ``numel``, ``defined`` ,
 return the result for the underlying at::Tensor.
 {xrst_literal ,
     BEGIN_SIZES, END_SIZES
     BEGIN_NUMEL, END_NUMEL
+    BEGIN_DEFINED, END_DEFINED
 }
 
 clone
@@ -53,6 +54,7 @@ Other Member Functions
 **********************
 {xrst_comment BEGIN_SORT_THIS_LINE_PLUS_2}
 {xrst_toc_table after
+    src/adten/conv1d.cpp
     src/adten/index.cpp
     src/adten/index_put.cpp
     src/adten/matmul.cpp
@@ -314,6 +316,11 @@ public:
     // END_NUMEL
     {   return m_at_ten.numel(); }
     //
+    // BEGIN_DEFINED
+    bool defined(void) const
+    // END_DEFINED
+    {   return m_at_ten.defined(); }
+    //
     // BEGIN_CLONE
     adten_t clone(void) const
     // END_CLONE
@@ -394,6 +401,13 @@ public:
     // solve
     adten_t solve(const adten_t& rhs, bool left) const;
     //
+    // conv1d
+    adten_t conv1d(
+        const adten_t&                                  weight  ,
+        const adten_t&                                  bias    ,
+        const torch::nn::functional::Conv1dFuncOptions& options
+    ) const;
+    //
     // index_put
     adten_t index_put(
         const c10::List< std::optional<at::Tensor> >& index_list ,
@@ -413,4 +427,22 @@ namespace ad_tensor {
         const adten_t& linear, const adten_t& rhs, bool left = true
     );
     // END_LINALG_SOLVE
+    //
+    // BEGIN_CONV1D_AD_TEN
+    adten_t conv1d(
+        const adten_t&                                  input   ,
+        const adten_t&                                  weight  ,
+        const adten_t&                                  bias    ,
+        const torch::nn::functional::Conv1dFuncOptions& options
+    );
+    // END_CONV1D_AD_TEN
+    //
+    // conv1d
+    at::Tensor conv1d(
+        const at::Tensor&                               input   ,
+        const at::Tensor&                               weight  ,
+        const at::Tensor&                               bias    ,
+        const torch::nn::functional::Conv1dFuncOptions& options
+    );
+
 }

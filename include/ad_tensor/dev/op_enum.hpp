@@ -61,6 +61,7 @@ namespace ad_tensor { namespace dev { enum struct op_enum_t
     // BEGIN_OTHER  BEGIN_SORT_THIS_LINE_PLUS_1
     call,        // call atomic function
     call_result, // place holder when more than one result for a call
+    conv1d,      // one dimensional convolution
     dom,         // domain tensor
     index,       // extract elements of a tensor
     index_put,   // replace elements of a tensor

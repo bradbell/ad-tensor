@@ -40,7 +40,7 @@ namespace ad_tensor {
     // BEGIN_CHECK_NO
     template <class TensorType>
     bool no_elements(const TensorType& ten)
-    {   return ten.numel() == 0; }
+    {   return ! ten.defined() || ten.numel() == 0; }
     // END_CHECK_NO
     //
     // BEGIN_CHECK_HAS
