@@ -24,6 +24,7 @@ add_executable(examples
     adfn/reverse_der.cpp
     adten/binary.cpp
     adten/compound.cpp
+    adten/conv1d.cpp
     adten/index.cpp
     adten/index_put.cpp
     adten/matmul.cpp

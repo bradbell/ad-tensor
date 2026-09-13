@@ -24,11 +24,17 @@ Prototype
     BEGIN_CONV1D_AD_TEN, END_CONV1D_AD_TEN
 }
 
+Example
+*******
+{xrst_literal ,
+    examples/adten/conv1d.cpp
+    BEGIN_CPP, END_CPP
+}
+
 {xrst_end adten_conv1d}
 -------------------------------------------------------------------------------
-{xrst_begin adten_conv1d dev}
+{xrst_begin adten_conv1d_dev dev}
 {xrst_spell
-    rhs
 }
 
 Compute and Record Solution of Linear Equations
@@ -65,7 +71,7 @@ the following is added to the parameter (variable) acyclic graph:
 where start be the length of arg_value and arg_type before this call to
 ``adten_t::binary`` .
 
-{xrst_end adten_conv1d}
+{xrst_end adten_conv1d_dev}
 -------------------------------------------------------------------------------
 */
 #include <torch/torch.h>

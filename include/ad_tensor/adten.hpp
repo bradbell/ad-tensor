@@ -177,6 +177,7 @@ The adten_t Class Developer Documentation
 {xrst_comment BEGIN_SORT_THIS_LINE_PLUS_2}
 {xrst_toc_table after
     src/adten/binary.cpp
+    src/adten/conv1d.cpp
     src/adten/index.cpp
     src/adten/index_put.cpp
     src/adten/matmul.cpp
