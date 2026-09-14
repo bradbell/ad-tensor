@@ -69,7 +69,6 @@ add_library(ad_tensor SHARED
     dev/derive_op/minus_op.cpp
     dev/derive_op/mul_op.cpp
     dev/derive_op/ne_op.cpp
-    dev/derive_op/op_enum2derive_op.cpp
     dev/derive_op/solve_op.cpp
     dev/derive_op/src_gen_binary.cpp
     dev/derive_op/src_gen_unary.cpp
@@ -78,6 +77,7 @@ add_library(ad_tensor SHARED
     dev/derive_op/transpose_op.cpp
     dev/derive_op/view_op.cpp
     dev/derive_op/where_op.cpp
+    dev/enum2derive.cpp
     dev/optimize/new_agraph.cpp
     dev/optimize/new_call.cpp
     dev/optimize/new_operator.cpp

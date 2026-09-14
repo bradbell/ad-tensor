@@ -443,7 +443,7 @@ R"|(    //
         // base_op
         dev::op_enum_t op_enum = m_par.m_op_seq[ op_index ];
         const dev::base_op_t<at::Tensor>& base_op =
-            dev::op_enum2derive_op<at::Tensor>( op_enum );
+            dev::enum2derive<at::Tensor>( op_enum );
         //
         // src
         string src = base_op.src_gen(
@@ -483,7 +483,7 @@ R"|(    //
         // base_op
         dev::op_enum_t op_enum = m_var.m_op_seq[ op_index ];
         const dev::base_op_t<at::Tensor>& base_op =
-            dev::op_enum2derive_op<at::Tensor>( op_enum );
+            dev::enum2derive<at::Tensor>( op_enum );
         //
         // src
         string src = base_op.src_gen(

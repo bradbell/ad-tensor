@@ -8,7 +8,7 @@
 namespace ad_tensor { namespace dev { // Begin ad_tensor::dev
 //
 template <class TensorType>
-const base_op_t<TensorType>& op_enum2derive_op(op_enum_t op_enum) {
+const base_op_t<TensorType>& enum2derive(op_enum_t op_enum) {
     // BEGIN_SORT_THIS_LINE_PLUS_1
     static const add_op_t<TensorType>         add_op;
     static const call_op_t<TensorType>        call_op;
@@ -67,15 +67,15 @@ const base_op_t<TensorType>& op_enum2derive_op(op_enum_t op_enum) {
         // END_SORT_THIS_LINE_MINUS_1
         //
         default:
-        assert( false && "op_enum2derive_op: invalid op_enum value" );
+        assert( false && "enum2derive: invalid op_enum value" );
     }
     // should not get here
     return dom_op;
 }
-template const base_op_t<adten_t>& op_enum2derive_op<adten_t>(
+template const base_op_t<adten_t>& enum2derive<adten_t>(
     op_enum_t op_enum
 );
-template const base_op_t<at::Tensor>& op_enum2derive_op<at::Tensor>(
+template const base_op_t<at::Tensor>& enum2derive<at::Tensor>(
     op_enum_t op_enum
 );
 } } // End ad_tensor::dev

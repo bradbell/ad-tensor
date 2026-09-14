@@ -117,7 +117,7 @@ vector<TensorType> adfn_t::forward_var(
         // base_op
         dev::op_enum_t op_enum = m_var.m_op_seq[ op_index ];
         const dev::base_op_t<TensorType>& base_op =
-            dev::op_enum2derive_op<TensorType>( op_enum );
+            dev::enum2derive<TensorType>( op_enum );
         //
         // var_all
         base_op.forward_var(op_index, m_var, m_con_vec, par_all, var_all);

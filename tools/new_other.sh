@@ -112,7 +112,7 @@ git checkout --quiet $file
 echo "$file"
 sed -i $file -f temp.sed
 # -----------------------------------------------------------------------------
-file='src/dev/derive_op/op_enum2derive_op.cpp'
+file='src/dev/enum2derive.cpp'
 cat << EOF > temp.sed
 s|^\\( *static const \\)exp_op_t<TensorType> \\{$chars_minus_3\\}\\( *\\).*|&\\
 \\1${name_new}_op_t<TensorType>\\2${name_new}_op;|
@@ -139,7 +139,7 @@ set -e
 cat << EOF
 
 Changes to these files should not need editing:
-src/dev/derive_op/op_enum2derive_op.cpp
+src/dev/enum2derive.cpp
 include/ad_tensor/dev/derive_op.hpp
 examples/CMakeLists.txt
 src/CMakeLists.txt

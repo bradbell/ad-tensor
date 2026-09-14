@@ -23,8 +23,8 @@ This is done inside the ``ad_tensor::dev`` namespace .
     BEGIN_SORT_THIS_LINE, END_SORT_THIS_LINE
 }
 
-op_enum2derive_op
-*****************
+enum2derive
+***********
 This maps op_enum_t values to the corresponding base_op_t<TensorType> value:
 {xrst_literal ,
     BEGIN_OP_ENUM2BASE_OP, END_OP_ENUM2BASE_OP
@@ -87,9 +87,9 @@ This maps op_enum_t values to the corresponding base_op_t<TensorType> value:
 //
 namespace ad_tensor { namespace dev {
     // BEGIN_OP_ENUM2BASE_OP
-    // base_op = ad_tensor::dev::op_enum2derive_op(op_enum)
+    // base_op = ad_tensor::dev::enum2derive(op_enum)
     template <class TensorType>
-    const base_op_t<TensorType>& op_enum2derive_op(op_enum_t op_enum);
+    const base_op_t<TensorType>& enum2derive(op_enum_t op_enum);
     // END_OP_ENUM2BASE_OP
     //
     // BEGIN_SORT_THIS_LINE_PLUS_1
