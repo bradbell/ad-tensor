@@ -96,6 +96,7 @@ namespace ad_tensor { namespace dev {
     AD_TENSOR_DERIVE_OP(add_op)
     AD_TENSOR_DERIVE_OP(call_op)
     AD_TENSOR_DERIVE_OP(call_result_op)
+    AD_TENSOR_DERIVE_OP(conv1d_op)
     AD_TENSOR_DERIVE_OP(div_op)
     AD_TENSOR_DERIVE_OP(dom_op)
     AD_TENSOR_DERIVE_OP(eq_op)

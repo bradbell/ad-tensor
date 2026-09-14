@@ -11,6 +11,7 @@
     hpp
     dev
     enum
+    noimplement
 }
 
 Step by Step to Implement a New Operator
@@ -41,8 +42,8 @@ in the acyclic graphs.
 
 src/CMakeLists.txt
 ==================
-Add the NEW operator's entry in this file,
-see OTHER's entry for an example.
+Add the NEW operator's entry in this file just below OTHER's entry.
+The entry will be automatically sorted during the check_all.sh below.,
 
 include/ad_tensor/adten.hpp
 ===========================
@@ -77,14 +78,29 @@ an AD function).
 
 examples/CMakeLists.txt
 =======================
-Add the NEW operator's entry in this file,
-see OTHER's entry for an example.
+Add the NEW operator's entry in this file just below OTHER's entry.
 
 Test and Commit changes
 =======================
-Run heck_all.sh to check that NEW example compiles, runs, and passes it tests.
+Run check_all.sh to check that NEW example compiles, runs, and passes it tests.
 This will also check that the documentation links in the NEW example.
 Once the errors are fixed, commit the changes using git_commit.sh.
 
+Step 3
+******
+
+src/dev/derive_op/NEW_op.cpp
+============================
+Create this file as a copy of the file src/dev/derive_op/noimplement_op.cpp
+where the text ``noimplement`` is replaced by NEW.
+
+include/dev/derive_op.hpp
+=========================
+Add the NEW operator's entry in this file just below OTHER's entry.
+
+Test and Commit changes
+=======================
+Run check_all.sh to check that NEW operator,
+derived from dev::base_op,  compiles.
 
 {xrst_end new_op}
