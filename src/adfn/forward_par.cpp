@@ -107,7 +107,7 @@ vector<TensorType> adfn_t::forward_par(const vector<TensorType>& dom_par) const
         // base_op
         dev::op_enum_t op_enum = m_par.m_op_seq[ op_index ];
         const dev::base_op_t<TensorType>& base_op =
-            dev::op_enum2derive_op<TensorType>( op_enum );
+            dev::enum2derive<TensorType>( op_enum );
         //
         // par_all
         base_op.forward_par(op_index, m_par, m_con_vec, par_all);

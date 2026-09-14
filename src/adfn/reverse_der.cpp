@@ -148,7 +148,7 @@ vector<TensorType> adfn_t::reverse_der(
             // base_op
             dev::op_enum_t op_enum = m_var.m_op_seq[ op_index ];
             const dev::base_op_t<TensorType>& base_op =
-            dev::op_enum2derive_op<TensorType>( op_enum );
+            dev::enum2derive<TensorType>( op_enum );
             //
             // all_der
             base_op.reverse_der(
