@@ -1,0 +1,90 @@
+# SPDX-License-Identifier: EPL-2.0 OR GPL-2.0-or-later
+# SPDX-FileCopyrightText: Bradley M. Bell <bradbell@seanet.com>
+# SPDX-FileContributor: 2026 Bradley M. Bell
+# -----------------------------------------------------------------------------
+{xrst_begin new_op dev}
+{xrst_spell
+    adten
+    cpp
+    src
+    txt
+    hpp
+    dev
+    enum
+}
+
+Step by Step to Implement a New Operator
+########################################
+If you are creating a new unary operator, it may be easier to use
+tools/new_unary.sh.
+Otherwise, we use NEW for the new operator's enum value
+and OTHER for an already implemented similar operator's enum value.
+
+Step 1
+******
+
+Branch
+======
+Create a new git branch called NEW.
+
+include/ad_tensor/dev/op_enum.hpp
+=================================
+Add NEW to the enum values in this file;
+see OTHER's enum value in this file for an example.
+
+src/adten/NEW.cpp
+=================
+Add the adten_t implementation for the NEW operator,
+see OTHER's implementation in this file for an example.
+This includes deciding and documenting how the operator is stored
+in the acyclic graphs.
+
+src/CMakeLists.txt
+==================
+Add the NEW operator's entry in this file,
+see OTHER's entry for an example.
+
+include/ad_tensor/adten.hpp
+===========================
+Add the prototype for the NEW operator,
+see OTHER's prototypes in this file for an example.
+
+#.  Note the user interface for some operators is not an aten_t member function,
+    but its implementation is link to the corresponding member function.
+
+#.  Note that you should add two documentation links to src/adten/NEW.cpp.
+    One for the user documentation, the other for the developer documentation..
+
+Test and Commit changes
+=======================
+Run tools/check_all.sh to check that NEW.cpp compiles and that its
+documentation builds.
+Once the errors are fixed, commit the changes using tools/git_commit.sh.
+If you source tools/tools_path.sh this will put all the tools directory
+in the path for your current shell; e.g.,
+you can run check_all.sh (instead of tools/check_all.sh).
+
+Step 2
+******
+
+examples/adten/NEW.cpp
+======================
+Add an example and test of computing the NEW operator's function values.
+See the part of examples/adten/OTHER.cpp that computes an AD function.
+Do something similar for NEW
+but just compute and check the adten values (without taping and creating
+an AD function).
+
+examples/CMakeLists.txt
+=======================
+Add the NEW operator's entry in this file,
+see OTHER's entry for an example.
+
+Test and Commit changes
+=======================
+Run heck_all.sh to check that NEW example compiles, runs, and passes it tests.
+This will also check that the documentation links in the NEW example.
+Once the errors are fixed, commit the changes using git_commit.sh.
+
+
+{xrst_end new_op}

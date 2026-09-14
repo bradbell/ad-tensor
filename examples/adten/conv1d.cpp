@@ -8,6 +8,11 @@
 Examples One Dimensional Cross Correlation
 ##########################################
 
+Source Code
+***********
+{xrst_literal ,
+    BEGIN_CPP, END_CPP
+}
 
 {xrst_end example_conv1d}
 */
