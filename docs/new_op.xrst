@@ -16,10 +16,32 @@
 
 Step by Step to Implement a New Operator
 ########################################
+
+new_unary.sh
+************
 If you are creating a new unary operator, it may be easier to use
 tools/new_unary.sh.
-Otherwise, we use NEW for the new operator's enum value
+
+NEW, OTHER
+**********
+We use NEW for the new operator's enum value
 and OTHER for an already implemented similar operator's enum value.
+
+Tools
+*****
+The instructions below assume that you have sourced the tools/tools_path.sh
+file so that the tools directory is in your path.
+For example, check_all.sh and git_commit.sh (referenced below) are in
+the tools directory.
+
+Sorting
+*******
+Let *nb* and *ne* be two positive integers.
+If BEGIN\ _SORT_THIS_LINE_PLUS_\ *nb* appears in a source file,
+the check_sort.sh tool (which is run during check_all.sh)
+will automatically sort source code lines beginning
+*nb* lines after the text.  This sorting will end *ne* lines before text
+END\ _SORT_THIS_LINE_MINUS_\ *ne* .
 
 Step 1
 ******
@@ -43,7 +65,8 @@ in the acyclic graphs.
 src/CMakeLists.txt
 ==================
 Add the NEW operator's entry in this file just below OTHER's entry.
-The entry will be automatically sorted during the check_all.sh below.,
+The entry will be automatically sorted during the check_all.sh below
+(see Sorting above).
 
 include/ad_tensor/adten.hpp
 ===========================
@@ -58,12 +81,9 @@ see OTHER's prototypes in this file for an example.
 
 Test and Commit changes
 =======================
-Run tools/check_all.sh to check that NEW.cpp compiles and that its
+Run check_all.sh to check that NEW.cpp compiles and that its
 documentation builds.
-Once the errors are fixed, commit the changes using tools/git_commit.sh.
-If you source tools/tools_path.sh this will put all the tools directory
-in the path for your current shell; e.g.,
-you can run check_all.sh (instead of tools/check_all.sh).
+Once the errors are fixed, commit the changes using git_commit.sh.
 
 Step 2
 ******
@@ -102,5 +122,18 @@ Test and Commit changes
 =======================
 Run check_all.sh to check that NEW operator,
 derived from dev::base_op,  compiles.
+
+Step 4
+******
+
+src/dev/enum2derive.cpp
+=======================
+Add two NEW operator entries in this file just below the
+corresponding OTHER entries.
+
+Test and Commit changes
+=======================
+Run check_all.sh to check that the new enum2derive.cpp compiles.
+
 
 {xrst_end new_op}
