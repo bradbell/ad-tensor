@@ -54,7 +54,7 @@ add_library(ad_tensor SHARED
     dev/derive_op/add_op.cpp
     dev/derive_op/call_op.cpp
     dev/derive_op/call_result_op.cpp
-    dev/derive_op/conv1d.cpp
+    dev/derive_op/conv1d_op.cpp
     dev/derive_op/div_op.cpp
     dev/derive_op/dom_op.cpp
     dev/derive_op/eq_op.cpp
