@@ -135,5 +135,22 @@ Test and Commit changes
 =======================
 Run check_all.sh to check that the new enum2derive.cpp compiles.
 
+Step 5
+******
+
+src/dev/derive_op/NEW_op.cpp
+============================
+Implement the forward_par and forward_var for the NEW operator
+(use src/dev/derive_op/OTHER_op.cpp as an example for how to do this).
+The function forward_par determines the parameter with index op_index.
+During this functions, the parameters with index less that op_index
+are known and none of the variables are known.
+The function forward_var determines the variable with index op_index.
+During this function, all the parameters are known
+and the variables with index less that op_index known.
+
+Test and Commit changes
+=======================
+Run check_all.sh to check that the new NEW_op.cpp compiles.
 
 {xrst_end new_op}

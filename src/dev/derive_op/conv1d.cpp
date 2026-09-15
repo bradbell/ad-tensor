@@ -4,6 +4,7 @@
 // ----------------------------------------------------------------------------
 #include <ad_tensor/dev/derive_op.hpp>
 #include <ad_tensor/adten.hpp>
+#include <ad_tensor/dev/tensor_at_index.hpp>
 //
 namespace ad_tensor { namespace dev { // Begin ad_tensor::dev
 // ------------------------------------------------------------------------
@@ -15,7 +16,40 @@ void conv1d_op_t<TensorType>::forward_par(
     const vector<at::Tensor>&    con_vec     ,
     vector<TensorType>&          par_all
 ) const {
-    user_assert(false, "forward_par not yet implemented for conv1d operator" );
+    //
+    // arg_start
+    size_t arg_start = agraph.m_arg_start[op_index];
+    //
+#ifndef NDEBUG
+    size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
+    assert( n_arg == 6  );
+    for(size_t i = 3; i < 6; ++i) {
+        assert( agraph.m_arg_type[arg_start+i] == adtype_t::none );
+    }
+# endif
+    //
+    // input, weight, bias
+    TensorType input  = tensor_at_arg_index(
+        arg_start, agraph, con_vec, par_all
+    );
+    TensorType weight  = tensor_at_arg_index(
+        arg_start + 1, agraph, con_vec, par_all
+    );
+    TensorType bias  = tensor_at_arg_index(
+        arg_start + 2, agraph, con_vec, par_all
+    );
+    //
+    // options
+    int64_t stride   = int64_t( agraph.m_arg_value[arg_start + 3] );
+    int64_t dilation = int64_t( agraph.m_arg_value[arg_start + 4] );
+    int64_t groups   = int64_t( agraph.m_arg_value[arg_start + 5] );
+    auto options = torch::nn::functional::Conv1dFuncOptions()
+        .stride(stride)
+        .dilation(dilation)
+        .groups(groups);
+    //
+    // par_all
+    par_all[op_index] = conv1d(input, weight, bias, options);
 }
 template void conv1d_op_t<adten_t>::forward_par(
     size_t                       op_index    ,
@@ -39,7 +73,40 @@ void conv1d_op_t<TensorType>::forward_var(
     const vector<TensorType>&    par_all     ,
     vector<TensorType>&          var_all
 ) const {
-    user_assert(false, "forward_var not yet implemented for conv1d operator" );
+    //
+    // arg_start
+    size_t arg_start = agraph.m_arg_start[op_index];
+    //
+#ifndef NDEBUG
+    size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
+    assert( n_arg == 6  );
+    for(size_t i = 3; i < 6; ++i) {
+        assert( agraph.m_arg_type[arg_start+i] == adtype_t::none );
+    }
+# endif
+    //
+    // input, weight, bias
+    TensorType input  = tensor_at_arg_index(
+        arg_start, agraph, con_vec, par_all, var_all
+    );
+    TensorType weight  = tensor_at_arg_index(
+        arg_start + 1, agraph, con_vec, par_all, var_all
+    );
+    TensorType bias  = tensor_at_arg_index(
+        arg_start + 2, agraph, con_vec, par_all, var_all
+    );
+    //
+    // options
+    int64_t stride   = int64_t( agraph.m_arg_value[arg_start + 3] );
+    int64_t dilation = int64_t( agraph.m_arg_value[arg_start + 4] );
+    int64_t groups   = int64_t( agraph.m_arg_value[arg_start + 5] );
+    auto options = torch::nn::functional::Conv1dFuncOptions()
+        .stride(stride)
+        .dilation(dilation)
+        .groups(groups);
+    //
+    // par_all
+    var_all[op_index] = conv1d(input, weight, bias, options);
 }
 template void conv1d_op_t<adten_t>::forward_var(
     size_t                       op_index    ,
