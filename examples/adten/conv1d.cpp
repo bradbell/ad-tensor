@@ -22,6 +22,7 @@ Source Code
 #include <ad_tensor/ad_tensor.hpp>
 TEST(examples_adten, conv1d) {
     using ad_tensor::adten_t;
+    using ad_tensor::adfn_t;
     using ad_tensor::vector;
     //
     // input_vec, weight_vec, bias_vec
@@ -34,18 +35,37 @@ TEST(examples_adten, conv1d) {
     at::Tensor weight = torch::tensor(weight_vec).view( {1, 1, 3} );
     at::Tensor bias   = torch::tensor(bias_vec);
     //
-    // ainput, aweight, abias
-    adten_t ainput  = adten_t(input);
-    adten_t aweight = adten_t(weight);
-    adten_t abias   = adten_t(bias);
+    // v
+    vector<at::Tensor> v;
+    v.push_back( input );
+    v.push_back( weight );
+    v.push_back( bias );
     //
-    // output
+    // adom_var
+    vector<adten_t> av = adten_t::start_recording(v);
+    //
+    //
+    // ainput, aweight, abias
+    adten_t ainput  = av[0];
+    adten_t aweight = av[1];
+    adten_t abias   = av[2];
+    //
+    // aoutput
     auto options   = torch::nn::functional::Conv1dFuncOptions();
     adten_t   aoutput = ad_tensor::conv1d(ainput, aweight, abias, options);
-    at::Tensor output = aoutput.at_ten().contiguous();
     //
-    std::cout << "output.sizes() = " << output.sizes() << "\n";
-    std::cout << "output = " << output << "\n";
+    // r = f(v)
+    vector<adten_t> ar = {aoutput};
+    adfn_t f           = adten_t::stop_recording(ar, "f");
+    //
+    // var_all
+    vector<at::Tensor> var_all = f.forward_var(v);
+    //
+    // r
+    vector<at::Tensor> r = f.get_range(var_all);
+    //
+    // output
+    at::Tensor output = r[0];
     //
     // n_input_cross, n_weight_cross, n_output_cross
     int64_t n_input_cross  = input.sizes()[2];
