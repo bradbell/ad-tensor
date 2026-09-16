@@ -42,7 +42,6 @@ TEST(tests_adfn, forward_der_no_elements) {
     }
     //
     // check
-    /* TODO: get this check to pass
     for(size_t j = 0; j < nv; ++j) {
         dv[j] = torch::tensor( { 1.0 } );
         dr    = f.forward_der(dv, v_all);
@@ -56,5 +55,4 @@ TEST(tests_adfn, forward_der_no_elements) {
             }
         }
     }
-    */
 }
