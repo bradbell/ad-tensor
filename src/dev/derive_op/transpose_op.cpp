@@ -243,7 +243,7 @@ std::string transpose_op_t<TensorType>::src_gen(
     //
 #ifndef NDEBUG
     size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
-    assert( n_arg == 3 && "add: n_arg != 1" );
+    assert( n_arg == 3 && "transpose: n_arg != 1" );
 # endif
     //
     // operand_src

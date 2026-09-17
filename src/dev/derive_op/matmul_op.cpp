@@ -26,7 +26,7 @@ void matmul_op_t<TensorType>::forward_par(
     //
 #ifndef NDEBUG
     size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
-    assert( n_arg == 2 && "mul: n_arg != 2" );
+    assert( n_arg == 2 && "matmul: n_arg != 2" );
 # endif
     //
     // lhs_tensor, rhs_tensor
@@ -68,7 +68,7 @@ void matmul_op_t<TensorType>::forward_var(
     //
 #ifndef NDEBUG
     size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
-    assert( n_arg == 2 && "mul: n_arg != 2" );
+    assert( n_arg == 2 && "matmul: n_arg != 2" );
 # endif
     //
     // lhs_tensor, rhs_tensor
@@ -202,7 +202,7 @@ void matmul_op_t<TensorType>::reverse_der(
     //
 #ifndef NDEBUG
     size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
-    assert( n_arg == 2 && "mul: n_arg != 2" );
+    assert( n_arg == 2 && "matmul: n_arg != 2" );
 # endif
     //
     // lhs_type, rhs_type
