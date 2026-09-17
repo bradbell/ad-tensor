@@ -12,6 +12,7 @@
     dev
     enum
     noimplement
+    der
 }
 
 Step by Step to Implement a New Operator
@@ -147,7 +148,7 @@ During this functions, the parameters with index less that op_index
 are known and none of the variables are known.
 The function forward_var determines the variable with index op_index.
 During this function, all the parameters are known
-and the variables with index less that op_index known.
+and the variables with index less that op_index are known.
 
 Test and Commit changes
 =======================
@@ -167,5 +168,21 @@ Test and Commit changes
 =======================
 Run check_all.sh to check that the modified example compiles, runs,
 and passes it tests.
+
+
+Step 7
+******
+
+src/dev/derive_op/NEW_op.cpp
+============================
+Implement the forward_der for the NEW operator
+(use src/dev/derive_op/OTHER_op.cpp as an example for how to do this).
+The function forward_der determines the forward derivative with index op_index.
+During this function, all the parameters and variables are known
+and the forward derivatives with index less that op_index are known.
+
+Test and Commit changes
+=======================
+Run check_all.sh to check that the new NEW_op.cpp compiles.
 
 {xrst_end new_op}

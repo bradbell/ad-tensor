@@ -140,7 +140,10 @@ void conv1d_op_t<TensorType>::forward_der(
     //
 #ifndef NDEBUG
     size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
-    assert( n_arg == 2 && "conv1d: n_arg != 2" );
+    assert( n_arg == 6  );
+    for(size_t i = 3; i < 6; ++i) {
+        assert( agraph.m_arg_type[arg_start+i] == adtype_t::none );
+    }
 # endif
     // variable
     adtype_t variable = adtype_t::variable;
@@ -166,7 +169,56 @@ void conv1d_op_t<TensorType>::forward_der(
     if( input_zero_der && weight_zero_der && bias_zero_der) {
         return;
     }
-    user_assert(false, "forward_der not yet implemented for conv1d operator" );
+    //
+    // bias_shape
+    TensorType bias  = tensor_at_arg_index(
+        arg_start + 2, agraph, con_vec, par_all, var_all
+    );
+    c10::IntArrayRef bias_shape = bias.sizes();
+    //
+    // for_der[op_index]
+    TensorType  doutput;
+    if( bias_zero_der ) {
+        doutput = TensorType( torch::zeros( bias_shape ) );
+    } else {
+        doutput = for_der[bias_index];
+    }
+    //
+    // for_der[op_index]
+    if( input_zero_der && weight_zero_der ) {
+        for_der[op_index] = doutput;
+        return;
+    }
+    //
+    // options
+    int64_t stride   = int64_t( agraph.m_arg_value[arg_start + 3] );
+    int64_t dilation = int64_t( agraph.m_arg_value[arg_start + 4] );
+    int64_t groups   = int64_t( agraph.m_arg_value[arg_start + 5] );
+    auto options = torch::nn::functional::Conv1dFuncOptions()
+        .stride(stride)
+        .dilation(dilation)
+        .groups(groups);
+    //
+    // no_bias
+    TensorType no_bias = TensorType( torch::zeros( bias_shape ) );
+    //
+    // doutput
+    if( ! input_zero_der ) {
+        TensorType weight  = tensor_at_arg_index(
+            arg_start + 1, agraph, con_vec, par_all, var_all
+        );
+        doutput += conv1d( for_der[input_index], weight, no_bias , options );
+    }
+    if( ! weight_zero_der ) {
+        TensorType input  = tensor_at_arg_index(
+            arg_start, agraph, con_vec, par_all, var_all
+        );
+        doutput += conv1d( input, for_der[weight_index], no_bias , options );
+    }
+    //
+    // for_der[op_index]
+    for_der[op_index] = doutput;
+    return;
 }
 template void conv1d_op_t<adten_t>::forward_der(
     size_t                       op_index    ,
