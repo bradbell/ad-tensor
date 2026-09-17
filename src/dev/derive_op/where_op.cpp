@@ -43,7 +43,7 @@ void where_op_t<TensorType>::forward_par(
     //
 #ifndef NDEBUG
     size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
-    assert( n_arg == 3 && "add: n_arg != 3" );
+    assert( n_arg == 3 && "where: n_arg != 3" );
 # endif
     //
     // cond, true_case, false_case
@@ -88,7 +88,7 @@ void where_op_t<TensorType>::forward_var(
     //
 #ifndef NDEBUG
     size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
-    assert( n_arg == 3 && "add: n_arg != 3" );
+    assert( n_arg == 3 && "where: n_arg != 3" );
 # endif
     //
     // cond, true_case, false_case
@@ -137,34 +137,44 @@ void where_op_t<TensorType>::forward_der(
     //
 #ifndef NDEBUG
     size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
-    assert( n_arg == 3 && "add: n_arg != 3" );
+    assert( n_arg == 3 && "where: n_arg != 3" );
 # endif
     // cond
     TensorType cond  = tensor_at_arg_index(
         arg_start, agraph, con_vec, par_all, var_all
     );
     //
-    // true_type, false_type
-    adtype_t true_type  = agraph.m_arg_type[arg_start + 1];
-    adtype_t false_type = agraph.m_arg_type[arg_start + 2];
-    //
-    // true_index. false_index
-    size_t true_index  = agraph.m_arg_value[arg_start + 1];
-    size_t false_index = agraph.m_arg_value[arg_start + 2];
-    //
-    // zero, variable
-    TensorType zero = TensorType( torch::zeros( {1} ) );
+    // variable
     adtype_t  variable = adtype_t::variable;
     //
-    if( true_type == variable ) {
-        if( false_type == variable ) {
-            for_der[op_index] =
-                where(cond, for_der[true_index], for_der[false_index] );
-        } else {
-            for_der[op_index] = where(cond, for_der[true_index], zero );
-        }
-    } else if( false_type == variable ) {
+    // true_index, true_type, true_zero_der
+    size_t   true_index    = agraph.m_arg_value[arg_start + 1];
+    adtype_t true_type     = agraph.m_arg_type[arg_start + 1];
+    bool     true_zero_der =
+        true_type != variable || no_elements( for_der[true_index] );
+    //
+    // false_index, false_type, false_zero_der
+    size_t   false_index    = agraph.m_arg_value[arg_start + 2];
+    adtype_t false_type     = agraph.m_arg_type[arg_start + 2];
+    bool     false_zero_der =
+        false_type != variable || no_elements( for_der[false_index] );
+    //
+    if( true_zero_der && false_zero_der ) {
+        return;
+    }
+    //
+    // for_der[op_index]
+    if( true_zero_der ) {
+        assert( false_type == variable );
+        TensorType zero   = TensorType( torch::zeros( {1} ) );
         for_der[op_index] = where(cond, zero, for_der[false_index] );
+    } else if( false_zero_der ) {
+        assert( true_type == variable );
+        TensorType zero   = TensorType( torch::zeros( {1} ) );
+        for_der[op_index] = where(cond, for_der[true_index], zero );
+    } else {
+        for_der[op_index] =
+            where(cond, for_der[true_index], for_der[false_index] );
     }
 }
 template void where_op_t<adten_t>::forward_der(
@@ -203,7 +213,7 @@ void where_op_t<TensorType>::reverse_der(
     //
 #ifndef NDEBUG
     size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
-    assert( n_arg == 3 && "add: n_arg != 3" );
+    assert( n_arg == 3 && "where: n_arg != 3" );
 # endif
     // cond
     TensorType cond  = tensor_at_arg_index(
