@@ -28,14 +28,14 @@ void solve_op_t<TensorType>::forward_par(
     // arg_start
     size_t arg_start = agraph.m_arg_start[op_index];
     //
+    // left
+    bool left = bool( agraph.m_arg_value[arg_start + 2] );
+    //
 #ifndef NDEBUG
     size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
     assert( n_arg == 3  );
     assert( agraph.m_arg_type[arg_start+2] == adtype_t::none );
 # endif
-    //
-    // left
-    bool left = bool( agraph.m_arg_value[arg_start + 2] );
     //
     // linear_ten, rhs_ten
     TensorType linear_ten  = tensor_at_arg_index(
@@ -74,14 +74,14 @@ void solve_op_t<TensorType>::forward_var(
     // arg_start
     size_t arg_start = agraph.m_arg_start[op_index];
     //
+    // left
+    bool left = bool( agraph.m_arg_value[arg_start + 2] );
+    //
 #ifndef NDEBUG
     size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
     assert( n_arg == 3 );
     assert( agraph.m_arg_type[arg_start+2] == adtype_t::none );
 # endif
-    //
-    // left
-    bool left = bool( agraph.m_arg_value[arg_start + 2] );
     //
     // linear_ten, rhs_ten
     TensorType linear_ten  = tensor_at_arg_index(
@@ -126,30 +126,31 @@ void solve_op_t<TensorType>::forward_der(
     // arg_start
     size_t arg_start = agraph.m_arg_start[op_index];
     //
+    // left
+    bool left = bool( agraph.m_arg_value[arg_start + 2] );
+    //
 #ifndef NDEBUG
     size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
     assert( n_arg == 3 );
     assert( agraph.m_arg_type[arg_start+2] == adtype_t::none );
 # endif
-    //
-    // left
-    bool left = bool( agraph.m_arg_value[arg_start + 2] );
-    //
     // variable
     adtype_t variable = adtype_t::variable;
     //
-    // linear_index, rhs_index
-    size_t linear_index = agraph.m_arg_value[arg_start];
-    size_t rhs_index = agraph.m_arg_value[arg_start + 1];
+    // linear_index, linear_type, linear_zero_der
+    size_t   linear_index     = agraph.m_arg_value[arg_start];
+    adtype_t linear_type     = agraph.m_arg_type[arg_start];
+    bool     linear_zero_der =
+        linear_type != variable || no_elements( for_der[linear_index] );
     //
-    // linear_type, rhs_type
-    adtype_t linear_type = agraph.m_arg_type[arg_start];
-    adtype_t rhs_type = agraph.m_arg_type[arg_start + 1];
-    if( linear_type == variable && no_elements(for_der[linear_index]) ) {
-        linear_type = adtype_t::constant;
-    }
-    if( rhs_type == variable && no_elements(for_der[rhs_index]) ) {
-        rhs_type = adtype_t::constant;
+    // rhs_index, rhs_type, rhs_zero_der
+    size_t   rhs_index    = agraph.m_arg_value[arg_start + 1];
+    adtype_t rhs_type     = agraph.m_arg_type[arg_start + 1];
+    bool     rhs_zero_der =
+        rhs_type != variable || no_elements( for_der[rhs_index] );
+    //
+    if( linear_zero_der && rhs_zero_der ) {
+        return;
     }
     //
     // linear
@@ -159,14 +160,16 @@ void solve_op_t<TensorType>::forward_der(
     //
     // prod
     TensorType prod = TensorType( no_elements() );
-    if( left && linear_type == adtype_t::variable ) {
-        prod = for_der[linear_index].matmul( var_all[op_index] );
-    } else if( ! left && linear_type == adtype_t::variable ) {
-        prod = var_all[op_index].matmul( for_der[linear_index] );
+    if( ! linear_zero_der ) {
+        if( left ) {
+            prod = for_der[linear_index].matmul( var_all[op_index] );
+        } else {
+            prod = var_all[op_index].matmul( for_der[linear_index] );
+        }
     }
     // diff
     TensorType diff = TensorType( no_elements() );
-    if( rhs_type == adtype_t::variable ) {
+    if( ! rhs_zero_der ) {
         diff = for_der[rhs_index];
     }
     minus_equal(diff, prod);
@@ -217,14 +220,14 @@ void solve_op_t<TensorType>::reverse_der(
     // arg_start
     size_t arg_start = agraph.m_arg_start[op_index];
     //
+    // left, transpose
+    bool left      = bool( agraph.m_arg_value[arg_start + 2] );
+    //
 #ifndef NDEBUG
     size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
     assert( n_arg == 3 );
     assert( agraph.m_arg_type[arg_start+2] == adtype_t::none );
 # endif
-    //
-    // left
-    bool left = bool( agraph.m_arg_value[arg_start + 2] );
     //
     // linear_type, rhs_type
     adtype_t linear_type     = agraph.m_arg_type[arg_start];

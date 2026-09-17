@@ -25,7 +25,7 @@ void ge_op_t<TensorType>::forward_par(
     //
 #ifndef NDEBUG
     size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
-    assert( n_arg == 2 && "add: n_arg != 2" );
+    assert( n_arg == 2 && "ge: n_arg != 2" );
 # endif
     //
     // lhs_tensor, rhs_tensor
@@ -67,7 +67,7 @@ void ge_op_t<TensorType>::forward_var(
     //
 #ifndef NDEBUG
     size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
-    assert( n_arg == 2 && "add: n_arg != 2" );
+    assert( n_arg == 2 && "ge: n_arg != 2" );
 # endif
     //
     // lhs_tensor, rhs_tensor

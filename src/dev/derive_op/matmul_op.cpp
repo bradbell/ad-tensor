@@ -26,7 +26,7 @@ void matmul_op_t<TensorType>::forward_par(
     //
 #ifndef NDEBUG
     size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
-    assert( n_arg == 2 && "mul: n_arg != 2" );
+    assert( n_arg == 2 && "matmul: n_arg != 2" );
 # endif
     //
     // lhs_tensor, rhs_tensor
@@ -68,7 +68,7 @@ void matmul_op_t<TensorType>::forward_var(
     //
 #ifndef NDEBUG
     size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
-    assert( n_arg == 2 && "mul: n_arg != 2" );
+    assert( n_arg == 2 && "matmul: n_arg != 2" );
 # endif
     //
     // lhs_tensor, rhs_tensor
@@ -113,27 +113,29 @@ void matmul_op_t<TensorType>::forward_der(
     //
 #ifndef NDEBUG
     size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
-    assert( n_arg == 2 && "mul: n_arg != 2" );
+    assert( n_arg == 2 && "matmul: n_arg != 2" );
 # endif
     // variable
     adtype_t variable = adtype_t::variable;
     //
-    // lhs_index, rhs_index
-    size_t lhs_index = agraph.m_arg_value[arg_start];
-    size_t rhs_index = agraph.m_arg_value[arg_start + 1];
+    // lhs_index, lhs_type, lhs_zero_der
+    size_t   lhs_index    = agraph.m_arg_value[arg_start];
+    adtype_t lhs_type     = agraph.m_arg_type[arg_start];
+    bool     lhs_zero_der =
+        lhs_type != variable || no_elements( for_der[lhs_index] );
     //
-    // lhs_type, rhs_type
-    adtype_t lhs_type = agraph.m_arg_type[arg_start];
-    adtype_t rhs_type = agraph.m_arg_type[arg_start + 1];
-    if( lhs_type == variable && no_elements(for_der[lhs_index]) ) {
-        lhs_type = adtype_t::constant;
-    }
-    if( rhs_type == variable && no_elements(for_der[rhs_index]) ) {
-        rhs_type = adtype_t::constant;
+    // rhs_index, rhs_type, rhs_zero_der
+    size_t   rhs_index    = agraph.m_arg_value[arg_start + 1];
+    adtype_t rhs_type     = agraph.m_arg_type[arg_start + 1];
+    bool     rhs_zero_der =
+        rhs_type != variable || no_elements( for_der[rhs_index] );
+    //
+    if( lhs_zero_der && rhs_zero_der ) {
+        return;
     }
     //
     // for_der[op_index]
-    if( lhs_type != adtype_t::variable ) {
+    if( lhs_zero_der ) {
         assert( rhs_type == adtype_t::variable );
         //
         // lhs_tensor
@@ -144,7 +146,7 @@ void matmul_op_t<TensorType>::forward_der(
         // for_der
         for_der[op_index] = lhs_tensor.matmul( for_der[rhs_index] );
         //
-    } else if( rhs_type != adtype_t::variable ) {
+    } else if( rhs_zero_der ) {
         assert( lhs_type == adtype_t::variable );
         //
         // rhs_tensor
@@ -200,7 +202,7 @@ void matmul_op_t<TensorType>::reverse_der(
     //
 #ifndef NDEBUG
     size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
-    assert( n_arg == 2 && "mul: n_arg != 2" );
+    assert( n_arg == 2 && "matmul: n_arg != 2" );
 # endif
     //
     // lhs_type, rhs_type

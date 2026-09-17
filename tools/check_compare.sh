@@ -29,7 +29,8 @@ do
     $sed $gt_file > temp.$$ \
     -e "s|gt operator|$name operator|g" \
     -e "s|gt_op|${name}_op|g" \
-    -e "s|lhs_tensor *> *rhs_tensor|lhs_tensor $operator rhs_tensor|"
+    -e "s|lhs_tensor *> *rhs_tensor|lhs_tensor $operator rhs_tensor|" \
+    -e "s|\"gt: n_arg != 2\"|\"$name: n_arg != 2\"|"
     if ! diff $out_file temp.$$
     then
         echo "check_compare.sh: The file $out_file"

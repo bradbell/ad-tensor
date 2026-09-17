@@ -29,7 +29,7 @@ void logdet_op_t<TensorType>::forward_par(
     //
     // n_arg
     size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
-    assert( n_arg == 1 && "logdet_op: n_arg != 1" );
+    assert( n_arg == 1 && "logdet: n_arg != 1" );
 #endif
     // operand_index
     size_t operand_index  = agraph.m_arg_value[arg_start];
@@ -71,7 +71,7 @@ void logdet_op_t<TensorType>::forward_var(
     //
     // n_arg
     size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
-    assert( n_arg == 1 && "logdet_op: n_arg != 1" );
+    assert( n_arg == 1 && "logdet: n_arg != 1" );
 #endif
     // operand_index
     size_t operand_index  = agraph.m_arg_value[arg_start];
@@ -116,7 +116,7 @@ void logdet_op_t<TensorType>::forward_der(
     //
     // n_arg
     size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
-    assert( n_arg == 1 && "logdet_op: n_arg != 1" );
+    assert( n_arg == 1 && "logdet: n_arg != 1" );
 #endif
     // operand_index, operand
     size_t operand_index  = agraph.m_arg_value[arg_start];
@@ -184,7 +184,7 @@ void logdet_op_t<TensorType>::reverse_der(
     //
     // n_arg
     size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
-    assert( n_arg == 1 && "logdet_op: n_arg != 1" );
+    assert( n_arg == 1 && "logdet: n_arg != 1" );
 #endif
     // operand_index, operand
     size_t            operand_index = agraph.m_arg_value[arg_start];

@@ -15,6 +15,7 @@ endif()
 # BEGIN_SORT_THIS_LINE_PLUS_2
 add_executable(tests
     ${plugin_TESTS}
+    adfn/forward_der.cpp
     adfn/optimize.cpp
     adfn/reverse_der.cpp
     adten/matmul.cpp
