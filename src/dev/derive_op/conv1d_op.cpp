@@ -5,6 +5,7 @@
 #include <ad_tensor/dev/derive_op.hpp>
 #include <ad_tensor/adten.hpp>
 #include <ad_tensor/dev/tensor_at_index.hpp>
+#include <ad_tensor/no_elements.hpp>
 //
 namespace ad_tensor { namespace dev { // Begin ad_tensor::dev
 // ------------------------------------------------------------------------
@@ -133,6 +134,38 @@ void conv1d_op_t<TensorType>::forward_der(
     const vector<TensorType>&    var_all     ,
     vector<TensorType>&          for_der
 ) const {
+    //
+    // arg_start
+    size_t arg_start = agraph.m_arg_start[op_index];
+    //
+#ifndef NDEBUG
+    size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
+    assert( n_arg == 2 && "conv1d: n_arg != 2" );
+# endif
+    // variable
+    adtype_t variable = adtype_t::variable;
+    //
+    // input_index, input_type, input_zero_der
+    size_t   input_index    = agraph.m_arg_value[arg_start];
+    adtype_t input_type     = agraph.m_arg_type[arg_start];
+    bool     input_zero_der =
+        input_type != variable || no_elements( for_der[input_index] );
+    //
+    // weight_index, weight_type, weight_zero_der
+    size_t   weight_index    = agraph.m_arg_value[arg_start + 1];
+    adtype_t weight_type     = agraph.m_arg_type[arg_start + 1];
+    bool     weight_zero_der =
+        weight_type != variable || no_elements( for_der[weight_index] );
+    //
+    // bias_index, bias_type, bias_zero_der
+    size_t   bias_index    = agraph.m_arg_value[arg_start + 1];
+    adtype_t bias_type     = agraph.m_arg_type[arg_start + 1];
+    bool     bias_zero_der =
+        bias_type != variable || no_elements( for_der[bias_index] );
+    //
+    if( input_zero_der && weight_zero_der && bias_zero_der) {
+        return;
+    }
     user_assert(false, "forward_der not yet implemented for conv1d operator" );
 }
 template void conv1d_op_t<adten_t>::forward_der(

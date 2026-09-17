@@ -5,8 +5,11 @@
 /*
 {xrst_begin example_conv1d usr}
 {xrst_spell
+    nx
     nw
     nc
+    dx
+    dw
 }
 
 Examples One Dimensional Cross Correlation
@@ -14,11 +17,11 @@ Examples One Dimensional Cross Correlation
 
 Function Value
 **************
-Given the input vector :math:`x \in \mathbb{R}^{ni}`,
+Given the input vector :math:`x \in \mathbb{R}^{nx}`,
 the weight vector :math:`w \in \mathbb{R}^{nw}` ,
 and the bias tensor :math:`b \in \mathbb{R}` ,
-compute the cross correlation vector :math:`c \in \mathbb{R}^{nc}
-defined by :math:`nc = ni - nw + 1` and
+compute the cross correlation vector :math:`c \in \mathbb{R}^{nc}`
+defined by :math:`nc = nx - nw + 1` and
 
 .. math::
 
@@ -27,19 +30,35 @@ defined by :math:`nc = ni - nw + 1` and
 Partial Derivatives
 *******************
 
-The partial of :math:`c_i` w.r.t. :math:`w_j` is
+For :math:`0 <= i < nc, \; 0 <= j < nw`,
+the partial of :math:`c_i` w.r.t. :math:`w_j` is
 
 .. math::
 
     \partial c_i / \partial w_j = x_{i + j}
 
-The partial of :math:`c_i` w.r.t math:`x_k` is
+For :math:`0 <= i < nc, \; 0 <= k < nx`,
+the partial of :math:`c_i` w.r.t :math:`x_k` is
 
 .. math::
 
-    \partial c_i / \partial x_k = w_{k - i}
+    \partial c_i / \partial x_k = \begin{cases}
+        w_{k - i} & \text{if} \; i <= k < i + nw \\
+        0         & \text{otherwise}
+    \end{cases}
 
-The partial of :math:`c_i` w.r.t math:`b` is one.
+For :math:`0 <= i < nc`,
+the partial of :math:`c_i` w.r.t math:`b` is one.
+
+Forward Derivatives
+*******************
+Given the forward derivatives
+:math:`dx \in \mathbb{R}^{nx}, dw \in \mathbb{R}^{nw} , db \in \mathbb{R}` ,
+the forward derivative of :math:`dc \in \mathbb{R}^{nc}` is given by
+
+.. math::
+
+    dc_i = db + \sum_{j=0}^{nw-1} x_{i+j} \cdot dw_j + dx_{i+j} \cdot w_j
 
 
 Source Code
@@ -101,11 +120,11 @@ TEST(examples_adten, conv1d) {
     // c
     at::Tensor c = r[0].contiguous();
     //
-    // ni, nw, nc
-    int64_t ni = x.sizes()[2];
+    // nx, nw, nc
+    int64_t nx = x.sizes()[2];
     int64_t nw = w.sizes()[2];
     int64_t nc = c.sizes()[2];
-    EXPECT_EQ( nc,  ni - nw + 1 );
+    EXPECT_EQ( nc,  nx - nw + 1 );
     //
     // c_vec
     vector<float> c_vec(
