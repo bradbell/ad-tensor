@@ -7,7 +7,7 @@
 {xrst_spell
     nx
     nw
-    nc
+    ny
     dx
     dw
 }
@@ -20,45 +20,45 @@ Function Value
 Given the input vector :math:`x \in \mathbb{R}^{nx}`,
 the weight vector :math:`w \in \mathbb{R}^{nw}` ,
 and the bias tensor :math:`b \in \mathbb{R}` ,
-compute the cross correlation vector :math:`c \in \mathbb{R}^{nc}`
-defined by :math:`nc = nx - nw + 1` and
+compute the cross correlation vector :math:`y \in \mathbb{R}^{ny}`
+defined by :math:`ny = nx - nw + 1` and
 
 .. math::
 
-    c_i ( x, w, b ) = b + \sum_{j=0}^{nw-1} x_{i + j} \cdot w_j
+    y_i ( x, w, b ) = b + \sum_{j=0}^{nw-1} x_{i + j} \cdot w_j
 
 Partial Derivatives
 *******************
 
-For :math:`0 <= i < nc, \; 0 <= j < nw`,
-the partial of :math:`c_i` w.r.t. :math:`w_j` is
+For :math:`0 <= i < ny, \; 0 <= j < nw`,
+the partial of :math:`y_i` w.r.t. :math:`w_j` is
 
 .. math::
 
-    \partial c_i / \partial w_j = x_{i + j}
+    \partial y_i / \partial w_j = x_{i + j}
 
-For :math:`0 <= i < nc, \; 0 <= k < nx`,
-the partial of :math:`c_i` w.r.t :math:`x_k` is
+For :math:`0 <= i < ny, \; 0 <= k < nx`,
+the partial of :math:`y_i` w.r.t :math:`x_k` is
 
 .. math::
 
-    \partial c_i / \partial x_k = \begin{cases}
+    \partial y_i / \partial x_k = \begin{cases}
         w_{k - i} & \text{if} \; i <= k < i + nw \\
         0         & \text{otherwise}
     \end{cases}
 
-For :math:`0 <= i < nc`,
-the partial of :math:`c_i` w.r.t math:`b` is one.
+For :math:`0 <= i < ny`,
+the partial of :math:`y_i` w.r.t math:`b` is one.
 
 Forward Derivatives
 *******************
 Given the forward derivatives
 :math:`dx \in \mathbb{R}^{nx}, dw \in \mathbb{R}^{nw} , db \in \mathbb{R}` ,
-the forward derivative of :math:`dc \in \mathbb{R}^{nc}` is given by
+the forward derivative of :math:`dy \in \mathbb{R}^{ny}` is given by
 
 .. math::
 
-    dc_i = db + \sum_{j=0}^{nw-1} x_{i+j} \cdot dw_j + dx_{i+j} \cdot w_j
+    dy_i = db + \sum_{j=0}^{nw-1} x_{i+j} \cdot dw_j + dx_{i+j} \cdot w_j
 
 
 Source Code
@@ -103,12 +103,12 @@ TEST(examples_adten, conv1d) {
     adten_t aw = av[1];
     adten_t abias   = av[2];
     //
-    // ac
+    // ay
     auto options   = torch::nn::functional::Conv1dFuncOptions();
-    adten_t   ac = ad_tensor::conv1d(ax, aw, abias, options);
+    adten_t   ay = ad_tensor::conv1d(ax, aw, abias, options);
     //
     // r = f(v)
-    vector<adten_t> ar = {ac};
+    vector<adten_t> ar = {ay};
     adfn_t f           = adten_t::stop_recording(ar, "f");
     //
     // var_all
@@ -117,27 +117,27 @@ TEST(examples_adten, conv1d) {
     // r
     vector<at::Tensor> r = f.get_range(var_all);
     //
-    // c
-    at::Tensor c = r[0].contiguous();
+    // y
+    at::Tensor y = r[0].contiguous();
     //
-    // nx, nw, nc
+    // nx, nw, ny
     int64_t nx = x.sizes()[2];
     int64_t nw = w.sizes()[2];
-    int64_t nc = c.sizes()[2];
-    EXPECT_EQ( nc,  nx - nw + 1 );
+    int64_t ny = y.sizes()[2];
+    EXPECT_EQ( ny,  nx - nw + 1 );
     //
-    // c_vec
-    vector<float> c_vec(
-        c.data_ptr<float>(),
-        c.data_ptr<float>() + c.numel()
+    // y_vec
+    vector<float> y_vec(
+        y.data_ptr<float>(),
+        y.data_ptr<float>() + y.numel()
     );
     //
-    for(int64_t i = 0; i < nc; ++i) {
+    for(int64_t i = 0; i < ny; ++i) {
         float sum = bias_vec[0];
         for(int64_t j = 0; j < nw; ++j) {
             sum += x_vec[i + j] * w_vec[j];
         }
-        EXPECT_EQ( c_vec[i], sum );
+        EXPECT_EQ( y_vec[i], sum );
     }
 }
 // END_CPP
