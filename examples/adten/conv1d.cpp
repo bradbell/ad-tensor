@@ -78,34 +78,34 @@ TEST(examples_adten, conv1d) {
     using ad_tensor::adfn_t;
     using ad_tensor::vector;
     //
-    // x_vec, w_vec, bias_vec
-    vector<float> x_vec  = {1.0, 2.0, 3.0, 4.0};
+    // x_vec, w_vec, b_vec
+    vector<float> x_vec = {1.0, 2.0, 3.0, 4.0};
     vector<float> w_vec = {0.25, 0.5, 0.25};
-    vector<float> bias_vec   = {-1.0};
+    vector<float> b_vec = {-1.0};
     //
-    // x, w, bias
-    at::Tensor x  = torch::tensor(x_vec).view( {1, 1, 4} );
+    // x, w, b
+    at::Tensor x = torch::tensor(x_vec).view( {1, 1, 4} );
     at::Tensor w = torch::tensor(w_vec).view( {1, 1, 3} );
-    at::Tensor bias   = torch::tensor(bias_vec);
+    at::Tensor b = torch::tensor(b_vec);
     //
     // v
     vector<at::Tensor> v;
     v.push_back( x );
     v.push_back( w );
-    v.push_back( bias );
+    v.push_back( b );
     //
     // adom_var
     vector<adten_t> av = adten_t::start_recording(v);
     //
     //
-    // ax, aw, abias
+    // ax, aw, ab
     adten_t ax  = av[0];
     adten_t aw = av[1];
-    adten_t abias   = av[2];
+    adten_t ab   = av[2];
     //
     // ay
     auto options   = torch::nn::functional::Conv1dFuncOptions();
-    adten_t   ay = ad_tensor::conv1d(ax, aw, abias, options);
+    adten_t   ay = ad_tensor::conv1d(ax, aw, ab, options);
     //
     // r = f(v)
     vector<adten_t> ar = {ay};
@@ -126,14 +126,13 @@ TEST(examples_adten, conv1d) {
     int64_t ny = y.sizes()[2];
     EXPECT_EQ( ny,  nx - nw + 1 );
     //
-    // y_vec
+    // check
     vector<float> y_vec(
         y.data_ptr<float>(),
         y.data_ptr<float>() + y.numel()
     );
-    //
     for(int64_t i = 0; i < ny; ++i) {
-        float sum = bias_vec[0];
+        float sum = b_vec[0];
         for(int64_t j = 0; j < nw; ++j) {
             sum += x_vec[i + j] * w_vec[j];
         }
