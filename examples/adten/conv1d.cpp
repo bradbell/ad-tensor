@@ -10,6 +10,9 @@
     ny
     dx
     dw
+    pw
+    py
+    px
 }
 
 Examples One Dimensional Cross Correlation
@@ -59,6 +62,30 @@ the forward derivative of :math:`dy \in \mathbb{R}^{ny}` is given by
 .. math::
 
     dy_i = db + \sum_{j=0}^{nw-1} x_{i+j} \cdot dw_j + dx_{i+j} \cdot w_j
+
+Reverse Partials
+****************
+We are given the partial derivative of the objective w.r.t the output
+:math:`py \in \mathbb{R}^{ny}` .
+Reverse mode removes the output from the expression of the objective.
+If we interpret :math:`w_{k-i}` as zero when :math:`k < i`,
+the contributions to the partial w.r.t the input,
+:math:`px \in \mathbb{R}^{nx}` ,
+is given by
+
+.. math::
+
+    px_k \text{ +=} \sum_{i=0}^{ny-1} py_i \cdot w_{k-i}
+
+The contributions to the partial w.r.t the weight and bias,
+:math:`pw \in \mathbb{R}^{nw} , pb \in \mathbb{R}` ,
+are given by
+
+.. math::
+
+    pw_j & \text{ +=} \sum_{i=0}^{ny-1} py_i \cdot x_{i+j} \\
+    pb   & \text{ +=} \sum_{i=0}^{ny-1} py_i
+
 
 
 Source Code
