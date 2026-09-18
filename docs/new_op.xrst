@@ -185,4 +185,17 @@ Test and Commit changes
 =======================
 Run check_all.sh to check that the new NEW_op.cpp compiles.
 
+Step 8
+******
+
+examples/adten/NEW.cpp
+======================
+Add an example / test of forward_der for the NEW operator;
+see examples/adten/OTHER.cpp.
+
+Test and Commit changes
+=======================
+Run check_all.sh to check that the modified example compiles, runs,
+and passes it tests.
+
 {xrst_end new_op}

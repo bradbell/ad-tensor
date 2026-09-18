@@ -48,7 +48,7 @@ the partial of :math:`y_i` w.r.t :math:`x_k` is
     \end{cases}
 
 For :math:`0 <= i < ny`,
-the partial of :math:`y_i` w.r.t math:`b` is one.
+the partial of :math:`y_i` w.r.t :math:`b` is one.
 
 Forward Derivatives
 *******************
@@ -145,12 +145,10 @@ TEST(examples_adten, conv1d) {
     at::Tensor zero_b = torch::zeros( b.sizes() );
     vector<at::Tensor> dv = { zero_x, zero_w, zero_b };
     //
-    // k
-    // check derivative of y w.r.t x
+    // check partal of y w.r.t x[k]
     for(int64_t k = 0; k < nx; ++k) {
         //
         // dy
-        // compute partial of y w.r.t. x[k]
         dv[0]                 = torch::eye(nx).select(0, k).view( x.sizes() );
         vector<at::Tensor> dr = f.forward_der(dv, var_all);
         at::Tensor         dy = dr[0].contiguous();
@@ -166,6 +164,42 @@ TEST(examples_adten, conv1d) {
             } else {
                 EXPECT_EQ( dy_vec[i], float( 0.0 ) );
             }
+        }
+    }
+    dv[0] = zero_x;
+    //
+    // check partal of y w.r.t w[j]
+    for(int64_t j = 0; j < nw; ++j) {
+        //
+        // dy
+        dv[1]                 = torch::eye(nw).select(0, j).view( w.sizes() );
+        vector<at::Tensor> dr = f.forward_der(dv, var_all);
+        at::Tensor         dy = dr[0].contiguous();
+        //
+        // check
+        vector<float> dy_vec(
+            dy.data_ptr<float>(),
+            dy.data_ptr<float>() + y.numel()
+        );
+        for(int64_t i = 0; i < ny; ++i) {
+            EXPECT_EQ( dy_vec[i], x_vec[i + j] );
+        }
+    }
+    dv[1] = zero_w;
+    //
+    // check derivative of y w.r.t. b
+    {
+        dv[2] = torch::tensor( {1.0} );
+        vector<at::Tensor> dr = f.forward_der(dv, var_all);
+        at::Tensor         dy = dr[0].contiguous();
+        //
+        // check
+        vector<float> dy_vec(
+            dy.data_ptr<float>(),
+            dy.data_ptr<float>() + y.numel()
+        );
+        for(int64_t i = 0; i < ny; ++i) {
+            EXPECT_EQ( dy_vec[i], float(1.0) );
         }
     }
 }
