@@ -161,8 +161,8 @@ void conv1d_op_t<TensorType>::forward_der(
         weight_type != variable || no_elements( for_der[weight_index] );
     //
     // bias_index, bias_type, bias_zero_der
-    size_t   bias_index    = agraph.m_arg_value[arg_start + 1];
-    adtype_t bias_type     = agraph.m_arg_type[arg_start + 1];
+    size_t   bias_index    = agraph.m_arg_value[arg_start + 2];
+    adtype_t bias_type     = agraph.m_arg_type[arg_start + 2];
     bool     bias_zero_der =
         bias_type != variable || no_elements( for_der[bias_index] );
     //
@@ -170,18 +170,14 @@ void conv1d_op_t<TensorType>::forward_der(
         return;
     }
     //
-    // bias_shape
-    TensorType bias  = tensor_at_arg_index(
-        arg_start + 2, agraph, con_vec, par_all, var_all
-    );
-    c10::IntArrayRef bias_shape = bias.sizes();
+    // output_shape
+    c10::IntArrayRef output_shape = var_all[op_index].sizes();
     //
     // for_der[op_index]
-    TensorType  doutput;
-    if( bias_zero_der ) {
-        doutput = TensorType( torch::zeros( bias_shape ) );
-    } else {
-        doutput = for_der[bias_index];
+    TensorType  doutput = TensorType( torch::zeros( output_shape ) );
+    if( ! bias_zero_der ) {
+        int64_t n_channel_out = output_shape[1];
+        doutput += for_der[bias_index].view( {1, n_channel_out, 1}  );
     }
     //
     // for_der[op_index]
@@ -200,7 +196,7 @@ void conv1d_op_t<TensorType>::forward_der(
         .groups(groups);
     //
     // no_bias
-    TensorType no_bias = TensorType( torch::zeros( bias_shape ) );
+    TensorType no_bias;
     //
     // doutput
     if( ! input_zero_der ) {

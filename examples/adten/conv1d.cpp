@@ -37,7 +37,7 @@ the partial of :math:`y_i` w.r.t. :math:`w_j` is
 
     \partial y_i / \partial w_j = x_{i + j}
 
-For :math:`0 <= i < ny, \; 0 <= k < nx`,
+For :math:`0 <= i < ny,
 the partial of :math:`y_i` w.r.t :math:`x_k` is
 
 .. math::
@@ -101,7 +101,7 @@ TEST(examples_adten, conv1d) {
     // ax, aw, ab
     adten_t ax  = av[0];
     adten_t aw = av[1];
-    adten_t ab   = av[2];
+    adten_t ab = av[2];
     //
     // ay
     auto options   = torch::nn::functional::Conv1dFuncOptions();
@@ -137,6 +137,36 @@ TEST(examples_adten, conv1d) {
             sum += x_vec[i + j] * w_vec[j];
         }
         EXPECT_EQ( y_vec[i], sum );
+    }
+    //
+    // zero_x, zero_w, zero_b, dv
+    at::Tensor zero_x = torch::zeros( x.sizes() );
+    at::Tensor zero_w = torch::zeros( w.sizes() );
+    at::Tensor zero_b = torch::zeros( b.sizes() );
+    vector<at::Tensor> dv = { zero_x, zero_w, zero_b };
+    //
+    // k
+    // check derivative of y w.r.t x
+    for(int64_t k = 0; k < nx; ++k) {
+        //
+        // dy
+        // compute partial of y w.r.t. x[k]
+        dv[0]                 = torch::eye(nx).select(0, k).view( x.sizes() );
+        vector<at::Tensor> dr = f.forward_der(dv, var_all);
+        at::Tensor         dy = dr[0].contiguous();
+        //
+        // check
+        vector<float> dy_vec(
+            dy.data_ptr<float>(),
+            dy.data_ptr<float>() + y.numel()
+        );
+        for(int64_t i = 0; i < ny; ++i) {
+            if( i <= k && k < i + nw ) {
+                EXPECT_EQ( dy_vec[i], w_vec[k - i] );
+            } else {
+                EXPECT_EQ( dy_vec[i], float( 0.0 ) );
+            }
+        }
     }
 }
 // END_CPP
