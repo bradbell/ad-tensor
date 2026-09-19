@@ -61,6 +61,9 @@ the forward derivative of :math:`dy \in \mathbb{R}^{ny}` is given by
     dy_k = db + \sum_{j=0}^{nw-1} x_{k+j} \cdot dw_j + 
         \sum_{i=k}^{k+nw-1} dx_i \cdot w_{i-k}
 
+Note that this is the sum of x correlated with dw
+plus dx correlated with w.
+
 Reverse Partials
 ****************
 We are given the partial derivative of the objective w.r.t the output
@@ -75,6 +78,8 @@ are given by
     pw_j & = \sum_{k=0}^{ny-1} py_k \cdot x_{k+j} \\
     pb   & = \sum_{k=0}^{ny-1} py_k
 
+Note that pw is x correlated with py and pb is the sum of py.
+
 The contributions to the partial w.r.t the input,
 :math:`px \in \mathbb{R}^{nx}` , is given by
 
@@ -85,10 +90,35 @@ The contributions to the partial w.r.t the input,
             w_{i-k} & \text{if} \; i \in [k, \cdots, k+nw-1]  \\
             0       & \text{otherwise}
         \end{cases}
+    \\
+    px_i & = \sum_{k=i-nw+1}^i py_k \cdot w_{i-k}
 
+In the last equation above :math:`py_k` is zero for 
+:math:`k < 0` and :math:`k > ny - 1` . 
+We fix this abuse of notation by defining the vector 
+:math:`\hat{py} \in \mathbb{R}^{nx + nw - 1}` 
 
+.. math::
 
+    \hat{py}_l & = \begin{cases}
+        0               & \text{if} \; l < nw - 1 \\
+        0               & \text{if} \; l > nw - 1 + ny - 1 \\
+        py_{l - nw + 1} & \text{otherwise}
+    \end{cases}
 
+Substituting :math:`k = l - nw + 1` in the equation for :math:`px_i` above
+we obtain
+
+.. math::
+
+    px_i 
+    & = \sum_{l=i}^{i+nw-1} \hat{py}_l \cdot w_{i+nw-1-l} \\
+    & = \sum_{j=0}^{nw-1} \hat{py}_{i+j} \cdot w_{nw-1-j} \\
+    & = \sum_{j=0}^{nw-1} \hat{py}_{i+j} \cdot \hat{w}_j 
+
+where :math:`\hat{w}_j = w_{nw-1-j}` .
+Note that px is :math:`\hat{py}` correlated with :math:`\hat{w}` .
+    
 Source Code
 ***********
 {xrst_literal ,
