@@ -24,34 +24,31 @@ Given the input vector :math:`x \in \mathbb{R}^{nx}`,
 the weight vector :math:`w \in \mathbb{R}^{nw}` ,
 and the bias tensor :math:`b \in \mathbb{R}` ,
 compute the cross correlation vector :math:`y \in \mathbb{R}^{ny}`
-defined by :math:`ny = nx - nw + 1` and
+where :math:`ny = nx - nw + 1` and
 
 .. math::
 
-    y_i ( x, w, b ) = b + \sum_{j=0}^{nw-1} x_{i + j} \cdot w_j
+    y_k ( x, w, b ) & = b + \sum_{j=0}^{nw-1} x_{k + j} \cdot w_j \\
+                    & = b + \sum_{i=k}^{k+nw-1} x_i \cdot w_{i-k} \\
+
+Note that we use the following notation,
+:math:`i \in [0, \ldots , nx-1], 
+:math:`j \in [0, \ldots , nw-1]`, 
+:math:`k \in [0, \ldots , ny-1]`, 
 
 Partial Derivatives
 *******************
 
-For :math:`0 <= i < ny, \; 0 <= j < nw`,
-the partial of :math:`y_i` w.r.t. :math:`w_j` is
-
 .. math::
 
-    \partial y_i / \partial w_j = x_{i + j}
-
-For :math:`0 <= i < ny,
-the partial of :math:`y_i` w.r.t :math:`x_k` is
-
-.. math::
-
-    \partial y_i / \partial x_k = \begin{cases}
-        w_{k - i} & \text{if} \; i <= k < i + nw \\
-        0         & \text{otherwise}
+    \partial y_k / \partial w_j & = x_{k + j} 
+    \\
+    \partial y_k / \partial x_i & = \begin{cases}
+        w_{i-k} & \text{if} \; i \in [k, \cdots, k+nw-1]  \\
+        0       & \text{otherwise}
     \end{cases}
-
-For :math:`0 <= i < ny`,
-the partial of :math:`y_i` w.r.t :math:`b` is one.
+    \\
+    \partial y_k / \partial b & = 1
 
 Forward Derivatives
 *******************
@@ -61,30 +58,34 @@ the forward derivative of :math:`dy \in \mathbb{R}^{ny}` is given by
 
 .. math::
 
-    dy_i = db + \sum_{j=0}^{nw-1} x_{i+j} \cdot dw_j + dx_{i+j} \cdot w_j
+    dy_k = db + \sum_{j=0}^{nw-1} x_{k+j} \cdot dw_j + 
+        \sum_{i=k}^{k+nw-1} dx_i \cdot w_{i-k}
 
 Reverse Partials
 ****************
 We are given the partial derivative of the objective w.r.t the output
 :math:`py \in \mathbb{R}^{ny}` .
 Reverse mode removes the output from the expression of the objective.
-If we interpret :math:`w_{k-i}` as zero when :math:`k < i`,
-the contributions to the partial w.r.t the input,
-:math:`px \in \mathbb{R}^{nx}` ,
-is given by
-
-.. math::
-
-    px_k \text{ +=} \sum_{i=0}^{ny-1} py_i \cdot w_{k-i}
-
 The contributions to the partial w.r.t the weight and bias,
 :math:`pw \in \mathbb{R}^{nw} , pb \in \mathbb{R}` ,
 are given by
 
 .. math::
 
-    pw_j & \text{ +=} \sum_{i=0}^{ny-1} py_i \cdot x_{i+j} \\
-    pb   & \text{ +=} \sum_{i=0}^{ny-1} py_i
+    pw_j & = \sum_{k=0}^{ny-1} py_k \cdot x_{k+j} \\
+    pb   & = \sum_{k=0}^{ny-1} py_k
+
+The contributions to the partial w.r.t the input,
+:math:`px \in \mathbb{R}^{nx}` , is given by
+
+.. math::
+
+    px_i & = \sum_{k=0}^{ny-1} py_k \cdot 
+        \begin{cases}
+            w_{i-k} & \text{if} \; i \in [k, \cdots, k+nw-1]  \\
+            0       & \text{otherwise}
+        \end{cases}
+
 
 
 
@@ -158,12 +159,12 @@ TEST(examples_adten, conv1d) {
         y.data_ptr<float>(),
         y.data_ptr<float>() + y.numel()
     );
-    for(int64_t i = 0; i < ny; ++i) {
+    for(int64_t k = 0; k < ny; ++k) {
         float sum = b_vec[0];
         for(int64_t j = 0; j < nw; ++j) {
-            sum += x_vec[i + j] * w_vec[j];
+            sum += x_vec[k + j] * w_vec[j];
         }
-        EXPECT_EQ( y_vec[i], sum );
+        EXPECT_EQ( y_vec[k], sum );
     }
     //
     // zero_x, zero_w, zero_b, dv
@@ -172,11 +173,11 @@ TEST(examples_adten, conv1d) {
     at::Tensor zero_b = torch::zeros( b.sizes() );
     vector<at::Tensor> dv = { zero_x, zero_w, zero_b };
     //
-    // check partal of y w.r.t x[k]
-    for(int64_t k = 0; k < nx; ++k) {
+    // check partal of y w.r.t x[i]
+    for(int64_t i = 0; i < nx; ++i) {
         //
         // dy
-        dv[0]                 = torch::eye(nx).select(0, k).view( x.sizes() );
+        dv[0]                 = torch::eye(nx).select(0, i).view( x.sizes() );
         vector<at::Tensor> dr = f.forward_der(dv, var_all);
         at::Tensor         dy = dr[0].contiguous();
         //
@@ -185,11 +186,11 @@ TEST(examples_adten, conv1d) {
             dy.data_ptr<float>(),
             dy.data_ptr<float>() + y.numel()
         );
-        for(int64_t i = 0; i < ny; ++i) {
-            if( i <= k && k < i + nw ) {
-                EXPECT_EQ( dy_vec[i], w_vec[k - i] );
+        for(int64_t k = 0; k < ny; ++k) {
+            if( k <= i && i < k + nw ) {
+                EXPECT_EQ( dy_vec[k], w_vec[i - k] );
             } else {
-                EXPECT_EQ( dy_vec[i], float( 0.0 ) );
+                EXPECT_EQ( dy_vec[k], float( 0.0 ) );
             }
         }
     }
@@ -208,8 +209,8 @@ TEST(examples_adten, conv1d) {
             dy.data_ptr<float>(),
             dy.data_ptr<float>() + y.numel()
         );
-        for(int64_t i = 0; i < ny; ++i) {
-            EXPECT_EQ( dy_vec[i], x_vec[i + j] );
+        for(int64_t k = 0; k < ny; ++k) {
+            EXPECT_EQ( dy_vec[k], x_vec[k + j] );
         }
     }
     dv[1] = zero_w;
@@ -225,8 +226,8 @@ TEST(examples_adten, conv1d) {
             dy.data_ptr<float>(),
             dy.data_ptr<float>() + y.numel()
         );
-        for(int64_t i = 0; i < ny; ++i) {
-            EXPECT_EQ( dy_vec[i], float(1.0) );
+        for(int64_t k = 0; k < ny; ++k) {
+            EXPECT_EQ( dy_vec[k], float(1.0) );
         }
     }
 }
