@@ -13,6 +13,7 @@
     enum
     noimplement
     der
+    agraph
 }
 
 Step by Step to Implement a New Operator
@@ -44,13 +45,40 @@ will automatically sort source code lines beginning
 *nb* lines after the text.  This sorting will end *ne* lines before text
 END\ _SORT_THIS_LINE_MINUS_\ *ne* .
 
-NEW_op.cpp
-**********
+NEW_op.cpp TensorType
+*********************
 The file NEW_op.cpp will specify how forward_par, forward_var, forward_der
-and reverse_der are calculated for TensorType equal to at:Tensor and adten_t.
+and reverse_der functions are calculated for
+TensorType equal to at:Tensor and adten_t.
 If one of the necessary operations is not yet available for adten_t arguments,
-you can leave the corresponding function (e.g. reverse_der)
-as not yet implemented for adten_t arguments. Later, when the operation is
+you can set the corresponding function (e.g. reverse_der)
+as not yet implemented for adten_t arguments.
+For the reverse_der function , this is accomplished by changing
+{xrst_code cpp}
+    template void NEW_op_t<adten_t>::reverse_der(
+        size_t                       op_index    ,
+        const agraph_t&              agraph      ,
+        const vector<at::Tensor>&    con_vec     ,
+        const vector<adten_t>&       par_all     ,
+        const vector<adten_t>&       var_all     ,
+        vector<adten_t>&             rev_der
+    ) const;
+{xrst_code}
+to
+{xrst_code cpp}
+    template <> void NEW_op_t<adten_t>::reverse_der(
+        size_t                       op_index    ,
+        const agraph_t&              agraph      ,
+        const vector<at::Tensor>&    con_vec     ,
+        const vector<adten_t>&       par_all     ,
+        const vector<adten_t>&       var_all     ,
+        vector<adten_t>&             rev_der
+    ) const {
+        user_assert(false,
+        "reverse_der not yet implemented for NEW with adten_t arguments" );
+    }
+{xrst_code}
+Later, when the operation is
 available, you should link the function to the TensorType implementation.
 
 Some operators may require a totally separate implementation for at::Tensor

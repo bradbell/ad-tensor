@@ -244,14 +244,17 @@ void conv1d_op_t<TensorType>::reverse_der(
 ) const {
     user_assert(false, "reverse_der not yet implemented for conv1d operator" );
 }
-template void conv1d_op_t<adten_t>::reverse_der(
+template <> void conv1d_op_t<adten_t>::reverse_der(
     size_t                       op_index    ,
     const agraph_t&              agraph      ,
     const vector<at::Tensor>&    con_vec     ,
     const vector<adten_t>&       par_all     ,
     const vector<adten_t>&       var_all     ,
     vector<adten_t>&             rev_der
-) const;
+) const {
+    user_assert(false,
+    "reverse_der not yet implemented for conv1d with adten_t arguments" );
+}
 template void conv1d_op_t<at::Tensor>::reverse_der(
     size_t                       op_index    ,
     const agraph_t&              agraph      ,
