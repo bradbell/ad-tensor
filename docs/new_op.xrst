@@ -44,6 +44,19 @@ will automatically sort source code lines beginning
 *nb* lines after the text.  This sorting will end *ne* lines before text
 END\ _SORT_THIS_LINE_MINUS_\ *ne* .
 
+NEW_op.cpp
+**********
+The file NEW_op.cpp will specify how forward_par, forward_var, forward_der
+and reverse_der are calculated for TensorType equal to at:Tensor and adten_t.
+If one of the necessary operations is not yet available for adten_t arguments,
+you can leave the corresponding function (e.g. reverse_der)
+as not yet implemented for adten_t arguments. Later, when the operation is
+available, you should link the function to the TensorType implementation.
+
+Some operators may require a totally separate implementation for at::Tensor
+and adten_t arguments. This will require more source code and more testing
+and be harder to maintain.
+
 Step 1
 ******
 
