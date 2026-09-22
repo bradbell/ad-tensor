@@ -190,8 +190,9 @@ TEST(examples_adten, conv1d) {
     int64_t nw = w.sizes()[2];
     int64_t ny = y.sizes()[2];
     EXPECT_EQ( ny,  nx - nw + 1 );
-    //
-    // check
+    // ------------------------------------------------------------------------`
+    // check function value
+    // ------------------------------------------------------------------------`
     vector<float> y_vec(
         y.data_ptr<float>(),
         y.data_ptr<float>() + y.numel()
@@ -203,6 +204,9 @@ TEST(examples_adten, conv1d) {
         }
         EXPECT_EQ( y_vec[k], sum );
     }
+    // ------------------------------------------------------------------------`
+    // check forward derivativre
+    // ------------------------------------------------------------------------`
     //
     // zero_x, zero_w, zero_b, dv
     at::Tensor zero_x = torch::zeros( x.sizes() );
@@ -265,6 +269,49 @@ TEST(examples_adten, conv1d) {
         );
         for(int64_t k = 0; k < ny; ++k) {
             EXPECT_EQ( dy_vec[k], float(1.0) );
+        }
+    }
+    // ------------------------------------------------------------------------`
+    // check reverse derivativre
+    // ------------------------------------------------------------------------`
+    //
+    vector<at::Tensor> pr = { at::Tensor() };
+    for(int64_t k = 0; k < ny; ++k) {
+        //
+        // pv
+        pr[0]                 = torch::eye(ny).select(0, k).view( y.sizes() );
+        vector<at::Tensor> pv = f.reverse_der(pr, var_all);
+        //
+        // check pb
+        at::Tensor  pb = pv[2].contiguous();
+        vector<float> pb_vec(
+            pb.data_ptr<float>(),
+            pb.data_ptr<float>() + 1
+        );
+        EXPECT_EQ( pb_vec[0], 1.0 );
+        //
+        // check pw
+        at::Tensor  pw = pv[1].contiguous();
+        vector<float> pw_vec(
+            pw.data_ptr<float>(),
+            pw.data_ptr<float>() + w.numel()
+        );
+        for(int64_t j = 0; j < nw; ++j) {
+            EXPECT_EQ( pw_vec[j], x_vec[k+j] );
+        }
+        //
+        // check px
+        at::Tensor  px = pv[0].contiguous();
+        vector<float> px_vec(
+            px.data_ptr<float>(),
+            px.data_ptr<float>() + x.numel()
+        );
+        for(int64_t i = 0; i < nw; ++i) {
+            if( k <= i && i < k + nw ) {
+                EXPECT_EQ( px_vec[i], w_vec[i-k] );
+            } else {
+                EXPECT_EQ( px_vec[i], float(0.0) );
+            }
         }
     }
 }

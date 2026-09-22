@@ -319,7 +319,7 @@ void conv1d_op_t<TensorType>::reverse_der(
         //
         // input_bar
         TensorType poutput_hat =
-            torch::cat( {zero_pad, rev_der[op_index], zero_pad} );
+            torch::cat( {zero_pad, rev_der[op_index], zero_pad}, 2 );
         TensorType weight_hat = torch::flip(weight, {2});
         TensorType input_bar = conv1d(
             poutput_hat, weight_hat, no_bias, options
