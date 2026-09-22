@@ -139,8 +139,7 @@ template<> void ge_op_t<adten_t>::reverse_der(
 }
 // ---------------------------------------------------------------------------
 // src_gen
-template <class TensorType>
-std::string ge_op_t<TensorType>::src_gen(
+template <> std::string ge_op_t<at::Tensor>::src_gen(
     size_t                                                op_index        ,
     const agraph_t&                                       agraph          ,
     bool                                                  variable_agraph ,
@@ -149,16 +148,12 @@ std::string ge_op_t<TensorType>::src_gen(
     user_assert(false, "src_gen not yet implemented for ge operator" );
     return "";
 }
-template std::string ge_op_t<adten_t>::src_gen(
+template <> std::string ge_op_t<adten_t>::src_gen(
     size_t                                                op_index        ,
     const agraph_t&                                       agraph          ,
     bool                                                  variable_agraph ,
     const std::function< std::string(size_t, adtype_t) >& tensor_src
-) const;
-template std::string ge_op_t<at::Tensor>::src_gen(
-    size_t                                                op_index        ,
-    const agraph_t&                                       agraph          ,
-    bool                                                  variable_agraph ,
-    const std::function< std::string(size_t, adtype_t) >& tensor_src
-) const;
+) const {
+    assert(false && "adten_t version of src_gen called for ge operator");
+}
 } } // End ad_tensor::dev
