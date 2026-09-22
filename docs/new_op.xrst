@@ -16,8 +16,8 @@
     agraph
 }
 
-Step by Step to Implement a New Operator
-########################################
+Step by Step Implementation of a New Operator
+#############################################
 
 new_unary.sh
 ************
@@ -86,8 +86,8 @@ Some operators may require a totally separate implementation for at::Tensor
 and adten_t arguments. This will require more source code and more testing
 and will be harder to maintain.
 
-Step 1
-******
+Step 1: Create NEW operator
+***************************
 
 Branch
 ======
@@ -128,8 +128,8 @@ Run check_all.sh to check that NEW.cpp compiles and that its
 documentation builds.
 Once the errors are fixed, commit the changes using git_commit.sh.
 
-Step 2
-******
+Step 2: Test Function Without Recording
+***************************************
 
 examples/adten/NEW.cpp
 ======================
@@ -149,8 +149,8 @@ Run check_all.sh to check that NEW example compiles, runs, and passes it tests.
 This will also check that the documentation links in the NEW example.
 Once the errors are fixed, commit the changes using git_commit.sh.
 
-Step 3
-******
+Step 3: Create the NEW Derived Operator
+***************************************
 
 src/dev/derive_op/NEW_op.cpp
 ============================
@@ -161,14 +161,6 @@ include/dev/derive_op.hpp
 =========================
 Add the NEW operator's entry in this file just below OTHER's entry.
 
-Test and Commit changes
-=======================
-Run check_all.sh to check that NEW operator,
-derived from dev::base_op,  compiles.
-
-Step 4
-******
-
 src/dev/enum2derive.cpp
 =======================
 Add two NEW operator entries in this file just below the
@@ -176,10 +168,12 @@ corresponding OTHER entries.
 
 Test and Commit changes
 =======================
-Run check_all.sh to check that the new enum2derive.cpp compiles.
+Run check_all.sh to check that
+the NEW operator, (derived from dev::base_op) compiles and
+that the new enum2derive.cpp compiles.
 
-Step 5
-******
+Step 4: Test Using AD Function for Function Values
+**************************************************
 
 src/dev/derive_op/NEW_op.cpp
 ============================
@@ -192,12 +186,9 @@ The function forward_var determines the variable with index op_index.
 During this function, all the parameters are known
 and the variables with index less that op_index are known.
 
-Test and Commit changes
-=======================
+Test and Commit NEW_op.cpp
+==========================
 Run check_all.sh to check that the new NEW_op.cpp compiles.
-
-Step 6
-******
 
 examples/adten/NEW.cpp
 ======================
@@ -206,14 +197,14 @@ that uses the NEW operator's function values.
 This should make it more like the section of examples/adten/OTHER.cpp
 that computes and tests function values.
 
-Test and Commit changes
+Test and Commit NEW.cpp
 =======================
 Run check_all.sh to check that the modified example compiles, runs,
 and passes it tests.
 
 
-Step 7
-******
+Step 5: Test Forward Derivative Evaluation
+******************************************
 
 src/dev/derive_op/NEW_op.cpp
 ============================
@@ -223,25 +214,22 @@ The function forward_der determines the forward derivative with index op_index.
 During this function, all the parameters and variables are known
 and the forward derivatives with index less that op_index are known.
 
-Test and Commit changes
-=======================
+Test and Commit NEW_op.cpp
+==========================
 Run check_all.sh to check that the new NEW_op.cpp compiles.
-
-Step 8
-******
 
 examples/adten/NEW.cpp
 ======================
 Add an example / test of forward_der for the NEW operator;
 see examples/adten/OTHER.cpp.
 
-Test and Commit changes
+Test and Commit NEW.cpp
 =======================
 Run check_all.sh to check that the modified example compiles, runs,
 and passes it tests.
 
-Step 9
-******
+Step 6: Test Reverse Derivative Evaluation
+******************************************
 
 src/dev/derive_op/NEW_op.cpp
 ============================
@@ -253,8 +241,18 @@ Upon return, the result of the operator with index op_index
 is removed (as an argument to the objective)
 and its contribution is added to each of the NEW operator arguments.
 
-Test and Commit changes
-=======================
+Test and Commit NEW_op.cpp
+==========================
 Run check_all.sh to check that the new NEW_op.cpp compiles.
+
+examples/adten/NEW.cpp
+======================
+Add an example / test of reverse_der for the NEW operator;
+see examples/adten/OTHER.cpp.
+
+Test and Commit NEW.cpp
+=======================
+Run check_all.sh to check that the modified example compiles, runs,
+and passes it tests.
 
 {xrst_end new_op}
