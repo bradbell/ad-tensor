@@ -74,16 +74,17 @@ to
         const vector<adten_t>&       var_all     ,
         vector<adten_t>&             rev_der
     ) const {
+        // TODO: Change this function to use the TensorType implementation above
+        // once the following operators have complete adten_t implementations:
+        // list_of_needed_adten_operations
         user_assert(false,
         "reverse_der not yet implemented for NEW with adten_t arguments" );
     }
 {xrst_code}
-Later, when the operation is
-available, you should link the function to the TensorType implementation.
-
+where list_of_needed_adten_operations is replaced by the needed operators.
 Some operators may require a totally separate implementation for at::Tensor
 and adten_t arguments. This will require more source code and more testing
-and be harder to maintain.
+and will be harder to maintain.
 
 Step 1
 ******
