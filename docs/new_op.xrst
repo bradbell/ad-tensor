@@ -239,4 +239,21 @@ Test and Commit changes
 Run check_all.sh to check that the modified example compiles, runs,
 and passes it tests.
 
+Step 9
+******
+
+src/dev/derive_op/NEW_op.cpp
+============================
+Implement the reverse_der for the NEW operator
+(use src/dev/derive_op/OTHER_op.cpp as an example for how to do this).
+On input, the partial of the objective w.r.t. each of the variables
+with indices less than or equal op_index are known.
+Upon return, the result of the operator with index op_index
+is removed (as an argument to the objective)
+and its contribution is added to each of the NEW operator arguments.
+
+Test and Commit changes
+=======================
+Run check_all.sh to check that the new NEW_op.cpp compiles.
+
 {xrst_end new_op}

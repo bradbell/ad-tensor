@@ -6,6 +6,7 @@
 #include <ad_tensor/adten.hpp>
 #include <ad_tensor/dev/tensor_at_index.hpp>
 #include <ad_tensor/no_elements.hpp>
+#include <ad_tensor/dev/plus_minus_equal.hpp>
 //
 namespace ad_tensor { namespace dev { // Begin ad_tensor::dev
 // ------------------------------------------------------------------------
@@ -242,7 +243,89 @@ void conv1d_op_t<TensorType>::reverse_der(
     const vector<TensorType>&    var_all     ,
     vector<TensorType>&          rev_der
 ) const {
-    user_assert(false, "reverse_der not yet implemented for conv1d operator" );
+    //
+    // arg_start
+    size_t arg_start = agraph.m_arg_start[op_index];
+    //
+#ifndef NDEBUG
+    size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
+    assert( n_arg == 6  );
+    for(size_t i = 3; i < 6; ++i) {
+        assert( agraph.m_arg_type[arg_start+i] == adtype_t::none );
+    }
+# endif
+    // variable
+    adtype_t variable = adtype_t::variable;
+    //
+    // input_index, input_type
+    size_t   input_index    = agraph.m_arg_value[arg_start];
+    adtype_t input_type     = agraph.m_arg_type[arg_start];
+    //
+    // weight_index, weight_type
+    size_t   weight_index    = agraph.m_arg_value[arg_start + 1];
+    adtype_t weight_type     = agraph.m_arg_type[arg_start + 1];
+    //
+    // bias_index, bias_type
+    size_t   bias_index    = agraph.m_arg_value[arg_start + 2];
+    adtype_t bias_type     = agraph.m_arg_type[arg_start + 2];
+    //
+    // rev_der[bias_index]
+    if( bias_type == variable ) {
+        TensorType bias_bar = rev_der[op_index].sum(2);
+        plus_equal(rev_der[bias_index], bias_bar);
+    }
+    if( input_type != variable && weight_type != variable ) {
+        return;
+    }
+    //
+    // no_bias
+    TensorType no_bias;
+    //
+    // options
+    int64_t stride   = int64_t( agraph.m_arg_value[arg_start + 3] );
+    int64_t dilation = int64_t( agraph.m_arg_value[arg_start + 4] );
+    int64_t groups   = int64_t( agraph.m_arg_value[arg_start + 5] );
+    auto options = torch::nn::functional::Conv1dFuncOptions()
+        .stride(stride)
+        .dilation(dilation)
+        .groups(groups);
+    //
+    // rev_der[weight_index]
+    if( weight_type == variable ) {
+        TensorType input  = tensor_at_arg_index(
+            arg_start, agraph, con_vec, par_all, var_all
+        );
+        TensorType weight_bar = conv1d(
+            input, rev_der[op_index], no_bias, options
+        );
+        plus_equal(rev_der[weight_index], weight_bar);
+    }
+    //
+    // rev_der[input_index]
+    if( input_type == variable ) {
+        //
+        // weight, zero_pad
+        TensorType weight  = tensor_at_arg_index(
+            arg_start + 1, agraph, con_vec, par_all, var_all
+        );
+        c10::IntArrayRef weight_shape = weight.sizes();
+        c10::IntArrayRef output_shape = var_all[op_index].sizes();
+        int64_t n_batch       = output_shape[0];
+        int64_t n_out_channel = output_shape[1];
+        int64_t kernel_size   = weight_shape[2];
+        TensorType zero_pad   = TensorType( torch::zeros( {
+            n_batch, n_out_channel, kernel_size -1
+        } ) );
+        //
+        // input_bar
+        TensorType poutput_hat =
+            torch::cat( {zero_pad, rev_der[op_index], zero_pad} );
+        TensorType weight_hat = torch::flip(weight, {2});
+        TensorType input_bar = conv1d(
+            poutput_hat, weight_hat, no_bias, options
+        );
+        plus_equal(rev_der[input_index], input_bar);
+    }
 }
 template <> void conv1d_op_t<adten_t>::reverse_der(
     size_t                       op_index    ,

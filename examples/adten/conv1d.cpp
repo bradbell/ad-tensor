@@ -95,6 +95,7 @@ The contributions to the partial w.r.t the input,
 
 In the last equation above :math:`py_k` is zero for
 :math:`k < 0` and :math:`k > ny - 1` .
+Note that :math:`k` should be in :math:`[0 , \ldots , ny-1 ]` .
 We fix this abuse of notation by defining the vector
 :math:`\hat{py} \in \mathbb{R}^{nx + nw - 1}`
 
@@ -106,19 +107,24 @@ We fix this abuse of notation by defining the vector
         py_{l - nw + 1} & \text{otherwise}
     \end{cases}
 
-Substituting :math:`k = l - nw + 1` in the equation for :math:`px_i` above
+where :math:`l \in [0 , nx + nw -1 ]` .
+Substituting :math:`l = k + nw - 1` in the equation for :math:`px_i` above
 we obtain
 
 .. math::
 
+    px_i = \sum_{l=i}^{i+nw-1} \hat{py}_l \cdot w_{i+nw-1-l}
+
+Substituting :math:`j = l - i` we obtain
+
+.. math::
+
     px_i
-    & = \sum_{l=i}^{i+nw-1} \hat{py}_l \cdot w_{i+nw-1-l} \\
     & = \sum_{j=0}^{nw-1} \hat{py}_{i+j} \cdot w_{nw-1-j} \\
     & = \sum_{j=0}^{nw-1} \hat{py}_{i+j} \cdot \hat{w}_j
 
 where :math:`\hat{w}_j = w_{nw-1-j}` .
-Note that px is the first nx elements of
-:math:`\hat{py}` correlated with :math:`\hat{w}` .
+Note that px is :math:`\hat{py}` correlated with :math:`\hat{w}` .
 
 Source Code
 ***********
