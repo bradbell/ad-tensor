@@ -14,6 +14,10 @@ TEST(tests_adfn, src_gen)  {
     namespace plugin = ad_tensor::plugin;
     namespace fs     =  std::filesystem;
     //
+    // bias, options
+    at::Tensor bias = torch::zeros( {1} );
+    auto options    = torch::nn::functional::Conv1dFuncOptions();
+    //
     // dim
     vector<int64_t> dim = { 1 };
     //
@@ -24,6 +28,7 @@ TEST(tests_adfn, src_gen)  {
         {2.0, 1.0},
         {3.0, 4.0}
     } ) );
+    p.push_back( torch::tensor( {1.0, 2.0, 3.0, 4.0} ).view( {1,1,4} ) );
     //
     // v
     // We use v for the domain variables
@@ -32,6 +37,7 @@ TEST(tests_adfn, src_gen)  {
         {4.0, 3.0},
         {5.0, 6.0}
     } ) );
+    v.push_back( torch::tensor( {5.0, 6.0, 7.0} ).view( {1,1,3} ) );
     //
     // ap, av
     auto [av, ap] = adten_t::start_recording(v, p);
@@ -45,6 +51,11 @@ TEST(tests_adfn, src_gen)  {
     ar.push_back( av[0].sum(dim)         + ap[0].sum(dim) );
     ar.push_back( av[0].transpose(0, 1)  + ap[0].transpose(0, 1) );
     ar.push_back( av[0].matmul( ap[0] ) );
+    //
+    adten_t ainput  = ap[1];
+    adten_t aweight = av[1];
+    adten_t abias   = adten_t( bias );
+    ar.push_back( ad_tensor::conv1d(ainput, aweight, abias, options) );
     //
     // r = f(v, p)
     adfn_t f = adten_t::stop_recording(ar, "f");
@@ -81,7 +92,7 @@ TEST(tests_adfn, src_gen)  {
     //
     // r
     vector<Tensor> r = f_plugin(v, p);
-    EXPECT_EQ( r.size(), 7 );
+    EXPECT_EQ( r.size(), 8 );
     EXPECT_TRUE( r[0].equal( (-v[0])                + (-p[0]) ) );
     EXPECT_TRUE( r[1].equal( v[0].exp()             + p[0].exp() ) );
     EXPECT_TRUE( r[2].equal( v[0].logdet()          + p[0].logdet() ) );
@@ -89,5 +100,6 @@ TEST(tests_adfn, src_gen)  {
     EXPECT_TRUE( r[4].equal( v[0].sum(dim)          + p[0].sum(dim) ) );
     EXPECT_TRUE( r[5].equal( v[0].transpose(0, 1)   + p[0].transpose(0, 1) ) );
     EXPECT_TRUE( r[6].equal( v[0].matmul( p[0] ) ) );
+    EXPECT_TRUE( r[7].equal( ad_tensor::conv1d(p[1], v[1], bias, options) ) );
     //
 }

@@ -14,6 +14,7 @@
     noimplement
     der
     agraph
+    adfn
 }
 
 Step by Step Implementation of a New Operator
@@ -254,5 +255,20 @@ Test and Commit NEW.cpp
 =======================
 Run check_all.sh to check that the modified example compiles, runs,
 and passes it tests.
+
+Step 7: Test Source Code Generation
+***********************************
+
+src/dev/derive_op/NEW_op.cpp
+============================
+Implement the src_gen for the NEW operator
+(use src/dev/derive_op/OTHER_op.cpp as an example for how to do this).
+Note that only the at::Tensor version should be implemented
+(the adten_t version is not used).
+
+tests/adfn/src_gen.cpp
+======================
+Add a test of the NEW operator to this test.
+
 
 {xrst_end new_op}

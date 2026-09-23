@@ -357,8 +357,61 @@ template <> std::string conv1d_op_t<at::Tensor>::src_gen(
     bool                                                  variable_agraph ,
     const std::function< std::string(size_t, adtype_t) >& tensor_src
 ) const {
-    user_assert(false, "src_gen not yet implemented for conv1d operator" );
-    return "";
+    //
+    // string
+    using std::string;
+    //
+    // arg_start
+    size_t arg_start = agraph.m_arg_start[op_index];
+    //
+#ifndef NDEBUG
+    size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
+    assert( n_arg == 6  );
+    for(size_t i = 3; i < 6; ++i) {
+        assert( agraph.m_arg_type[arg_start+i] == adtype_t::none );
+    }
+# endif
+    //
+    // input_src
+    size_t   input_index   = agraph.m_arg_value[arg_start];
+    adtype_t input_adtype  = agraph.m_arg_type[arg_start];
+    string   input_src     = tensor_src(input_index, input_adtype);
+    //
+    // weight_src
+    size_t   weight_index   = agraph.m_arg_value[arg_start + 1];
+    adtype_t weight_adtype  = agraph.m_arg_type[arg_start + 1];
+    string   weight_src     = tensor_src(weight_index, weight_adtype);
+    //
+    // bias_src
+    size_t   bias_index   = agraph.m_arg_value[arg_start + 2];
+    adtype_t bias_adtype  = agraph.m_arg_type[arg_start + 2];
+    string   bias_src     = tensor_src(bias_index, bias_adtype);
+    //
+    // target_src
+    size_t   target_index = op_index;
+    adtype_t target_adtype  =
+        variable_agraph ? adtype_t::variable : adtype_t::parameter;
+    string   target_src   = tensor_src(target_index, target_adtype);
+    //
+    // src
+    size_t stride   = agraph.m_arg_value[arg_start + 3];
+    size_t dilation = agraph.m_arg_value[arg_start + 4];
+    size_t groups   = agraph.m_arg_value[arg_start + 5];
+    constexpr const char* fmt1 =
+R"|({{   auto options = torch::nn::functional::Conv1dFuncOptions()
+        .stride({})
+        .dilation({})
+        .groups({});
+)|";
+    string src = std::format(fmt1, stride, dilation, groups);
+    //
+    // src
+    constexpr const char* fmt2 =
+        "    {} = ad_tensor::conv1d({}, {}, {}, options);";
+    src += std::format(fmt2, target_src, input_src, weight_src, bias_src);
+    src += "\n}";
+    //
+    return src;
 }
 template <> std::string conv1d_op_t<adten_t>::src_gen(
     size_t                                                op_index        ,
