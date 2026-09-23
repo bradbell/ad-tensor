@@ -189,6 +189,16 @@ adten_t conv1d(
 {   dev::user_assert( ! options.bias().defined(),
         "cov21d: bias is and explicit argument and is defined in options."
     );
+    bool no_padding = false;
+    torch::nn::functional::ConvFuncOptions<1>::padding_t
+        padding = options.padding();
+    if( std::holds_alternative< torch::ExpandingArray<1> >(padding) ) {
+        auto value = std::get< torch::ExpandingArray<1> >(padding);
+        no_padding = (*value)[0] == 0;
+    }
+    dev::user_assert(no_padding,
+        "conv1d: padding in options not 0; pad input before calling conv1d"
+    );
     return input.conv1d(weight, bias, options);
 }
 at::Tensor conv1d(
