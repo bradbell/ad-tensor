@@ -304,22 +304,19 @@ void conv1d_op_t<TensorType>::reverse_der(
     // rev_der[input_index]
     if( input_type == variable ) {
         //
-        // weight, zero_pad
+        // weight, poutput_hat
         TensorType weight  = tensor_at_arg_index(
             arg_start + 1, agraph, con_vec, par_all, var_all
         );
-        c10::IntArrayRef weight_shape = weight.sizes();
-        c10::IntArrayRef output_shape = var_all[op_index].sizes();
-        int64_t n_batch       = output_shape[0];
-        int64_t n_out_channel = output_shape[1];
-        int64_t kernel_size   = weight_shape[2];
-        TensorType zero_pad   = TensorType( torch::zeros( {
-            n_batch, n_out_channel, kernel_size -1
-        } ) );
+        int64_t kernel_size = weight.sizes()[2];
+        auto    pad_options = torch::nn::functional::PadFuncOptions(
+            {kernel_size - 1, kernel_size - 1, 0, 0, 0, 0}
+        );
+        TensorType poutput_hat = torch::nn::functional::pad(
+            rev_der[op_index], pad_options
+        );
         //
         // input_bar
-        TensorType poutput_hat =
-            torch::cat( {zero_pad, rev_der[op_index], zero_pad}, 2 );
         TensorType weight_hat = torch::flip(weight, {2});
         TensorType input_bar = conv1d(
             poutput_hat, weight_hat, no_bias, options
@@ -337,7 +334,7 @@ template <> void conv1d_op_t<adten_t>::reverse_der(
 ) const {
     // TODO: Change this function to use the TensorType implementation above
     // once the following operators have complete adten_t implementations:
-    // cat, flip
+    // pad, flip
     user_assert(false,
     "reverse_der not yet implemented for conv1d with adten_t arguments" );
 }
