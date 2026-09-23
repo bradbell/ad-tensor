@@ -269,6 +269,8 @@ Note that only the at::Tensor version should be implemented
 tests/adfn/src_gen.cpp
 ======================
 Add a test of the NEW operator to this test.
+(All the operators use the same src_gen tests to reduce compile time
+during testing.)
 
 
 {xrst_end new_op}
