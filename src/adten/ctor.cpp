@@ -11,6 +11,8 @@
 //
 namespace ad_tensor { // Begin ad_tensor::dev
 // ----------------------------------------------------------------------------
+// Note that, for all tapes, the constant with index zero has no elements.
+// So one does not have to match the current tape_id for this case.
 adten_t::adten_t(void)
 : m_tape_id(0)
 , m_index(0)

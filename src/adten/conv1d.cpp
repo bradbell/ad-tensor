@@ -125,9 +125,13 @@ adten_t adten_t::conv1d(
     dev::user_assert( weight.m_tape_id == tape.m_tape_id , "conv1d: "
         "rhs AD tensor's tape is not tape that is recording"
     );
-    dev::user_assert( bias.m_tape_id == tape.m_tape_id , "conv1d: "
-        "bias AD tensor's tape is not tape that is recording"
-    );
+    if( no_elements(bias) ) {
+        assert( bias.m_index == 0 );
+    } else {
+        dev::user_assert( bias.m_tape_id == tape.m_tape_id , "conv1d: "
+            "bias AD tensor's tape is not tape that is recording"
+        );
+    }
     //
     // res_adtype
     adtype_t res_adtype = std::max( m_adtype, weight.m_adtype );
@@ -209,11 +213,13 @@ at::Tensor conv1d(
 {   dev::user_assert( ! options.bias().defined(),
         "cov21d: bias is and explicit argument and is defined in options."
     );
-    torch::nn::functional::Conv1dFuncOptions copy_options = options;
-    copy_options.bias( bias );
-    return torch::nn::functional::conv1d(
-        input, weight, copy_options
-    );
+    if( no_elements(bias) ) {
+        return torch::nn::functional::conv1d( input, weight, options);
+    } else {
+        torch::nn::functional::Conv1dFuncOptions copy_options = options;
+        copy_options.bias( bias );
+        return torch::nn::functional::conv1d( input, weight, copy_options);
+    }
 }
 
 // ---------------------------------------------------------------------------

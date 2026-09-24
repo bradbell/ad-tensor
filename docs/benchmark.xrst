@@ -18,6 +18,7 @@ These benchmarks also serve as a tutorials for using AD Tensors.
 {xrst_toc_table
     benchmarks/fit_poly.cpp
     benchmarks/multi_normal.cpp
+    benchmarks/smooth_spline.cpp
 }
 
 {xrst_end benchmarks}

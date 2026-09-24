@@ -3,32 +3,31 @@
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
 /*
-{xrst_begin fit_poly_benchmark ben}
+{xrst_begin smooth_spline_benchmark ben}
 {xrst_spell
-    pytorch
     autograd
     gtest
     libtorch
 }
 
-Fitting A Polynomial Benchmark
-##############################
+Fitting A Cubic Smoothing Spline Benchmark
+##########################################
 
 Loss Function
 *************
-Let :math:`x \in {\rm R}^m` be a uniform grid of points in [-1,+1] .
-The loss function :math:`f : {\rm R}^4 \rightarrow {\rm R}`
+Let :math:`x \in {\rm R}^m` be a uniform grid of points in
+:math:`[- \pi , + \pi ]` .
+The loss function :math:`f : {\rm R}^m \rightarrow {\rm R}`
 for this example is defined by
 
 .. math::
 
-    f(c) = \sum_{i=0}^{m-1} \left(
-        \exp( x_i ) - \sum_{j=0}^3 c_j x_i^j
-    \right)^2
+    f(y) = \sum_{i=0}^{m-1} \left( \sin( x_i ) - y_i \right)^2
+         + \sum_{i=0)^{m-3) \left( y_i - 2 y_{i+1} + y_{i+2} \right)^2
 
-This objective comes from the pytorch tutorial
-`Pytorch Tensors and autograd
-<https://docs.pytorch.org/tutorials/beginner/ pytorch_with_examples.html#pytorch-tensors-and-autograd>`_ ,
+This objective is a finite difference approximation for the
+second derivative in a cubic
+`Smoothing spline <https://en.wikipedia.org/wiki/Smoothing_spline>`_ ,
 
 learn_ms
 ********
@@ -74,7 +73,7 @@ and then uses its plugin to compute gradients,
     BEGIN_PLUGIN, END_PLUGIN
 }
 
-{xrst_end fit_poly_benchmark}
+{xrst_end smooth_spline_benchmark}
 */
 // BEGIN_COMMON
 #include <chrono>
@@ -85,11 +84,12 @@ and then uses its plugin to compute gradients,
 //
 namespace {
     //
-    // chrono, vector, adten_t, adfn_t
+    // chrono, vector, adten_t, adfn_t, Conv1dFuncOptions
     namespace chrono = std::chrono;
     using ad_tensor::vector;
     using ad_tensor::adten_t;
     using ad_tensor::adfn_t;
+    using torch::nn::functional::Conv1dFuncOptions;
     //
     // previous_time, elapsed_ms
     chrono::time_point previous_time = chrono::steady_clock::now();
@@ -103,8 +103,7 @@ namespace {
         return ms;
     }
     //
-    // number_coefficients, number_grid_points
-    const size_t number_coefficients   = 4;
+    // number_grid_points
     const size_t number_grid_points    = 2000;
     //
     // expected_relative_loss
@@ -114,59 +113,61 @@ namespace {
     const double learning_rate         = 1e-5;
     const size_t number_learning_steps = 5000;
     //
-    // loss
-    template<class TensorType>
-    TensorType loss(
-        const vector<TensorType>& c ,
-        const TensorType&         grid ,
-        const TensorType&         data ) {
-        assert( size_t( grid.numel() ) == number_grid_points );
-        assert( size_t( data.numel() ) == number_grid_points );
-        assert( size_t( c.size() )  == number_coefficients );
-        int64_t n_data = data.numel();
-        TensorType grid_p      = TensorType( torch::ones( {n_data} ) );
-        TensorType predict = c[0] * grid_p;
-        for(size_t j = 1; j < number_coefficients; ++j) {
-            grid_p       = grid_p * grid;
-            predict  = predict + c[j] * grid_p;
-        }
-        TensorType residual = (data - predict);
-        return (residual * residual).sum();
+    // conv1d
+    adten_t conv1d(
+        const adten_t&           input   ,
+        const adten_t&           weight  ,
+        const Conv1dFuncOptions& options ) {
+        adten_t bias = adten_t( at::Tensor() );
+        return ad_tensor::conv1d(input, weight, bias, options);
     }
     //
-    // grid, data
-    torch::Tensor grid = torch::linspace(-1.0, 1.0, number_grid_points);
-    torch::Tensor data = grid.exp();
+    // data, weight
+    double pi    = 3.1412592653;
+    double dx    = 2.0 * pi / double(number_grid_points - 1);
+    double dx_sq = dx * dx;
+    double scale = 1.0 / ( dx_sq * double( number_grid_points) );
+    at::Tensor grid      = torch::linspace(-pi, pi, number_grid_points);
+    at::Tensor data      = grid.sin();
+    auto       options   = Conv1dFuncOptions();
+    at::Tensor weight_at =
+        torch::tensor({1.0, -2.0, 1.0}).view({1, 1, 3}) * torch::tensor(scale);
+    //
+    // loss
+    template<class TensorType>
+    TensorType loss(const TensorType y ) {
+        TensorType weight      = TensorType( weight_at );
+        TensorType finite_diff = conv1d(y, weight, options);
+        TensorType data_res    = (TensorType(data) - y);
+        return (finite_diff*finite_diff).sum() + (data_res*data_res).sum();
+    }
 }
 // END_COMMON
 //
 // BEGIN_AUTOGRAD
-TEST(benchmarks, fit_poly_autograd) {
+TEST(benchmarks, smooth_spline_autograd) {
     //
-    // c
-    vector<torch::Tensor> c;
-    for(size_t j = 0; j < number_coefficients; ++j) {
-        c.push_back( torch::randn( {1}, torch::requires_grad() ) );
-    }
+    // y
+    torch::Tensor y = torch::rand(
+        {1, 1, number_grid_points}, torch::requires_grad()
+    );
     //
     // previous_time
     elapsed_ms();
     //
     // initial_loss, t
-    double initial_loss      = loss(c, grid, data).item<double>();
+    double initial_loss = loss(y).item<double>();
     for(size_t t = 0; t < number_learning_steps; ++t) {
         //
         // loss_t
-        torch::Tensor loss_t = loss(c, grid, data);
+        torch::Tensor loss_t = loss(y);
         //
-        // c
+        // y
         loss_t.backward();
         {   torch::NoGradGuard no_grad;
             //
-            for(size_t j = 0; j < number_coefficients; ++j) {
-                c[j] -= learning_rate * c[j].grad();
-                c[j].grad().zero_();
-            }
+            y -= learning_rate * y.grad();
+            y.grad().zero_();
         }
     }
     //
@@ -176,29 +177,23 @@ TEST(benchmarks, fit_poly_autograd) {
     // std::cout << "learn_ms = " << learn_ms << "\n";
     //
     // relative_loss
-    double relative_loss = loss(c, grid, data).item<double>() / initial_loss;
+    double relative_loss = loss(y).item<double>() / initial_loss;
     EXPECT_LT(relative_loss, expected_relative_loss);
 }
 // END_AUTOGRAD
 //
 // BEGIN_AD_TENSOR
-TEST(benchmarks, fit_poly_ad_tensor) {
+TEST(benchmarks, smooth_spline_ad_tensor) {
     //
-    // c
-    vector<at::Tensor> c;
-    for(size_t j = 0; j < number_coefficients; ++j) {
-        c.push_back( torch::randn( {1} ) );
-    }
+    // y
+    vector<at::Tensor> y;
+    y.push_back( torch::rand( {1, 1, number_grid_points} ) );
     //
-    // ac
-    vector<adten_t> ac = adten_t::start_recording(c);
-    //
-    // agrid, adtat
-    adten_t agrid(grid);
-    adten_t adata(data);
+    // ay
+    vector<adten_t> ay = adten_t::start_recording(y);
     //
     // adfn
-    vector<adten_t> aloss = { loss(ac, agrid, adata) };
+    vector<adten_t> aloss = { loss(ay[0]) };
     adfn_t adfn = adten_t::stop_recording(aloss, "adfn");
     adfn.optimize();
     //
@@ -207,19 +202,17 @@ TEST(benchmarks, fit_poly_ad_tensor) {
     //
     // dloss, initial_loss, t
     vector<at::Tensor> dloss = { torch::tensor(1.0) };
-    double initial_loss      = loss(c, grid, data).item<double>();
+    double initial_loss      = loss(y[0]).item<double>();
     for(size_t t = 0; t < number_learning_steps; ++t) {
         //
         // var_all
-        vector<at::Tensor> var_all = adfn.forward_var(c);
+        vector<at::Tensor> var_all = adfn.forward_var(y);
         //
         // grad
         vector<at::Tensor> grad  = adfn.reverse_der(dloss, var_all);
         //
-        // c
-        for(size_t j = 0; j < number_coefficients; ++j) {
-            c[j] -= learning_rate * grad[j];
-        }
+        // y
+        y[0] -= learning_rate * grad[0];
     }
     //
     // learn_ms
@@ -228,39 +221,35 @@ TEST(benchmarks, fit_poly_ad_tensor) {
     //std::cout << "learn_ms = " << learn_ms << "\n";
     //
     // relative_loss
-    double relative_loss = loss(c, grid, data).item<double>() / initial_loss;
+    double relative_loss = loss(y[0]).item<double>() / initial_loss;
     EXPECT_LT(relative_loss, expected_relative_loss);
 }
 // END_AD_TENSOR
 //
+/* BEGIN_TODO: run other cases once conv1d is implemented for AD tensors
+//
 // BEGIN_RECORD_GRADIENT
-TEST(benchmarks, fit_poly_record_gradient) {
+TEST(benchmarks, smooth_spline_record_gradient) {
     //
-    // c
-    vector<at::Tensor> c;
-    for(size_t j = 0; j < number_coefficients; ++j) {
-        c.push_back( torch::randn( {1} ) );
-    }
+    // y
+    vector<at::Tensor> y;
+    y.push_back( torch::rand( {1, 1, number_grid_points} ) );
     //
-    // ac
-    vector<adten_t> ac = adten_t::start_recording(c);
-    //
-    // agrid, adata
-    adten_t agrid(grid);
-    adten_t adata(data);
+    // ay
+    vector<adten_t> ay = adten_t::start_recording(y);
     //
     // f_loss
-    vector<adten_t> aloss = { loss(ac, agrid, adata) };
+    vector<adten_t> aloss = { loss(ay[0]) };
     adfn_t f_loss = adten_t::stop_recording(aloss, "f_loss");
     //
-    // ac
-    ac = adten_t::start_recording(c);
+    // ay
+    ay = adten_t::start_recording(y);
     //
     // adloss
     vector<adten_t> adloss = { adten_t( torch::tensor(1.0) ) };
     //
     // avar_all
-    vector<adten_t> avar_all = f_loss.forward_var(ac);
+    vector<adten_t> avar_all = f_loss.forward_var(ay);
     //
     // agrad
     vector<adten_t> agrad  = f_loss.reverse_der(adloss, avar_all);
@@ -273,19 +262,17 @@ TEST(benchmarks, fit_poly_record_gradient) {
     elapsed_ms();
     //
     // initial_loss, t
-    double initial_loss      = loss(c, grid, data).item<double>();
+    double initial_loss      = loss(y[0]).item<double>();
     for(size_t t = 0; t < number_learning_steps; ++t) {
         //
         // var_all
-        vector<at::Tensor> var_all = f_grad.forward_var(c);
+        vector<at::Tensor> var_all = f_grad.forward_var(y);
         //
         // grad
         vector<at::Tensor> grad  = f_grad.get_range(var_all);
         //
-        // c
-        for(size_t j = 0; j < number_coefficients; ++j) {
-            c[j] -= learning_rate * grad[j];
-        }
+        // y
+        y[0] -= learning_rate * grad[0];
     }
     //
     // learn_ms
@@ -294,44 +281,38 @@ TEST(benchmarks, fit_poly_record_gradient) {
     // std::cout << "learn_ms = " << learn_ms << "\n";
     //
     // relative_loss
-    double relative_loss = loss(c, grid, data).item<double>() / initial_loss;
+    double relative_loss = loss(y[0]).item<double>() / initial_loss;
     EXPECT_LT(relative_loss, expected_relative_loss);
 }
 // END_RECORD_GRADIENT
 //
 // BEGIN_PLUGIN
 #if INCLUDE_PLUGIN
-TEST(benchmarks, fit_poly_plugin) {
+TEST(benchmarks, smooth_spline_plugin) {
     //
     // fs, plugin
     namespace fs     = std::filesystem;
     namespace plugin = ad_tensor::plugin;
     //
-    // c
-    vector<at::Tensor> c;
-    for(size_t j = 0; j < number_coefficients; ++j) {
-        c.push_back( torch::randn( {1} ) );
-    }
+    // y
+    vector<at::Tensor> y;
+    y.push_back( torch::rand( {1, 1, number_grid_points} ) );
     //
-    // ac
-    vector<adten_t> ac = adten_t::start_recording(c);
-    //
-    // agrid, adata
-    adten_t agrid(grid);
-    adten_t adata(data);
+    // ay
+    vector<adten_t> ay = adten_t::start_recording(y);
     //
     // f_loss
-    vector<adten_t> aloss = { loss(ac, agrid, adata) };
+    vector<adten_t> aloss = { loss(ay[0]) };
     adfn_t f_loss = adten_t::stop_recording(aloss, "f_loss");
     //
-    // ac
-    ac = adten_t::start_recording(c);
+    // ay
+    ay = adten_t::start_recording(y);
     //
     // adloss
     vector<adten_t> adloss = { adten_t( torch::tensor(1.0) ) };
     //
     // avar_all
-    vector<adten_t> avar_all = f_loss.forward_var(ac);
+    vector<adten_t> avar_all = f_loss.forward_var(ay);
     //
     // agrad
     vector<adten_t> agrad  = f_loss.reverse_der(adloss, avar_all);
@@ -341,7 +322,7 @@ TEST(benchmarks, fit_poly_plugin) {
     f_grad.optimize();
     //
     // source_path
-    fs::path source_path  = fs::temp_directory_path() / "fit_poly";
+    fs::path source_path  = fs::temp_directory_path() / "smooth_spline";
     if( ! fs::is_directory(source_path) ) {
         fs::create_directory( source_path );
     }
@@ -375,19 +356,17 @@ TEST(benchmarks, fit_poly_plugin) {
     //
     // dom_par, initial_loss, t
     vector<at::Tensor> dom_par;
-    double initial_loss      = loss(c, grid, data).item<double>();
+    double initial_loss      = loss(y[0]).item<double>();
     for(size_t t = 0; t < number_learning_steps; ++t) {
         //
         // var_all
-        vector<at::Tensor> var_all = f_grad.forward_var(c);
+        vector<at::Tensor> var_all = f_grad.forward_var(y);
         //
         // grad
-        vector<at::Tensor> grad  = f_plugin(c, dom_par);
+        vector<at::Tensor> grad  = f_plugin(y, dom_par);
         //
-        // c
-        for(size_t j = 0; j < number_coefficients; ++j) {
-            c[j] -= learning_rate * grad[j];
-        }
+        // y
+        y[0] -= learning_rate * grad[0];
     }
     //
     // learn_ms
@@ -395,8 +374,9 @@ TEST(benchmarks, fit_poly_plugin) {
     std::cout << "learn_ms = " << learn_ms << "\n";
     //
     // relative_loss
-    double relative_loss = loss(c, grid, data).item<double>() / initial_loss;
+    double relative_loss = loss(y[0]).item<double>() / initial_loss;
     EXPECT_LT(relative_loss, expected_relative_loss);
 }
 #endif
+END_TODO */
 // END_PLUGIN
