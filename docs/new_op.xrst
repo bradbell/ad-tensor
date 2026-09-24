@@ -193,18 +193,33 @@ Run check_all.sh to check that the new NEW_op.cpp compiles.
 
 examples/adten/NEW.cpp
 ======================
-(Change this example (created in Step 2) to record an AD function
+Change this example (created in Step 2) to record an AD function
 that uses the NEW operator's function values.
 This should make it more like the section of examples/adten/OTHER.cpp
 that computes and tests function values.
 
-Test and Commit NEW.cpp
-=======================
+Test and Commit NEW.cpp Example
+===============================
 Run check_all.sh to check that the modified example compiles, runs,
 and passes it tests.
 
+Step 5: Copy Example to Test
+****************************
 
-Step 5: Test Forward Derivative Evaluation
+tests/adten/NEW.cpp
+===================
+Make this file a copy of examples/adten/NEW.cpp.
+
+tests/CMakeLists.txt
+====================
+Add the NEW operator's entry in this file
+
+Test and Commit NEW.cpp Test
+============================
+Run check_all.sh to check that the new test compiles, runs,
+and passes it tests.
+
+Step 6: Test Forward Derivative Evaluation
 ******************************************
 
 src/dev/derive_op/NEW_op.cpp
@@ -219,17 +234,17 @@ Test and Commit NEW_op.cpp
 ==========================
 Run check_all.sh to check that the new NEW_op.cpp compiles.
 
-examples/adten/NEW.cpp
-======================
-Add an example / test of forward_der for the NEW operator;
-see examples/adten/OTHER.cpp.
+tests/adten/NEW.cpp
+===================
+Add a test of forward_der for the NEW operator;
+see tests/adten/OTHER.cpp or example/adten/OTHER.cpp.
 
-Test and Commit NEW.cpp
-=======================
-Run check_all.sh to check that the modified example compiles, runs,
+Test and Commit NEW.cpp Test
+============================
+Run check_all.sh to check that the modified test compiles, runs,
 and passes it tests.
 
-Step 6: Test Reverse Derivative Evaluation
+Step 7: Test Reverse Derivative Evaluation
 ******************************************
 
 src/dev/derive_op/NEW_op.cpp
@@ -246,17 +261,17 @@ Test and Commit NEW_op.cpp
 ==========================
 Run check_all.sh to check that the new NEW_op.cpp compiles.
 
-examples/adten/NEW.cpp
-======================
-Add an example / test of reverse_der for the NEW operator;
-see examples/adten/OTHER.cpp.
+tests/adten/NEW.cpp
+===================
+Add a test of reverse_der for the NEW operator;
+see tests/adten/OTHER.cpp or examples/adten/OTHER.cpp.
 
-Test and Commit NEW.cpp
-=======================
-Run check_all.sh to check that the modified example compiles, runs,
+Test and Commit NEW.cpp Test
+============================
+Run check_all.sh to check that the modified test compiles, runs,
 and passes it tests.
 
-Step 7: Test Source Code Generation
+Step 8: Test Source Code Generation
 ***********************************
 
 src/dev/derive_op/NEW_op.cpp
@@ -269,8 +284,12 @@ Note that only the at::Tensor version should be implemented
 tests/adfn/src_gen.cpp
 ======================
 Add a test of the NEW operator to this test.
-(All the operators use the same src_gen tests to reduce compile time
-during testing.)
+All the operators use the same src_gen tests to reduce compile time
+during testing.
+
+Test and Commit src_gen.cpp
+===========================
+Run check_all.sh to check that the modified test compiles, runs,
 
 
 {xrst_end new_op}
