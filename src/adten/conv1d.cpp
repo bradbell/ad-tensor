@@ -87,9 +87,10 @@ adten_t adten_t::conv1d(
     const adten_t&                                  bias    ,
     const torch::nn::functional::Conv1dFuncOptions& options ) const
 {
+    // input
+    const adten_t&   input       = *this;
     //
 # ifndef NDEBUG
-    const adten_t&   input       = *this;
     c10::IntArrayRef input_shape = input.sizes();
     dev::user_assert( input_shape.size() == 3 ,
         "conv1d: input is not three dimensional"

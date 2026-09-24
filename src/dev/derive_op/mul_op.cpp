@@ -289,5 +289,6 @@ template <> std::string mul_op_t<adten_t>::src_gen(
     const std::function< std::string(size_t, adtype_t) >& tensor_src
 ) const {
     assert(false && "adten_t version of src_gen called for mul operator");
+    return "";
 }
 } } // End ad_tensor::dev
