@@ -26,8 +26,9 @@ Prototype
 
 Example
 *******
-{xrst_toc_table
+{xrst_literal ,
     examples/adten/conv1d.cpp
+    BEGIN_CPP, END_CPP
 }
 
 {xrst_end adten_conv1d}

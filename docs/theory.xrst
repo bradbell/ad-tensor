@@ -2,17 +2,27 @@
 # SPDX-FileCopyrightText: Bradley M. Bell <bradbell@seanet.com>
 # SPDX-FileContributor: 2026 Bradley M. Bell
 # -----------------------------------------------------------------------------
-{xrst_begin bibliography usr}
+{xrst_begin theory usr}
 {xrst_spell
     techreport
     guiles
 }
 
+Mathematical Theory for Derivative Evaluation
+#############################################
+
+In This Documentation
+*********************
+{xrst_toc_table
+    src/dev/derive_op/conv1d_op.cpp
+}
+
+
 Bibliography
-############
+************
 
 Guiles-2008
-***********
+===========
 -   Title:
     An extended collection of matrix derivative results for
     forward and reverse mode automatic differentiation
@@ -28,4 +38,4 @@ Guiles-2008
 -   Download:
     https://www.cs.ox.ac.uk/publications/publication13-abstract.html
 
-{xrst_end bibliography}
+{xrst_end theory}

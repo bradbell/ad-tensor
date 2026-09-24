@@ -5,8 +5,6 @@
 # ---------------------------------------------------------------------------
 {xrst_begin user usr}
 {xrst_spell
-    adten
-    adfn
     typedefs
 }
 
@@ -21,9 +19,6 @@ that are not backward compatible.
 TODO
 ****
 #.  Change typedefs to using statements.
-#.  Change adfn::get_name -> adfn::name (because it does not change).
-#.  Use a special routine that ensures a value is in current recording:
-    void adten::current_recording(void)
 
 
 {xrst_toc_table
@@ -36,7 +31,7 @@ TODO
     include/ad_tensor/no_elements.hpp
     src/chkpnt.cpp
     src/atom.cpp
-    docs/bib.xrst
+    docs/theory.xrst
 }
 
 {xrst_end user}
