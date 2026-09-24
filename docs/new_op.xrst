@@ -6,7 +6,6 @@
 {xrst_spell
     adten
     cpp
-    src
     txt
     hpp
     dev
@@ -14,7 +13,6 @@
     noimplement
     der
     agraph
-    adfn
 }
 
 Step by Step Implementation of a New Operator
@@ -36,6 +34,12 @@ The instructions below assume that you have sourced the tools/tools_path.sh
 file so that the tools directory is in your path.
 For example, check_all.sh and git_commit.sh (referenced below) are in
 the tools directory.
+
+check_all.sh
+============
+If you run ``check_all.sh --no_plugin`` (instead of check_all.sh)
+you will skip the testing of :ref:`src_gen <adfn_src_gen-name>` output
+which takes more time than the other tests.
 
 Sorting
 *******
@@ -276,20 +280,21 @@ Step 8: Test Source Code Generation
 
 src/dev/derive_op/NEW_op.cpp
 ============================
-Implement the src_gen for the NEW operator
-(use src/dev/derive_op/OTHER_op.cpp as an example for how to do this).
-Note that only the at::Tensor version should be implemented
+Implement the src_gen for the NEW operator,
+use src/dev/derive_op/OTHER_op.cpp as an example for how to do this.
+Note that only the at::Tensor version of src_gen should be implemented
 (the adten_t version is not used).
 
 tests/adfn/src_gen.cpp
 ======================
 Add a test of the NEW operator to this test.
-All the operators use the same src_gen tests to reduce compile time
+All the operators use this src_gen test to reduce compile time
 during testing.
 
 Test and Commit src_gen.cpp
 ===========================
-Run check_all.sh to check that the modified test compiles, runs,
+Run ``check_all.sh`` (not ``check_all.sh --no_plugin``)
+to check that the modified test compiles, runs, and passes it tests.
 
 
 {xrst_end new_op}
