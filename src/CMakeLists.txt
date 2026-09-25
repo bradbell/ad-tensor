@@ -34,6 +34,7 @@ add_library(ad_tensor SHARED
     adten/call_atom.cpp
     adten/conv1d.cpp
     adten/ctor.cpp
+    adten/flip.cpp
     adten/index.cpp
     adten/index_put.cpp
     adten/matmul.cpp
@@ -59,6 +60,7 @@ add_library(ad_tensor SHARED
     dev/derive_op/dom_op.cpp
     dev/derive_op/eq_op.cpp
     dev/derive_op/exp_op.cpp
+    dev/derive_op/flip_op.cpp
     dev/derive_op/ge_op.cpp
     dev/derive_op/gt_op.cpp
     dev/derive_op/index_op.cpp

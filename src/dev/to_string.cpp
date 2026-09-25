@@ -30,6 +30,7 @@ namespace ad_tensor { namespace dev {
             case op_enum_t::dom:          return "dom";
             case op_enum_t::eq:           return "eq";
             case op_enum_t::exp:          return "exp";
+            case op_enum_t::flip:         return "flip";
             case op_enum_t::ge:           return "ge";
             case op_enum_t::gt:           return "gt";
             case op_enum_t::index:        return "index";

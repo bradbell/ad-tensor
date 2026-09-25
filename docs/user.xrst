@@ -5,7 +5,6 @@
 # ---------------------------------------------------------------------------
 {xrst_begin user usr}
 {xrst_spell
-    typedefs
 }
 
 AD Tensor User Documentation
@@ -15,11 +14,6 @@ API
 ***
 This user API is not yet stable; i.e., it may change in ways
 that are not backward compatible.
-
-TODO
-****
-#.  Change typedefs to using statements.
-
 
 {xrst_toc_table
     CMakeLists.txt
@@ -32,6 +26,7 @@ TODO
     src/chkpnt.cpp
     src/atom.cpp
     docs/theory.xrst
+    docs/wish_user.xrst
 }
 
 {xrst_end user}

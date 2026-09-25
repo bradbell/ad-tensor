@@ -25,6 +25,7 @@ add_executable(examples
     adten/binary.cpp
     adten/compound.cpp
     adten/conv1d.cpp
+    adten/flip.cpp
     adten/index.cpp
     adten/index_put.cpp
     adten/matmul.cpp

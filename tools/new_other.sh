@@ -16,61 +16,93 @@ then
     exit 1
 fi
 # -----------------------------------------------------------------------------
-# name_new, chars_minus_3
+# name_new, name_other, chars_minus_2
 if [ "$#" != 2 ]
 then
     echo 'usage:       tools/new_unary.sh old_name new_name'
-    echo 'name_old:    is the name of an already implemented function'
-    echo 'name_new:    is the name of function we are implementing'
+    echo 'name_new:    is the name of operator we are implementing'
+    echo 'name_other:  is the name of a similar already implemented operator'
     exit 1
 fi
-name_old="$1"
-name_new="$2"
-NAME_OLD=$(echo $name_old | tr [a-z] [A-Z])
+name_new="$1"
+name_other="$2"
+NAME_OTHER=$(echo $name_other | tr [a-z] [A-Z])
 NAME_NEW=$(echo $name_new | tr [a-z] [A-Z])
-chars_minus_3=$(( ${#2} - 3 ))
+chars_minus_2=$(( ${#name_new} - 2 ))
 # -----------------------------------------------------------------------------
-file_old=src/adten/${name_old}.cpp
+# src/adten/$name_new.cpp
+file_other=src/adten/${name_other}.cpp
 file_new=src/adten/${name_new}.cpp
 cat << EOF > temp.sed
-s|${name_old}|${name_new}|g
-s|${NAME_OLD}|${NAME_NEW}|g
+s|${name_other}|${name_new}|g
+s|${NAME_OTHER}|${NAME_NEW}|g
 EOF
-git checkout --quiet $file_old
-echo "$file_new"
-sed -f temp.sed $file_old > $file_new
+git checkout --quiet $file_other
+sed -f temp.sed $file_other > $file_new
 git add $file_new
+echo "$file_new"
 # -----------------------------------------------------------------------------
-file_old=src/dev/derive_op/${name_old}_op.cpp
+# src/dev/derive_op/${name_new}_op.cpp
+file_other=src/dev/derive_op/${name_other}_op.cpp
 file_new=src/dev/derive_op/${name_new}_op.cpp
 cat << EOF > temp.sed
-s|${name_old}_op|${name_new}_op|
-s|$name_old()|$name_new()|
+s|${name_other}_op|${name_new}_op|
+s|$name_other()|$name_new()|
 EOF
-git checkout --quiet $file_old
-echo "$file_new"
-sed -f temp.sed $file_old > $file_new
+git checkout --quiet $file_other
+sed -f temp.sed $file_other > $file_new
 git add $file_new
+echo "$file_new"
 # -----------------------------------------------------------------------------
-file_old=examples/adten/$name_old.cpp
+# examples/adten/$name_new.cpp
+file_other=examples/adten/$name_other.cpp
 file_new=examples/adten/$name_new.cpp
 cat << EOF > temp.sed
-s|$name_old|$name_new|g
+s|$name_other|$name_new|g
 EOF
-git checkout --quiet $file_old
-echo "$file_new"
-sed -f temp.sed $file_old > $file_new
+git checkout --quiet $file_other
+sed -f temp.sed $file_other > $file_new
 git add $file_new
+echo "$file_new"
 # -----------------------------------------------------------------------------
+# tests/adten/$name_new.cpp
+file_other=tests/adten/$name_other.cpp
+file_new=tests/adten/$name_new.cpp
+cat << EOF > temp.sed
+s|$name_other|$name_new|g
+EOF
+if [ -e $file_other ]
+then
+    git checkout --quiet $file_other
+    sed -f temp.sed $file_other > $file_new
+    git add $file_new
+    echo "$file_new"
+fi
+# -----------------------------------------------------------------------------
+# examples/CMakeLists.txt
 file='examples/CMakeLists.txt'
 cat << EOF > temp.sed
-s|^\\( *\\)adten/$name_old.cpp|&\\
-\\1aten/${name_new}.cpp|
+s|^\\( *\\)adten/$name_other.cpp|&\\
+\\1adten/${name_new}.cpp|
 EOF
 git checkout --quiet $file
-echo "$file"
 sed -i $file -f temp.sed
+echo "$file"
 # -----------------------------------------------------------------------------
+# tests/CMakeLists.txt
+file='tests/CMakeLists.txt'
+cat << EOF > temp.sed
+s|^\\( *\\)adten/$name_other.cpp|&\\
+\\1adten/${name_new}.cpp|
+EOF
+if [ -e tests/adten/$name_new.cpp ]
+then
+    git checkout --quiet $file
+    sed -i $file -f temp.sed
+    echo "$file"
+fi
+# -----------------------------------------------------------------------------
+# include/ad_tensor/adten.hpp
 file='include/ad_tensor/adten.hpp'
 cat << EOF > temp.sed
 s|^}; }\$|    //\\
@@ -78,66 +110,72 @@ s|^}; }\$|    //\\
     adten_t $name_new(\\
     );\\
 &|
+s|\\(^ *\\)src/adten/$name_old.cpp|&\\
+\\1src/adten/$name_new.cpp|
 EOF
 git checkout --quiet $file
-echo "$file"
 sed -i $file -f temp.sed
+echo "$file"
 # -----------------------------------------------------------------------------
+# include/ad_tensor/dev/op_enum.hpp
 file='include/ad_tensor/dev/op_enum.hpp'
 cat << EOF > temp.sed
 s|BEGIN_OTHER BEGIN.*|&\\
     $name_new,|
 EOF
 git checkout --quiet $file
-echo "$file"
 sed -i $file -f temp.sed
+echo "$file"
 # -----------------------------------------------------------------------------
+# include/ad_tensor/dev/derive_op.hpp
 file='include/ad_tensor/dev/derive_op.hpp'
 cat << EOF > temp.sed
-s|^\\( *\\)AD_TENSOR_DERIVE_OP(${name_old}_op)|&\\
+s|^\\( *\\)AD_TENSOR_DERIVE_OP(${name_other}_op)|&\\
 \\1AD_TENSOR_DERIVE_OP(${name_new}_op)|
 EOF
 git checkout --quiet $file
-echo "$file"
 sed -i $file -f temp.sed
+echo "$file"
 # -----------------------------------------------------------------------------
+# src/CMakeLists.txt
 file='src/CMakeLists.txt'
 cat << EOF > temp.sed
-s|^\\( *\\)adten/${name_old}.cpp|&\\
+s|^\\( *\\)adten/${name_other}.cpp|&\\
 \\1adten/${name_new}.cpp|
-s|^\\( *\\)dev/derive_op/${name_old}_op.cpp|&\\
+s|^\\( *\\)dev/derive_op/${name_other}_op.cpp|&\\
 \\1dev/derive_op/${name_new}_op.cpp|
 EOF
 git checkout --quiet $file
-echo "$file"
 sed -i $file -f temp.sed
+echo "$file"
 # -----------------------------------------------------------------------------
+# src/dev/enum2derive.cpp
 file='src/dev/enum2derive.cpp'
 cat << EOF > temp.sed
-s|^\\( *static const \\)exp_op_t<TensorType> \\{$chars_minus_3\\}\\( *\\).*|&\\
+s|^\\( *static const \\)lt_op_t<TensorType> \\{$chars_minus_2\\}\\( *\\).*|&\\
 \\1${name_new}_op_t<TensorType>\\2${name_new}_op;|
-s|^\\( *case op_enum_t::\\)exp: \\{$chars_minus_3\\}\\( *\\).*|&\\
+s|^\\( *case op_enum_t::\\)lt: \\{$chars_minus_2\\}\\( *\\).*|&\\
 \\1${name_new}:\\2return ${name_new}_op;|
 EOF
 git checkout --quiet $file
-echo "$file"
 sed -i $file -f temp.sed
+echo "$file"
 # -----------------------------------------------------------------------------
+# src/dev/to_string.cpp
 file='src/dev/to_string.cpp'
 cat << EOF > temp.sed
-s|^\\( *\\)case op_enum_t::exp: \\{$chars_minus_3\\}\\( *\\).*|&\\
+s|^\\( *\\)case op_enum_t::lt: \\{$chars_minus_2\\}\\( *\\).*|&\\
 \\1case op_enum_t::${name_new}:\\2return "${name_new}";|
 EOF
 git checkout --quiet $file
-echo "$file"
 sed -i $file -f temp.sed
+echo "$file"
 # -----------------------------------------------------------------------------
 set +e
 tools/check_sort.sh
 tools/run_cmake.sh
 set -e
 cat << EOF
-
 Changes to these files should not need editing:
 src/dev/enum2derive.cpp
 include/ad_tensor/dev/derive_op.hpp
