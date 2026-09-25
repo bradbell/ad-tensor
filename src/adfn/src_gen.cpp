@@ -462,7 +462,7 @@ R"|(    //
         //
         // file_cpp: par_dep
         if( src != "" ) {
-            file_cpp << indent + src + "\n";
+            file_cpp << indent_lines(src) + "\n";
         }
     }
     //
