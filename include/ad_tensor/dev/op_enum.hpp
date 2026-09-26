@@ -68,6 +68,7 @@ namespace ad_tensor { namespace dev { enum struct op_enum_t
     index_put,   // replace elements of a tensor
     matmul,      // matrix multiplication
     minus,       // unary minus
+    pad,         // functional padding
     solve,       // solve matrix equation
     sum,         // summation
     transpose,   // transpose

@@ -39,6 +39,7 @@ add_library(ad_tensor SHARED
     adten/index_put.cpp
     adten/matmul.cpp
     adten/minus.cpp
+    adten/pad.cpp
     adten/recording.cpp
     adten/solve.cpp
     adten/sum.cpp

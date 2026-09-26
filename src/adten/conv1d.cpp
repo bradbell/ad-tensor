@@ -69,7 +69,7 @@ the following is added to the parameter (variable) acyclic graph:
     start + 6, groups                      none
 
 where start be the length of arg_value and arg_type before this call to
-``adten_t::binary`` .
+``adten_t::conv1d`` .
 
 {xrst_end adten_conv1d_dev}
 -------------------------------------------------------------------------------

@@ -110,6 +110,18 @@ see OTHER's implementation in this file for an example.
 This includes deciding and documenting how the operator is stored
 in the acyclic graphs.
 
+The OTHER.cpp file should
+have a documentation link to its example that looks like
+{xrst_code rst}
+    {xrst_literal ,
+        examples/adten/OTHER.cpp
+        BEGIN_CPP, END_CPP
+    }
+{xrst_code}
+The corresponding link should not be included in NEW.cpp at this step.
+It should be added once example/adten/New.cpp exists.
+
+
 src/CMakeLists.txt
 ==================
 Add the NEW operator's entry in this file just below OTHER's entry.
@@ -143,6 +155,9 @@ See the part of examples/adten/OTHER.cpp that computes an AD function.
 Do something similar for NEW
 but just compute and check the adten values (without taping and creating
 an AD function).
+
+At this point you should add the documentation link to example/adten/New.cpp;
+see :ref:`new_op@Step 1: Create New Operator@src/adten/New.cpp` in Step 1.
 
 examples/CMakeLists.txt
 =======================

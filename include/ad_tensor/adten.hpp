@@ -60,6 +60,7 @@ Other Member Functions
     src/adten/index_put.cpp
     src/adten/matmul.cpp
     src/adten/minus.cpp
+    src/adten/pad.cpp
     src/adten/recording.cpp
     src/adten/solve.cpp
     src/adten/sum.cpp
@@ -184,6 +185,7 @@ The adten_t Class Developer Documentation
     src/adten/index_put.cpp
     src/adten/matmul.cpp
     src/adten/minus.cpp
+    src/adten/pad.cpp
     src/adten/solve.cpp
     src/adten/sum.cpp
     src/adten/transpose.cpp
@@ -407,6 +409,9 @@ public:
     // solve
     adten_t solve(const adten_t& rhs, bool left) const;
     //
+    // pad
+    adten_t pad(const torch::nn::functional::PadFuncOptions& options) const;
+    //
     // conv1d
     adten_t conv1d(
         const adten_t&                                  weight  ,
@@ -428,6 +433,12 @@ public:
 }; }
 
 namespace ad_tensor {
+    // BEGIN_PAD
+    adten_t pad(
+        const adten_t&                               input  ,
+        const torch::nn::functional::PadFuncOptions& options
+    );
+    // END_PAD
     //
     // BEGIN_LINALG_SOLVE
     adten_t linalg_solve(
