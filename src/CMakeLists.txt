@@ -74,6 +74,7 @@ add_library(ad_tensor SHARED
     dev/derive_op/minus_op.cpp
     dev/derive_op/mul_op.cpp
     dev/derive_op/ne_op.cpp
+    dev/derive_op/pad_op.cpp
     dev/derive_op/solve_op.cpp
     dev/derive_op/src_gen_binary.cpp
     dev/derive_op/src_gen_unary.cpp

@@ -177,6 +177,10 @@ src/dev/derive_op/NEW_op.cpp
 Create this file as a copy of the file src/dev/derive_op/noimplement_op.cpp
 where the text ``noimplement`` is replaced by NEW.
 
+src/CMakeLists.txt
+==================
+Add the NEW_op.cpp operator's entry in this file just below OTHER's entry.
+
 include/dev/derive_op.hpp
 =========================
 Add the NEW operator's entry in this file just below OTHER's entry.
