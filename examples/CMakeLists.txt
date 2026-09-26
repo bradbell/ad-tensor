@@ -30,6 +30,7 @@ add_executable(examples
     adten/index_put.cpp
     adten/matmul.cpp
     adten/minus.cpp
+    adten/pad.cpp
     adten/recording.cpp
     adten/solve.cpp
     adten/sum.cpp

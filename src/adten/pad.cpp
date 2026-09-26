@@ -3,7 +3,6 @@
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
 /*
--------------------------------------------------------------------------------
 {xrst_begin adten_pad usr}
 {xrst_spell
 }
@@ -26,6 +25,10 @@ Prototype
 
 Example
 *******
+{xrst_literal ,
+    examples/adten/pad.cpp
+    BEGIN_CPP, END_CPP
+}
 
 {xrst_end adten_pad}
 -------------------------------------------------------------------------------
