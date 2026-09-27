@@ -197,9 +197,68 @@ void pad_op_t<TensorType>::forward_der(
     const vector<TensorType>&    var_all     ,
     vector<TensorType>&          for_der
 ) const {
-    user_assert(false,
-        "forward_der not yet implemented for pad operator"
-    );
+    //
+    // pad
+    using torch::nn::functional::pad;
+    //
+    // arg_start
+    size_t    arg_start = agraph.m_arg_start[op_index];
+    //
+    // input
+    size_t     input_index = agraph.m_arg_value[arg_start];
+    TensorType input_der   = for_der[input_index];
+    //
+    // pad_mode
+    size_t mode_size_t  = agraph.m_arg_value[arg_start + 2];
+    pad_enum_t pad_mode = static_cast<pad_enum_t>(mode_size_t);
+    //
+    // n_sizes
+    size_t n_sizes = agraph.m_arg_value[arg_start + 3];
+    //
+#ifndef NDEBUG
+    //
+    // adtype
+    adtype_t input_type   = agraph.m_arg_type[arg_start];
+    assert( input_type  == adtype_t::variable );
+    //
+    // n_arg
+    size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
+    assert( n_arg == 4 + n_sizes && "pad_op: n_arg != 4 + n_sizes" );
+    //
+    for(size_t i = 2; i < n_arg; ++i) {
+        assert( agraph.m_arg_type[arg_start +i] == adtype_t::none );
+    }
+#endif
+    //
+    // pad_sizes
+    const size_t* begin = agraph.m_arg_value.data() + arg_start + 4;
+    const size_t* end   = begin + n_sizes;
+    vector<int64_t> pad_sizes(begin, end);
+    //
+    // options
+    torch::nn::functional::PadFuncOptions options(pad_sizes);
+    switch( pad_mode ) {
+        //
+        case pad_enum_t::circular:
+        options.mode( torch::kCircular );
+        break;
+        //
+        case pad_enum_t::constant:
+        options.mode( torch::kConstant );
+        options.value( 0.0 );
+        break;
+        //
+        case pad_enum_t::reflect:
+        options.mode( torch::kReflect );
+        break;
+        //
+        case pad_enum_t::replicate:
+        options.mode( torch::kReplicate );
+        break;
+    }
+    //
+    // for_der
+    for_der[op_index] = pad(input_der, options);
 }
 template void pad_op_t<at::Tensor>::forward_der(
     size_t                       op_index    ,

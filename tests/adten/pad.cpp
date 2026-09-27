@@ -51,8 +51,9 @@ TEST(tests_adten, pad)  {
     vector<at::Tensor> par_all = f.forward_par(p);
     vector<at::Tensor> var_all = f.forward_var(v, par_all);
     vector<at::Tensor> y = f.get_range(var_all, par_all);
-    //
-    // check y[0]
+    // ----------------------------------------------------------------------
+    // check function values
+    // ----------------------------------------------------------------------
     at::Tensor check_p = torch::tensor( {
         {7.0, 1.0, 2.0, 3.0, 7.0, 7.0},
         {7.0, 4.0, 5.0, 6.0, 7.0, 7.0}
@@ -69,6 +70,24 @@ TEST(tests_adten, pad)  {
         {7.0, 7.0}
     } );
     EXPECT_TRUE( y[1].equal( check_v ) );
-
+    // ------------------------------------------------------------------------
+    // check forward mode
+    // ------------------------------------------------------------------------
+    vector<at::Tensor> dv = { torch::tensor( {
+        {11.0, 12.0},
+        {13.0, 14.0},
+        {15.0, 16.0}
+    } ) };
+    vector<at::Tensor> dy = f.forward_der(dv, var_all, par_all);
+    EXPECT_TRUE( ad_tensor::no_elements( dy[0] ) );
+    at::Tensor check_dy = torch::tensor( {
+        {0.0, 0.0},
+        {0.0, 0.0},
+        {11.0, 12.0},
+        {13.0, 14.0},
+        {15.0, 16.0},
+        {0.0, 0.0}
+    } );
+    EXPECT_TRUE( dy[1].equal( check_dy ) );
 }
 // END_CPP
