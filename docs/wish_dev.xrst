@@ -5,6 +5,9 @@
 {xrst_begin wish_dev dev}
 {xrst_spell
     typedefs
+    agraph
+    int
+    src
 }
 
 The Developer Wish List
@@ -12,5 +15,10 @@ The Developer Wish List
 
 #.  Change typedefs to using statements.
 
+#.  Change agraph.m_arg_value from vector<size_t> -> vector<int64)t>.
+    This will avoid memory allocation for arrays of int64_t.
+
+#.  Change no_elements to not defined and don't save and restore first
+    element of constant array during src_gen function initialization.
 
 {xrst_end wish_dev}

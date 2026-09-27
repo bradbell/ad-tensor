@@ -13,6 +13,7 @@
     noimplement
     der
     agraph
+    std
 }
 
 Step by Step Implementation of a New Operator
@@ -102,6 +103,15 @@ include/ad_tensor/dev/op_enum.hpp
 =================================
 Add NEW to the enum values in this file;
 see OTHER's enum value in this file for an example.
+
+src/dev/to_string.cpp
+=====================
+In the function
+{xrst_code cpp}
+    std::string to_string( op_enum_t op_enum)
+{xrst_code}
+Add NEW's enum values entry in this file;
+see OTHER's enum value entry in this file for an example.
 
 src/adten/NEW.cpp
 =================

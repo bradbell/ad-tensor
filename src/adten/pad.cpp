@@ -155,6 +155,7 @@ adten_t adten_t::pad(
             at::Tensor constant_value = torch::tensor(
                 value , torch::TensorOptions().dtype(torch::kFloat64)
             );
+            assert( constant_value.numel() == 1 );
             constant_index = tape.m_con_vec.size();
             tape.m_con_vec.push_back( std::move(constant_value) );
         }

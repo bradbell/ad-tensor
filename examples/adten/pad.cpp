@@ -36,22 +36,30 @@ TEST(examples_adten, pad)  {
     options_v.mode(torch::kConstant);
     options_v.value(7.0);
     //
-    // ap, av
-    adten_t ap = adten_t( p[0] );
-    adten_t av = adten_t( v[0] );
+    // av, ap
+    auto [av, ap] = adten_t::start_recording(v, p);
     //
-    // ap_pad, av_pad
-    adten_t ap_pad = ad_tensor::pad(ap, options_p);
-    adten_t av_pad = ad_tensor::pad(av, options_v);
+    // ay
+    vector<adten_t> ay;
+    ay.push_back( ad_tensor::pad(ap[0], options_p) );
+    ay.push_back( ad_tensor::pad(av[0], options_v) );
     //
-    // check ap
+    // f
+    adfn_t f = adten_t::stop_recording(ay, "f");
+    //
+    // y
+    vector<at::Tensor> par_all = f.forward_par(p);
+    vector<at::Tensor> var_all = f.forward_var(v, par_all);
+    vector<at::Tensor> y = f.get_range(var_all, par_all);
+    //
+    // check y[0]
     at::Tensor check_p = torch::tensor( {
         {7.0, 1.0, 2.0, 3.0, 7.0, 7.0},
         {7.0, 4.0, 5.0, 6.0, 7.0, 7.0}
     } );
-    EXPECT_TRUE( ap_pad.at_ten().equal( check_p ) );
+    EXPECT_TRUE( y[0].equal( check_p ) );
     //
-    // check av
+    // check y[1]
     at::Tensor check_v = torch::tensor( {
         {7.0, 7.0},
         {7.0, 7.0},
@@ -60,7 +68,7 @@ TEST(examples_adten, pad)  {
         {5.0, 6.0},
         {7.0, 7.0}
     } );
-    EXPECT_TRUE( av_pad.at_ten().equal( check_v ) );
+    EXPECT_TRUE( y[1].equal( check_v ) );
 
 }
 // END_CPP
