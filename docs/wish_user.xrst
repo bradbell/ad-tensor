@@ -12,6 +12,11 @@
 The User API Wish List
 ######################
 
+Function Names in Error Messages
+********************************
+In report the function name in error messages for
+all the :ref:`adfn-name` routines.
+
 Finish conv1d Benchmarks
 ************************
 This requires implementing the adten_t version of conv1d

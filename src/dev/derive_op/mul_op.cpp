@@ -253,7 +253,6 @@ void mul_op_t<TensorType>::reverse_der(
         //
         // rev_der[rhs_index] += prod
         plus_equal(rev_der[rhs_index], prod, dim);
-        //
     }
 }
 template void mul_op_t<at::Tensor>::reverse_der(

@@ -226,7 +226,6 @@ void sub_op_t<TensorType>::reverse_der(
         //
         // rev_der[rhs_index] += rev_der[op_index]
         minus_equal(rev_der[rhs_index], rev_der[op_index], dim);
-        //
     }
 }
 template void sub_op_t<at::Tensor>::reverse_der(

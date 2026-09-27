@@ -89,5 +89,25 @@ TEST(tests_adten, pad)  {
         {0.0, 0.0}
     } );
     EXPECT_TRUE( dy[1].equal( check_dy ) );
+    // ------------------------------------------------------------------------
+    // check reverse mode
+    // ------------------------------------------------------------------------
+    vector<at::Tensor> py;
+    py.push_back( ad_tensor::no_elements() );
+    py.push_back( torch::tensor( {
+        {21.0, 22.0},
+        {23.0, 24.0},
+        {25.0, 26.0},
+        {27.0, 28.0},
+        {29.0, 30.0},
+        {31.0, 32.0},
+    } ) );
+    vector<at::Tensor> px = f.reverse_der(py, var_all, par_all);
+    at::Tensor check_px = torch::tensor( {
+        {25.0, 26.0},
+        {27.0, 28.0},
+        {29.0, 30.0},
+    } );
+    EXPECT_TRUE( px[0].equal( check_px ) );
 }
 // END_CPP

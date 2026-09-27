@@ -238,7 +238,6 @@ void div_op_t<TensorType>::reverse_der(
         //
         // rev_der[rhs_index] -= prod
         minus_equal(rev_der[rhs_index], prod, dim);
-        //
     }
 }
 template void div_op_t<at::Tensor>::reverse_der(

@@ -463,7 +463,7 @@ template <> void conv1d_op_t<adten_t>::reverse_der(
     vector<adten_t>&             rev_der
 ) const {
     // TODO: Change this function to use the TensorType implementation above
-    // once the following operators have complete adten_t implementations:
+    // once the following operators have forward_var  adten_t implementations:
     // pad, flip
     user_assert(false,
     "reverse_der not yet implemented for conv1d with adten_t arguments" );

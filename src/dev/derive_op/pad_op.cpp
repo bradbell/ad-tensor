@@ -5,6 +5,7 @@
 #include <ad_tensor/dev/derive_op.hpp>
 #include <ad_tensor/adten.hpp>
 #include <ad_tensor/dev/pad_enum.hpp>
+#include <ad_tensor/dev/plus_minus_equal.hpp>
 //
 namespace ad_tensor { namespace dev { // Begin ad_tensor::dev
 // ------------------------------------------------------------------------
@@ -286,10 +287,65 @@ void pad_op_t<TensorType>::reverse_der(
     const vector<TensorType>&    var_all     ,
     vector<TensorType>&          rev_der
 ) const {
-    user_assert(false,
-        "reverse_der not yet implemented for pad operator"
-    );
-}
+    //
+    // pad
+    using torch::nn::functional::pad;
+    //
+    // arg_start
+    size_t    arg_start = agraph.m_arg_start[op_index];
+    //
+    // input_index
+    size_t     input_index = agraph.m_arg_value[arg_start];
+    //
+    // pad_mode
+    size_t mode_size_t  = agraph.m_arg_value[arg_start + 2];
+    pad_enum_t pad_mode = static_cast<pad_enum_t>(mode_size_t);
+    if( pad_mode != pad_enum_t::constant ) {
+        user_assert(false,
+            "pad: so far only constant mode reverse_der has been implemented."
+        );
+    }
+    //
+    // n_sizes
+    size_t n_sizes = agraph.m_arg_value[arg_start + 3];
+    //
+#ifndef NDEBUG
+    //
+    // adtype
+    adtype_t input_type   = agraph.m_arg_type[arg_start];
+    assert( input_type  == adtype_t::variable );
+    //
+    // n_arg
+    size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
+    assert( n_arg == 4 + n_sizes && "pad_op: n_arg != 4 + n_sizes" );
+    //
+    for(size_t i = 2; i < n_arg; ++i) {
+        assert( agraph.m_arg_type[arg_start +i] == adtype_t::none );
+    }
+#endif
+    //
+    // pad_sizes
+    const size_t* begin = agraph.m_arg_value.data() + arg_start + 4;
+    const size_t* end   = begin + n_sizes;
+    vector<int64_t> pad_sizes(begin, end);
+    //
+    // output_bar
+    c10::IntArrayRef output_shape = var_all[op_index].sizes();
+    TensorType input_bar          = rev_der[op_index];
+    size_t n_dim = n_sizes / 2;
+    for(size_t i = 0; i < n_dim; ++i) {
+        int64_t dim   = int64_t( output_shape.size() - i - 1 );
+        if( pad_sizes[2 * i] != 0 || pad_sizes[2 * i +1] != 0 ) {
+            int64_t start = pad_sizes[2 * i];
+            int64_t stop  = output_shape[dim] - pad_sizes[2 * i + 1];
+            int64_t step  = 1;
+            input_bar     = input_bar.slice(dim, start, stop, step);
+        }
+    }
+    //
+    // rev_der[input_index] += input_bar
+    plus_equal(rev_der[input_index], input_bar);
+};
 template void pad_op_t<at::Tensor>::reverse_der(
     size_t                       op_index    ,
     const agraph_t&              agraph      ,
@@ -298,14 +354,22 @@ template void pad_op_t<at::Tensor>::reverse_der(
     const vector<at::Tensor>&    var_all     ,
     vector<at::Tensor>&          rev_der
 ) const;
-template void pad_op_t<adten_t>::reverse_der(
+template <> void pad_op_t<adten_t>::reverse_der(
     size_t                       op_index    ,
     const agraph_t&              agraph      ,
     const vector<at::Tensor>&    con_vec     ,
     const vector<adten_t>&       par_all     ,
     const vector<adten_t>&       var_all     ,
     vector<adten_t>&             rev_der
-) const;
+) const {
+    // TODO: Change this function to use the TensorType implementation above
+    // once the following operators have forward_var adten_t implementations:
+    // slice
+    user_assert(false,
+    "reverse_der not yet implemented for pad with adten_t arguments" );
+}
+
+;
 // ---------------------------------------------------------------------------
 // src_gen
 template <> std::string pad_op_t<at::Tensor>::src_gen(
