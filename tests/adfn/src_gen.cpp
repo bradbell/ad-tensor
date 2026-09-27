@@ -14,9 +14,13 @@ TEST(tests_adfn, src_gen)  {
     namespace plugin = ad_tensor::plugin;
     namespace fs     =  std::filesystem;
     //
-    // bias, options
+    // bias, conv1d_options
     at::Tensor bias = torch::zeros( {1} );
-    auto options    = torch::nn::functional::Conv1dFuncOptions();
+    auto conv1d_options    = torch::nn::functional::Conv1dFuncOptions();
+    //
+    // pad_options
+    auto pad_options = torch::nn::functional::PadFuncOptions( {1, 0, 0, 1} );
+    pad_options.value( 7.0 );
     //
     // dim
     vector<int64_t> dim = { 1 };
@@ -56,7 +60,10 @@ TEST(tests_adfn, src_gen)  {
     adten_t ainput  = ap[1];
     adten_t aweight = av[1];
     adten_t abias   = adten_t( bias );
-    ar.push_back( ad_tensor::conv1d(ainput, aweight, abias, options) );
+    ar.push_back( ad_tensor::conv1d(ainput, aweight, abias, conv1d_options) );
+    //
+    ainput = av[0];
+    ar.push_back( ad_tensor::pad(ainput, pad_options) );
     //
     // r = f(v, p)
     adfn_t f = adten_t::stop_recording(ar, "f");
@@ -94,7 +101,7 @@ TEST(tests_adfn, src_gen)  {
     // r
     size_t i = 0;
     vector<Tensor> r = f_plugin(v, p);
-    EXPECT_EQ( r.size(), 9 );
+    EXPECT_EQ( r.size(), 10 );
     EXPECT_TRUE( r[i++].equal( (-v[0])              + (-p[0]) ) );
     EXPECT_TRUE( r[i++].equal( v[0].exp()           + p[0].exp() ) );
     EXPECT_TRUE( r[i++].equal( v[0].logdet()        + p[0].logdet() ) );
@@ -103,6 +110,11 @@ TEST(tests_adfn, src_gen)  {
     EXPECT_TRUE( r[i++].equal( v[0].flip(dim)       + p[0].flip(dim) ) );
     EXPECT_TRUE( r[i++].equal( v[0].transpose(0, 1) + p[0].transpose(0, 1) ) );
     EXPECT_TRUE( r[i++].equal( v[0].matmul( p[0] ) ) );
-    EXPECT_TRUE( r[i++].equal( ad_tensor::conv1d(p[1], v[1], bias, options) ));
+    EXPECT_TRUE( r[i++].equal( 
+        ad_tensor::conv1d(p[1], v[1], bias, conv1d_options) 
+    ));
+    EXPECT_TRUE( r[i++].equal( 
+        torch::nn::functional::pad(v[0], pad_options) 
+    ));
     //
 }
