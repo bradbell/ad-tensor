@@ -226,8 +226,6 @@ TEST(benchmarks, smooth_spline_ad_tensor) {
 }
 // END_AD_TENSOR
 //
-/* BEGIN_TODO: run other cases once conv1d is implemented for AD tensors
-//
 // BEGIN_RECORD_GRADIENT
 TEST(benchmarks, smooth_spline_record_gradient) {
     //
@@ -378,5 +376,4 @@ TEST(benchmarks, smooth_spline_plugin) {
     EXPECT_LT(relative_loss, expected_relative_loss);
 }
 #endif
-END_TODO */
 // END_PLUGIN
