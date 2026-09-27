@@ -20,6 +20,7 @@ add_executable(tests
     adfn/reverse_der.cpp
     adten/conv1d.cpp
     adten/matmul.cpp
+    adten/pad.cpp
     adten/solve.cpp
     dev/base_op.cpp
     dev/op_enum.cpp

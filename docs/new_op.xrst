@@ -241,7 +241,8 @@ Step 5: Copy Example to Test
 
 tests/adten/NEW.cpp
 ===================
-Make this file a copy of examples/adten/NEW.cpp.
+Make this file a copy of examples/adten/NEW.cpp
+(with examples changed to tests).
 
 tests/CMakeLists.txt
 ====================
