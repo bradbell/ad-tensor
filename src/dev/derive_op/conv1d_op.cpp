@@ -374,6 +374,9 @@ void conv1d_op_t<TensorType>::reverse_der(
     vector<TensorType>&          rev_der
 ) const {
     //
+    // pad
+    using torch::nn::functional::pad;
+    //
     // arg_start
     size_t arg_start = agraph.m_arg_start[op_index];
     //
@@ -442,31 +445,15 @@ void conv1d_op_t<TensorType>::reverse_der(
         auto    pad_options = torch::nn::functional::PadFuncOptions(
             {kernel_size - 1, kernel_size - 1, 0, 0, 0, 0}
         );
-        TensorType poutput_hat = torch::nn::functional::pad(
-            rev_der[op_index], pad_options
-        );
+        TensorType poutput_hat = pad(rev_der[op_index], pad_options);
         //
         // input_bar
-        TensorType weight_hat = torch::flip(weight, {2});
+        TensorType weight_hat = weight.flip( {2} );
         TensorType input_bar = conv1d(
             poutput_hat, weight_hat, no_bias, options
         );
         plus_equal(rev_der[input_index], input_bar);
     }
-}
-template <> void conv1d_op_t<adten_t>::reverse_der(
-    size_t                       op_index    ,
-    const agraph_t&              agraph      ,
-    const vector<at::Tensor>&    con_vec     ,
-    const vector<adten_t>&       par_all     ,
-    const vector<adten_t>&       var_all     ,
-    vector<adten_t>&             rev_der
-) const {
-    // TODO: Change this function to use the TensorType implementation above
-    // once the following operators have forward_var  adten_t implementations:
-    // pad, flip
-    user_assert(false,
-    "reverse_der not yet implemented for conv1d with adten_t arguments" );
 }
 template void conv1d_op_t<at::Tensor>::reverse_der(
     size_t                       op_index    ,
@@ -475,6 +462,14 @@ template void conv1d_op_t<at::Tensor>::reverse_der(
     const vector<at::Tensor>&    par_all     ,
     const vector<at::Tensor>&    var_all     ,
     vector<at::Tensor>&          rev_der
+) const;
+template void conv1d_op_t<adten_t>::reverse_der(
+    size_t                       op_index    ,
+    const agraph_t&              agraph      ,
+    const vector<at::Tensor>&    con_vec     ,
+    const vector<adten_t>&       par_all     ,
+    const vector<adten_t>&       var_all     ,
+    vector<adten_t>&             rev_der
 ) const;
 // ---------------------------------------------------------------------------
 // src_gen

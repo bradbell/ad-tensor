@@ -134,7 +134,7 @@ void pad_op_t<TensorType>::forward_var(
     //
     // input_type, constant_type
     adtype_t input_type   = agraph.m_arg_type[arg_start];
-    assert( input_type  == adtype_t::parameter );
+    assert( input_type  == adtype_t::variable );
     adtype_t constant_type   = agraph.m_arg_type[arg_start + 1];
     assert( constant_type  == adtype_t::constant );
     //
@@ -224,7 +224,7 @@ void pad_op_t<TensorType>::forward_der(
     //
     // input_type, constant_type
     adtype_t input_type   = agraph.m_arg_type[arg_start];
-    assert( input_type  == adtype_t::parameter );
+    assert( input_type  == adtype_t::variable );
     adtype_t constant_type   = agraph.m_arg_type[arg_start + 1];
     assert( constant_type  == adtype_t::constant );
     //
@@ -319,7 +319,7 @@ void pad_op_t<TensorType>::reverse_der(
     //
     // input_type, constant_type
     adtype_t input_type   = agraph.m_arg_type[arg_start];
-    assert( input_type  == adtype_t::parameter );
+    assert( input_type  == adtype_t::variable );
     adtype_t constant_type   = agraph.m_arg_type[arg_start + 1];
     assert( constant_type  == adtype_t::constant );
     //
@@ -459,14 +459,14 @@ template <> std::string pad_op_t<at::Tensor>::src_gen(
     //
     // options_src
     string options_src;
-    {   constexpr const char* fmt = 
+    {   constexpr const char* fmt =
 R"|({{   auto options = torch::nn::functional::PadFuncOptions( {} );
     options.mode( {} );
 )|";
         options_src = std::format(fmt, pad_sizes_src, pad_mode_src);
     }
     if( pad_mode == pad_enum_t::constant )
-    {   constexpr const char* fmt = 
+    {   constexpr const char* fmt =
             "    options.value( {}.item<double>() );\n";
         options_src += std::format(fmt, constant_src);
     }
