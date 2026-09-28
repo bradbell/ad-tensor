@@ -27,7 +27,7 @@ Command
 {xrst_code}
 
 In addition, you can change the standard cmake settings that begin
-with ``CMake_`` ; e.g.,
+with ``CMAKE_`` ; e.g.,
 {xrst_code sh}
     -D CMAKE_INSTALL_PREFIX=install_prefix
 {xrst_code}

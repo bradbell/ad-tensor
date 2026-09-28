@@ -5,24 +5,77 @@
 # ---------------------------------------------------------------------------
 {xrst_begin user usr}
 {xrst_spell
+    libtorch
+    cppad
+    autograd
+    checkpointing
+    versa
 }
 
 AD Tensor User Documentation
 ############################
 
-API
-***
-This user API is not yet stable; i.e., it may change in ways
+Git Repository
+**************
+`<https://github.com/bradbell/ad-tensor>`_
+
+Overview
+********
+This package takes an alternative approach to AD in libtorch
+using improved and simplified implementations of the AD methods in
+`cppad <https://cppad.readthedocs.io/latest/user_guide.html>`_ .
+Initial benchmark testing indicates that it computes derivatives faster than
+libtorch's autograd; see :ref:`benchmarks-name` .
+
+Features
+********
+#.  Recording a function with both parameters and variables,
+    parameter can change but do not have derivatives.
+
+#.  Forward and Reverse mode calculation of derivatives w.r.t. variables.
+
+#.  Using derivatives of a previously recorded function in the recording of
+    a new function. This provides for higher order derivatives using
+    forward and reverse in any order. It also provides for changing parameters
+    to variables and vice versa.
+
+#.  Optimization of recorded functions. This reduces the memory requirements
+    and speeds up the execution of function and derivative evaluation.
+
+#.  Sparsity calculations. Currently this is just the dependency between
+    tensors and not between the elements in a tensor.
+
+#.  AD checkpointing with arbitrary order derivatives.
+    This reduces memory requirements at the expense of re-evaluation.
+
+#.  User defined derivative evaluation of atomic function.
+    This includes arbitrary order derivatives.
+
+#.  Generating C++ source code that computes derivatives. This includes
+    the option to compile and link the derivatives to the current program.
+
+Developer Documentation
+***********************
+The developer documentation is currently included in this
+web site but is not part of the API.
+This should make it easier for people to add features to ad-tensor.
+In the future, the developer documentation will not be include here
+and developers will have to build it from the source files.
+
+
+User API
+********
+The ad-tensor user API is not yet stable; i.e., it may change in ways
 that are not backward compatible.
 
 {xrst_toc_table
     CMakeLists.txt
     include/ad_tensor/vector.hpp
-    include/ad_tensor/sparsity.hpp
-    include/ad_tensor/adten.hpp
     include/ad_tensor/adtype.hpp
+    include/ad_tensor/adten.hpp
     include/ad_tensor/adfn.hpp
     include/ad_tensor/no_elements.hpp
+    include/ad_tensor/sparsity.hpp
     src/chkpnt.cpp
     src/atom.cpp
     docs/theory.xrst

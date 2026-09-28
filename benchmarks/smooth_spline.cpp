@@ -23,7 +23,7 @@ for this example is defined by
 .. math::
 
     f(y) = \sum_{i=0}^{m-1} \left( \sin( x_i ) - y_i \right)^2
-         + \sum_{i=0)^{m-3) \left( y_i - 2 y_{i+1} + y_{i+2} \right)^2
+         + \sum_{i=0}^{m-3} \left( y_i - 2 y_{i+1} + y_{i+2} \right)^2
 
 This objective is a finite difference approximation for the
 second derivative in a cubic
