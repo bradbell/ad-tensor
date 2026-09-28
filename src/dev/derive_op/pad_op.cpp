@@ -57,8 +57,8 @@ void pad_op_t<TensorType>::forward_par(
 #endif
     //
     // pad_sizes
-    const size_t* begin = agraph.m_arg_value.data() + arg_start + 4;
-    const size_t* end   = begin + n_sizes;
+    const int64_t* begin = agraph.m_arg_value.data() + arg_start + 4;
+    const int64_t* end   = begin + n_sizes;
     vector<int64_t> pad_sizes(begin, end);
     //
     // options
@@ -148,8 +148,8 @@ void pad_op_t<TensorType>::forward_var(
 #endif
     //
     // pad_sizes
-    const size_t* begin = agraph.m_arg_value.data() + arg_start + 4;
-    const size_t* end   = begin + n_sizes;
+    const int64_t* begin = agraph.m_arg_value.data() + arg_start + 4;
+    const int64_t* end   = begin + n_sizes;
     vector<int64_t> pad_sizes(begin, end);
     //
     // options
@@ -238,8 +238,8 @@ void pad_op_t<TensorType>::forward_der(
 #endif
     //
     // pad_sizes
-    const size_t* begin = agraph.m_arg_value.data() + arg_start + 4;
-    const size_t* end   = begin + n_sizes;
+    const int64_t* begin = agraph.m_arg_value.data() + arg_start + 4;
+    const int64_t* end   = begin + n_sizes;
     vector<int64_t> pad_sizes(begin, end);
     //
     // options
@@ -333,8 +333,8 @@ void pad_op_t<TensorType>::reverse_der(
 #endif
     //
     // pad_sizes
-    const size_t* begin = agraph.m_arg_value.data() + arg_start + 4;
-    const size_t* end   = begin + n_sizes;
+    const int64_t* begin = agraph.m_arg_value.data() + arg_start + 4;
+    const int64_t* end   = begin + n_sizes;
     vector<int64_t> pad_sizes(begin, end);
     //
     // output_bar
@@ -450,7 +450,7 @@ template <> std::string pad_op_t<at::Tensor>::src_gen(
 #endif
     //
     // pad_sizes_src
-    const size_t* begin = agraph.m_arg_value.data() + arg_start + 4;
+    const int64_t* begin = agraph.m_arg_value.data() + arg_start + 4;
     string pad_sizes_src = "{" + std::to_string( begin[0] );
     for(size_t i = 1; i < n_sizes; ++i) {
         pad_sizes_src += "," + std::to_string( begin[i] );

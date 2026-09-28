@@ -15,8 +15,9 @@ The Developer Wish List
 
 #.  Change typedefs to using statements.
 
-#.  Change agraph.m_arg_value from vector<size_t> -> vector<int64)t>.
-    This will avoid memory allocation for arrays of int64_t.
+#.  The script tools/agraph_value_type.sh will change agraph.m_arg_value 
+    from vector<size_t> to vector<int64_t>. This may or may not be a good idea;
+    see the comments at the top of agraph_value_type.sh.
 
 #.  Change no_elements to not defined and don't save and restore first
     element of constant array during src_gen function initialization.

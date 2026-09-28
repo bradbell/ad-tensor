@@ -45,9 +45,9 @@ void sum_op_t<TensorType>::forward_par(
     } else {
         //
         // dim
-        const size_t* begin = agraph.m_arg_value.data() + arg_start + 2;
-        const size_t* end   = begin + n_dim;
-        const vector<int64_t>   dim(begin, end);
+        const int64_t* begin = agraph.m_arg_value.data() + arg_start + 2;
+        const int64_t* end   = begin + n_dim;
+        const c10::IntArrayRef dim(begin, end);
         //
         // par_all
         par_all[op_index] = par_all[operand_index].sum(dim);
@@ -102,9 +102,9 @@ void sum_op_t<TensorType>::forward_var(
     } else {
         //
         // dim
-        const size_t* begin = agraph.m_arg_value.data() + arg_start + 2;
-        const size_t* end   = begin + n_dim;
-        const vector<int64_t>   dim(begin, end);
+        const int64_t* begin = agraph.m_arg_value.data() + arg_start + 2;
+        const int64_t* end   = begin + n_dim;
+        const c10::IntArrayRef dim(begin, end);
         //
         // var_all
         var_all[op_index] = var_all[operand_index].sum(dim);
@@ -165,9 +165,9 @@ void sum_op_t<TensorType>::forward_der(
     } else {
         //
         // dim
-        const size_t* begin = agraph.m_arg_value.data() + arg_start + 2;
-        const size_t* end   = begin + n_dim;
-        const vector<int64_t>   dim(begin, end);
+        const int64_t* begin = agraph.m_arg_value.data() + arg_start + 2;
+        const int64_t* end   = begin + n_dim;
+        const c10::IntArrayRef dim(begin, end);
         //
         // for_der
         for_der[op_index] = for_der[operand_index].sum(dim);
@@ -242,9 +242,9 @@ void sum_op_t<TensorType>::reverse_der(
         assert( n_dim != 0 );
         //
         // dim
-        const size_t* begin = agraph.m_arg_value.data() + arg_start + 2;
-        const size_t* end   = begin + n_dim;
-        const vector<int64_t>   dim(begin, end);
+        const int64_t* begin = agraph.m_arg_value.data() + arg_start + 2;
+        const int64_t* end   = begin + n_dim;
+        const c10::IntArrayRef dim(begin, end);
         //
         // res_shape
         rev_sum_view(
