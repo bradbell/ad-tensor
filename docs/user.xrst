@@ -69,6 +69,7 @@ The ad-tensor user API is not yet stable; i.e., it may change in ways
 that are not backward compatible.
 
 {xrst_toc_table
+    examples/get_started.cpp
     CMakeLists.txt
     include/ad_tensor/vector.hpp
     include/ad_tensor/adtype.hpp

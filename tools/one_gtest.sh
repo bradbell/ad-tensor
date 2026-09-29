@@ -22,8 +22,14 @@ gtest_name="$2"
 cd build
 ninja $program
 cd ..
-echo build/$program/$program --gtest_filter="${program}_${gtest_name}"
-build/$program/$program --gtest_filter="${program}_${gtest_name}"
+if [[ "$gtest_name" == *.* ]]
+then
+    full_name="${program}_${gtest_name}"
+else
+    full_name="${program}.${gtest_name}"
+fi
+echo build/$program/$program --gtest_filter=$full_name
+build/$program/$program --gtest_filter=$full_name
 # -----------------------------------------------------------------------------
 echo "$script_path: OK"
 exit 0

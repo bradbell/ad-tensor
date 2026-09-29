@@ -46,6 +46,7 @@ add_executable(examples
     chkpnt/ad_forward_der.cpp
     chkpnt/ad_reverse_der.cpp
     chkpnt/get_started.cpp
+    get_started.cpp
 )
 # END_SORT_THIS_LINE_MINUS_2
 #
