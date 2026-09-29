@@ -138,6 +138,18 @@ Note that px is :math:`\hat{py}` correlated with :math:`\hat{w}` .
 #include <ad_tensor/no_elements.hpp>
 #include <ad_tensor/dev/plus_minus_equal.hpp>
 //
+// options
+#define SET_OPTIONS \
+    auto options = torch::nn::functional::Conv1dFuncOptions(); \
+    { \
+        int64_t stride   = int64_t( agraph.m_arg_value[arg_start + 3] ); \
+        int64_t dilation = int64_t( agraph.m_arg_value[arg_start + 4] ); \
+        int64_t groups   = int64_t( agraph.m_arg_value[arg_start + 5] ); \
+        options.stride(stride); \
+        options.dilation(dilation); \
+        options.groups(groups); \
+    }
+//
 namespace ad_tensor { namespace dev { // Begin ad_tensor::dev
 // ------------------------------------------------------------------------
 // forward_par
@@ -172,13 +184,7 @@ void conv1d_op_t<TensorType>::forward_par(
     );
     //
     // options
-    int64_t stride   = int64_t( agraph.m_arg_value[arg_start + 3] );
-    int64_t dilation = int64_t( agraph.m_arg_value[arg_start + 4] );
-    int64_t groups   = int64_t( agraph.m_arg_value[arg_start + 5] );
-    auto options = torch::nn::functional::Conv1dFuncOptions()
-        .stride(stride)
-        .dilation(dilation)
-        .groups(groups);
+    SET_OPTIONS
     //
     // par_all
     par_all[op_index] = conv1d(input, weight, bias, options);
@@ -229,13 +235,7 @@ void conv1d_op_t<TensorType>::forward_var(
     );
     //
     // options
-    int64_t stride   = int64_t( agraph.m_arg_value[arg_start + 3] );
-    int64_t dilation = int64_t( agraph.m_arg_value[arg_start + 4] );
-    int64_t groups   = int64_t( agraph.m_arg_value[arg_start + 5] );
-    auto options = torch::nn::functional::Conv1dFuncOptions()
-        .stride(stride)
-        .dilation(dilation)
-        .groups(groups);
+    SET_OPTIONS
     //
     // par_all
     var_all[op_index] = conv1d(input, weight, bias, options);
@@ -318,13 +318,7 @@ void conv1d_op_t<TensorType>::forward_der(
     }
     //
     // options
-    int64_t stride   = int64_t( agraph.m_arg_value[arg_start + 3] );
-    int64_t dilation = int64_t( agraph.m_arg_value[arg_start + 4] );
-    int64_t groups   = int64_t( agraph.m_arg_value[arg_start + 5] );
-    auto options = torch::nn::functional::Conv1dFuncOptions()
-        .stride(stride)
-        .dilation(dilation)
-        .groups(groups);
+    SET_OPTIONS
     //
     // no_bias
     TensorType no_bias;
@@ -415,13 +409,7 @@ void conv1d_op_t<TensorType>::reverse_der(
     TensorType no_bias;
     //
     // options
-    int64_t stride   = int64_t( agraph.m_arg_value[arg_start + 3] );
-    int64_t dilation = int64_t( agraph.m_arg_value[arg_start + 4] );
-    int64_t groups   = int64_t( agraph.m_arg_value[arg_start + 5] );
-    auto options = torch::nn::functional::Conv1dFuncOptions()
-        .stride(stride)
-        .dilation(dilation)
-        .groups(groups);
+    SET_OPTIONS
     //
     // rev_der[weight_index]
     if( weight_type == variable ) {
