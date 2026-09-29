@@ -24,6 +24,12 @@ grep "CMAKE_BUILD_TYPE"  $configure
 grep "AD_TENSOR_VERSION" $configure
 grep "INCLUDE_PLUGIN"    $configure
 #
+file=src/dev/derive_op/conv1d_op.cpp
+if ! grep '#define USE_CONV_TRANSPOSE1D' $file
+then
+    echo "USE_CONV_TRANSOSE1D is no longer in $file"
+    exit 1
+fi
 #
 benmchmarks='build/benchmarks/benchmarks'
 $benmchmarks | sed -n \

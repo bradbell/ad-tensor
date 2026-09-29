@@ -4,7 +4,7 @@
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
 //
-# define CMAKE_BUILD_TYPE    @CMAKE_BUILD_TYPE@
-# define CMAKE_CXX_COMPILER  @CMAKE_CXX_COMPILER@
-# define AD_TENSOR_VERSION   @ad_tensor_VERSION@
-# define INCLUDE_PLUGIN      @include_plugin@
+#define CMAKE_BUILD_TYPE    @CMAKE_BUILD_TYPE@
+#define CMAKE_CXX_COMPILER  @CMAKE_CXX_COMPILER@
+#define AD_TENSOR_VERSION   @ad_tensor_VERSION@
+#define INCLUDE_PLUGIN      @include_plugin@

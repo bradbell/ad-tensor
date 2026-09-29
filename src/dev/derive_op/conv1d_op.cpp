@@ -138,6 +138,10 @@ Note that px is :math:`\hat{py}` correlated with :math:`\hat{w}` .
 #include <ad_tensor/no_elements.hpp>
 #include <ad_tensor/dev/plus_minus_equal.hpp>
 //
+// TODO: Do some tests to see if 0 or 1 is faster
+#define USE_CONV_TRANSPOSE1D 1
+//
+//
 // set options
 #define SET_OPTIONS \
     auto options = torch::nn::functional::Conv1dFuncOptions(); \
@@ -440,9 +444,16 @@ template void conv1d_op_t<adten_t>::reverse_der(
     const vector<adten_t>&       var_all     ,
     vector<adten_t>&             rev_der
 ) const;
-//
-// TODO: Once conv_transpe1d is available for adten_t arguments,
-// change the TensorType version of reverse_der to be like this routine.
+# if ! USE_CONV_TRANSPOSE1D
+template void conv1d_op_t<at::Tensor>::reverse_der(
+    size_t                       op_index    ,
+    const agraph_t&              agraph      ,
+    const vector<at::Tensor>&    con_vec     ,
+    const vector<at::Tensor>&    par_all     ,
+    const vector<at::Tensor>&    var_all     ,
+    vector<at::Tensor>&          rev_der
+) const;
+# else
 template <> void conv1d_op_t<at::Tensor>::reverse_der(
     size_t                       op_index    ,
     const agraph_t&              agraph      ,
@@ -530,6 +541,7 @@ template <> void conv1d_op_t<at::Tensor>::reverse_der(
         plus_equal(rev_der[input_index], input_bar);
     }
 }
+#endif
 // ---------------------------------------------------------------------------
 // src_gen
 template <> std::string conv1d_op_t<at::Tensor>::src_gen(

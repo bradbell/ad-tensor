@@ -101,10 +101,8 @@ adten_t adten_t::pad(
     // pad_sizes
     c10::IntArrayRef pad_sizes = options.pad();
     //
-    // input_shape
-    c10::IntArrayRef input_shape = input.sizes();
-    //
 # ifndef NDEBUG
+    c10::IntArrayRef input_shape = input.sizes();
     dev::user_assert( pad_sizes.size() <= 6 ,
         "pad: sizes in options is greater than 6"
     );
@@ -148,7 +146,7 @@ adten_t adten_t::pad(
         auto mode             = options.mode();
         size_t constant_index = 0;
         assert( no_elements( tape.m_con_vec[constant_index] ) );
-        dev::pad_enum_t pad_enum;
+        dev::pad_enum_t pad_enum = dev::pad_enum_t::constant;
         if( std::holds_alternative<torch::enumtype::kConstant>(mode) ) {
             pad_enum = dev::pad_enum_t::constant;
             double     value          = options.value();
