@@ -39,9 +39,9 @@ void view_op_t<TensorType>::forward_par(
     size_t operand_index  = agraph.m_arg_value[arg_start];
     //
     // shape
-    const int64_t* begin = agraph.m_arg_value.data() + arg_start + 2;
-    const int64_t* end   = begin + n_dim;
-    const c10::IntArrayRef shape(begin, end);
+    const size_t* begin = agraph.m_arg_value.data() + arg_start + 2;
+    const size_t* end   = begin + n_dim;
+    const vector<int64_t> shape(begin, end);
     //
     // par_all
     par_all[op_index] = par_all[operand_index].view(shape);
@@ -90,9 +90,9 @@ void view_op_t<TensorType>::forward_var(
     size_t operand_index  = agraph.m_arg_value[arg_start];
     //
     // shape
-    const int64_t* begin = agraph.m_arg_value.data() + arg_start + 2;
-    const int64_t* end   = begin + n_dim;
-    const c10::IntArrayRef shape(begin, end);
+    const size_t* begin = agraph.m_arg_value.data() + arg_start + 2;
+    const size_t* end   = begin + n_dim;
+    const vector<int64_t> shape(begin, end);
     //
     // var_all
     var_all[op_index] = var_all[operand_index].view(shape);
