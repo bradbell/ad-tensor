@@ -138,7 +138,7 @@ Note that px is :math:`\hat{py}` correlated with :math:`\hat{w}` .
 #include <ad_tensor/no_elements.hpp>
 #include <ad_tensor/dev/plus_minus_equal.hpp>
 //
-// options
+// set options
 #define SET_OPTIONS \
     auto options = torch::nn::functional::Conv1dFuncOptions(); \
     { \
@@ -150,6 +150,21 @@ Note that px is :math:`\hat{py}` correlated with :math:`\hat{w}` .
         options.groups(groups); \
     }
 //
+// check arguments
+#ifdef NDEBUG
+    #define CHECK_ARGUMENTS
+#else
+    #define CHECK_ARGUMENTS \
+    {   size_t arg_start = agraph.m_arg_start[op_index]; \
+        size_t arg_end   = agraph.m_arg_start[op_index+1]; \
+        size_t n_arg = arg_end - arg_start; \
+        assert( n_arg == 6  ); \
+        for(size_t i = 3; i < 6; ++i) { \
+            assert( agraph.m_arg_type[arg_start+i] == adtype_t::none ); \
+        } \
+    }
+#endif
+//
 namespace ad_tensor { namespace dev { // Begin ad_tensor::dev
 // ------------------------------------------------------------------------
 // forward_par
@@ -160,17 +175,10 @@ void conv1d_op_t<TensorType>::forward_par(
     const vector<at::Tensor>&    con_vec     ,
     vector<TensorType>&          par_all
 ) const {
+    CHECK_ARGUMENTS
     //
     // arg_start
     size_t arg_start = agraph.m_arg_start[op_index];
-    //
-#ifndef NDEBUG
-    size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
-    assert( n_arg == 6  );
-    for(size_t i = 3; i < 6; ++i) {
-        assert( agraph.m_arg_type[arg_start+i] == adtype_t::none );
-    }
-# endif
     //
     // input, weight, bias
     TensorType input  = tensor_at_arg_index(
@@ -211,17 +219,10 @@ void conv1d_op_t<TensorType>::forward_var(
     const vector<TensorType>&    par_all     ,
     vector<TensorType>&          var_all
 ) const {
+    CHECK_ARGUMENTS
     //
     // arg_start
     size_t arg_start = agraph.m_arg_start[op_index];
-    //
-#ifndef NDEBUG
-    size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
-    assert( n_arg == 6  );
-    for(size_t i = 3; i < 6; ++i) {
-        assert( agraph.m_arg_type[arg_start+i] == adtype_t::none );
-    }
-# endif
     //
     // input, weight, bias
     TensorType input  = tensor_at_arg_index(
@@ -265,17 +266,11 @@ void conv1d_op_t<TensorType>::forward_der(
     const vector<TensorType>&    var_all     ,
     vector<TensorType>&          for_der
 ) const {
+    CHECK_ARGUMENTS
     //
     // arg_start
     size_t arg_start = agraph.m_arg_start[op_index];
     //
-#ifndef NDEBUG
-    size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
-    assert( n_arg == 6  );
-    for(size_t i = 3; i < 6; ++i) {
-        assert( agraph.m_arg_type[arg_start+i] == adtype_t::none );
-    }
-# endif
     // variable
     adtype_t variable = adtype_t::variable;
     //
@@ -367,6 +362,7 @@ void conv1d_op_t<TensorType>::reverse_der(
     const vector<TensorType>&    var_all     ,
     vector<TensorType>&          rev_der
 ) const {
+    CHECK_ARGUMENTS
     //
     // pad
     using torch::nn::functional::pad;
@@ -374,13 +370,6 @@ void conv1d_op_t<TensorType>::reverse_der(
     // arg_start
     size_t arg_start = agraph.m_arg_start[op_index];
     //
-#ifndef NDEBUG
-    size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
-    assert( n_arg == 6  );
-    for(size_t i = 3; i < 6; ++i) {
-        assert( agraph.m_arg_type[arg_start+i] == adtype_t::none );
-    }
-# endif
     // variable
     adtype_t variable = adtype_t::variable;
     //
@@ -467,20 +456,13 @@ template <> std::string conv1d_op_t<at::Tensor>::src_gen(
     bool                                                  variable_agraph ,
     const std::function< std::string(size_t, adtype_t) >& tensor_src
 ) const {
+    CHECK_ARGUMENTS
     //
     // string
     using std::string;
     //
     // arg_start
     size_t arg_start = agraph.m_arg_start[op_index];
-    //
-#ifndef NDEBUG
-    size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
-    assert( n_arg == 6  );
-    for(size_t i = 3; i < 6; ++i) {
-        assert( agraph.m_arg_type[arg_start+i] == adtype_t::none );
-    }
-# endif
     //
     // input_src
     size_t   input_index   = agraph.m_arg_value[arg_start];
