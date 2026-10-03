@@ -5,6 +5,14 @@
 #include <gtest/gtest.h>
 #include <ad_tensor/ad_tensor.hpp>
 #include <torch/torch.h>
+namespace {
+    // all_close
+    bool all_close( const at::Tensor& left, const at::Tensor& right) {
+        double rtol = 1e-05;
+        double atol = 1e-05;
+        return left.allclose(right , rtol, atol);
+    }
+}
 //
 // solve_full
 // Test left, right, and parameters with a full matrix
@@ -70,15 +78,15 @@ TEST(tests_adten, solve_full)  {
         { p2 * x3 - p3 * x2, - p2 * x1 + p3 * x0 }
     } );
     //
-    bool equal, close;
+    bool close;
     //
     // inv(x) * p
-    equal = y[0].equal( y0_times_det / det);
-    EXPECT_TRUE( equal );
+    close = all_close(y[0], y0_times_det / det);
+    EXPECT_TRUE( close );
     //
     // p * inv(x)
-    equal = y[1].equal( y1_times_det / det);
-    EXPECT_TRUE( equal );
+    close = all_close( y[1], y1_times_det / det);
+    EXPECT_TRUE( close );
     //
     Tensor check;
     //
@@ -90,13 +98,13 @@ TEST(tests_adten, solve_full)  {
     // check dy[0]
     check  = torch::tensor( { {0.0, 0.0}, {p2,  p3} } ) / det;
     check -= y0_times_det * x3 / (det * det);
-    close  = dy[0].allclose( check );
+    close  = all_close( dy[0], check );
     EXPECT_TRUE( close );
     //
     // check dy[1]
     check  = torch::tensor( { {0.0, p1}, {0.0,  p3} } ) / det;
     check -= y1_times_det * x3 / (det * det);
-    close  = dy[1].allclose( check );
+    close  = all_close( dy[1], check );
     EXPECT_TRUE( close );
     // ---------------------------------------------------------------------
     // dy
@@ -115,7 +123,7 @@ TEST(tests_adten, solve_full)  {
     // dx
     dx     = f.reverse_der(dy, var_all, par_all);
     check  = torch::tensor( { {g_x0, g_x1}, {g_x2, g_x3} } );
-    close  = dx[0].allclose( check );
+    close  = all_close( dx[0],  check );
     EXPECT_TRUE( close );
     // ---------------------------------------------------------------------
     // dy
@@ -134,7 +142,7 @@ TEST(tests_adten, solve_full)  {
     // dx
     dx     = f.reverse_der(dy, var_all, par_all);
     check  = torch::tensor( { {h_x0, h_x1}, {h_x2, h_x3} } );
-    close  = dx[0].allclose( check );
+    close  = all_close( dx[0], check );
     EXPECT_TRUE( close );
 }
 //
@@ -189,7 +197,7 @@ TEST(tests_adten, solve_batch) {
     Tensor check = torch::tensor({
         w1/x1, w0/x0, w3/x1, w2/x0, w5/x1, w4/x0
     });
-    EXPECT_TRUE( y[0].allclose(check) );
+    EXPECT_TRUE( all_close(y[0], check) );
     //
     // Jacobian
     Tensor Jacobian = torch::tensor({
@@ -209,7 +217,7 @@ TEST(tests_adten, solve_batch) {
         dx[0] = torch::eye(2).select(0, j);
         dy    = f.forward_der(dx, v_all);
         check = Jacobian.select(1, j);
-        bool close = dy[0].contiguous().view({6}).allclose( check );
+        bool close = all_close(dy[0].contiguous().view({6}), check );
         EXPECT_TRUE( close );
     }
     //
@@ -218,7 +226,7 @@ TEST(tests_adten, solve_batch) {
         dy[0] = torch::eye(6).select(0, i);
         dx    = f.reverse_der(dy, v_all);
         check = Jacobian.select(0, i);
-        bool close = dx[0].contiguous().view({2}).allclose( check );
+        bool close = all_close( dx[0].contiguous().view({2}), check );
         EXPECT_TRUE( close );
     }
 }

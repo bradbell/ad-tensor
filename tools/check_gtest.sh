@@ -55,9 +55,11 @@ then
 else
    n_job=$(sysctl -n hw.ncpu)
 fi
-if (( n_job > 1 ))
+# make sure there is 1GB of free memory for each job
+max_jobs=$( free -g | awk '{ if ($1 == "Mem:") { print $4 } }' )
+if (( n_job > max_jobs ))
 then
-    n_job=$(( n_job - 1 ))
+    n_job=$max_jobs
 fi
 #
 # build

@@ -10,6 +10,14 @@ configure_file(
     @ONLY
 )
 #
+# get_plugin.hpp
+# Once we require cmake >= 3.26 can use COPY_FILE instead of COPY
+file(COPY
+    ${CMAKE_CURRENT_SOURCE_DIR}/get_plugin.hpp
+    DESTINATION
+    ${CMAKE_CURRENT_BINARY_DIR}
+)
+#
 # plugin_lib
 add_library(plugin_lib MODULE
     add_int.cpp

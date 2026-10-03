@@ -6,6 +6,7 @@
 # plugin_TESTS
 set(plugin_TESTS "")
 if( include_plugin )
+    add_subdirectory(plugin)
     set(plugin_TESTS
         ${CMAKE_CURRENT_BINARY_DIR}/plugin/build_lib.cpp
         adfn/src_gen.cpp
