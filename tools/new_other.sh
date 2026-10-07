@@ -1,5 +1,4 @@
 #! /usr/bin/env bash
-include/ad_tensor/dev/op_enum.hpp
 set -e -u
 # SPDX-License-Identifier: EPL-2.0 OR GPL-2.0-or-later
 # SPDX-FileCopyrightText: Bradley M. Bell <bradbell@seanet.com>
@@ -19,7 +18,7 @@ fi
 # name_new, name_other, chars_minus_2
 if [ "$#" != 2 ]
 then
-    echo 'usage:       tools/new_unary.sh old_name new_name'
+    echo 'usage:       tools/new_unary.sh name_new name_other'
     echo 'name_new:    is the name of operator we are implementing'
     echo 'name_other:  is the name of a similar already implemented operator'
     exit 1
@@ -110,7 +109,7 @@ s|^}; }\$|    //\\
     adten_t $name_new(\\
     );\\
 &|
-s|\\(^ *\\)src/adten/$name_old.cpp|&\\
+s|\\(^ *\\)src/adten/$name_other.cpp|&\\
 \\1src/adten/$name_new.cpp|
 EOF
 git checkout --quiet $file
