@@ -102,7 +102,7 @@ ENDMACRO(print_variable)
 cmake_minimum_required(VERSION 3.12)
 #
 # project
-project(ad_tensor VERSION "2026.10.3")
+project(ad_tensor VERSION "2026.10.9")
 #
 # CMAKE_INSTALL_INCLUDEDIR, CMAKE_INSTALL_LIBDIR
 include(GNUInstallDirs)

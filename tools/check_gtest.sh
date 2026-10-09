@@ -55,11 +55,22 @@ then
 else
    n_job=$(sysctl -n hw.ncpu)
 fi
-# make sure there is 1GB of free memory for each job
-max_jobs=$( free -g | awk '{ if ($1 == "Mem:") { print $4 } }' )
+#
+# make sure free reports 1GB of available memory for each job
+if [ $( free -g | awk '{ if ( NR == 1 ) { print $6} }') != available ]
+then
+    echo 'check_gtest.sh: Unexpected column order in output of free command'
+    exit 1
+fi
+max_jobs=$( free -g | awk '{ if ($1 == "Mem:") { print $7 } }' )
 if (( n_job > max_jobs ))
 then
     n_job=$max_jobs
+fi
+if (( n_job < 1 ))
+then
+    echo 'check_gtest.sh: Note enough available memory reported by free -g'
+    exit 1
 fi
 #
 # build
