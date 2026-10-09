@@ -55,6 +55,7 @@ Other Member Functions
 {xrst_comment BEGIN_SORT_THIS_LINE_PLUS_2}
 {xrst_toc_table after
     src/adten/conv1d.cpp
+    src/adten/conv_transpose1d.cpp
     src/adten/flip.cpp
     src/adten/index.cpp
     src/adten/index_put.cpp
@@ -180,6 +181,7 @@ The adten_t Class Developer Documentation
 {xrst_toc_table after
     src/adten/binary.cpp
     src/adten/conv1d.cpp
+    src/adten/conv_transpose1d.cpp
     src/adten/flip.cpp
     src/adten/index.cpp
     src/adten/index_put.cpp
@@ -419,6 +421,13 @@ public:
         const torch::nn::functional::Conv1dFuncOptions& options
     ) const;
     //
+    // conv_transpose1d
+    adten_t conv_transpose1d(
+        const adten_t&                                           weight  ,
+        const adten_t&                                           bias    ,
+        const torch::nn::functional::ConvTranspose1dFuncOptions& options
+    ) const;
+    //
     // index_put
     adten_t index_put(
         const c10::List< std::optional<at::Tensor> >& index_list ,
@@ -429,7 +438,6 @@ public:
     adten_t index(
         const c10::List< std::optional<at::Tensor> >& index_list
     ) const;
-    //
 }; }
 
 namespace ad_tensor {
@@ -446,6 +454,7 @@ namespace ad_tensor {
     );
     // END_LINALG_SOLVE
     //
+    // ad_tensor::conv1d
     // BEGIN_CONV1D_AD_TEN
     adten_t conv1d(
         const adten_t&                                  input   ,
@@ -454,13 +463,26 @@ namespace ad_tensor {
         const torch::nn::functional::Conv1dFuncOptions& options
     );
     // END_CONV1D_AD_TEN
-    //
-    // conv1d
     at::Tensor conv1d(
         const at::Tensor&                               input   ,
         const at::Tensor&                               weight  ,
         const at::Tensor&                               bias    ,
         const torch::nn::functional::Conv1dFuncOptions& options
     );
-
+    //
+    // ad_tensor::conv_transpose1d
+    // BEGIN_CONV_TRANSPOSE1D_AD_TEN
+    adten_t conv_transpose1d(
+        const adten_t&                                           input   ,
+        const adten_t&                                           weight  ,
+        const adten_t&                                           bias    ,
+        const torch::nn::functional::ConvTranspose1dFuncOptions& options
+    );
+    // END_CONV_TRANSPOSE1D_AD_TEN
+    at::Tensor conv_transpose1d(
+        const at::Tensor&                                        input   ,
+        const at::Tensor&                                        weight  ,
+        const at::Tensor&                                        bias    ,
+        const torch::nn::functional::ConvTranspose1dFuncOptions& options
+    );
 }

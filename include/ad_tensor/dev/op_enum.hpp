@@ -59,20 +59,21 @@ namespace ad_tensor { namespace dev { enum struct op_enum_t
     // END_BINARY  END_SORT_THIS_LINE_MINUS_1
     //
     // BEGIN_OTHER BEGIN_SORT_THIS_LINE_PLUS_1
-    call,        // call atomic function
-    call_result, // place holder when more than one result for a call
-    conv1d,      // one dimensional convolution
-    dom,         // domain tensor
-    flip,        // Reverse order of elements
-    index,       // extract elements of a tensor
-    index_put,   // replace elements of a tensor
-    matmul,      // matrix multiplication
-    minus,       // unary minus
-    pad,         // functional padding
-    solve,       // solve matrix equation
-    sum,         // summation
-    transpose,   // transpose
-    view,        // view
-    where,       // where function
+    call,                // call atomic function
+    call_result,         // place holder when more than one result for a call
+    conv1d,              // one dimensional convolution
+    conv_transpose1d,    // transposed one dimensional convolution
+    dom,                 // domain tensor
+    flip,                // Reverse order of elements
+    index,               // extract elements of a tensor
+    index_put,           // replace elements of a tensor
+    matmul,              // matrix multiplication
+    minus,               // unary minus
+    pad,                 // functional padding
+    solve,               // solve matrix equation
+    sum,                 // summation
+    transpose,           // transpose
+    view,                // view
+    where,               // where function
     // END_OTHER END_SORT_THIS_LINE_MINUS_1
 }; } }

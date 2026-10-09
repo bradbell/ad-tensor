@@ -31,17 +31,17 @@ TEST(tests_adten, conv1d) {
     //
     //
     // ax, aw, ab
-    adten_t ax  = av[0];
+    adten_t ax = av[0];
     adten_t aw = av[1];
     adten_t ab = av[2];
     //
     // ay
-    auto options   = torch::nn::functional::Conv1dFuncOptions();
-    adten_t   ay = ad_tensor::conv1d(ax, aw, ab, options);
+    auto    options = torch::nn::functional::Conv1dFuncOptions();
+    adten_t ay      = ad_tensor::conv1d(ax, aw, ab, options);
     //
     // r = f(v)
     vector<adten_t> ar = {ay};
-    adfn_t f           = adten_t::stop_recording(ar, "f");
+    adfn_t          f  = adten_t::stop_recording(ar, "f");
     //
     // var_all
     vector<at::Tensor> var_all = f.forward_var(v);

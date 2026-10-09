@@ -20,6 +20,7 @@ add_executable(tests
     adfn/optimize.cpp
     adfn/reverse_der.cpp
     adten/conv1d.cpp
+    adten/conv_transpose1d.cpp
     adten/matmul.cpp
     adten/pad.cpp
     adten/solve.cpp

@@ -37,8 +37,8 @@ Example
 {xrst_spell
 }
 
-Compute and Record Solution of Linear Equations
-###############################################
+Compute and Record One Dimensional Cross Correlation
+####################################################
 
 Prototype
 *********
@@ -81,7 +81,8 @@ where start be the length of arg_value and arg_type before this call to
 #include <ad_tensor/dev/user_assert.hpp>
 
 namespace ad_tensor { // Begin ad_tensor::dev
-
+//
+// adten_t::conv1d
 adten_t adten_t::conv1d(
     const adten_t&                                  weight  ,
     const adten_t&                                  bias    ,
@@ -125,7 +126,7 @@ adten_t adten_t::conv1d(
         "input AD tensor's tape is not tape that is recording"
     );
     dev::user_assert( weight.m_tape_id == tape.m_tape_id , "conv1d: "
-        "rhs AD tensor's tape is not tape that is recording"
+        "weight AD tensor's tape is not tape that is recording"
     );
     if( no_elements(bias) ) {
         assert( bias.m_index == 0 );
@@ -187,13 +188,15 @@ adten_t adten_t::conv1d(
     }
     return adten_t(res_tape_id, res_index, res_tensor, res_adtype);
 }
+//
+// ad_tensor::conv1d
 adten_t conv1d(
     const adten_t&                                  input   ,
     const adten_t&                                  weight  ,
     const adten_t&                                  bias    ,
     const torch::nn::functional::Conv1dFuncOptions& options )
 {   dev::user_assert( ! options.bias().defined(),
-        "cov21d: bias is and explicit argument and is defined in options."
+        "conv1d: bias is and explicit argument and is defined in options."
     );
     bool no_padding = false;
     torch::nn::functional::ConvFuncOptions<1>::padding_t
@@ -207,13 +210,15 @@ adten_t conv1d(
     );
     return input.conv1d(weight, bias, options);
 }
+//
+// ad_tensor::conv1d
 at::Tensor conv1d(
     const at::Tensor&                               input   ,
     const at::Tensor&                               weight  ,
     const at::Tensor&                               bias    ,
     const torch::nn::functional::Conv1dFuncOptions& options )
 {   dev::user_assert( ! options.bias().defined(),
-        "cov21d: bias is and explicit argument and is defined in options."
+        "conv1d: bias is and explicit argument and is defined in options."
     );
     if( no_elements(bias) ) {
         return torch::nn::functional::conv1d( input, weight, options);
