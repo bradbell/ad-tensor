@@ -48,28 +48,50 @@ done
 # run_cmake.sh
 tools/run_cmake.sh $release_flag $plugin_flag
 #
-# n_job
-if which nproc >& /dev/null
+# n_proc
+if [ $(uname) != Darwin ]
 then
-   n_job=$(nproc)
+   n_proc=$(nproc)
 else
-   n_job=$(sysctl -n hw.ncpu)
+   n_proc=$(sysctl -n hw.ncpu)
 fi
 #
+# max_job
 # make sure free reports 1GB of available memory for each job
-if [ $( free -g | awk '{ if ( NR == 1 ) { print $6} }') != available ]
+if [ $(uname) != Darwin ]
 then
-    echo 'check_gtest.sh: Unexpected column order in output of free command'
-    exit 1
+    if [ $( free -g | awk '{ if ( NR == 1 ) { print $6} }') != available ]
+    then
+        echo 'check_gtest.sh: Unexpected column order in output of free'
+        exit 1
+    fi
+    max_jobs=$( free -g | awk '{ if ($1 == "Mem:") { print $7 } }' )
+else
+    max_jobs=$( vm_stat | awk -v pagesize=$(pagesize) '
+        /Pages free/ {free=$3}
+        /Pages inactive/ {inactive=$3}
+        /Pages speculative/ {speculative=$3}
+        /Pages purgeable/ {purgeable=$3}
+        END {
+            # pages to GB conversion factor
+            to_gb = pagesize / (1024. * 1024. * 1024.);
+            #
+            print int( (free + inactive + speculative + purgeable) * to_gb );
+        }
+    ')
 fi
-max_jobs=$( free -g | awk '{ if ($1 == "Mem:") { print $7 } }' )
-if (( n_job > max_jobs ))
+#
+# n_job
+if (( n_proc > max_jobs ))
 then
     n_job=$max_jobs
+else
+    n_job=$n_proc
 fi
 if (( n_job < 1 ))
 then
-    echo 'check_gtest.sh: Note enough available memory reported by free -g'
+    echo 'check_gtest.sh: Note enough available memory reported.'
+    echo 'Need one GB for each compile process'
     exit 1
 fi
 #
