@@ -357,7 +357,7 @@ template void conv1d_op_t<adten_t>::forward_der(
     vector<adten_t>&             for_der
 ) const;
 // ------------------------------------------------------------------------
-template<class TensorType>
+template <class TensorType>
 void conv1d_op_t<TensorType>::reverse_der(
     size_t                       op_index    ,
     const agraph_t&              agraph      ,
@@ -367,9 +367,6 @@ void conv1d_op_t<TensorType>::reverse_der(
     vector<TensorType>&          rev_der
 ) const {
     CHECK_ARGUMENTS
-    //
-    // pad
-    using torch::nn::functional::pad;
     //
     // arg_start
     size_t arg_start = agraph.m_arg_start[op_index];
@@ -401,99 +398,6 @@ void conv1d_op_t<TensorType>::reverse_der(
     // no_bias
     TensorType no_bias;
     //
-    // options
-    SET_OPTIONS
-    //
-    // rev_der[weight_index]
-    if( weight_type == variable ) {
-        TensorType input  = tensor_at_arg_index(
-            arg_start, agraph, con_vec, par_all, var_all
-        );
-        TensorType weight_bar = conv1d(
-            input, rev_der[op_index], no_bias, options
-        );
-        plus_equal(rev_der[weight_index], weight_bar);
-    }
-    //
-    // rev_der[input_index]
-    if( input_type == variable ) {
-        //
-        // weight, poutput_hat
-        TensorType weight  = tensor_at_arg_index(
-            arg_start + 1, agraph, con_vec, par_all, var_all
-        );
-        int64_t kernel_size = weight.sizes()[2];
-        auto    pad_options = torch::nn::functional::PadFuncOptions(
-            {kernel_size - 1, kernel_size - 1, 0, 0, 0, 0}
-        );
-        TensorType poutput_hat = pad(rev_der[op_index], pad_options);
-        //
-        // input_bar
-        TensorType weight_hat = weight.flip( {2} );
-        TensorType input_bar = conv1d(
-            poutput_hat, weight_hat, no_bias, options
-        );
-        plus_equal(rev_der[input_index], input_bar);
-    }
-}
-template void conv1d_op_t<adten_t>::reverse_der(
-    size_t                       op_index    ,
-    const agraph_t&              agraph      ,
-    const vector<at::Tensor>&    con_vec     ,
-    const vector<adten_t>&       par_all     ,
-    const vector<adten_t>&       var_all     ,
-    vector<adten_t>&             rev_der
-) const;
-# if ! USE_CONV_TRANSPOSE1D
-template void conv1d_op_t<at::Tensor>::reverse_der(
-    size_t                       op_index    ,
-    const agraph_t&              agraph      ,
-    const vector<at::Tensor>&    con_vec     ,
-    const vector<at::Tensor>&    par_all     ,
-    const vector<at::Tensor>&    var_all     ,
-    vector<at::Tensor>&          rev_der
-) const;
-# else
-template <> void conv1d_op_t<at::Tensor>::reverse_der(
-    size_t                       op_index    ,
-    const agraph_t&              agraph      ,
-    const vector<at::Tensor>&    con_vec     ,
-    const vector<at::Tensor>&    par_all     ,
-    const vector<at::Tensor>&    var_all     ,
-    vector<at::Tensor>&          rev_der
-) const {
-    CHECK_ARGUMENTS
-    //
-    // arg_start
-    size_t arg_start = agraph.m_arg_start[op_index];
-    //
-    // variable
-    adtype_t variable = adtype_t::variable;
-    //
-    // input_index, input_type
-    size_t   input_index    = agraph.m_arg_value[arg_start];
-    adtype_t input_type     = agraph.m_arg_type[arg_start];
-    //
-    // weight_index, weight_type
-    size_t   weight_index    = agraph.m_arg_value[arg_start + 1];
-    adtype_t weight_type     = agraph.m_arg_type[arg_start + 1];
-    //
-    // bias_index, bias_type
-    size_t   bias_index    = agraph.m_arg_value[arg_start + 2];
-    adtype_t bias_type     = agraph.m_arg_type[arg_start + 2];
-    //
-    // rev_der[bias_index]
-    if( bias_type == variable ) {
-        at::Tensor bias_bar = rev_der[op_index].sum(2);
-        plus_equal(rev_der[bias_index], bias_bar);
-    }
-    if( input_type != variable && weight_type != variable ) {
-        return;
-    }
-    //
-    // no_bias
-    at::Tensor no_bias;
-    //
     // stride, dilation, group
     int64_t stride   = int64_t( agraph.m_arg_value[arg_start + 3] ); \
     int64_t dilation = int64_t( agraph.m_arg_value[arg_start + 4] ); \
@@ -507,10 +411,10 @@ template <> void conv1d_op_t<at::Tensor>::reverse_der(
         options.dilation(dilation);
         options.groups(groups);
         //
-        at::Tensor input  = tensor_at_arg_index(
+        TensorType input  = tensor_at_arg_index(
             arg_start, agraph, con_vec, par_all, var_all
         );
-        at::Tensor weight_bar = conv1d(
+        TensorType weight_bar = conv1d(
             input, rev_der[op_index], no_bias, options
         );
         plus_equal(rev_der[weight_index], weight_bar);
@@ -519,29 +423,38 @@ template <> void conv1d_op_t<at::Tensor>::reverse_der(
     // rev_der[input_index]
     if( input_type == variable ) {
         //
-        at::Tensor weight  = tensor_at_arg_index(
+        auto options = torch::nn::functional::ConvTranspose1dFuncOptions();
+        options.stride(stride);
+        options.dilation(dilation);
+        options.groups(groups);
+        //
+        TensorType weight  = tensor_at_arg_index(
             arg_start + 1, agraph, con_vec, par_all, var_all
         );
         //
-        int64_t padding = 0;
-        int64_t output_padding = 0;
-        //
-        at::Tensor output_bar = rev_der[op_index];
-        at::Tensor input_bar = at::conv_transpose1d(
-            output_bar,
-            weight,
-            no_bias,
-            c10::IntArrayRef( stride ),
-            c10::IntArrayRef( padding ),
-            c10::IntArrayRef( output_padding ),
-            groups,
-            c10::IntArrayRef(dilation)
+        TensorType input_bar = conv_transpose1d(
+            rev_der[op_index], weight, no_bias, options
         );
         //
         plus_equal(rev_der[input_index], input_bar);
     }
 }
-#endif
+template void conv1d_op_t<at::Tensor>::reverse_der(
+    size_t                       op_index    ,
+    const agraph_t&              agraph      ,
+    const vector<at::Tensor>&    con_vec     ,
+    const vector<at::Tensor>&    par_all     ,
+    const vector<at::Tensor>&    var_all     ,
+    vector<at::Tensor>&          rev_der
+) const;
+template void conv1d_op_t<adten_t>::reverse_der(
+    size_t                       op_index    ,
+    const agraph_t&              agraph      ,
+    const vector<at::Tensor>&    con_vec     ,
+    const vector<adten_t>&       par_all     ,
+    const vector<adten_t>&       var_all     ,
+    vector<adten_t>&             rev_der
+) const;
 // ---------------------------------------------------------------------------
 // src_gen
 template <> std::string conv1d_op_t<at::Tensor>::src_gen(
