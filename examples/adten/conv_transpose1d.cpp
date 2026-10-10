@@ -11,9 +11,11 @@ TEST(examples_adten, conv_transpose1d) {
     using ad_tensor::adfn_t;
     using ad_tensor::vector;
     //
+    namespace functional = torch::nn::functional;
+    //
     // y_vec, w_vec, b_vec
     vector<float> y_vec = {2.0};
-    vector<float> w_vec = {0.25, 0.5, 0.25};
+    vector<float> w_vec = {0.15, 0.5, 0.35};
     vector<float> b_vec = {-1.0};
     //
     // y, w, b
@@ -36,8 +38,8 @@ TEST(examples_adten, conv_transpose1d) {
     adten_t ab = av[2];
     //
     // ax
-    auto    options  = torch::nn::functional::ConvTranspose1dFuncOptions();
-    adten_t ax       = ad_tensor::conv_transpose1d(ay, aw, ab, options);
+    auto  tran_options = functional::ConvTranspose1dFuncOptions();
+    adten_t ax         = ad_tensor::conv_transpose1d(ay, aw, ab, tran_options);
     //
     // r = f(v)
     vector<adten_t> ar = {ax};
@@ -79,5 +81,16 @@ TEST(examples_adten, conv_transpose1d) {
         }
         EXPECT_EQ( x_vec[i], sum );
     }
+    // ------------------------------------------------------------------------`
+    // Alternative Method
+    // ------------------------------------------------------------------------`
+    auto pad_options = functional::PadFuncOptions(
+        {nw-1, nw-1, 0, 0, 0, 0}
+    );
+    auto  conv_options = functional::Conv1dFuncOptions();
+    at::Tensor y_hat = functional::pad(y, pad_options);
+    at::Tensor w_hat = w.flip( {2} );
+    at::Tensor x_hat = ad_tensor::conv1d( y_hat, w_hat, b, conv_options );
+    EXPECT_TRUE( x.equal( x_hat ) );
 }
 // END_CPP

@@ -17,6 +17,7 @@
     pw
     py
     px
+    libtorch
 }
 
 One Dimensional Cross Correlation Theory
@@ -48,7 +49,7 @@ Partial Derivatives
     \partial y_k / \partial w_j & = x_{k + j}
     \\
     \partial y_k / \partial x_i & = \begin{cases}
-        w_{i-k} & \text{if} \; i \in [k, \cdots, k+nw-1]  \\
+        w_{i-k} & \text{if} \; i - nw + 1 \le k \; \text{and} \; k \le i  \\
         0       & \text{otherwise}
     \end{cases}
     \\
@@ -89,19 +90,16 @@ The contributions to the partial w.r.t the input,
 
 .. math::
 
-    px_i & = \sum_{k=0}^{ny-1} py_k \cdot
-        \begin{cases}
-            w_{i-k} & \text{if} \; i \in [k, \cdots, k+nw-1]  \\
-            0       & \text{otherwise}
-        \end{cases}
+    px_i & = \sum_{k=0}^{ny-1} py_k \cdot  \partial y_k / \partial x_i
     \\
-    px_i & = \sum_{k=i-nw+1}^i py_k \cdot w_{i-k}
+    px_i & = \sum_{k=i-nw+1}^{\min(i, ny - 1)} py_k \cdot w_{i-k}
 
-In the last equation above :math:`py_k` is zero for
-:math:`k < 0` and :math:`k > ny - 1` .
-Note that :math:`k` should be in :math:`[0 , \ldots , ny-1 ]` .
-We fix this abuse of notation by defining the vector
-:math:`\hat{py} \in \mathbb{R}^{nx + nw - 1}`
+The libtorch conv_transpose1d operation is designed so that
+px is the transposed correlation of py with w.
+
+Alternative Method
+******************
+We defining the vector :math:`\hat{py} \in \mathbb{R}^{nx + nw - 1}`
 
 .. math::
 
@@ -112,7 +110,7 @@ We fix this abuse of notation by defining the vector
     \end{cases}
 
 where :math:`l \in [0 , nx + nw -1 ]` .
-Substituting :math:`l = k + nw - 1` in the equation for :math:`px_i` above
+Substituting :math:`k = l - nw + 1` in the equation for :math:`px_i` above
 we obtain
 
 .. math::
