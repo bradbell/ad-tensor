@@ -12,12 +12,12 @@ TEST(tests_adten, conv_transpose1d) {
     using ad_tensor::vector;
     //
     // x_vec, w_vec, b_vec
-    vector<float> x_vec = {2.0};
+    vector<float> x_vec = {2.0, 3.0};
     vector<float> w_vec = {0.25, 0.5, 0.25};
     vector<float> b_vec = {-1.0};
     //
     // y, w, b
-    at::Tensor x = torch::tensor(x_vec).view( {1, 1, 1} );
+    at::Tensor x = torch::tensor(x_vec).view( {1, 1, 2} );
     at::Tensor w = torch::tensor(w_vec).view( {1, 1, 3} );
     at::Tensor b = torch::tensor(b_vec);
     //
