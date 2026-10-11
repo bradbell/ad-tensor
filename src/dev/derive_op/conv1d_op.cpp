@@ -92,7 +92,7 @@ The contributions to the partial w.r.t the input,
 
     px_i & = \sum_{k=0}^{ny-1} py_k \cdot  \partial y_k / \partial x_i
     \\
-    px_i & = \sum_{k=i-nw+1}^{\min(i, ny - 1)} py_k \cdot w_{i-k}
+    px_i & = \sum_{k= \max(0, i-nw+1) }^{ \min(i, ny - 1) } py_k \cdot w_{i-k}
 
 The libtorch conv_transpose1d operation is designed so that
 px is the transposed correlation of py with w.

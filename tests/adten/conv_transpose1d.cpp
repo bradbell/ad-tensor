@@ -79,5 +79,76 @@ TEST(tests_adten, conv_transpose1d) {
         }
         EXPECT_EQ( y_vec[i], sum );
     }
+    // ------------------------------------------------------------------------`
+    // check forward derivativre
+    // ------------------------------------------------------------------------`
+    //
+    // zero_x, zero_w, zero_b, dv
+    at::Tensor zero_x = torch::zeros( x.sizes() );
+    at::Tensor zero_w = torch::zeros( w.sizes() );
+    at::Tensor zero_b = torch::zeros( b.sizes() );
+    vector<at::Tensor> dv = { zero_x, zero_w, zero_b };
+    //
+    // check partal of y w.r.t x[k]
+    for(int64_t k = 0; k < nx; ++k) {
+        //
+        // dy
+        dv[0]                 = torch::eye(nx).select(0, k).view( x.sizes() );
+        vector<at::Tensor> dr = f.forward_der(dv, var_all);
+        at::Tensor         dy = dr[0].contiguous();
+        //
+        // check
+        vector<float> dy_vec(
+            dy.data_ptr<float>(),
+            dy.data_ptr<float>() + y.numel()
+        );
+        for(int64_t i = 0; i < ny; ++i) {
+            if( i - nw + 1 <= k && k <= i) {
+                EXPECT_EQ( dy_vec[i], w_vec[i - k] );
+            } else {
+                EXPECT_EQ( dy_vec[i], float( 0.0 ) );
+            }
+        }
+    }
+    dv[0] = zero_x;
+    //
+    // check partal of y w.r.t w[j]
+    for(int64_t j = 0; j < nw; ++j) {
+        //
+        // dy
+        dv[1]                 = torch::eye(nw).select(0, j).view( w.sizes() );
+        vector<at::Tensor> dr = f.forward_der(dv, var_all);
+        at::Tensor         dy = dr[0].contiguous();
+        //
+        // check
+        vector<float> dy_vec(
+            dy.data_ptr<float>(),
+            dy.data_ptr<float>() + y.numel()
+        );
+        for(int64_t i = 0; i < ny; ++i) {
+            if( i - nx + 1 <= j && j <= i ) {
+                EXPECT_EQ( dy_vec[i], x_vec[i - j] );
+            } else {
+                EXPECT_EQ( dy_vec[i], float(0.0) );
+            }
+        }
+    }
+    dv[1] = zero_w;
+    //
+    // check derivative of y w.r.t. b
+    {
+        dv[2] = torch::tensor( {1.0} );
+        vector<at::Tensor> dr = f.forward_der(dv, var_all);
+        at::Tensor         dy = dr[0].contiguous();
+        //
+        // check
+        vector<float> dy_vec(
+            dy.data_ptr<float>(),
+            dy.data_ptr<float>() + y.numel()
+        );
+        for(int64_t i = 0; i < ny; ++i) {
+            EXPECT_EQ( dy_vec[i], float(1.0) );
+        }
+    }
 }
 // END_CPP

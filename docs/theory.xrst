@@ -15,6 +15,7 @@ In This Documentation
 *********************
 {xrst_toc_table
     src/dev/derive_op/conv1d_op.cpp
+    src/dev/derive_op/conv_transpose1d_op.cpp
 }
 
 

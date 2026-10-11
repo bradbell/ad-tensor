@@ -6,9 +6,99 @@
 // SPDX-FileCopyrightText: Bradley M. Bell <bradbell@seanet.com>
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
+/*
+{xrst_begin conv_transpose1d_theory usr}
+{xrst_spell
+    rcl
+    ny
+    nx
+    nw
+    dx
+    dw
+}
+
+One Dimensional Transposed Cross Correlation Theory
+###################################################
+
+Function Value
+**************
+Given the input vector :math:`x \in \mathbb{R}^{nx}`,
+the weight vector :math:`w \in \mathbb{R}^{nw}` ,
+and the bias tensor :math:`b \in \mathbb{R}` ,
+compute the transposed cross correlation vector :math:`y \in \mathbb{R}^{ny}`
+where :math:`ny = nx + nw - 1` and
+
+.. math::
+
+    y_i ( x, w, b ) = b +
+        \sum_{ k = \max(0 , i - nw + 1) }^{\min(i, nx - 1)} x_k \cdot w_{i-k}
+
+Note that we use the following notation,
+:math:`i \in [0, \ldots , ny-1]`,
+:math:`k \in [0, \ldots , nx-1]`,
+
+Changing indices to :math:`j = i - k` ,
+
+.. math::
+
+    \begin{array}{rcl}
+        k \ge 0          & \Leftrightarrow & j \le i      \\
+        k \ge i - nw + 1 & \Leftrightarrow & j \le nw - 1 \\
+        k \le i          & \Leftrightarrow & j \ge 0      \\
+        k \le nx - 1     & \Leftrightarrow & j \ge i - nx + 1
+    \end{array}
+
+
+.. math::
+
+    y_i ( x, w, b ) = b +
+        \sum_{j = \max(0, i - nx + 1) }^{\min(i, nw - 1)} x_{i-j} \cdot w_j
+
+Thus y is also w transposed cross correlated with x.
+Note that :math:`j \in [0 , \ldots , nw - 1]`  ,
+which also goes without saying in the equations below.
+
+Partial Derivatives
+*******************
+
+.. math::
+
+    \partial y_i  / \partial x_k
+    &= \begin{cases}
+        w_{i-k} & \text{if} \; i - nw + 1 \le k \; \text{and} \; k \le i \\
+        0       & \text{otherwise}
+    \end{cases}
+    \\
+    \partial y_i  / \partial w_j
+    &= \begin{cases}
+        x_{i-j} & \text{if} \; i - nx + 1 \le j \; \text{and} \; j \le i \\
+        0       & \text{otherwise}
+    \end{cases}
+    \\
+    \partial y_i  / \partial b &= 1
+
+
+Forward Derivatives
+*******************
+Given the forward derivatives
+:math:`dx \in \mathbb{R}^{nx}, dw \in \mathbb{R}^{nw} , db \in \mathbb{R}` ,
+the forward derivative of :math:`dy \in \mathbb{R}^{ny}` is given by
+
+.. math::
+
+    dy_i = db
+    + \sum_{k = \max(0 , i - nw + 1)}^{\min(i, nx - 1)} dx_k \cdot w_{i-k}
+    + \sum_{j = \max(0, i - nx + 1)}^{ \min(i, nw - 1)} x_{i-j} \cdot dw_j
+
+Note that this is the sum of dx transpose correlated with w
+plus x transpose correlated with dw.
+
+{xrst_end conv_transpose1d_theory}
+*/
 #include <ad_tensor/dev/derive_op.hpp>
 #include <ad_tensor/adten.hpp>
 #include <ad_tensor/dev/tensor_at_index.hpp>
+#include <ad_tensor/no_elements.hpp>
 //
 // set options
 #define SET_OPTIONS \
@@ -129,6 +219,7 @@ template void conv_transpose1d_op_t<adten_t>::forward_var(
 ) const;
 // ------------------------------------------------------------------------
 // forward_der
+// forward_der
 template<class TensorType>
 void conv_transpose1d_op_t<TensorType>::forward_der(
     size_t                       op_index    ,
@@ -138,9 +229,78 @@ void conv_transpose1d_op_t<TensorType>::forward_der(
     const vector<TensorType>&    var_all     ,
     vector<TensorType>&          for_der
 ) const {
-    user_assert(false,
-        "forward_der not yet implemented for conv_transpose1d operator"
-    );
+    CHECK_ARGUMENTS
+    //
+    // arg_start
+    size_t arg_start = agraph.m_arg_start[op_index];
+    //
+    // variable
+    adtype_t variable = adtype_t::variable;
+    //
+    // input_index, input_type, input_zero_der
+    size_t   input_index    = agraph.m_arg_value[arg_start];
+    adtype_t input_type     = agraph.m_arg_type[arg_start];
+    bool     input_zero_der =
+        input_type != variable || no_elements( for_der[input_index] );
+    //
+    // weight_index, weight_type, weight_zero_der
+    size_t   weight_index    = agraph.m_arg_value[arg_start + 1];
+    adtype_t weight_type     = agraph.m_arg_type[arg_start + 1];
+    bool     weight_zero_der =
+        weight_type != variable || no_elements( for_der[weight_index] );
+    //
+    // bias_index, bias_type, bias_zero_der
+    size_t   bias_index    = agraph.m_arg_value[arg_start + 2];
+    adtype_t bias_type     = agraph.m_arg_type[arg_start + 2];
+    bool     bias_zero_der =
+        bias_type != variable || no_elements( for_der[bias_index] );
+    //
+    if( input_zero_der && weight_zero_der && bias_zero_der) {
+        return;
+    }
+    //
+    // output_shape
+    c10::IntArrayRef output_shape = var_all[op_index].sizes();
+    //
+    // for_der[op_index]
+    TensorType  doutput = TensorType( torch::zeros( output_shape ) );
+    if( ! bias_zero_der ) {
+        int64_t n_channel_out = output_shape[1];
+        doutput += for_der[bias_index].view( {1, n_channel_out, 1}  );
+    }
+    //
+    // for_der[op_index]
+    if( input_zero_der && weight_zero_der ) {
+        for_der[op_index] = doutput;
+        return;
+    }
+    //
+    // options
+    SET_OPTIONS
+    //
+    // no_bias
+    TensorType no_bias;
+    //
+    // doutput
+    if( ! input_zero_der ) {
+        TensorType weight  = tensor_at_arg_index(
+            arg_start + 1, agraph, con_vec, par_all, var_all
+        );
+        doutput += conv_transpose1d(
+            for_der[input_index], weight, no_bias , options
+        );
+    }
+    if( ! weight_zero_der ) {
+        TensorType input  = tensor_at_arg_index(
+            arg_start, agraph, con_vec, par_all, var_all
+        );
+        doutput += conv_transpose1d(
+            input, for_der[weight_index], no_bias , options
+        );
+    }
+    //
+    // for_der[op_index]
+    for_der[op_index] = doutput;
     return;
 }
 template void conv_transpose1d_op_t<at::Tensor>::forward_der(
