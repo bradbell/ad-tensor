@@ -15,6 +15,9 @@
     nw
     dx
     dw
+    px
+    pw
+    py
 }
 
 One Dimensional Transposed Cross Correlation Theory
@@ -90,8 +93,43 @@ the forward derivative of :math:`dy \in \mathbb{R}^{ny}` is given by
     + \sum_{k = \max(0 , i - nw + 1)}^{\min(i, nx - 1)} dx_k \cdot w_{i-k}
     + \sum_{j = \max(0, i - nx + 1)}^{ \min(i, nw - 1)} x_{i-j} \cdot dw_j
 
-Note that this is the sum of dx transpose correlated with w
-plus x transpose correlated with dw.
+Note that this is the sum of dx transpose cross correlated with w
+plus x transpose cross correlated with dw.
+
+
+Reverse Partials
+****************
+We are given the partial derivative of the objective w.r.t the output
+:math:`py \in \mathbb{R}^{ny}` .
+Reverse mode removes the output from the expression of the objective by adding
+the contributions to the partial w.r.t the input, weight and bias,
+:math:`px \in \mathbb{R}^{nx}` ,
+:math:`pw \in \mathbb{R}^{nw} ,
+pb \in \mathbb{R}` .
+The contribution w.r.t the input is given by
+
+.. math::
+
+    px_k
+    &= \sum_{i = 0}^{ny-1} py_i \partial y_i / \partial x_k  \\
+    &= \sum_{i = k}^{k + nw - 1} py_i w_{i-k}
+
+Note that this is py cross correlated with w.
+The contribution w.r.t. the weight is given by
+
+.. math::
+
+    pw_j
+    &= \sum_{i = 0}^{ny-1} py_i \partial y_i / \partial w_j  \\
+    &= \sum_{i = j}^{j + nx - 1} py_i x_{i-j}
+
+Note that this is py cross correlated with x.
+The contribution w.r.t. the bias is given by
+
+.. math::
+
+    pb = \sum_{i=0}^{ny-1} py_i
+
 
 {xrst_end conv_transpose1d_theory}
 */

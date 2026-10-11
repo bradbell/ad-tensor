@@ -73,10 +73,12 @@ Reverse Partials
 ****************
 We are given the partial derivative of the objective w.r.t the output
 :math:`py \in \mathbb{R}^{ny}` .
-Reverse mode removes the output from the expression of the objective.
-The contributions to the partial w.r.t the weight and bias,
-:math:`pw \in \mathbb{R}^{nw} , pb \in \mathbb{R}` ,
-are given by
+Reverse mode removes the output from the expression of the objective by adding
+the contributions to the partial w.r.t the input, weight and bias,
+:math:`px \in \mathbb{R}^{nx}` ,
+:math:`pw \in \mathbb{R}^{nw} ,
+pb \in \mathbb{R}` .
+The contributions w.r.t the weight and bias are given by
 
 .. math::
 
@@ -95,7 +97,7 @@ The contributions to the partial w.r.t the input,
     px_i & = \sum_{k= \max(0, i-nw+1) }^{ \min(i, ny - 1) } py_k \cdot w_{i-k}
 
 The libtorch conv_transpose1d operation is designed so that
-px is the transposed correlation of py with w.
+px is the transpose correlation of py with w.
 
 Alternative Method
 ******************
