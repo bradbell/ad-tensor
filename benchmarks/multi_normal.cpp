@@ -212,13 +212,30 @@ namespace {
     const at::Tensor minimum_L = compute_minimum_L();
     //
     // initial_L
-    at::Tensor compute_initial_L(void) {
-        at::Tensor initial_L = torch::randn( {matrix_size, matrix_size} );
-        initial_L            = torch::tril( initial_L );
-        initial_L            = torch::maximum( initial_L, minimum_L );
-        return initial_L;
+    at::Tensor random_L(void) {
+        at::Tensor L = torch::randn( {matrix_size, matrix_size} );
+        L            = torch::tril( L );
+        L            = torch::maximum( L, minimum_L );
+        return L;
     }
-    const at::Tensor initial_L = compute_initial_L();
+    const at::Tensor initial_L = random_L();
+    //
+    // initial_grad, initial_norm
+    at::Tensor initial_autograd(void) {
+        torch::Tensor L = initial_L.clone();
+        L.set_requires_grad(true);
+        at::Tensor loss_tmp = loss(L);
+        loss_tmp.backward();
+        return L.grad();
+    }
+    const at::Tensor initial_grad = initial_autograd();
+    double initial_norm = torch::linalg_norm( initial_grad ).item<double>();
+    //
+    void check_initial_grad(const at::Tensor& grad) {
+        double diff = torch::linalg_norm(grad - initial_grad).item<double>();
+        double relative_difference = diff / initial_norm;
+        EXPECT_LT( relative_difference, 1e-5 );
+    }
 }
 // END_COMMON
 //
@@ -240,9 +257,14 @@ TEST(benchmarks, multi_normal_autograd) {
         torch::Tensor loss_t = loss(L);
         loss_t.backward();
         //
-        // L
         {   torch::NoGradGuard no_grad;
             //
+            // check initial gradient
+            if( t == 0 ) {
+                EXPECT_TRUE( initial_grad.equal( L.grad() ) );
+            }
+            //
+            // L
             L = L - learning_rate * L.grad();
             L = torch::tril( L );
             L = torch::maximum(L, minimum_L);
@@ -288,6 +310,11 @@ TEST(benchmarks, multi_normal_ad_tensor) {
         // L
         {   torch::NoGradGuard no_grad;
             //
+            // check initial gradient
+            if( t == 0 ) {
+                check_initial_grad( grad[0] );
+            }
+            //
             L[0] = L[0] - learning_rate * grad[0];
             L[0] = torch::tril( L[0] );
             L[0] = torch::maximum(L[0], minimum_L);
@@ -306,7 +333,7 @@ TEST(benchmarks, multi_normal_ad_tensor) {
 // END_AD_TENSOR
 //
 // BEGIN_OPTIMIZE
-TEST(benchmarks, multi_normal_optimize) {
+TEST(benchmarks, multi_normal_record_gradient) {
     //
     // L
     vector<at::Tensor> L     = { initial_L.clone() };
@@ -346,6 +373,11 @@ TEST(benchmarks, multi_normal_optimize) {
         // L
         {   torch::NoGradGuard no_grad;
             //
+            // check initial gradient
+            if( t == 0 ) {
+                check_initial_grad( grad[0] );
+            }
+            //
             L[0] = L[0] - learning_rate * grad[0];
             L[0] = torch::tril( L[0] );
             L[0] = torch::maximum(L[0], minimum_L);
@@ -365,7 +397,7 @@ TEST(benchmarks, multi_normal_optimize) {
 //
 // BEGIN_SRC_GEN
 #if INCLUDE_PLUGIN
-TEST(benchmarks, multi_normal_src_gen) {
+TEST(benchmarks, multi_normal_plugin) {
     //
     // fs, plugin
     namespace fs     = std::filesystem;
@@ -439,6 +471,11 @@ TEST(benchmarks, multi_normal_src_gen) {
         //
         // L
         {   torch::NoGradGuard no_grad;
+            //
+            // check initial gradient
+            if( t == 0 ) {
+                check_initial_grad( grad[0] );
+            }
             //
             L[0] = L[0] - learning_rate * grad[0];
             L[0] = torch::tril( L[0] );
