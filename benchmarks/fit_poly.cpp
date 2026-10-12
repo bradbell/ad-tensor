@@ -137,6 +137,20 @@ namespace {
     // grid, data
     torch::Tensor grid = torch::linspace(-1.0, 1.0, number_grid_points);
     torch::Tensor data = grid.exp();
+    //
+    // initial_c
+    vector<at::Tensor> random_c(void) {
+        vector<at::Tensor> c;
+        for(size_t j = 0; j < number_coefficients; ++j) {
+            c.push_back( torch::randn( {1} ) );
+        }
+        return c;
+    }
+    const vector<at::Tensor> initial_c = random_c();
+    //
+    // initial_grad
+    // set by autograd and checked by other cases
+    vector<at::Tensor> initial_grad;
 }
 // END_COMMON
 //
@@ -146,7 +160,7 @@ TEST(benchmarks, fit_poly_autograd) {
     // c
     vector<torch::Tensor> c;
     for(size_t j = 0; j < number_coefficients; ++j) {
-        c.push_back( torch::randn( {1}, torch::requires_grad() ) );
+        c.push_back( initial_c[j].clone().set_requires_grad(true) );
     }
     //
     // previous_time
@@ -163,6 +177,14 @@ TEST(benchmarks, fit_poly_autograd) {
         loss_t.backward();
         {   torch::NoGradGuard no_grad;
             //
+            if( t == 0 ) {
+                // initial_grad
+                for(size_t j = 0; j < number_coefficients; ++j) {
+                    initial_grad.push_back( c[j].grad().clone() );
+                }
+            }
+            //
+            // c
             for(size_t j = 0; j < number_coefficients; ++j) {
                 c[j] -= learning_rate * c[j].grad();
                 c[j].grad().zero_();
@@ -187,7 +209,7 @@ TEST(benchmarks, fit_poly_ad_tensor) {
     // c
     vector<at::Tensor> c;
     for(size_t j = 0; j < number_coefficients; ++j) {
-        c.push_back( torch::randn( {1} ) );
+        c.push_back( initial_c[j].clone() );
     }
     //
     // ac
@@ -216,6 +238,13 @@ TEST(benchmarks, fit_poly_ad_tensor) {
         // grad
         vector<at::Tensor> grad  = adfn.reverse_der(dloss, var_all);
         //
+        // check initial gradient
+        if( t == 0 ) {
+            for(size_t j = 0; j < number_coefficients; ++j) {
+                EXPECT_TRUE( grad[j].allclose( initial_grad[j] ) );
+            }
+        }
+        //
         // c
         for(size_t j = 0; j < number_coefficients; ++j) {
             c[j] -= learning_rate * grad[j];
@@ -239,7 +268,7 @@ TEST(benchmarks, fit_poly_record_gradient) {
     // c
     vector<at::Tensor> c;
     for(size_t j = 0; j < number_coefficients; ++j) {
-        c.push_back( torch::randn( {1} ) );
+        c.push_back( initial_c[j].clone() );
     }
     //
     // ac
@@ -282,6 +311,13 @@ TEST(benchmarks, fit_poly_record_gradient) {
         // grad
         vector<at::Tensor> grad  = f_grad.get_range(var_all);
         //
+        // check initial gradient
+        if( t == 0 ) {
+            for(size_t j = 0; j < number_coefficients; ++j) {
+                EXPECT_TRUE( grad[j].allclose( initial_grad[j] ) );
+            }
+        }
+        //
         // c
         for(size_t j = 0; j < number_coefficients; ++j) {
             c[j] -= learning_rate * grad[j];
@@ -310,7 +346,7 @@ TEST(benchmarks, fit_poly_plugin) {
     // c
     vector<at::Tensor> c;
     for(size_t j = 0; j < number_coefficients; ++j) {
-        c.push_back( torch::randn( {1} ) );
+        c.push_back( initial_c[j].clone() );
     }
     //
     // ac
@@ -383,6 +419,13 @@ TEST(benchmarks, fit_poly_plugin) {
         //
         // grad
         vector<at::Tensor> grad  = f_plugin(c, dom_par);
+        //
+        // check initial gradient
+        if( t == 0 ) {
+            for(size_t j = 0; j < number_coefficients; ++j) {
+                EXPECT_TRUE( grad[j].allclose( initial_grad[j] ) );
+            }
+        }
         //
         // c
         for(size_t j = 0; j < number_coefficients; ++j) {
