@@ -150,5 +150,52 @@ TEST(tests_adten, conv_transpose1d) {
             EXPECT_EQ( dy_vec[i], float(1.0) );
         }
     }
+    // ------------------------------------------------------------------------`
+    // check reverse derivativre
+    // ------------------------------------------------------------------------`
+    //
+    vector<at::Tensor> pr = { at::Tensor() };
+    for(int64_t i = 0; i < ny; ++i) {
+        //
+        // pv
+        pr[0]                 = torch::eye(ny).select(0, i).view( y.sizes() );
+        vector<at::Tensor> pv = f.reverse_der(pr, var_all);
+        //
+        // check px
+        at::Tensor  px = pv[0].contiguous();
+        vector<float> px_vec(
+            px.data_ptr<float>(),
+            px.data_ptr<float>() + x.numel()
+        );
+        for(int64_t k = 0; k < nx; ++k) {
+            if( i - nw + 1 <= k && k <= i ) {
+                EXPECT_EQ( px_vec[k], w_vec[i-k] );
+            } else {
+                EXPECT_EQ( px_vec[k], float(0.0) );
+            }
+        }
+        //
+        // check pw
+        at::Tensor  pw = pv[1].contiguous();
+        vector<float> pw_vec(
+            pw.data_ptr<float>(),
+            pw.data_ptr<float>() + w.numel()
+        );
+        for(int64_t j = 0; j < nw; ++j) {
+            if( i - nx + 1 <= j && j <= i ) {
+                EXPECT_EQ( pw_vec[j], x_vec[i-j] );
+            } else {
+                EXPECT_EQ( pw_vec[j], float(0.0) );
+            }
+        }
+        //
+        // check pb
+        at::Tensor  pb = pv[2].contiguous();
+        vector<float> pb_vec(
+            pb.data_ptr<float>(),
+            pb.data_ptr<float>() + 1
+        );
+        EXPECT_EQ( pb_vec[0], 1.0 );
+    }
 }
 // END_CPP
