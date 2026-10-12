@@ -27,8 +27,9 @@ Function Value
 **************
 Given the input vector :math:`x \in \mathbb{R}^{nx}`,
 the weight vector :math:`w \in \mathbb{R}^{nw}` ,
-and the bias tensor :math:`b \in \mathbb{R}` ,
-compute the transposed cross correlation vector :math:`y \in \mathbb{R}^{ny}`
+and the bias tensor :math:`b \in \mathbb{R}` .
+The transposed correlation of x with w,b
+is the vector :math:`y \in \mathbb{R}^{ny}`
 where :math:`ny = nx + nw - 1` and
 
 .. math::
@@ -36,11 +37,12 @@ where :math:`ny = nx + nw - 1` and
     y_i ( x, w, b ) = b +
         \sum_{ k = \max(0 , i - nw + 1) }^{\min(i, nx - 1)} x_k \cdot w_{i-k}
 
-Note that we use the following notation,
-:math:`i \in [0, \ldots , ny-1]`,
-:math:`k \in [0, \ldots , nx-1]`,
+Note that we use the following notation:
+:math:`i \in [0, \ldots , ny-1]` ,
+:math:`k \in [0, \ldots , nx-1]` .
 
-Changing indices to :math:`j = i - k` ,
+Changing indices to :math:`j = i - k` .
+Note that :math:`j \in [0 , \ldots , nw - 1]` and
 
 .. math::
 
@@ -57,9 +59,6 @@ Changing indices to :math:`j = i - k` ,
     y_i ( x, w, b ) = b +
         \sum_{j = \max(0, i - nx + 1) }^{\min(i, nw - 1)} x_{i-j} \cdot w_j
 
-Thus y is also w transposed cross correlated with x.
-Note that :math:`j \in [0 , \ldots , nw - 1]`  ,
-which also goes without saying in the equations below.
 
 Partial Derivatives
 *******************
@@ -93,8 +92,8 @@ the forward derivative of :math:`dy \in \mathbb{R}^{ny}` is given by
     + \sum_{k = \max(0 , i - nw + 1)}^{\min(i, nx - 1)} dx_k \cdot w_{i-k}
     + \sum_{j = \max(0, i - nx + 1)}^{ \min(i, nw - 1)} x_{i-j} \cdot dw_j
 
-Note that this is the sum of dx transpose cross correlated with w
-plus x transpose cross correlated with dw.
+Note that this is the sum of dx transpose correlated with w,0
+plus x transpose correlated with dw,0.
 
 
 Reverse Partials
@@ -111,24 +110,26 @@ The contribution w.r.t the input is given by
 .. math::
 
     px_k
-    &= \sum_{i = 0}^{ny-1} py_i \partial y_i / \partial x_k  \\
-    &= \sum_{i = k}^{k + nw - 1} py_i w_{i-k}
+    &= \sum_{i = 0}^{ny-1} py_i \cdot \partial y_i / \partial x_k  \\
+    &= \sum_{i = k}^{k + nw - 1} py_i \cdot w_{i-k}
 
-Note that this is py cross correlated with w.
+Note that this is py correlated with w,0.
 The contribution w.r.t. the weight is given by
 
 .. math::
 
     pw_j
-    &= \sum_{i = 0}^{ny-1} py_i \partial y_i / \partial w_j  \\
-    &= \sum_{i = j}^{j + nx - 1} py_i x_{i-j}
+    &= \sum_{i = 0}^{ny-1} py_i \cdot \partial y_i / \partial w_j  \\
+    &= \sum_{i = j}^{j + nx - 1} py_i \cdot x_{i-j}
 
-Note that this is py cross correlated with x.
+Note that this is py correlated with x,0.
 The contribution w.r.t. the bias is given by
 
 .. math::
 
-    pb = \sum_{i=0}^{ny-1} py_i
+    pb
+    &= \sum_{i=0}^{ny-1} py_i \cdot \partial y_i / \partial b \\
+    &= \sum_{i=0}^{ny-1} py_i
 
 
 {xrst_end conv_transpose1d_theory}

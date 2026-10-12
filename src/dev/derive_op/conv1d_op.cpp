@@ -18,6 +18,7 @@
     py
     px
     libtorch
+    rcl
 }
 
 One Dimensional Cross Correlation Theory
@@ -27,19 +28,35 @@ Function Value
 **************
 Given the input vector :math:`x \in \mathbb{R}^{nx}`,
 the weight vector :math:`w \in \mathbb{R}^{nw}` ,
-and the bias tensor :math:`b \in \mathbb{R}` ,
-compute the cross correlation vector :math:`y \in \mathbb{R}^{ny}`
-where :math:`ny = nx - nw + 1` and
+and the bias tensor :math:`b \in \mathbb{R}` .
+The correlation of x with w,0 is the vector
+:math:`y \in \mathbb{R}^{ny}` where :math:`ny = nx - nw + 1` and
 
 .. math::
 
-    y_k ( x, w, b ) & = b + \sum_{j=0}^{nw-1} x_{k + j} \cdot w_j \\
-                    & = b + \sum_{i=k}^{k+nw-1} x_i \cdot w_{i-k} \\
+    y_k ( x, w, b ) = b + \sum_{j=0}^{nw-1} x_{k + j} \cdot w_j
 
-Note that we use the following notation,
-:math:`i \in [0, \ldots , nx-1]`,
-:math:`j \in [0, \ldots , nw-1]`,
-:math:`k \in [0, \ldots , ny-1]`,
+
+Note that we use the following notation:
+:math:`k \in [0, \ldots , ny-1]` ,
+:math:`j \in [0, \ldots , nw-1]` .
+
+Changing indices to :math:`i = k + j` .
+Note that :math:`i \in [0 , \ldots , nx - 1]`  and
+
+.. math::
+
+    \begin{array}{rcl}
+        j \ge 0        & \Leftrightarrow & i \ge k          \\
+        j \le nw - 1   & \Leftrightarrow & i \le k + nw - 1 \\
+    \end{array}
+
+.. math::
+
+    y_k ( x, w, b ) = b + \sum_{i=k}^{k + nw-1} x_{i} \cdot w_{i-k}
+
+which also goes without saying in the equations below.
+
 
 Partial Derivatives
 *******************
@@ -66,8 +83,8 @@ the forward derivative of :math:`dy \in \mathbb{R}^{ny}` is given by
     dy_k = db + \sum_{j=0}^{nw-1} x_{k+j} \cdot dw_j +
         \sum_{i=k}^{k+nw-1} dx_i \cdot w_{i-k}
 
-Note that this is the sum of x correlated with dw
-plus dx correlated with w.
+Note that this is the sum of x correlated with dw,0
+plus dx correlated with w,0.
 
 Reverse Partials
 ****************
@@ -78,14 +95,25 @@ the contributions to the partial w.r.t the input, weight and bias,
 :math:`px \in \mathbb{R}^{nx}` ,
 :math:`pw \in \mathbb{R}^{nw} ,
 pb \in \mathbb{R}` .
-The contributions w.r.t the weight and bias are given by
+The contribution w.r.t the weight
+:math:`pw \in \mathbb{R}^{nw}` is given by
 
 .. math::
 
-    pw_j & = \sum_{k=0}^{ny-1} py_k \cdot x_{k+j} \\
-    pb   & = \sum_{k=0}^{ny-1} py_k
+    pw_j
+    & = \sum_{k=0}^{ny-1} py_k \cdot \partial y_k / \partial w_j \\
+    & = \sum_{k=0}^{ny-1} py_k \cdot x_{k+j}
 
-Note that pw is x correlated with py and pb is the sum of py.
+Note that pw is x correlated with py,0.
+The contribution w.r.t the bias
+:math:`pb \in \mathbb{R}` is given by
+
+.. math::
+
+    pb
+    & = \sum_{k=0}^{ny-1} py_k \cdot \partial y_k / \partial b \\
+    & = \sum_{k=0}^{ny-1} py_k
+
 
 The contributions to the partial w.r.t the input,
 :math:`px \in \mathbb{R}^{nx}` , is given by
@@ -128,7 +156,7 @@ Substituting :math:`j = l - i` we obtain
     & = \sum_{j=0}^{nw-1} \hat{py}_{i+j} \cdot \hat{w}_j
 
 where :math:`\hat{w}_j = w_{nw-1-j}` .
-Note that px is :math:`\hat{py}` correlated with :math:`\hat{w}` .
+Note that px is :math:`\hat{py}` correlated with :math:`\hat{w}`, 0 .
 
 {xrst_end conv1d_theory}
 */
