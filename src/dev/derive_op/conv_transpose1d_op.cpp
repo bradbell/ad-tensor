@@ -137,6 +137,7 @@ The contribution w.r.t. the bias is given by
 #include <ad_tensor/adten.hpp>
 #include <ad_tensor/dev/tensor_at_index.hpp>
 #include <ad_tensor/no_elements.hpp>
+#include <ad_tensor/dev/plus_minus_equal.hpp>
 //
 // set options
 #define SET_OPTIONS \
@@ -358,7 +359,7 @@ template void conv_transpose1d_op_t<adten_t>::forward_der(
     vector<adten_t>&             for_der
 ) const;
 // ------------------------------------------------------------------------
-template<class TensorType>
+template <class TensorType>
 void conv_transpose1d_op_t<TensorType>::reverse_der(
     size_t                       op_index    ,
     const agraph_t&              agraph      ,
@@ -367,9 +368,78 @@ void conv_transpose1d_op_t<TensorType>::reverse_der(
     const vector<TensorType>&    var_all     ,
     vector<TensorType>&          rev_der
 ) const {
-    user_assert(false,
-        "reverse_der not yet implemented for conv_transpose1d operator"
-    );
+    CHECK_ARGUMENTS
+    //
+    // arg_start
+    size_t arg_start = agraph.m_arg_start[op_index];
+    //
+    // variable
+    adtype_t variable = adtype_t::variable;
+    //
+    // input_index, input_type
+    size_t   input_index    = agraph.m_arg_value[arg_start];
+    adtype_t input_type     = agraph.m_arg_type[arg_start];
+    //
+    // weight_index, weight_type
+    size_t   weight_index    = agraph.m_arg_value[arg_start + 1];
+    adtype_t weight_type     = agraph.m_arg_type[arg_start + 1];
+    //
+    // bias_index, bias_type
+    size_t   bias_index    = agraph.m_arg_value[arg_start + 2];
+    adtype_t bias_type     = agraph.m_arg_type[arg_start + 2];
+    //
+    // rev_der[bias_index]
+    if( bias_type == variable ) {
+        TensorType bias_bar = rev_der[op_index].sum(2);
+        plus_equal(rev_der[bias_index], bias_bar);
+    }
+    if( input_type != variable && weight_type != variable ) {
+        return;
+    }
+    //
+    // no_bias
+    TensorType no_bias;
+    //
+    // stride, dilation, group
+    int64_t stride   = int64_t( agraph.m_arg_value[arg_start + 3] ); \
+    int64_t dilation = int64_t( agraph.m_arg_value[arg_start + 4] ); \
+    int64_t groups   = int64_t( agraph.m_arg_value[arg_start + 5] ); \
+    //
+    // rev_der[weight_index]
+    if( weight_type == variable ) {
+        //
+        auto options = torch::nn::functional::Conv1dFuncOptions();
+        options.stride(stride);
+        options.dilation(dilation);
+        options.groups(groups);
+        //
+        TensorType input  = tensor_at_arg_index(
+            arg_start, agraph, con_vec, par_all, var_all
+        );
+        TensorType weight_bar = conv1d(
+            rev_der[op_index], input, no_bias, options
+        );
+        plus_equal(rev_der[weight_index], weight_bar);
+    }
+    //
+    // rev_der[input_index]
+    if( input_type == variable ) {
+        //
+        auto options = torch::nn::functional::Conv1dFuncOptions();
+        options.stride(stride);
+        options.dilation(dilation);
+        options.groups(groups);
+        //
+        TensorType weight  = tensor_at_arg_index(
+            arg_start + 1, agraph, con_vec, par_all, var_all
+        );
+        //
+        TensorType input_bar = ad_tensor::conv1d(
+            rev_der[op_index], weight, no_bias, options
+        );
+        //
+        plus_equal(rev_der[input_index], input_bar);
+    }
 }
 template void conv_transpose1d_op_t<adten_t>::reverse_der(
     size_t                       op_index    ,
