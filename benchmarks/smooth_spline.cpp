@@ -141,6 +141,18 @@ namespace {
         TensorType data_res    = (TensorType(data) - y);
         return (finite_diff*finite_diff).sum() + (data_res*data_res).sum();
     }
+    //
+    // initial_y
+    const at::Tensor initial_y = torch::rand( {1, 1, number_grid_points} );
+    //
+    // initial_grad
+    at::Tensor initial_autograd(void) {
+        torch::Tensor y        = initial_y.clone().set_requires_grad(true);
+        torch::Tensor loss_tmp = loss(y);
+        loss_tmp.backward();
+        return y.grad();
+    }
+    const at::Tensor initial_grad = initial_autograd();
 }
 // END_COMMON
 //
@@ -148,9 +160,7 @@ namespace {
 TEST(benchmarks, smooth_spline_autograd) {
     //
     // y
-    torch::Tensor y = torch::rand(
-        {1, 1, number_grid_points}, torch::requires_grad()
-    );
+    torch::Tensor y = initial_y.clone().set_requires_grad(true);
     //
     // previous_time
     elapsed_ms();
@@ -165,6 +175,11 @@ TEST(benchmarks, smooth_spline_autograd) {
         // y
         loss_t.backward();
         {   torch::NoGradGuard no_grad;
+            //
+            // check iniitall gradient
+            if( t == 0 ) {
+                EXPECT_TRUE( initial_grad.equal( y.grad() ) );
+            }
             //
             y -= learning_rate * y.grad();
             y.grad().zero_();
@@ -187,7 +202,7 @@ TEST(benchmarks, smooth_spline_ad_tensor) {
     //
     // y
     vector<at::Tensor> y;
-    y.push_back( torch::rand( {1, 1, number_grid_points} ) );
+    y.push_back( initial_y.clone() );
     //
     // ay
     vector<adten_t> ay = adten_t::start_recording(y);
@@ -211,6 +226,11 @@ TEST(benchmarks, smooth_spline_ad_tensor) {
         // grad
         vector<at::Tensor> grad  = adfn.reverse_der(dloss, var_all);
         //
+        // check initial gradient
+        if( t == 0 ) {
+            EXPECT_TRUE( initial_grad.allclose( grad[0] ) );
+        }
+        //
         // y
         y[0] -= learning_rate * grad[0];
     }
@@ -231,7 +251,7 @@ TEST(benchmarks, smooth_spline_record_gradient) {
     //
     // y
     vector<at::Tensor> y;
-    y.push_back( torch::rand( {1, 1, number_grid_points} ) );
+    y.push_back( initial_y.clone() );
     //
     // ay
     vector<adten_t> ay = adten_t::start_recording(y);
@@ -269,6 +289,11 @@ TEST(benchmarks, smooth_spline_record_gradient) {
         // grad
         vector<at::Tensor> grad  = f_grad.get_range(var_all);
         //
+        // check initial gradient
+        if( t == 0 ) {
+            EXPECT_TRUE( initial_grad.allclose( grad[0] ) );
+        }
+        //
         // y
         y[0] -= learning_rate * grad[0];
     }
@@ -294,7 +319,7 @@ TEST(benchmarks, smooth_spline_plugin) {
     //
     // y
     vector<at::Tensor> y;
-    y.push_back( torch::rand( {1, 1, number_grid_points} ) );
+    y.push_back( initial_y.clone() );
     //
     // ay
     vector<adten_t> ay = adten_t::start_recording(y);
@@ -362,6 +387,11 @@ TEST(benchmarks, smooth_spline_plugin) {
         //
         // grad
         vector<at::Tensor> grad  = f_plugin(y, dom_par);
+        //
+        // check initial gradient
+        if( t == 0 ) {
+            EXPECT_TRUE( initial_grad.allclose( grad[0] ) );
+        }
         //
         // y
         y[0] -= learning_rate * grad[0];

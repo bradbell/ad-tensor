@@ -224,7 +224,7 @@ namespace {
     at::Tensor initial_autograd(void) {
         torch::Tensor L = initial_L.clone();
         L.set_requires_grad(true);
-        at::Tensor loss_tmp = loss(L);
+        torch::Tensor loss_tmp = loss(L);
         loss_tmp.backward();
         return L.grad();
     }
