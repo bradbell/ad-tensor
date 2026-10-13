@@ -4,7 +4,6 @@
 // ----------------------------------------------------------------------------
 #include <ad_tensor/adfn.hpp>
 #include <ad_tensor/dev/atom.hpp>
-#include <ad_tensor/dev/user_assert.hpp>
 #include <ad_tensor/dev/vec_sets.hpp>
 #include <ad_tensor/dev/to_string.hpp>
 /*

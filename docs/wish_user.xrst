@@ -9,11 +9,6 @@
 The User API Wish List
 ######################
 
-Function Names in Error Messages
-********************************
-Report the function :ref:`stop_recording@name` in error messages for
-all the :ref:`adfn-name` routines.
-
 Install
 *******
 Create a CMake FindPackage for ad-tensor
