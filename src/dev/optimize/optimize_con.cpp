@@ -96,7 +96,7 @@ void adfn_t::optimize_con(
     vector<size_t> old2new_con(n_old, not_used);
     //
     // old2new_con[0], hash2new_con[0]
-    // always keep the no element tensor at constant index 0
+    // always keep the undefined tensor at constant index 0
     assert( not_defined(m_con_vec[0]) );
     old2new_con[0]  = 0;
     hash2new_con[0] = 0;

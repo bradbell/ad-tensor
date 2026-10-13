@@ -8,33 +8,32 @@
 //
 TEST(examples_adten, record)  {
     using ad_tensor::adten_t;
-    using at::Tensor;
+    using ad_tensor::adfn_t;
     using ad_tensor::vector;
     //
     // dom_par, dom_var
-    vector<Tensor> dom_par = { torch::tensor( {2.0, 3.0} ) };
-    vector<Tensor> dom_var = { torch::tensor( {4.0, 5.0} ) };
+    vector<at::Tensor> dom_par = { torch::tensor( {2.0, 3.0} ) };
+    vector<at::Tensor> dom_var = { torch::tensor( {4.0, 5.0} ) };
     //
     // adom_var, adom_par
     auto [ adom_var, adom_par ] = adten_t::start_recording(
         dom_var, dom_par
     );
     //
-    // dom_par, dom_var
-    // change from unspecified state
-    dom_par = vector<Tensor>();
-    dom_var = vector<Tensor>();
-    //
     // arange
-    vector<adten_t> arange = { adom_par[0], adom_var[0] };
+    vector<adten_t> arange = { adom_par[0] + adom_var[0] };
     //
     // stop_recording
-    adten_t::stop_recording(arange, "" );
+    const char* name = "f";
+    adfn_t f = adten_t::stop_recording(arange, name );
     //
-    bool equal = adom_par[0].at_ten().equal( torch::tensor( {2.0, 3.0} ) );
-    EXPECT_TRUE(equal);
+    // range
+    dom_par[0] = torch::tensor( {5.0, 6.0} );
+    vector<at::Tensor> par_all = f.forward_par(dom_par);
+    vector<at::Tensor> var_all = f.forward_var(dom_var, par_all);
+    vector<at::Tensor> range   = f.get_range(var_all, par_all);
     //
-    equal = adom_var[0].at_ten().equal( torch::tensor( {4.0, 5.0} ) );
-    EXPECT_TRUE(equal);
+    EXPECT_EQ( range.size(), 1 );
+    EXPECT_TRUE( range[0].equal( torch::tensor( {9.0, 11.0} ) ) );
 }
 // END_CPP

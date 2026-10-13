@@ -128,7 +128,7 @@ domain
 is the vector of the domain tensors containing the domain values.
 Given rng_used and :ref:`atom_depend-name` it is possible to determine
 that some domain values are not needed.
-These domain values may be change to a no element tensor .
+These domain values may be change to an undefined tensor.
 
 range
 *****

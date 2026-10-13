@@ -4,9 +4,6 @@
 # -----------------------------------------------------------------------------
 {xrst_begin wish_user usr}
 {xrst_spell
-    conv
-    adten
-    readthedocs
 }
 
 The User API Wish List
@@ -14,21 +11,12 @@ The User API Wish List
 
 Function Names in Error Messages
 ********************************
-In report the function name in error messages for
+Report the function :ref:`stop_recording@name` in error messages for
 all the :ref:`adfn-name` routines.
-
-Finish conv1d Benchmarks
-************************
-This requires implementing the adten_t version of conv1d
-which in turn requires the flip and pad functions.
 
 Install
 *******
 Create a CMake FindPackage for ad-tensor
-
-Web Documentation
-*****************
-Deploy the user documentation for ad-tensor on readthedocs.
 
 Simpler Examples
 ****************

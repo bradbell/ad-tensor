@@ -31,7 +31,7 @@ Recording
 *********
 This starts a recording of a function:
 
-    range = adfn(dom_par, dom_var)
+    range = adfn(dom_var, dom_par)
 
 This thread must not have a recording in progress
 when ``start_recording`` is called.
