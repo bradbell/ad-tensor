@@ -166,10 +166,6 @@ Note that px is :math:`\hat{py}` correlated with :math:`\hat{w}`, 0 .
 #include <ad_tensor/defined.hpp>
 #include <ad_tensor/dev/plus_minus_equal.hpp>
 //
-// TODO: Do some tests to see if 0 or 1 is faster
-#define USE_CONV_TRANSPOSE1D 1
-//
-//
 // set options
 #define SET_OPTIONS \
     auto options = torch::nn::functional::Conv1dFuncOptions(); \
