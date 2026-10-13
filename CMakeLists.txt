@@ -145,9 +145,8 @@ if( include_plugin )
     set(plugin_LIBRARIES "${Boost_LIBRARIES}")
 endif()
 #
-# ad_tensor, pkgconfig, src
+# ad_tensor, src
 add_subdirectory(include/ad_tensor)
-add_subdirectory(pkgconfig)
 add_subdirectory(src)
 #
 # examples, tests, benchmarks
