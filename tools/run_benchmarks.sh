@@ -15,6 +15,7 @@ cd ..
 echo "machine = $(uname -m)"
 echo "kernel version = $(uname -r)"
 echo "operating system - $(uname -o)"
+echo "pytorch version = $(python -c 'import torch; print(torch.__version__)')"
 #
 configure='build/include/ad_tensor/configure.hpp'
 compiler=$(grep CMAKE_CXX_COMPILER $configure | sed -e 's|.*COMPILER *||' )

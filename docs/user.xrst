@@ -10,6 +10,10 @@
     autograd
     checkpointing
     versa
+    gtest
+    cmake
+    googletest
+    pytorch
 }
 
 AD Tensor User Documentation
@@ -24,15 +28,13 @@ Overview
 This package takes an alternative approach to AD in libtorch
 using improved and simplified implementations of the AD methods in
 `cppad <https://cppad.readthedocs.io/latest/user_guide.html>`_ .
-Initial benchmark testing indicates that it computes derivatives faster than
-libtorch's autograd; see :ref:`benchmarks-name` .
 
 Features
 ********
 #.  Recording a function with both parameters and variables.
     Parameter are optional and can change but do not have derivatives.
 
-#.  Forward and Reverse mode calculation of derivatives with respect to 
+#.  Forward and Reverse mode calculation of derivatives with respect to
     the variables as a function of both parameters and variables.
 
 #.  Using derivatives of a previously recorded function in the recording of
@@ -54,6 +56,23 @@ Features
 
 #.  Generating C++ source code that computes derivatives. This includes
     the option to compile and link the derivatives to the current program.
+
+Benchmarks
+**********
+Initial benchmark testing indicates that it computes derivatives faster than
+libtorch's autograd; see
+`Benchmark Results
+<https://github.com/bradbell/ad-tensor/discussions/categories/benchmark-results>`_ .
+The steps below (in a bash shell) will run the tests and then print
+the benchmark summary for your machine.
+(You may have to install some requirements; e.g., cmake, googletest, pytorch.)
+{xrst_code sh}
+    git clone https://github.com/bradbell/ad-tensor.git ad-tensor.git
+    cd ad-tensor.git
+    tools/check_gtest.sh --release
+    tools/run_benchmarks.sh
+{xrst_code}
+
 
 Developer Documentation
 ***********************
