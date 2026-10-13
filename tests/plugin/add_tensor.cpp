@@ -17,8 +17,8 @@ namespace {
 
 // add_tensor_plugin
 return_t add_tensor_plugin(
-    const at_tensor_vector_t& dom_par ,
-    const at_tensor_vector_t& dom_var ) {
+    const at_tensor_vector_t& dom_var ,
+    const at_tensor_vector_t& dom_par ) {
     //
     // range, message
     at_tensor_vector_t range;
@@ -33,7 +33,7 @@ return_t add_tensor_plugin(
         return return_t(range, message);
     }
     // range
-    range.push_back( dom_par[0] + dom_var[0] );
+    range.push_back( dom_var[0] + dom_par[0] );
     //
     return return_t(range, message);
 }

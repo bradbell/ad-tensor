@@ -187,7 +187,7 @@ Recording
 *********
 This completes the recording of a function:
 
-    range = adfn(dom_par, dom_var)
+    range = adfn(dom_var, dom_par)
 
 This thread must have a recording in progress
 when ``stop_recording`` is called.

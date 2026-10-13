@@ -24,7 +24,7 @@ adfn
 ****
 is the adfn_t that we are optimizing; i.e., the mapping below does not change:
 
-    range = adfn(dom_par, dom_var)
+    range = adfn(dom_var, dom_par)
 
 The optimization will remove unnecessary constants, parameters, and variables;
 see :ref:`adfn@n_con` ,

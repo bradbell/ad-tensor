@@ -56,9 +56,9 @@ fun_obj
 is a function object that can evaluate the function corresponding
 to function_alias using the syntax
 {xrst_code cpp}
-    range = fun_obj(dom_par, dom_var)
+    range = fun_obj(dom_var, dom_par)
 {xrst_code}
-The prototype for dom_par, dom_var, and range are given under
+The prototype for dom_var, dom_par, and range are given under
 function_type above.
 
 
@@ -73,8 +73,8 @@ namespace {
     //
     // BEGIN_FUNCTION_TYPE
     using function_type = ad_tensor::vector<at::Tensor>(
-        const ad_tensor::vector<at::Tensor>& dom_par ,
-        const ad_tensor::vector<at::Tensor>& dom_var
+        const ad_tensor::vector<at::Tensor>& dom_var ,
+        const ad_tensor::vector<at::Tensor>& dom_par
     );
     // END_FUNCTION_TYPE
     //

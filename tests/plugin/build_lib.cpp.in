@@ -93,12 +93,12 @@ target_link_libraries(plugin_lib
     >( ".", "plugin_lib", "add_tensor" );
     //
     // range
-    auto [range, message] = add_tensor(dom_par, dom_var);
+    auto [range, message] = add_tensor(dom_var, dom_par);
     //
     EXPECT_EQ(message, "");
     EXPECT_EQ(range.size(), 1);
     //
     // check
-    at::Tensor check = dom_par[0] + dom_var[0];
+    at::Tensor check = dom_var[0] + dom_par[0];
     EXPECT_TRUE( check.equal( range[0] ) );
 }
