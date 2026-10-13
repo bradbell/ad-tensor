@@ -41,7 +41,7 @@ include_directories(
 # plugin_lib
 add_library(plugin_lib MODULE
     @CMAKE_CURRENT_SOURCE_DIR@/add_int.cpp
-    @CMAKE_CURRENT_SOURCE_DIR@/add_tensor.cpp
+    @CMAKE_CURRENT_SOURCE_DIR@/sub_tensor.cpp
 )
 target_link_libraries(plugin_lib
     ${Boost_LIBRARIES}
@@ -88,17 +88,17 @@ target_link_libraries(plugin_lib
     ad_tensor::vector<at::Tensor> dom_par = { torch::tensor( {1, 2} ) };
     ad_tensor::vector<at::Tensor> dom_var = { torch::tensor( {3, 4} ) };
     //
-    auto add_tensor = get_plugin<
+    auto sub_tensor = get_plugin<
         return_t(const at_tensor_vector_t&, const at_tensor_vector_t&)
-    >( ".", "plugin_lib", "add_tensor" );
+    >( ".", "plugin_lib", "sub_tensor" );
     //
     // range
-    auto [range, message] = add_tensor(dom_var, dom_par);
+    auto [range, message] = sub_tensor(dom_var, dom_par);
     //
     EXPECT_EQ(message, "");
     EXPECT_EQ(range.size(), 1);
     //
     // check
-    at::Tensor check = dom_var[0] + dom_par[0];
+    at::Tensor check = dom_var[0] - dom_par[0];
     EXPECT_TRUE( check.equal( range[0] ) );
 }

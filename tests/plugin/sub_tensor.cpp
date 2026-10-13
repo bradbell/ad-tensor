@@ -15,8 +15,8 @@ namespace {
     typedef std::tuple<at_tensor_vector_t, std::string> return_t;
 }
 
-// add_tensor_plugin
-return_t add_tensor_plugin(
+// sub_tensor_plugin
+return_t sub_tensor_plugin(
     const at_tensor_vector_t& dom_var ,
     const at_tensor_vector_t& dom_par ) {
     //
@@ -25,18 +25,18 @@ return_t add_tensor_plugin(
     std::string        message;
     //
     if( dom_par.size() != 1 ) {
-        message = "add_tensor_plugin: dom_par.size() != 1";
+        message = "sub_tensor_plugin: dom_par.size() != 1";
         return return_t(range, message);
     }
     if( dom_var.size() != 1 ) {
-        message = "add_tensor_plugin: dom_var.size() != 1";
+        message = "sub_tensor_plugin: dom_var.size() != 1";
         return return_t(range, message);
     }
     // range
-    range.push_back( dom_var[0] + dom_par[0] );
+    range.push_back( dom_var[0] - dom_par[0] );
     //
     return return_t(range, message);
 }
 
-// add_tensor
-BOOST_DLL_ALIAS(add_tensor_plugin, add_tensor)
+// sub_tensor
+BOOST_DLL_ALIAS(sub_tensor_plugin, sub_tensor)

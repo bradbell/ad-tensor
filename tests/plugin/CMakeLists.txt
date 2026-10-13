@@ -21,7 +21,7 @@ file(COPY
 # plugin_lib
 add_library(plugin_lib MODULE
     add_int.cpp
-    add_tensor.cpp
+    sub_tensor.cpp
 )
 target_link_libraries(plugin_lib
     PRIVATE
