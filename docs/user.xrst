@@ -29,14 +29,15 @@ libtorch's autograd; see :ref:`benchmarks-name` .
 
 Features
 ********
-#.  Recording a function with both parameters and variables,
-    parameter can change but do not have derivatives.
+#.  Recording a function with both parameters and variables.
+    Parameter are optional and can change but do not have derivatives.
 
-#.  Forward and Reverse mode calculation of derivatives w.r.t. variables.
+#.  Forward and Reverse mode calculation of derivatives with respect to 
+    the variables as a function of both parameters and variables.
 
 #.  Using derivatives of a previously recorded function in the recording of
     a new function. This provides for higher order derivatives using
-    forward and reverse in any order. It also provides for changing parameters
+    forward and reverse in any order. It also provides changing parameters
     to variables and vice versa.
 
 #.  Optimization of recorded functions. This reduces the memory requirements
