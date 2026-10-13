@@ -104,10 +104,10 @@ reverse_der
     Hence for_der[index] for index < op_index are outputs to this routine.
     Actually all the outputs correspond to index values that are
     arguments to the operator at index op_index.
-#.  The no element tensor corresponds to zero
+#.  The undefined tensor corresponds to zero
     derivative for the corresponding variable. There is no reason to process
-    cases where for_der[op_index] has no elements; hence for_der[op_index]
-    has elements when this routine is called.
+    cases where for_der[op_index] is not defined; hence for_der[op_index]
+    is defined when this routine is called.
 
 src_gen
 =======

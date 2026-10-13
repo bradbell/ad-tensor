@@ -59,7 +59,7 @@ The recording can be used to compute derivatives with respect to these tensors.
 
 First Constant
 **************
-Each recording starts with an no element tensor as its first constant.
+Each recording starts with an undefined tensor as its first constant.
 This is used as a place holder for values that are not needed; e.g.,
 see the heading :ref:`atom_forward@domain` in the documentation
 for atomic functions.
@@ -116,7 +116,7 @@ adten_t::start_recording(
     tape.m_recording = true;
     //
     // tape.m_con_vec
-    // The constant at index zero is always a no element tensor
+    // The constant at index zero is always an undefined tensor
     tape.m_con_vec.push_back( not_defined() );
     //
     // tape.m_par.m_dom_shapes
