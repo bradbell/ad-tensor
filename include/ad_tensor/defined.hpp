@@ -4,48 +4,48 @@
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
 /*
-{xrst_begin no_elements usr}
+{xrst_begin defined usr}
 
-No Element Tensors
-##################
+Defined and Undefined Tensors
+#############################
 
-Create a no element tensor
+Create an Undefined Tensor
 **************************
 {xrst_literal ,
-    BEGIN_CREATE, END_CREATE
+    BEGIN_UNDEFINED, END_UNDEFINED
 }
 
-Check for a no element tensor
+Check for an Undefined tensor
 *****************************
 {xrst_literal ,
-    BEGIN_CHECK_NO, END_CHECK_NO
+    BEGIN_CHECK_UNDEFINED, END_CHECK_UNDEFINED
 }
 
-Check for a tensor has elements
-*******************************
+Check for a Defined tensor
+**************************
 {xrst_literal ,
-    BEGIN_CHECK_HAS, END_CHECK_HAS
+    BEGIN_CHECK_DEFINED, END_CHECK_DEFINED
 }
 
 
-{xrst_end no_elements}
+{xrst_end defined}
 */
 namespace ad_tensor {
     //
-    // BEGIN_CREATE
+    // BEGIN_UNDEFINED
     inline at::Tensor not_defined(void)
     { return at::Tensor(); }
-    // END_CREATE
+    // END_UNDEFINED
     //
-    // BEGIN_CHECK_NO
+    // BEGIN_CHECK_UNDEFINED
     template <class TensorType>
     bool not_defined(const TensorType& ten)
     {   return ! ten.defined(); }
-    // END_CHECK_NO
+    // END_CHECK_UNDEFINED
     //
-    // BEGIN_CHECK_HAS
+    // BEGIN_CHECK_DEFINED
     template <class TensorType>
     bool is_defined(const TensorType& ten)
     {   return ten.defined(); }
-    // END_CHECK_HAS
+    // END_CHECK_DEFINED
 }
