@@ -46,6 +46,12 @@ as well as the ad_tensor and libtorch libraries.
 CMakeLists.txt
 ==============
 A specialized  ``CMakeLists.txt`` file is added to the source_dir directory.
+The following variables will be set to their values when CMake was run
+for the ad-tensor project; see :ref:`cmake-name` :
+CMAKE_CXX_STANDARD,
+CMAKE_CXX_COMPILER,
+CMAKE_CXX_FLAGS,
+CMAKE_BUILD_TYPE .
 
 quiet
 *****
@@ -90,13 +96,23 @@ ENDMACRO(print_variable)
 cmake_minimum_required(VERSION 3.10)
 project(plugin_lib)
 #
-# CXX_STANDARD
-set(CMAKE_CXX_STANDARD @CMAKE_CXX_STANDARD@)
+# CMAKE_CXX_STANDARD
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_CXX_STANDARD "@CMAKE_CXX_STANDARD@")
+print_variable( CMAKE_CXX_STANDARD )
+#
+# CMAKE_CXX_COMPILER
+set(CMAKE_CXX_COMPILER "@CMAKE_CXX_COMPILER@")
+print_variable( CMAKE_CXX_COMPILER )
+#
+# CMAKE_CXX_FLAGS
+set(CMAKE_CXX_FLAGS "@CMAKE_CXX_FLAGS@")
+print_variable( CMAKE_CXX_FLAGS )
 #
 # CMAKE_BUILD_TYPE
 set(CMAKE_BUILD_TYPE "@CMAKE_BUILD_TYPE@")
+print_variable( CMAKE_BUILD_TYPE )
 #
 # AD_TENSOR_LIBRARY_DIR, AD_TENSOR_INCLUDE_DIR
 set(AD_TENSOR_LIBRARY_DIR "@CMAKE_BINARY_DIR@/src")
