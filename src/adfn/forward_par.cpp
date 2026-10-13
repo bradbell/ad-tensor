@@ -8,7 +8,7 @@
 #include <ad_tensor/dev/derive_op.hpp>
 #include <ad_tensor/dev/to_string.hpp>
 #include <ad_tensor/dev/user_assert.hpp>
-#include <ad_tensor/no_elements.hpp>
+#include <ad_tensor/defined.hpp>
 /*
 {xrst_begin adfn_forward_par usr}
 
@@ -76,7 +76,7 @@ vector<TensorType> adfn_t::forward_par(const vector<TensorType>& dom_par) const
     }
     for(size_t i = 0; i < shapes.size(); ++i) {
         c10::IntArrayRef shape = shapes[i];
-        if( has_elements(dom_par[i]) ) {
+        if( is_defined(dom_par[i]) ) {
             if( ! dom_par[i].sizes().equals( shape ) ) {
                 msg += "dom_par[" + std::to_string(i) + "] shape is ";
                 msg += dev::to_string( dom_par[i].sizes() );
@@ -95,7 +95,7 @@ vector<TensorType> adfn_t::forward_par(const vector<TensorType>& dom_par) const
     //
     // n_op, no_elem
     size_t     n_op      = m_par.m_op_seq.size();
-    TensorType no_elem   = TensorType( no_elements() );
+    TensorType no_elem   = TensorType( not_defined() );
     //
     // par_all
     vector<TensorType> par_all =  dom_par ;

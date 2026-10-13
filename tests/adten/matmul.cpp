@@ -6,7 +6,7 @@
 #include <gtest/gtest.h>
 #include <torch/torch.h>
 #include <ad_tensor/adten.hpp>
-#include <ad_tensor/no_elements.hpp>
+#include <ad_tensor/defined.hpp>
 //
 #define SCALAR_EQ(x, y) \
     EXPECT_EQ( (x).item<double>(), (y).item<double>() )
@@ -59,7 +59,7 @@ TEST(tests_adten, matmul_mat_vec)  {
     vector<Tensor> y = f.get_range(var_all);
     //
     // no_elem
-    Tensor no_elem   = ad_tensor::no_elements();
+    Tensor no_elem   = ad_tensor::not_defined();
     //
     // y[0]
     EXPECT_EQ( y[0].sizes().size(), 1);
@@ -125,7 +125,7 @@ TEST(tests_adten, matmul_batch)  {
     vector<Tensor> y = f.get_range(var_all);
     //
     // no_elem
-    Tensor no_elem   = ad_tensor::no_elements();
+    Tensor no_elem   = ad_tensor::not_defined();
     //
     // y[0]
     EXPECT_EQ( y[0].sizes().size(), 3);

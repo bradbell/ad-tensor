@@ -184,7 +184,7 @@ R"|(// {}_plugin
 #include <boost/dll/alias.hpp>
 #include <torch/torch.h>
 #include <ad_tensor/vector.hpp>
-#include <ad_tensor/no_elements.hpp>
+#include <ad_tensor/defined.hpp>
 #include <ad_tensor/dev/user_assert.hpp>
 #include <ad_tensor/dev/to_string.hpp>
 //
@@ -197,7 +197,7 @@ ad_tensor::vector<at::Tensor> {}_plugin(
     using std::string;
     using at::Tensor;
     using ad_tensor::vector;
-    using ad_tensor::has_elements;
+    using ad_tensor::is_defined;
 )|";
         src += std::format(fmt, adfn_name, adfn_name);
     }
@@ -240,7 +240,7 @@ R"|(        if( dom_par.size() != par_shapes.size() ) {
         }
         for(size_t i = 0; i < par_shapes.size(); ++i) {
             c10::IntArrayRef shape = par_shapes[i];
-            if( has_elements(dom_par[i]) ) {
+            if( is_defined(dom_par[i]) ) {
                 if( ! dom_par[i].sizes().equals( shape ) ) {
                     msg += "dom_par[" + std::to_string(i) + "] shape is ";
                     msg += dev::to_string( dom_par[i].sizes() );
@@ -274,7 +274,7 @@ R"|(        if( dom_var.size() != var_shapes.size() ) {
         }
         for(size_t i = 0; i < var_shapes.size(); ++i) {
             c10::IntArrayRef shape = var_shapes[i];
-            if( has_elements(dom_var[i]) ) {
+            if( is_defined(dom_var[i]) ) {
                 if( ! dom_var[i].sizes().equals( shape ) ) {
                     msg += "dom_var[" + std::to_string(i) + "] shape is ";
                     msg += dev::to_string( dom_var[i].sizes() );
@@ -344,7 +344,7 @@ void adfn_t::src_gen(const std::string& src_gen_dir) const
 R"|(    //
     // adfn_name, no_elem
     string adfn_name = "{}";
-    Tensor no_elem = ad_tensor::no_elements();
+    Tensor no_elem = ad_tensor::not_defined();
 )|";
         file_cpp << std::format(fmt, adfn_name);
     }

@@ -5,7 +5,7 @@
 #include <ad_tensor/dev/derive_op.hpp>
 #include <ad_tensor/dev/src_gen_unary.hpp>
 #include <ad_tensor/adten.hpp>
-#include <ad_tensor/no_elements.hpp>
+#include <ad_tensor/defined.hpp>
 //
 namespace ad_tensor { namespace dev { // Begin ad_tensor::dev
 // ------------------------------------------------------------------------
@@ -120,7 +120,7 @@ void logdet_op_t<TensorType>::forward_der(
 #endif
     // operand_index, operand
     size_t operand_index  = agraph.m_arg_value[arg_start];
-    if( no_elements(for_der[operand_index]) ) {
+    if( not_defined(for_der[operand_index]) ) {
         return;
     }
     const TensorType& operand = var_all[operand_index];
@@ -169,7 +169,7 @@ void logdet_op_t<TensorType>::reverse_der(
     thread_local vector<int64_t> array;
     //
     // check for case where this operation is not connected to the range
-    if( no_elements(rev_der[op_index]) ) {
+    if( not_defined(rev_der[op_index]) ) {
         return;
     }
     //
@@ -199,7 +199,7 @@ void logdet_op_t<TensorType>::reverse_der(
     shape[n_dim - 2] = 1;
     TensorType inv_tran =
         operand.inverse().transpose(int64_t(n_dim-1), int64_t(n_dim-2));
-    if( no_elements(rev_der[operand_index]) ) {
+    if( not_defined(rev_der[operand_index]) ) {
         rev_der[operand_index]  =
             inv_tran * rev_der[op_index].view(shape);
     } else {

@@ -59,7 +59,7 @@ TEST(examples_adten, flip)  {
     //
     EXPECT_EQ( dy.size(), y.size() );
     //
-    EXPECT_EQ(ad_tensor::no_elements( dy[0] ), true );
+    EXPECT_EQ(ad_tensor::not_defined( dy[0] ), true );
     //
     equal = dy[1].equal( torch::tensor( {{7.0, 6.0}} ) );
     EXPECT_TRUE( equal );

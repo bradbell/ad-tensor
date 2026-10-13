@@ -6,7 +6,7 @@
 #include <ad_tensor/adten.hpp>
 #include <ad_tensor/dev/plus_minus_equal.hpp>
 #include <ad_tensor/dev/rev_sum_view.hpp>
-#include <ad_tensor/no_elements.hpp>
+#include <ad_tensor/defined.hpp>
 //
 namespace ad_tensor { namespace dev { // Begin ad_tensor::dev
 // ------------------------------------------------------------------------
@@ -143,7 +143,7 @@ void flip_op_t<TensorType>::forward_der(
 #endif
     // operand_index
     size_t operand_index  = agraph.m_arg_value[arg_start];
-    if( no_elements(for_der[operand_index]) ) {
+    if( not_defined(for_der[operand_index]) ) {
         return;
     }
     //
@@ -209,9 +209,9 @@ void flip_op_t<TensorType>::reverse_der(
     const vector<int64_t> dim(begin, end);
     //
     // check for case where this operation is not connected to the range
-    assert(has_elements(rev_der[op_index]) );
+    assert(is_defined(rev_der[op_index]) );
     //
-    if( no_elements(rev_der[operand_index]) ) {
+    if( not_defined(rev_der[operand_index]) ) {
         rev_der[operand_index] = rev_der[op_index].flip(dim);
     } else {
         rev_der[operand_index] += rev_der[op_index].flip(dim);

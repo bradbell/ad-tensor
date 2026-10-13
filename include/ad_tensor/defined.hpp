@@ -33,19 +33,19 @@ Check for a tensor has elements
 namespace ad_tensor {
     //
     // BEGIN_CREATE
-    inline at::Tensor no_elements(void)
+    inline at::Tensor not_defined(void)
     { return torch::empty( {0} ); };
     // END_CREATE
     //
     // BEGIN_CHECK_NO
     template <class TensorType>
-    bool no_elements(const TensorType& ten)
+    bool not_defined(const TensorType& ten)
     {   return ! ten.defined() || ten.numel() == 0; }
     // END_CHECK_NO
     //
     // BEGIN_CHECK_HAS
     template <class TensorType>
-    bool has_elements(const TensorType& ten)
+    bool is_defined(const TensorType& ten)
     {   return ten.numel() != 0; }
     // END_CHECK_HAS
 }

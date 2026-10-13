@@ -76,7 +76,7 @@ where start be the length of arg_value and arg_type before this call to
 */
 #include <torch/torch.h>
 #include <ad_tensor/adten.hpp>
-#include <ad_tensor/no_elements.hpp>
+#include <ad_tensor/defined.hpp>
 #include <ad_tensor/dev/tape.hpp>
 #include <ad_tensor/dev/user_assert.hpp>
 
@@ -108,7 +108,7 @@ adten_t adten_t::conv_transpose1d(
 # endif
     // res_tensor
     at::Tensor res_tensor;
-    if( no_elements( bias ) ) {
+    if( not_defined( bias ) ) {
         res_tensor = torch::nn::functional::conv_transpose1d(
             input.at_ten(), weight.at_ten(), options
         );
@@ -128,7 +128,7 @@ adten_t adten_t::conv_transpose1d(
     dev::user_assert( weight.m_tape_id == tape.m_tape_id , "conv_transpose1d: "
         "weight AD tensor's tape is not tape that is recording"
     );
-    if( no_elements(bias) ) {
+    if( not_defined(bias) ) {
         assert( bias.m_index == 0 );
     } else {
         dev::user_assert( bias.m_tape_id == tape.m_tape_id ,
@@ -223,7 +223,7 @@ at::Tensor conv_transpose1d(
     dev::user_assert( ! options.bias().defined(), "conv_transpose1d: "
         "bias is and explicit argument and is defined in options."
     );
-    if( no_elements(bias) ) {
+    if( not_defined(bias) ) {
         return torch::nn::functional::conv_transpose1d(
             input, weight, options
         );

@@ -5,7 +5,7 @@
 #include <ad_tensor/dev/derive_op.hpp>
 #include <ad_tensor/dev/src_gen_unary.hpp>
 #include <ad_tensor/adten.hpp>
-#include <ad_tensor/no_elements.hpp>
+#include <ad_tensor/defined.hpp>
 //
 namespace ad_tensor { namespace dev { // Begin ad_tensor::dev
 // ------------------------------------------------------------------------
@@ -120,7 +120,7 @@ void inverse_op_t<TensorType>::forward_der(
 #endif
     // operand_index
     size_t operand_index  = agraph.m_arg_value[arg_start];
-    if( no_elements(for_der[operand_index]) ) {
+    if( not_defined(for_der[operand_index]) ) {
         return;
     }
     // for_der
@@ -160,7 +160,7 @@ void inverse_op_t<TensorType>::reverse_der(
     thread_local vector<int64_t> array;
     //
     // check for case where this operation is not connected to the range
-    if( no_elements(rev_der[op_index]) ) {
+    if( not_defined(rev_der[op_index]) ) {
         return;
     }
     //
@@ -188,7 +188,7 @@ void inverse_op_t<TensorType>::reverse_der(
     );
     //
     // rev_der[operand_index]
-    if( no_elements(rev_der[operand_index]) ) {
+    if( not_defined(rev_der[operand_index]) ) {
         rev_der[operand_index]  = - prod;
     } else {
         rev_der[operand_index] -= prod;

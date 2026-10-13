@@ -163,7 +163,7 @@ Note that px is :math:`\hat{py}` correlated with :math:`\hat{w}`, 0 .
 #include <ad_tensor/dev/derive_op.hpp>
 #include <ad_tensor/adten.hpp>
 #include <ad_tensor/dev/tensor_at_index.hpp>
-#include <ad_tensor/no_elements.hpp>
+#include <ad_tensor/defined.hpp>
 #include <ad_tensor/dev/plus_minus_equal.hpp>
 //
 // TODO: Do some tests to see if 0 or 1 is faster
@@ -310,19 +310,19 @@ void conv1d_op_t<TensorType>::forward_der(
     size_t   input_index    = agraph.m_arg_value[arg_start];
     adtype_t input_type     = agraph.m_arg_type[arg_start];
     bool     input_zero_der =
-        input_type != variable || no_elements( for_der[input_index] );
+        input_type != variable || not_defined( for_der[input_index] );
     //
     // weight_index, weight_type, weight_zero_der
     size_t   weight_index    = agraph.m_arg_value[arg_start + 1];
     adtype_t weight_type     = agraph.m_arg_type[arg_start + 1];
     bool     weight_zero_der =
-        weight_type != variable || no_elements( for_der[weight_index] );
+        weight_type != variable || not_defined( for_der[weight_index] );
     //
     // bias_index, bias_type, bias_zero_der
     size_t   bias_index    = agraph.m_arg_value[arg_start + 2];
     adtype_t bias_type     = agraph.m_arg_type[arg_start + 2];
     bool     bias_zero_der =
-        bias_type != variable || no_elements( for_der[bias_index] );
+        bias_type != variable || not_defined( for_der[bias_index] );
     //
     if( input_zero_der && weight_zero_der && bias_zero_der) {
         return;

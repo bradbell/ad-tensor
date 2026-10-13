@@ -85,7 +85,7 @@ STOPPED HERE
 */
 #include <torch/torch.h>
 #include <ad_tensor/adten.hpp>
-#include <ad_tensor/no_elements.hpp>
+#include <ad_tensor/defined.hpp>
 #include <ad_tensor/dev/tape.hpp>
 #include <ad_tensor/dev/user_assert.hpp>
 #include <ad_tensor/dev/pad_enum.hpp>
@@ -145,7 +145,7 @@ adten_t adten_t::pad(
         // mode_size_t, constant_index
         auto mode             = options.mode();
         size_t constant_index = 0;
-        assert( no_elements( tape.m_con_vec[constant_index] ) );
+        assert( not_defined( tape.m_con_vec[constant_index] ) );
         dev::pad_enum_t pad_enum = dev::pad_enum_t::constant;
         if( std::holds_alternative<torch::enumtype::kConstant>(mode) ) {
             pad_enum = dev::pad_enum_t::constant;

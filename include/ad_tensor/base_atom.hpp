@@ -174,7 +174,7 @@ will have has_value() equal to false.
 You should also use this case when an error occurs during
 the evaluation of this derivative of the atomic function.
 
-If no_elements(dom_der[j]), then dom_der[j] represents a zero tensor
+If not_defined(dom_der[j]), then dom_der[j] represents a zero tensor
 with the same shape as domain[j] and calculations that use this value
 can be skipped.
 
@@ -236,7 +236,7 @@ will have has_value() equal to false.
 You should also use this case when an error occurs during
 the evaluation of this derivative of the atomic function.
 
-If no_elements(rng_der[i]), then rng_der[i] represents a zero tensor
+If not_defined(rng_der[i]), then rng_der[i] represents a zero tensor
 with the same shape as range[i] and calculations that use this value
 can be skipped.
 
@@ -272,7 +272,7 @@ range directional derivative.
 #include <ad_tensor/adten.hpp>
 #include <string>
 #include <optional>
-#include <ad_tensor/no_elements.hpp>
+#include <ad_tensor/defined.hpp>
 // BEGIN_CLASS
 namespace ad_tensor { class base_atom_t {
 private:

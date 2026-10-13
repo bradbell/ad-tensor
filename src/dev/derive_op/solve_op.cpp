@@ -8,7 +8,7 @@
 #include <ad_tensor/dev/plus_minus_equal.hpp>
 #include <ad_tensor/dev/tensor_at_index.hpp>
 #include <ad_tensor/dev/shape_at_index.hpp>
-#include <ad_tensor/no_elements.hpp>
+#include <ad_tensor/defined.hpp>
 //
 namespace {
 using at::linalg_solve;         // used for at::Tensor equations
@@ -141,13 +141,13 @@ void solve_op_t<TensorType>::forward_der(
     size_t   linear_index     = agraph.m_arg_value[arg_start];
     adtype_t linear_type     = agraph.m_arg_type[arg_start];
     bool     linear_zero_der =
-        linear_type != variable || no_elements( for_der[linear_index] );
+        linear_type != variable || not_defined( for_der[linear_index] );
     //
     // rhs_index, rhs_type, rhs_zero_der
     size_t   rhs_index    = agraph.m_arg_value[arg_start + 1];
     adtype_t rhs_type     = agraph.m_arg_type[arg_start + 1];
     bool     rhs_zero_der =
-        rhs_type != variable || no_elements( for_der[rhs_index] );
+        rhs_type != variable || not_defined( for_der[rhs_index] );
     //
     if( linear_zero_der && rhs_zero_der ) {
         return;
@@ -159,7 +159,7 @@ void solve_op_t<TensorType>::forward_der(
     );
     //
     // prod
-    TensorType prod = TensorType( no_elements() );
+    TensorType prod = TensorType( not_defined() );
     if( ! linear_zero_der ) {
         if( left ) {
             prod = for_der[linear_index].matmul( var_all[op_index] );
@@ -168,12 +168,12 @@ void solve_op_t<TensorType>::forward_der(
         }
     }
     // diff
-    TensorType diff = TensorType( no_elements() );
+    TensorType diff = TensorType( not_defined() );
     if( ! rhs_zero_der ) {
         diff = for_der[rhs_index];
     }
     minus_equal(diff, prod);
-    assert( has_elements(diff) );
+    assert( is_defined(diff) );
     //
     // solution_dot
     for_der[op_index] = linalg_solve(linear, diff, left);

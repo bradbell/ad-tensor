@@ -59,7 +59,7 @@ variable result for this atomic function.
 #include <ad_tensor/dev/plus_minus_equal.hpp>
 #include <ad_tensor/dev/tensor_at_index.hpp>
 #include <ad_tensor/dev/unpack_call.hpp>
-#include <ad_tensor/no_elements.hpp>
+#include <ad_tensor/defined.hpp>
 //
 namespace ad_tensor { namespace dev { // Begin ad_tensor::dev
 // ------------------------------------------------------------------------
@@ -360,13 +360,13 @@ void call_op_t<TensorType>::forward_der(
             case adtype_t::constant: {
                 TensorType domain_j = TensorType( con_vec[vec_index] );
                 domain.push_back( domain_j );
-                dom_der.push_back( TensorType( no_elements() ) );
+                dom_der.push_back( TensorType( not_defined() ) );
             }
             break;
             case adtype_t::parameter: {
                 const TensorType& domain_j = par_all[vec_index];
                 domain.push_back( domain_j );
-                dom_der.push_back( TensorType( no_elements() ) );
+                dom_der.push_back( TensorType( not_defined() ) );
             }
             break;
             case adtype_t::variable: {
@@ -446,7 +446,7 @@ void call_op_t<TensorType>::reverse_der(
     rng_used.resize(0);
     rng_used.resize(n_range, false);
     rng_der.resize(0);
-    rng_der.resize( n_range, TensorType( no_elements() ) );
+    rng_der.resize( n_range, TensorType( not_defined() ) );
     for(size_t k = 0; k < n_result; ++k) {
         size_t rev_index    = op_index + k;
         size_t arg_index    = arg_start + 4 + n_domain + k;

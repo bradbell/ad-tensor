@@ -79,7 +79,7 @@ TEST(tests_adten, pad)  {
         {15.0, 16.0}
     } ) };
     vector<at::Tensor> dy = f.forward_der(dv, var_all, par_all);
-    EXPECT_TRUE( ad_tensor::no_elements( dy[0] ) );
+    EXPECT_TRUE( ad_tensor::not_defined( dy[0] ) );
     at::Tensor check_dy = torch::tensor( {
         {0.0, 0.0},
         {0.0, 0.0},
@@ -93,7 +93,7 @@ TEST(tests_adten, pad)  {
     // check reverse mode
     // ------------------------------------------------------------------------
     vector<at::Tensor> py;
-    py.push_back( ad_tensor::no_elements() );
+    py.push_back( ad_tensor::not_defined() );
     py.push_back( torch::tensor( {
         {21.0, 22.0},
         {23.0, 24.0},

@@ -79,13 +79,13 @@ Source Code
 */
 // BEGIN_CPP
 #include <ad_tensor/ad_tensor.hpp>
-#include <ad_tensor/no_elements.hpp>
+#include <ad_tensor/defined.hpp>
 namespace {
     //
     // BEGIN_USING
     using ad_tensor::vector;
     using ad_tensor::adten_t;
-    using ad_tensor::has_elements;
+    using ad_tensor::is_defined;
     using at::Tensor;
     using std::cout;
     // END_USING
@@ -165,8 +165,8 @@ namespace {
             vector<adten_t> rng_der;
             //
             // rng_der
-            if( ad_tensor::no_elements(dom_der[0]) ) {
-                rng_der.push_back( adten_t( ad_tensor::no_elements() ) );
+            if( ad_tensor::not_defined(dom_der[0]) ) {
+                rng_der.push_back( adten_t( ad_tensor::not_defined() ) );
             } else {
                 vector<adten_t> domain_z;
                 domain_z.push_back( domain[0] );
@@ -194,8 +194,8 @@ namespace {
             vector<adten_t> dom_der;
             //
             // dom_der
-            if( ad_tensor::no_elements(rng_der[0]) ) {
-                dom_der.push_back( adten_t( ad_tensor::no_elements() ) );
+            if( ad_tensor::not_defined(rng_der[0]) ) {
+                dom_der.push_back( adten_t( ad_tensor::not_defined() ) );
             } else {
                 vector<adten_t> domain_z;
                 domain_z.push_back( domain[0] );
@@ -265,12 +265,12 @@ namespace {
             Tensor u    = domain[1];
             Tensor dx   = dom_der[0];
             Tensor du   = dom_der[1];
-            Tensor dz   = ad_tensor::no_elements();
-            if( has_elements(dx) && has_elements(du) ) {
+            Tensor dz   = ad_tensor::not_defined();
+            if( is_defined(dx) && is_defined(du) ) {
                 dz   = 6.0 * x * u * dx + 3.0 * x * x * du;
-            } else if( has_elements(dx) ) {
+            } else if( is_defined(dx) ) {
                 dz   = 6.0 * x * u * dx;
-            } else if( has_elements(du) ) {
+            } else if( is_defined(du) ) {
                 dz   = 3.0 * x * x * du;
             }
             //

@@ -4,7 +4,7 @@
 // ----------------------------------------------------------------------------
 #include <gtest/gtest.h>
 #include <ad_tensor/ad_tensor.hpp>
-#include <ad_tensor/no_elements.hpp>
+#include <ad_tensor/defined.hpp>
 //
 // BEGIN_ADFN_OPTIMIZE_CON
 TEST(tests_adfn, optimize_con) {
@@ -215,7 +215,7 @@ TEST(tests_adfn, optimize_call)  {
     // dz
     vector<Tensor> dz = g.forward_der(dv, v_all, p_all);
     //
-    equal = ad_tensor::no_elements(dz[0]);
+    equal = ad_tensor::not_defined(dz[0]);
     EXPECT_TRUE(equal);
     //
     equal = dz[1].equal( dv[0] * (v[1] + v[1]) + (v[0] + v[0]) * dv[1] );

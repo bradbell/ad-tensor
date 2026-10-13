@@ -5,13 +5,13 @@
 #include <gtest/gtest.h>
 #include <ad_tensor/adten.hpp>
 #include <ad_tensor/adfn.hpp>
-#include <ad_tensor/no_elements.hpp>
+#include <ad_tensor/defined.hpp>
 //
 TEST(tests_adfn, forward_der_no_elements) {
     using ad_tensor::adten_t;
     using ad_tensor::adfn_t;
     using ad_tensor::vector;
-    using ad_tensor::no_elements;
+    using ad_tensor::not_defined;
     //
     // nv
     size_t nv = 2;
@@ -38,20 +38,20 @@ TEST(tests_adfn, forward_der_no_elements) {
     // dv, dr
     vector<at::Tensor> dv, dr;
     for(size_t j = 0; j < nv; ++j) {
-        dv.push_back( no_elements() );
+        dv.push_back( not_defined() );
     }
     //
     // check
     for(size_t j = 0; j < nv; ++j) {
         dv[j] = torch::tensor( { 1.0 } );
         dr    = f.forward_der(dv, v_all);
-        dv[j] = no_elements();
+        dv[j] = not_defined();
         //
         for(size_t k = 0; k < nv; ++k) {
             if( k == j ) {
                 EXPECT_EQ( dr[k].item<double>(), 2.0 * v[k].item<double>() );
             } else {
-                EXPECT_TRUE( no_elements( dr[k] ) );
+                EXPECT_TRUE( not_defined( dr[k] ) );
             }
         }
     }

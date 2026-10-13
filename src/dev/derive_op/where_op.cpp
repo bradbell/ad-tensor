@@ -151,13 +151,13 @@ void where_op_t<TensorType>::forward_der(
     size_t   true_index    = agraph.m_arg_value[arg_start + 1];
     adtype_t true_type     = agraph.m_arg_type[arg_start + 1];
     bool     true_zero_der =
-        true_type != variable || no_elements( for_der[true_index] );
+        true_type != variable || not_defined( for_der[true_index] );
     //
     // false_index, false_type, false_zero_der
     size_t   false_index    = agraph.m_arg_value[arg_start + 2];
     adtype_t false_type     = agraph.m_arg_type[arg_start + 2];
     bool     false_zero_der =
-        false_type != variable || no_elements( for_der[false_index] );
+        false_type != variable || not_defined( for_der[false_index] );
     //
     if( true_zero_der && false_zero_der ) {
         return;

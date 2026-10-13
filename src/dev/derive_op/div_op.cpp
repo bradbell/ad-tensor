@@ -8,7 +8,7 @@
 #include <ad_tensor/dev/broadcast.hpp>
 #include <ad_tensor/dev/plus_minus_equal.hpp>
 #include <ad_tensor/dev/tensor_at_index.hpp>
-#include <ad_tensor/no_elements.hpp>
+#include <ad_tensor/defined.hpp>
 //
 namespace ad_tensor { namespace dev { // Begin ad_tensor::dev
 // ------------------------------------------------------------------------
@@ -122,13 +122,13 @@ void div_op_t<TensorType>::forward_der(
     size_t   lhs_index    = agraph.m_arg_value[arg_start];
     adtype_t lhs_type     = agraph.m_arg_type[arg_start];
     bool     lhs_zero_der =
-        lhs_type != variable || no_elements( for_der[lhs_index] );
+        lhs_type != variable || not_defined( for_der[lhs_index] );
     //
     // rhs_index, rhs_type, rhs_zero_der
     size_t   rhs_index    = agraph.m_arg_value[arg_start + 1];
     adtype_t rhs_type     = agraph.m_arg_type[arg_start + 1];
     bool     rhs_zero_der =
-        rhs_type != variable || no_elements( for_der[rhs_index] );
+        rhs_type != variable || not_defined( for_der[rhs_index] );
     //
     if( lhs_zero_der && rhs_zero_der ) {
         return;

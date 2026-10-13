@@ -8,7 +8,7 @@
 #include <ad_tensor/dev/agraph.hpp>
 #include <ad_tensor/dev/user_assert.hpp>
 #include <ad_tensor/dev/move_swap.hpp>
-#include <ad_tensor/no_elements.hpp>
+#include <ad_tensor/defined.hpp>
 //
 /*
 ------------------------------------------------------------------------------
@@ -117,7 +117,7 @@ adten_t::start_recording(
     //
     // tape.m_con_vec
     // The constant at index zero is always a no element tensor
-    tape.m_con_vec.push_back( no_elements() );
+    tape.m_con_vec.push_back( not_defined() );
     //
     // tape.m_par.m_dom_shapes
     tape.m_par.m_dom_shapes.resize( dom_par.size() );

@@ -8,7 +8,7 @@
 #include <ad_tensor/dev/derive_op.hpp>
 #include <ad_tensor/dev/to_string.hpp>
 #include <ad_tensor/dev/user_assert.hpp>
-#include <ad_tensor/no_elements.hpp>
+#include <ad_tensor/defined.hpp>
 /*
 {xrst_begin adfn_forward_der usr}
 {xrst_spell
@@ -38,7 +38,7 @@ This is either at::Tensor or :ref:`adten-name` .
 dom_der
 *******
 This is the domain direction that the derivative is computed with respect to.
-If no_elements(dom_der[j]), then dom_der[j] will act like a zero tensor
+If not_defined(dom_der[j]), then dom_der[j] will act like a zero tensor
 with the same shape as domain[j] and calculations that use this value will
 be skipped.
 
@@ -67,7 +67,7 @@ is the directional derivative of the range in the dom_der direction; i.e.
     rng_der = adfn_var (dom_var, dom_par) * dom_der
 
 where adfn_var denotes the partial of adfn w.r.t. to domain variables.
-If no_elements(rng_der[i]), then rng_der[i] has not been calculated
+If not_defined(rng_der[i]), then rng_der[i] has not been calculated
 because it is known to be zero with the same shape as range[i]
 for this AD function
 
@@ -105,7 +105,7 @@ vector<TensorType> adfn_t::forward_der(
     }
     for(size_t i = 0; i < shapes.size(); ++i) {
         c10::IntArrayRef shape = shapes[i];
-        if( has_elements(dom_der[i]) && ! dom_der[i].sizes().equals( shape ) ) {
+        if( is_defined(dom_der[i]) && ! dom_der[i].sizes().equals( shape ) ) {
             msg += "dom_der[" + std::to_string(i) + "] shape is ";
             msg += dev::to_string( dom_der[i].sizes() );
             msg += " and the dom_var shape for this index and adfn is ";
@@ -122,7 +122,7 @@ vector<TensorType> adfn_t::forward_der(
     //
     // n_op, no_elem
     size_t n_op          = m_var.m_op_seq.size();
-    TensorType no_elem   = TensorType( no_elements() );
+    TensorType no_elem   = TensorType( not_defined() );
     //
     // all_der
     vector<TensorType> all_der =  dom_der ;
@@ -162,12 +162,12 @@ vector<TensorType> adfn_t::forward_der(
         switch(adtype) {
             //
             case adtype_t::constant: {
-                rng_der.push_back( TensorType(no_elements()) );
+                rng_der.push_back( TensorType(not_defined()) );
             }
             break;
             //
             case adtype_t::parameter: {
-                rng_der.push_back( TensorType(no_elements()) );
+                rng_der.push_back( TensorType(not_defined()) );
             }
             break;
             //

@@ -5,7 +5,7 @@
 #include <ad_tensor/dev/derive_op.hpp>
 #include <ad_tensor/adten.hpp>
 #include <ad_tensor/dev/plus_minus_equal.hpp>
-#include <ad_tensor/no_elements.hpp>
+#include <ad_tensor/defined.hpp>
 //
 namespace ad_tensor { namespace dev { // Begin ad_tensor::dev
 // ------------------------------------------------------------------------
@@ -133,7 +133,7 @@ void view_op_t<TensorType>::forward_der(
     c10::IntArrayRef shape = var_all[op_index].sizes();
     //
     // for_der[op_index]
-    if( has_elements(for_der[operand_index]) ) {
+    if( is_defined(for_der[operand_index]) ) {
         for_der[op_index] = for_der[operand_index].view(shape);
     }
 }
@@ -175,7 +175,7 @@ void view_op_t<TensorType>::reverse_der(
     c10::IntArrayRef shape = var_all[operand_index].sizes();
     //
     // rev_der
-    if( no_elements(rev_der[operand_index]) ) {
+    if( not_defined(rev_der[operand_index]) ) {
         rev_der[operand_index] = rev_der[op_index].view(shape);
     } else {
         rev_der[operand_index] += rev_der[op_index].view(shape);

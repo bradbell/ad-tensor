@@ -8,7 +8,7 @@
 #include <ad_tensor/dev/derive_op.hpp>
 #include <ad_tensor/dev/to_string.hpp>
 #include <ad_tensor/dev/user_assert.hpp>
-#include <ad_tensor/no_elements.hpp>
+#include <ad_tensor/defined.hpp>
 /*
 {xrst_begin adfn_reverse_der usr}
 {xrst_spell
@@ -38,7 +38,7 @@ This is either at::Tensor or :ref:`adten-name` .
 rng_der
 *******
 This is the range direction that the derivative is computed with respect to.
-If no_elements(rng_der[i]), then rng_der[i] will act like a zero tensor
+If not_defined(rng_der[i]), then rng_der[i] will act like a zero tensor
 with the same shape as range[i] and calculations that use this value will
 be skipped.
 
@@ -66,7 +66,7 @@ is the domain derivative of the range space direction; i.e.
 
     dom_der =  (d / d dom_var) sum[ rng_der * adfn(dom_var, dom_par ) ]
 
-If no_elements(dom_der[j]), then dom_der[j] has not been calculated
+If not_defined(dom_der[j]), then dom_der[j] has not been calculated
 because it is known to be zero with the same shape as domain[j]
 for this AD function
 
@@ -105,7 +105,7 @@ vector<TensorType> adfn_t::reverse_der(
     }
     for(size_t i = 0; i < shapes.size(); ++i) {
         c10::IntArrayRef shape = shapes[i];
-        if( has_elements(rng_der[i]) && ! rng_der[i].sizes().equals(shape) ) {
+        if( is_defined(rng_der[i]) && ! rng_der[i].sizes().equals(shape) ) {
             msg += "rng_der[" + std::to_string(i) + "]: numel is not zero ";
             msg += "and shape is ";
             msg += dev::to_string( rng_der[i].sizes() );
@@ -123,7 +123,7 @@ vector<TensorType> adfn_t::reverse_der(
     //
     // n_op, no_elem
     size_t     n_op      = m_var.m_op_seq.size();
-    TensorType no_elem   = TensorType( no_elements() );
+    TensorType no_elem   = TensorType( not_defined() );
     //
     // all_der
     vector<TensorType> all_der(n_op, no_elem);
@@ -143,7 +143,7 @@ vector<TensorType> adfn_t::reverse_der(
         //
         // all_der[op_index]
         // Only propcess this operator if its result is connected to the range
-        if( has_elements(all_der[op_index]) ) {
+        if( is_defined(all_der[op_index]) ) {
             //
             // base_op
             dev::op_enum_t op_enum = m_var.m_op_seq[ op_index ];
@@ -169,7 +169,7 @@ vector<TensorType> adfn_t::reverse_der(
             }
         } else {
             // no longer need this memory so free it.
-            all_der[op_index] = TensorType( no_elements() );
+            all_der[op_index] = TensorType( not_defined() );
         }
     }
     //

@@ -7,7 +7,7 @@
 #include <ad_tensor/dev/op_enum.hpp>
 #include <ad_tensor/dev/agraph.hpp>
 #include <ad_tensor/dev/user_assert.hpp>
-#include <ad_tensor/no_elements.hpp>
+#include <ad_tensor/defined.hpp>
 //
 namespace ad_tensor { // Begin ad_tensor::dev
 // ----------------------------------------------------------------------------
@@ -16,7 +16,7 @@ namespace ad_tensor { // Begin ad_tensor::dev
 adten_t::adten_t(void)
 : m_tape_id(0)
 , m_index(0)
-, m_at_ten( no_elements() )
+, m_at_ten( not_defined() )
 , m_adtype(adtype_t::constant)
 { }
 adten_t::adten_t( const at::Tensor& tensor )
@@ -25,7 +25,7 @@ adten_t::adten_t( const at::Tensor& tensor )
 , m_at_ten(tensor)
 , m_adtype(adtype_t::constant)
 {   //
-    if( has_elements(tensor) ) {
+    if( is_defined(tensor) ) {
         // tape
         dev::tape_t& tape = dev::this_threads_tape();
         if( tape.m_recording ) {
