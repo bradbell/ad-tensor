@@ -40,12 +40,12 @@ namespace ad_tensor {
     // BEGIN_CHECK_NO
     template <class TensorType>
     bool not_defined(const TensorType& ten)
-    {   return ! ten.defined() || ten.numel() == 0; }
+    {   return ! ten.defined(); }
     // END_CHECK_NO
     //
     // BEGIN_CHECK_HAS
     template <class TensorType>
     bool is_defined(const TensorType& ten)
-    {   return ten.numel() != 0; }
+    {   return ten.defined(); }
     // END_CHECK_HAS
 }
