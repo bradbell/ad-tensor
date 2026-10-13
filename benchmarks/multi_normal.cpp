@@ -86,6 +86,13 @@ We define our loss function as
     +
     \frac{1}{n} \sum_{i=0}^{n-1} ( y_i - \hat{\mu} )^T L L^T (y_i - \hat{\mu} )
 
+Implementation
+==============
+This code is part of the setup below:
+{xrst_literal ,
+    BEGIN_LOSS, END_LOSS
+}
+
 learn_ms
 ********
 In the code below, gtest reports the total time for each test.
@@ -93,10 +100,10 @@ Each test also prints the value learn_ms, which is the time
 in milliseconds for the learning loop; i.e., it does not include
 the time to setup the calculation of the gradients in the learning loop.
 
-Common Code
-***********
+Setup
+*****
 {xrst_literal ,
-    BEGIN_COMMON, END_COMMON
+    BEGIN_SETUP, END_SETUP
 }
 
 Autograd Code
@@ -129,7 +136,7 @@ This benchmark will only run when
 */
 //
 //
-// BEGIN_COMMON
+// BEGIN_SETUP
 #include <chrono>
 #include <filesystem>
 #include <gtest/gtest.h>
@@ -178,7 +185,7 @@ namespace {
     );
     const at::Tensor mu_hat = y.mean( /* dim = */ 1, /* keepdim = */ true);
     //
-    // loss
+    // BEGIN_LOSS
     template<class TensorType>
     TensorType loss(const TensorType& L ) {
         //
@@ -197,6 +204,7 @@ namespace {
         //
         return res_term - det_term;
     }
+    // END_LOSS
     //
     // minimum_L
     at::Tensor compute_minimum_L(void) {
@@ -237,7 +245,7 @@ namespace {
         EXPECT_LT( relative_difference, 1e-5 );
     }
 }
-// END_COMMON
+// END_SETUP
 //
 // BEGIN_AUTOGRAD
 TEST(benchmarks, multi_normal_autograd) {

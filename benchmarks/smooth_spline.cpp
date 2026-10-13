@@ -29,6 +29,13 @@ This objective is a finite difference approximation for the
 second derivative in a cubic
 `Smoothing spline <https://en.wikipedia.org/wiki/Smoothing_spline>`_ ,
 
+Implementation
+==============
+This code is part of the setup below:
+{xrst_literal ,
+    BEGIN_LOSS, END_LOSS
+}
+
 learn_ms
 ********
 In the code below, gtest reports the total time for each test.
@@ -36,10 +43,10 @@ The plugin test also prints the value learn_ms, which is the time
 in milliseconds for the learning loop; i.e., it does not include
 the time to compile and link the plugin.
 
-Common Code
-***********
+Setup
+*****
 {xrst_literal ,
-    BEGIN_COMMON, END_COMMON
+    BEGIN_SETUP, END_SETUP
 }
 
 Autograd Code
@@ -75,7 +82,7 @@ and then uses its plugin to compute gradients,
 
 {xrst_end smooth_spline_benchmark}
 */
-// BEGIN_COMMON
+// BEGIN_SETUP
 #include <chrono>
 #include <filesystem>
 #include <gtest/gtest.h>
@@ -133,7 +140,7 @@ namespace {
     at::Tensor weight_at =
         torch::tensor({1.0, -2.0, 1.0}).view({1, 1, 3}) * torch::tensor(scale);
     //
-    // loss
+    // BEGIN_LOSS
     template<class TensorType>
     TensorType loss(const TensorType y ) {
         TensorType weight      = TensorType( weight_at );
@@ -141,6 +148,7 @@ namespace {
         TensorType data_res    = (TensorType(data) - y);
         return (finite_diff*finite_diff).sum() + (data_res*data_res).sum();
     }
+    // END_LOSS
     //
     // initial_y
     const at::Tensor initial_y = torch::rand( {1, 1, number_grid_points} );
@@ -154,7 +162,7 @@ namespace {
     }
     const at::Tensor initial_grad = initial_autograd();
 }
-// END_COMMON
+// END_SETUP
 //
 // BEGIN_AUTOGRAD
 TEST(benchmarks, smooth_spline_autograd) {

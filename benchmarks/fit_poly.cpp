@@ -30,6 +30,13 @@ This objective comes from the pytorch tutorial
 `Pytorch Tensors and autograd
 <https://docs.pytorch.org/tutorials/beginner/ pytorch_with_examples.html#pytorch-tensors-and-autograd>`_ ,
 
+Implementation
+==============
+This code is part of the setup below:
+{xrst_literal ,
+    BEGIN_LOSS, END_LOSS
+}
+
 learn_ms
 ********
 In the code below, gtest reports the total time for each test.
@@ -37,10 +44,10 @@ The plugin test also prints the value learn_ms, which is the time
 in milliseconds for the learning loop; i.e., it does not include
 the time to compile and link the plugin.
 
-Common Code
-***********
+Setup
+*****
 {xrst_literal ,
-    BEGIN_COMMON, END_COMMON
+    BEGIN_SETUP, END_SETUP
 }
 
 Autograd Code
@@ -76,7 +83,7 @@ and then uses its plugin to compute gradients,
 
 {xrst_end fit_poly_benchmark}
 */
-// BEGIN_COMMON
+// BEGIN_SETUP
 #include <chrono>
 #include <filesystem>
 #include <gtest/gtest.h>
@@ -114,7 +121,7 @@ namespace {
     const double learning_rate         = 1e-5;
     const size_t number_learning_steps = 5000;
     //
-    // loss
+    // BEGIN_LOSS
     template<class TensorType>
     TensorType loss(
         const vector<TensorType>& c ,
@@ -124,15 +131,16 @@ namespace {
         assert( size_t( data.numel() ) == number_grid_points );
         assert( size_t( c.size() )  == number_coefficients );
         int64_t n_data = data.numel();
-        TensorType grid_p      = TensorType( torch::ones( {n_data} ) );
+        TensorType grid_p  = TensorType( torch::ones( {n_data} ) );
         TensorType predict = c[0] * grid_p;
         for(size_t j = 1; j < number_coefficients; ++j) {
-            grid_p       = grid_p * grid;
+            grid_p   = grid_p * grid;
             predict  = predict + c[j] * grid_p;
         }
         TensorType residual = (data - predict);
         return (residual * residual).sum();
     }
+    // END_LOSS
     //
     // grid, data
     torch::Tensor grid = torch::linspace(-1.0, 1.0, number_grid_points);
@@ -152,7 +160,7 @@ namespace {
     // set by autograd and checked by other cases
     vector<at::Tensor> initial_grad;
 }
-// END_COMMON
+// END_SETUP
 //
 // BEGIN_AUTOGRAD
 TEST(benchmarks, fit_poly_autograd) {
