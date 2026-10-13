@@ -326,9 +326,9 @@ void adfn_t::src_gen(const std::string& src_gen_dir) const
     //
     // adfn_name.con
     {   string file_name = file_con_path.string();
-        auto vec_ten_ptr =
-            dynamic_cast< const std::vector<at::Tensor>* >(&m_con_vec);
-        torch::save( *vec_ten_ptr, file_name);
+        std::vector<at::Tensor> vec_ten = m_con_vec;
+        vec_ten[0] = torch::empty( {0} );
+        torch::save( vec_ten, file_name);
     }
     //
     // file_cpp: dev, string, Tensor, vector, has_elements
@@ -339,12 +339,12 @@ void adfn_t::src_gen(const std::string& src_gen_dir) const
         m_var.m_dom_shapes
     );
     //
-    // file_cpp: adfn_name, no_elem
+    // file_cpp: adfn_name, null_tensor
     {   constexpr const char* fmt =
 R"|(    //
-    // adfn_name, no_elem
+    // adfn_name, null_tensor
     string adfn_name = "{}";
-    Tensor no_elem = ad_tensor::not_defined();
+    Tensor null_tensor = ad_tensor::not_defined();
 )|";
         file_cpp << std::format(fmt, adfn_name);
     }
@@ -365,6 +365,7 @@ R"|(    //
                     adfn_name + "_plugin could not load " + file_name
                 );
             }}
+            (*vec_ptr)[0] = ad_tensor::not_defined();
         }}
     }}
 )|";
@@ -432,7 +433,7 @@ R"|(    //
 R"|(    //
     //  par_dep
     size_t n_par_dep = {};
-    vector<Tensor> par_dep(n_par_dep, no_elem);
+    vector<Tensor> par_dep(n_par_dep, null_tensor);
 )|";
         file_cpp << std::format(fmt, n_par_dep);
     }
@@ -472,7 +473,7 @@ R"|(    //
 R"|(    //
     //  var_dep
     size_t n_var_dep = {};
-    vector<Tensor> var_dep(n_var_dep, no_elem);
+    vector<Tensor> var_dep(n_var_dep, null_tensor);
 )|";
         file_cpp << std::format(fmt, n_var_dep);
     }
@@ -515,7 +516,7 @@ R"|(    //
 R"|(    //
     // range
     size_t n_range = {};
-    vector<Tensor> range(n_range, no_elem);
+    vector<Tensor> range(n_range, null_tensor);
 )|";
         file_cpp << std::format(fmt, n_range);
     }

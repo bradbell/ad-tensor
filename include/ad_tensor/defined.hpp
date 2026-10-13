@@ -34,7 +34,7 @@ namespace ad_tensor {
     //
     // BEGIN_CREATE
     inline at::Tensor not_defined(void)
-    { return torch::empty( {0} ); };
+    { return at::Tensor(); }
     // END_CREATE
     //
     // BEGIN_CHECK_NO
