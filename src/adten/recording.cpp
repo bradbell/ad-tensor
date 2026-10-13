@@ -21,10 +21,20 @@
 
 Start Recording adten_t Operations
 ##################################
+
+
+Syntax
+******
+{xrst_code cpp}
+    adom_var                  = adten_t::start_recording(dom_var)
+    auto [adom_var, adom_par] = adten_t::start_recording(dom_var, dom_par)
+{xrst_code}
+
+Prototype
+*********
 {xrst_literal ,
     include/ad_tensor/adten.hpp
-    BEGIN_START_RECORDING_1, END_START_RECORDING_1
-    BEGIN_START_RECORDING_2, END_START_RECORDING_2
+    BEGIN_START_RECORDING, END_START_RECORDING
 }
 
 Recording
@@ -179,7 +189,17 @@ adten_t::start_recording(
 
 Stop Recording adten_t Operations
 #################################
+
+Syntax
+******
+{xrst_code cpp}
+    adfn = adten_t::stop_recording(arange, name)
+{xrst_code}
+
+Prototype
+*********
 {xrst_literal ,
+    include/ad_tensor/adten.hpp
     BEGIN_STOP_RECORDING, END_STOP_RECORDING
 }
 
@@ -217,12 +237,10 @@ Example
 
 {xrst_end stop_recording}
 */
-// BEGIN_STOP_RECORDING
-// adfn = adten_t::stop_recording(arnage, name)
+// stop_recording
 adfn_t adten_t::stop_recording(
     const vector<adten_t>& arange ,
-    const std::string&     name   )
-{   // END_STOP_RECORDING
+    const std::string&     name   ) {
     //
     // tape
     dev::tape_t& tape = dev::this_threads_tape();

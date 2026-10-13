@@ -338,24 +338,22 @@ public:
     // END_AT_TEN
     {   return m_at_ten; }
     //
-    // BEGIN_START_RECORDING_1
-    // adom_var = adten_t::start_recording(dom_var)
+    // BEGIN_START_RECORDING
     static vector<adten_t> start_recording(
         const vector<at::Tensor>& dom_var
     );
-    // END_START_RECORDING_1
-    // BEGIN_START_RECORDING_2
-    // auto [adom_var  adom_par] = adten_t::start_recording(dom_var, dom_par)
     static std::tuple< vector<adten_t>, vector<adten_t> > start_recording(
         const vector<at::Tensor>& dom_var ,
         const vector<at::Tensor>& dom_par
     );
-    // END_START_RECORDING_2
+    // END_START_RECORDING
     //
+    // BEGIN_STOP_RECORDING
     static adfn_t stop_recording(
         const vector<adten_t>& arange ,
         const std::string&     name
     );
+    // END_STOP_RECORDING
     //
     // BEGIN_WHERE
     static adten_t where(
