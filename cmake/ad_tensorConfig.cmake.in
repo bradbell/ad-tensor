@@ -3,17 +3,20 @@
 # SPDX-FileContributor: 2026 Bradley M. Bell
 # -----------------------------------------------------------------------------
 #
-set(Torch_DIR "@Torch_DIR@")
-find_package(Torch REQUIRED)
-#
 # ad_tensor_FOUND
 set(ad_tensor_FOUND TRUE)
 if( NOT EXISTS "@CMAKE_INSTALL_FULL_INCLUDEDIR@/ad_tensor/ad_tensor.hpp" )
     set(ad_tensor_FOUND FALSE)
 endif( )
 #
+# ad_tensor_torch_prefix
+cmake_path(SET ad_tensor_torch_prefix NORMALIZE "@Torch_DIR@/../../..")
+message(STATUS "ad_tensor_torch_prefix = ${ad_tensor_torch_prefix}" )
+#
 # ad_tensor_INCLUDE_DIRS
-set(ad_tensor_INCLUDE_DIRS "@CMAKE_INSTALL_FULL_INCLUDEDIR@" )
+set(ad_tensor_INCLUDE_DIRS 
+    "@CMAKE_INSTALL_FULL_INCLUDEDIR@;@TORCH_INCLUDE_DIRS@" 
+)
 #
 # ad_tensor_LIBRARIES
 find_library(ad_tensor_LIBRARIES
@@ -21,3 +24,21 @@ find_library(ad_tensor_LIBRARIES
     PATHS "@CMAKE_INSTALL_FULL_LIBDIR@"
     REQUIRED
 )
+# TODO: why is torch_cpu missing from TORCH_LIBRARIES ?
+foreach(ad_tensor_tmp torch_cpu;@TORCH_LIBRARIES@ )
+    if( ad_tensor_tmp MATCHES "/" )
+        list(APPEND ad_tensor_LIBRARIES "${ad_tensor_tmp}" )
+    else( )
+        message(STATUS "ad_tensor_tmp = ${ad_tensor_tmp}" )
+        find_library(lib_path
+            NAME ${ad_tensor_tmp}
+            PATHS "${ad_tensor_torch_prefix}/lib"
+            REQUIRED
+        )
+        list(APPEND ad_tensor_LIBRARIES "${lib_path}" )
+    endif( )
+endforeach( ) 
+message(STATUS "ad_tensor_LIBRARIES = ${ad_tensor_LIBRARIES}" )
+#
+# ad_tensor_CXX_FLAGS
+set(ad_tensor_CXX_FLAGS "@TORCH_CXX_FLAGS@")

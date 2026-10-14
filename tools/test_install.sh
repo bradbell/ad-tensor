@@ -53,7 +53,7 @@ cd build/test_install
 #
 # get_started.cpp
 file="../../examples/get_started.cpp"
-if ! grep 'TEST(examples, get_started)' $file
+if ! grep 'TEST(examples, get_started)' $file > /dev/null
 then
     echo 'test_install.sh:: cannot find TEST(examples, get_started) in'
     echo "$file"
@@ -76,13 +76,12 @@ set(CMAKE_CXX_STANDARD 20)
 set(ad_tensor_DIR "$prefix/\${CMAKE_INSTALL_LIBDIR}/cmake/ad_tensor" )
 find_package(ad_tensor REQUIRED)
 #
-set(CMAKE_CXX_FLAGS "\${CMAKE_CXX_FLAGS} \${TORCH_CXX_FLAGS}")
+set(CMAKE_CXX_FLAGS "\${CMAKE_CXX_FLAGS} \${ad_tensor_CXX_FLAGS}")
 #
-include_directories( \${ad_tensor_INCLUDE_DIRS} \${TORCH_INCLUDE_DIRS} )
+include_directories( \${ad_tensor_INCLUDE_DIRS} )
 add_executable(get_started get_started.cpp)
 target_link_libraries(get_started
     \${ad_tensor_LIBRARIES}
-    \${TORCH_LIBRARIES}
 )
 EOF
 #
