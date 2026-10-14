@@ -52,7 +52,18 @@ mkdir build/test_install
 cd build/test_install
 #
 # get_started.cpp
-cp ../../examples/get_started.cpp get_started.cpp
+file="../../examples/get_started.cpp"
+if ! grep 'TEST(examples, get_started)' $file
+then
+    echo 'test_install.sh:: cannot find TEST(examples, get_started) in'
+    echo "$file"
+    exit 1
+fi
+sed $file  > get_started.cpp \
+    -e 's|TEST(examples, get_started)|int main(void)|' \
+    -e 's|<gtest/gtest.h>|<cassert>|' \
+    -e 's|EXPECT_TRUE|assert|' \
+    -e 's|^}|    //\n    return 0;\n}|'
 #
 # CMakeLists.txt
 cat << EOF > CMakeLists.txt
@@ -71,7 +82,6 @@ include_directories( \${ad_tensor_INCLUDE_DIRS} \${TORCH_INCLUDE_DIRS} )
 add_executable(get_started get_started.cpp)
 target_link_libraries(get_started
     \${ad_tensor_LIBRARIES}
-    GTest::gtest_main
     \${TORCH_LIBRARIES}
 )
 EOF

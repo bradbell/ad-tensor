@@ -6,8 +6,6 @@
 set(Torch_DIR "@Torch_DIR@")
 find_package(Torch REQUIRED)
 #
-find_package(GTest REQUIRED)
-#
 # ad_tensor_FOUND
 set(ad_tensor_FOUND TRUE)
 if( NOT EXISTS "@CMAKE_INSTALL_FULL_INCLUDEDIR@/ad_tensor/ad_tensor.hpp" )
