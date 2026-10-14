@@ -90,9 +90,12 @@ do
 done
 #
 # check_gtest.sh
-# Do last because it takes longer and other tests may change things
-# that require this to re-run.
+# Do other checks first because this takes longer and other tests may change
+# things that require this to re-run.
 echo_eval check_gtest.sh $release_flag $plugin_flag
+#
+# test_install.sh
+tools/test_install.sh
 #
 echo "$script_path: OK"
 exit 0

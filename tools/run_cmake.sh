@@ -108,7 +108,7 @@ cmake -S .. -B . \\
     -D CMAKE_CXX_FLAGS='$cxx_flags' \\
     -D CMAKE_C_COMPILER=$cmake_c_compiler \\
     -D CMAKE_CXX_COMPILER=$cmake_cxx_compiler \\
-    -D CMAKE_INSTALL_PREFIX=$HOME/prefix/ad_tensor
+    -D CMAKE_INSTALL_PREFIX=$(pwd)/prefix
 EOF
 cat temp.cmd
 if ! source temp.cmd 2> cmake.err

@@ -1,0 +1,25 @@
+# SPDX-License-Identifier: EPL-2.0 OR GPL-2.0-or-later
+# SPDX-FileCopyrightText: Bradley M. Bell <bradbell@seanet.com>
+# SPDX-FileContributor: 2026 Bradley M. Bell
+# -----------------------------------------------------------------------------
+#
+set(Torch_DIR "@Torch_DIR@")
+find_package(Torch REQUIRED)
+#
+find_package(GTest REQUIRED)
+#
+# ad_tensor_FOUND
+set(ad_tensor_FOUND TRUE)
+if( NOT EXISTS "@CMAKE_INSTALL_FULL_INCLUDEDIR@/ad_tensor/ad_tensor.hpp" )
+    set(ad_tensor_FOUND FALSE)
+endif( )
+#
+# ad_tensor_INCLUDE_DIRS
+set(ad_tensor_INCLUDE_DIRS "@CMAKE_INSTALL_FULL_INCLUDEDIR@" )
+#
+# ad_tensor_LIBRARIES
+find_library(ad_tensor_LIBRARIES
+    NAME ad_tensor
+    PATHS "@CMAKE_INSTALL_FULL_LIBDIR@"
+    REQUIRED
+)

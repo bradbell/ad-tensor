@@ -92,17 +92,19 @@ The following command will install ad_tensor:
 {xrst_end cmake}
 ]]
 # ---------------------------------------------------------------------------
-# print_variable
-MACRO(print_variable variable)
-    MESSAGE(STATUS "${variable} = ${${variable}}" )
-ENDMACRO(print_variable)
+# print_variable(variable_name)
+include(cmake/print_variable.cmake)
 #
 # cmake_minimum_required
 # version 3.12 is required for c++20
 cmake_minimum_required(VERSION 3.12)
 #
 # project
-project(ad_tensor VERSION "2026.10.13")
+project(ad_tensor VERSION "2026.10.14")
+#
+# CMAKE_INSTALL_RPATH, CMAKE_INSTALL_RPATH_USE_LINK_PATH
+set( CMAKE_INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR} )
+set( CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE )
 #
 # CMAKE_INSTALL_INCLUDEDIR, CMAKE_INSTALL_LIBDIR
 include(GNUInstallDirs)
@@ -118,6 +120,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 find_package(Torch REQUIRED)
 print_variable(TORCH_INCLUDE_DIRS)
 print_variable(TORCH_LIBRARIES)
+print_variable(TORCH_LIBDIRS)
 #
 # CMAKE_CXX_FLAGS
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${TORCH_CXX_FLAGS}")
@@ -156,7 +159,34 @@ if( include_gtest )
     add_subdirectory(tests)
     add_subdirectory(benchmarks)
 endif()
-#
+# ---------------------------------------------------------------------------
 # install
-install(TARGETS ad_tensor)
-install(DIRECTORY include/ DESTINATION include)
+# ---------------------------------------------------------------------------
+#
+# library file
+install(
+    TARGETS ad_tensor
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}
+)
+#
+# include files
+install(
+    DIRECTORY include/
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+    FILES_MATCHING PATTERN "*.hpp"
+)
+install(
+    FILES ${CMAKE_CURRENT_BINARY_DIR}/include/ad_tensor/configure.hpp
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/ad_tensor
+)
+#
+#  cmake file
+configure_file(
+    ${CMAKE_CURRENT_SOURCE_DIR}/cmake/ad_tensorConfig.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/cmake/ad_tensorConfig.cmake
+    @ONLY
+)
+install(
+    FILES  ${CMAKE_CURRENT_BINARY_DIR}/cmake/ad_tensorConfig.cmake
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/ad_tensor
+)
