@@ -9,9 +9,10 @@
 The User API Wish List
 ######################
 
-Install
-*******
-Create a CMake FindPackage for ad-tensor
+Sparsity Calculations
+*********************
+Provide a way to calculation sparsity between elements of a tensor.
+This might make higher order sparse derivatives feasible for huge tensors.
 
 Simpler Examples
 ****************

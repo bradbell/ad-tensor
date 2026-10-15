@@ -6,7 +6,7 @@
 {xrst_begin user usr}
 {xrst_spell
     libtorch
-    cppad
+    cpp
     autograd
     checkpointing
     versa
@@ -26,13 +26,16 @@ Git Repository
 Overview
 ********
 This package takes an alternative approach to AD in libtorch
-using improved and simplified implementations of the AD methods in
-`cppad <https://cppad.readthedocs.io/latest/user_guide.html>`_ .
+using improved and simplified implementations of the techniques in
+`CppAD <https://cppad.readthedocs.io/latest/user_guide.html>`_ .
+This version is mainly for people interested in
+benchmark testing or improving ad_tensor
+and for people developing other AD packages.
 
 Features
 ********
 #.  Recording a function with both parameters and variables.
-    Parameter are optional and can change but do not have derivatives.
+    Parameter are optional, can change, but do not have derivatives.
 
 #.  Forward and Reverse mode calculation of derivatives with respect to
     the variables as a function of both parameters and variables.
@@ -52,7 +55,7 @@ Features
     This reduces memory requirements at the expense of re-evaluation.
 
 #.  User defined derivative evaluation of atomic function.
-    This includes arbitrary order derivatives.
+    This includes forward and reverse mode to arbitrary order.
 
 #.  Generating C++ source code that computes derivatives. This includes
     the option to compile and link the derivatives to the current program.
