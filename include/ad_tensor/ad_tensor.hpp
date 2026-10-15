@@ -12,8 +12,11 @@
 #include <ad_tensor/configure.hpp>
 #include <ad_tensor/defined.hpp>
 #include <ad_tensor/direction.hpp>
-#include <ad_tensor/plugin.hpp>
 #include <ad_tensor/sparsity.hpp>
 #include <ad_tensor/to_string.hpp>
 #include <ad_tensor/vector.hpp>
 // END_SORT_THIS_LINE_MINUS_1
+//
+#if INCLUDE_PLUGIN
+#include <ad_tensor/plugin.hpp>
+#endif

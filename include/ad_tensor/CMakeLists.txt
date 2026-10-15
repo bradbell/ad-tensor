@@ -4,9 +4,9 @@
 # -----------------------------------------------------------------------------
 #
 if( include_plugin )
-    set(include_plugin, 1)
+    set(include_plugin 1)
 else( )
-    set(include_plugin, 0)
+    set(include_plugin 0)
 endif( )
 configure_file(
     ${CMAKE_CURRENT_SOURCE_DIR}/configure.hpp.in
