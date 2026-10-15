@@ -83,19 +83,17 @@ sed $file  > get_started.cpp \
     -e 's|^}|    //\n    return 0;\n}|'
 #
 # CMakeLists.txt
-cat << EOF > CMakeLists.txt
+cat << 'EOF' > CMakeLists.txt
 cmake_minimum_required(VERSION 3.12)
 project( test_install )
 #
 find_package(ad_tensor REQUIRED)
 #
-set(CMAKE_CXX_FLAGS "\${CMAKE_CXX_FLAGS} \${ad_tensor_CXX_FLAGS}")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${ad_tensor_CXX_FLAGS}")
 #
-include_directories( \${ad_tensor_INCLUDE_DIRS} )
+include_directories( ${ad_tensor_INCLUDE_DIRS} )
 add_executable(get_started get_started.cpp)
-target_link_libraries(get_started
-    \${ad_tensor_LIBRARIES}
-)
+target_link_libraries(get_started ${ad_tensor_LIBRARIES} )
 EOF
 #
 # build
