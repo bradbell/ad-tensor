@@ -197,7 +197,7 @@ TEST(benchmarks, smooth_spline_autograd) {
     // learn_ms
     // For this case learn_ms is near equal the total time reported by gtest
     // double learn_ms = elapsed_ms();
-    // std::cout << "learn_ms = " << learn_ms << "\n";
+    // std::cout << "smooth_spline_autograd learn_ms = " << learn_ms << "\n";
     //
     // relative_loss
     double relative_loss = loss(y).item<double>() / initial_loss;
@@ -246,7 +246,7 @@ TEST(benchmarks, smooth_spline_ad_tensor) {
     // learn_ms
     // For this case learn_ms is near equal the total time reported by gtest
     // double learn_ms = elapsed_ms();
-    //std::cout << "learn_ms = " << learn_ms << "\n";
+    // std::cout << "smooth_spline_ad_tensor learn_ms = " << learn_ms << "\n";
     //
     // relative_loss
     double relative_loss = loss(y[0]).item<double>() / initial_loss;
@@ -309,7 +309,8 @@ TEST(benchmarks, smooth_spline_record_gradient) {
     // learn_ms
     // For this case learn_ms is near equal the total time reported by gtest
     // double learn_ms = elapsed_ms();
-    // std::cout << "learn_ms = " << learn_ms << "\n";
+    // std::cout << "smooth_spline_record_gradient learn_ms = " << learn_ms;
+    // std::cout << "\n";
     //
     // relative_loss
     double relative_loss = loss(y[0]).item<double>() / initial_loss;
@@ -407,7 +408,7 @@ TEST(benchmarks, smooth_spline_plugin) {
     //
     // learn_ms
     double learn_ms = elapsed_ms();
-    std::cout << "learn_ms = " << learn_ms << "\n";
+    std::cout << "smooth_spline_plugin learn_ms = " << learn_ms << "\n";
     //
     // relative_loss
     double relative_loss = loss(y[0]).item<double>() / initial_loss;

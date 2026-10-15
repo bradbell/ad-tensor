@@ -25,10 +25,21 @@ grep "CMAKE_BUILD_TYPE"  $configure
 grep "AD_TENSOR_VERSION" $configure
 grep "INCLUDE_PLUGIN"    $configure
 #
+cat << 'EOF' > temp.sed
+/learn_ms =/! b one
+: loop
+N
+/OK/! b loop
+s|^\([^\n]*\).*\n\([^\n]*\)$|\2\n\1|
+p
+b end
+#
+: one
+/OK/p
+: end
+EOF
 benmchmarks='build/benchmarks/benchmarks'
-$benmchmarks | sed -n \
-    -e '/OK *\]/p' \
-    -e '/^learn_ms =/p'
+$benmchmarks | sed -n -f temp.sed
 # -----------------------------------------------------------------------------
 echo "$script_path: OK"
 exit 0

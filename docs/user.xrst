@@ -29,7 +29,7 @@ This package takes an alternative approach to AD in libtorch
 using improved and simplified implementations of the techniques in
 `CppAD <https://cppad.readthedocs.io/latest/user_guide.html>`_ .
 This version is mainly for people interested in
-benchmark testing or improving ad_tensor
+benchmark testing or improving ad-tensor
 and for people developing other AD packages.
 
 Features

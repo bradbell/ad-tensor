@@ -96,9 +96,9 @@ This code is part of the setup below:
 learn_ms
 ********
 In the code below, gtest reports the total time for each test.
-Each test also prints the value learn_ms, which is the time
-in milliseconds for the learning loop; i.e., it does not include
-the time to setup the calculation of the gradients in the learning loop.
+The plugin test also prints the value learn_ms, which is the time
+in milliseconds for the learning loop; i.e., this does not include
+the time to compile and link the plugin.
 
 Setup
 *****
@@ -282,7 +282,7 @@ TEST(benchmarks, multi_normal_autograd) {
     // learn_ms
     // For this case learn_ms is near equal the total time reported by gtest
     // double learn_ms = elapsed_ms();
-    // std::cout << "learn_ms = " << learn_ms << "\n";
+    // std::cout << "multi_normal_autograd learn_ms = " << learn_ms << "\n";
     //
     // relative_loss
     double relative_loss = loss(L).item<double>() / initial_loss;
@@ -332,7 +332,7 @@ TEST(benchmarks, multi_normal_ad_tensor) {
     // learn_ms
     // For this case learn_ms is near equal the total time reported by gtest
     // double learn_ms = elapsed_ms();
-    // std::cout << "learn_ms = " << learn_ms << "\n";
+    // std::cout << "multi_normal_ad_tensor learn_ms = " << learn_ms << "\n";
     //
     // relative_loss
     double relative_loss = loss(L[0]).item<double>() / initial_loss;
@@ -395,7 +395,8 @@ TEST(benchmarks, multi_normal_record_gradient) {
     // learn_ms
     // For this case learn_ms is near equal the total time reported by gtest
     // double learn_ms = elapsed_ms();
-    // std::cout << "learn_ms = " << learn_ms << "\n";
+    // std::cout << "multi_normal_record_gradient learn_ms = " << learn_ms;
+    // std::cout << "\n";
     //
     // relative_loss
     double relative_loss = loss(L[0]).item<double>() / initial_loss;
@@ -493,7 +494,7 @@ TEST(benchmarks, multi_normal_plugin) {
     //
     // learn_ms
     double learn_ms = elapsed_ms();
-    std::cout << "learn_ms = " << learn_ms << "\n";
+    std::cout << "multi_normal_plugin learn_ms = " << learn_ms << "\n";
     //
     // relative_loss
     double relative_loss = loss(L[0]).item<double>() / initial_loss;

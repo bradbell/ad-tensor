@@ -41,7 +41,7 @@ learn_ms
 ********
 In the code below, gtest reports the total time for each test.
 The plugin test also prints the value learn_ms, which is the time
-in milliseconds for the learning loop; i.e., it does not include
+in milliseconds for the learning loop; i.e., this does not include
 the time to compile and link the plugin.
 
 Setup
@@ -203,7 +203,7 @@ TEST(benchmarks, fit_poly_autograd) {
     // learn_ms
     // For this case learn_ms is near equal the total time reported by gtest
     // double learn_ms = elapsed_ms();
-    // std::cout << "learn_ms = " << learn_ms << "\n";
+    // std::cout << "fit_poly_autograd learn_ms = " << learn_ms << "\n";
     //
     // relative_loss
     double relative_loss = loss(c, grid, data).item<double>() / initial_loss;
@@ -262,7 +262,7 @@ TEST(benchmarks, fit_poly_ad_tensor) {
     // learn_ms
     // For this case learn_ms is near equal the total time reported by gtest
     // double learn_ms = elapsed_ms();
-    //std::cout << "learn_ms = " << learn_ms << "\n";
+    // std::cout << "fit_poly_ad_tensor learn_ms = " << learn_ms << "\n";
     //
     // relative_loss
     double relative_loss = loss(c, grid, data).item<double>() / initial_loss;
@@ -335,7 +335,7 @@ TEST(benchmarks, fit_poly_record_gradient) {
     // learn_ms
     // For this case learn_ms is near equal the total time reported by gtest
     // double learn_ms = elapsed_ms();
-    // std::cout << "learn_ms = " << learn_ms << "\n";
+    // std::cout << "fit_poly_record_gradient learn_ms = " << learn_ms << "\n";
     //
     // relative_loss
     double relative_loss = loss(c, grid, data).item<double>() / initial_loss;
@@ -443,7 +443,7 @@ TEST(benchmarks, fit_poly_plugin) {
     //
     // learn_ms
     double learn_ms = elapsed_ms();
-    std::cout << "learn_ms = " << learn_ms << "\n";
+    std::cout << "fit_poly_plugin learn_ms = " << learn_ms << "\n";
     //
     // relative_loss
     double relative_loss = loss(c, grid, data).item<double>() / initial_loss;
