@@ -34,14 +34,31 @@ then
 fi
 cmake --build build --target install
 #
-if [ ! -e build/prefix/include/ad_tensor/ad_tensor.hpp ]
+# prefix
+prefix=$(pwd)/build/prefix
+#
+if [ ! -e $prefix/include/ad_tensor/ad_tensor.hpp ]
 then
-    echo 'test_install.sh: expected ad_tensor to install into build/prefix'
+    echo 'test_install.sh: expected ad_tensor to install with preifx'
+    echo "$prefix"
     exit 1
 fi
 #
-# prefix
-prefix=$(pwd)/build/prefix
+# ad_tensor_DIR
+ad_tensor_DIR=''
+for libdir in lib lib64
+do
+    if [ -e "$prefix/$libdir/cmake/ad_tensor/ad_tensorConfig.cmake" ]
+    then
+        ad_tensor_DIR="$prefix/$libdir/cmake/ad_tensor"
+    fi
+done
+if [ "$ad_tensor_DIR" == '' ]
+then
+    echo 'Cannot find ad_tensorConfig.cmake below prefix'
+    echo $prefix
+    exit 1
+fi
 #
 # build/test_install
 if [ -e build/test_install ]
@@ -70,10 +87,6 @@ cat << EOF > CMakeLists.txt
 cmake_minimum_required(VERSION 3.12)
 project( test_install )
 #
-include(GNUInstallDirs)
-set(CMAKE_CXX_STANDARD 20)
-#
-set(ad_tensor_DIR "$prefix/\${CMAKE_INSTALL_LIBDIR}/cmake/ad_tensor" )
 find_package(ad_tensor REQUIRED)
 #
 set(CMAKE_CXX_FLAGS "\${CMAKE_CXX_FLAGS} \${ad_tensor_CXX_FLAGS}")
@@ -87,7 +100,7 @@ EOF
 #
 # build
 mkdir build
-cmake -S . -B build -G Ninja
+cmake -S . -B build -G Ninja -D "ad_tensor_DIR=$ad_tensor_DIR"
 cmake --build build --target get_started
 build/get_started
 #
