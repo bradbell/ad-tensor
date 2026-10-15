@@ -29,7 +29,7 @@ Function Value
 Given the input vector :math:`x \in \mathbb{R}^{nx}`,
 the weight vector :math:`w \in \mathbb{R}^{nw}` ,
 and the bias tensor :math:`b \in \mathbb{R}` .
-The correlation of x with w,0 is the vector
+The correlation of x with w,b is the vector
 :math:`y \in \mathbb{R}^{ny}` where :math:`ny = nx - nw + 1` and
 
 .. math::
@@ -83,7 +83,7 @@ the forward derivative of :math:`dy \in \mathbb{R}^{ny}` is given by
     dy_k = db + \sum_{j=0}^{nw-1} x_{k+j} \cdot dw_j +
         \sum_{i=k}^{k+nw-1} dx_i \cdot w_{i-k}
 
-Note that this is the sum of x correlated with dw,0
+Note that this is the sum of db plus x correlated with dw,0
 plus dx correlated with w,0.
 
 Reverse Partials
@@ -125,7 +125,7 @@ The contributions to the partial w.r.t the input,
     px_i & = \sum_{k= \max(0, i-nw+1) }^{ \min(i, ny - 1) } py_k \cdot w_{i-k}
 
 The libtorch conv_transpose1d operation is designed so that
-px is the transpose correlation of py with w.
+px is the transpose correlation of py with w,0.
 
 Alternative Method
 ******************
