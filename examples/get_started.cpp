@@ -50,13 +50,16 @@ Source Code
     BEGIN_CPP, END_CPP
 }
 
+Example Building Executable
+***************************
+see :ref:`cmake_find_package-name`
+
 {xrst_end get_started}
 */
 // BEGIN_CPP
-#include <gtest/gtest.h>
 #include <ad_tensor/ad_tensor.hpp>
 
-TEST(examples, get_started) {
+int main(void) {
     //
     // vector, adten_t
     using ad_tensor::vector;
@@ -99,22 +102,18 @@ TEST(examples, get_started) {
     //
     // y
     vector<at::Tensor> y = f.get_range(var_all);
-    EXPECT_TRUE( y[0].equal(
-        c[0] + c[1] * x[0] + c[2] * x[0] * x[0]
-    ) );
+    assert( y[0].equal( c[0] + c[1] * x[0] + c[2] * x[0] * x[0] ) );
     //
     // dy
     vector<at::Tensor> dx = { torch::ones( x[0].sizes() ) };
     vector<at::Tensor> dy = f.forward_der(dx, var_all);
-    EXPECT_TRUE( dy[0].equal(
-        c[1] + 2.0 * c[2] * x[0]
-    ) );
+    assert( dy[0].equal( c[1] + 2.0 * c[2] * x[0] ) );
     //
     // px
     vector<at::Tensor> py = { torch::ones( x[0].sizes() ) };
     vector<at::Tensor> px = f.reverse_der(py, var_all);
-    EXPECT_TRUE( px[0].equal(
-        c[1] + 2.0 * c[2] * x[0]
-    ) );
+    assert( px[0].equal( c[1] + 2.0 * c[2] * x[0] ) );
+    //
+    return 0;
 }
 // END_CPP

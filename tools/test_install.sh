@@ -34,8 +34,11 @@ then
 fi
 cmake --build build --target install
 #
+# repository
+repository=$(pwd)
+#
 # prefix
-prefix=$(pwd)/build/prefix
+prefix=$repository/build/prefix
 #
 if [ ! -e $prefix/include/ad_tensor/ad_tensor.hpp ]
 then
@@ -68,39 +71,33 @@ fi
 mkdir build/test_install
 cd build/test_install
 #
-# get_started.cpp
-file="../../examples/get_started.cpp"
-if ! grep 'TEST(examples, get_started)' $file > /dev/null
-then
-    echo 'test_install.sh:: cannot find TEST(examples, get_started) in'
-    echo "$file"
-    exit 1
-fi
-sed $file  > get_started.cpp \
-    -e 's|TEST(examples, get_started)|int main(void)|' \
-    -e 's|<gtest/gtest.h>|<cassert>|' \
-    -e 's|EXPECT_TRUE|assert|' \
-    -e 's|^}|    //\n    return 0;\n}|'
-#
 # CMakeLists.txt
 cat << 'EOF' > CMakeLists.txt
+# BEGIN_CMAKELISTS_TXT_EXAMPLE
+# This will compile and link the file get_started.cpp
 cmake_minimum_required(VERSION 3.12)
-project( test_install )
+project( ad_tensor_example )
 #
 find_package(ad_tensor REQUIRED)
 #
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${ad_tensor_CXX_FLAGS}")
-#
 include_directories( ${ad_tensor_INCLUDE_DIRS} )
-add_executable(get_started get_started.cpp)
-target_link_libraries(get_started ${ad_tensor_LIBRARIES} )
+add_executable(example get_started.cpp)
+target_link_libraries(example ${ad_tensor_LIBRARIES} )
+# END_CMAKELISTS_TXT_EXAMPLE
 EOF
 #
-# build
+# BEGIN_BUILD_AND_RUN_EXAMPLE
+# The directory $repository is the ad_tensor git repository on this machine.
+# The directory $ad_tensor_DIR contains the file ad_tensorConfig.cmake.
 mkdir build
-cmake -S . -B build -G Ninja -D "ad_tensor_DIR=$ad_tensor_DIR"
-cmake --build build --target get_started
-build/get_started
+cp $repository/examples/get_started.cpp get_started.cpp
+cmake -S . -B build -G Ninja \
+    -D "ad_tensor_DIR=$ad_tensor_DIR" \
+    -D "CMAKE_BUILD_TYPE=debug"
+cmake --build build --target example
+build/example
+# END_BUILD_AND_RUN_EXAMPLE
 #
 echo "$script_path: OK"
 exit 0

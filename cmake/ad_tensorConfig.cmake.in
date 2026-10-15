@@ -6,6 +6,8 @@
 {xrst_begin cmake_find_package usr}
 {xrst_spell
     config
+    txt
+    cpp
 }
 
 Using CMake to Find the ad_tensor Package
@@ -40,6 +42,27 @@ compile code that uses ad_tensor.
 ad_tensor_LIBRARIES
 *******************
 is the libraries that must be linked to create a program that uses ad_tensor.
+
+Example
+*******
+
+get_started.cpp
+===============
+see :ref:`get_started-name`
+
+CMakeLists.txt
+==============
+{xrst_literal ,
+    tools/test_install.sh
+    BEGIN_CMAKELISTS_TXT , END_CMAKELISTS_TXT
+}
+
+Build and Run
+=============
+{xrst_literal ,
+    tools/test_install.sh
+    BEGIN_BUILD_AND_RUN_EXAMPLE, END_BUILD_AND_RUN_EXAMPLE
+}
 
 {xrst_end cmake_find_package}
 ]]

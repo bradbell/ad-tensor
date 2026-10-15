@@ -11,6 +11,8 @@ if( include_plugin )
     )
 endif()
 #
+# examples
+# ./get_started.cpp is a stand alone main program and not a google test.
 # BEGIN_SORT_THIS_LINE_PLUS_2
 add_executable(examples
     ${plugin_EXAMPLES}
@@ -47,7 +49,6 @@ add_executable(examples
     chkpnt/ad_forward_der.cpp
     chkpnt/ad_reverse_der.cpp
     chkpnt/get_started.cpp
-    get_started.cpp
 )
 # END_SORT_THIS_LINE_MINUS_2
 #
