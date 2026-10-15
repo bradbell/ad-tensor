@@ -91,6 +91,7 @@ that are not backward compatible.
 {xrst_toc_table
     examples/get_started.cpp
     CMakeLists.txt
+    cmake/ad_tensorConfig.cmake.in
     include/ad_tensor/vector.hpp
     include/ad_tensor/adtype.hpp
     include/ad_tensor/adten.hpp

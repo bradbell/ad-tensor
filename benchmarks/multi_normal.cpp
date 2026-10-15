@@ -127,7 +127,7 @@ AD Tensor With Optimization
 AD Tensor With Source Generation
 ********************************
 This benchmark will only run when
-:ref:`cmake@Command@include_plugin` is true:
+:ref:`cmake_build@Command@include_plugin` is true:
 {xrst_literal ,
     BEGIN_SRC_GEN, END_SRC_GEN
 }

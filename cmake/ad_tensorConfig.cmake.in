@@ -2,6 +2,47 @@
 # SPDX-FileCopyrightText: Bradley M. Bell <bradbell@seanet.com>
 # SPDX-FileContributor: 2026 Bradley M. Bell
 # -----------------------------------------------------------------------------
+#[[
+{xrst_begin cmake_find_package usr}
+{xrst_spell
+    config
+}
+
+Using CMake to Find the ad_tensor Package
+#########################################
+
+Syntax
+******
+{xrst_code cmake}
+    find_package(ad_tensor)
+{xrst_code}
+
+ad_tensor_DIR
+*************
+An input variable specifying a non-standard directory to search for the
+ad_tensor cmake configuration file ``ad_tensorConfig.cmake`` .
+
+ad_tensor_FOUND
+***************
+is a boolean indicating if ad_tensor was found.
+
+ad_tensor_INCLUDE_DIRS
+**********************
+is the include directories that are needed to
+compile code that uses ad_tensor.
+
+ad_tensor_CXX_FLAGS
+*******************
+are some extra flags that a necessary to
+compile code that uses ad_tensor.
+
+
+ad_tensor_LIBRARIES
+*******************
+is the libraries that must be linked to create a program that uses ad_tensor.
+
+{xrst_end cmake_find_package}
+]]
 #
 # ad_tensor_FOUND
 set(ad_tensor_FOUND TRUE)
@@ -14,8 +55,8 @@ cmake_path(SET ad_tensor_torch_prefix NORMALIZE "@Torch_DIR@/../../..")
 message(STATUS "ad_tensor_torch_prefix = ${ad_tensor_torch_prefix}" )
 #
 # ad_tensor_INCLUDE_DIRS
-set(ad_tensor_INCLUDE_DIRS 
-    "@CMAKE_INSTALL_FULL_INCLUDEDIR@;@TORCH_INCLUDE_DIRS@" 
+set(ad_tensor_INCLUDE_DIRS
+    "@CMAKE_INSTALL_FULL_INCLUDEDIR@;@TORCH_INCLUDE_DIRS@"
 )
 #
 # ad_tensor_LIBRARIES
@@ -37,7 +78,7 @@ foreach(ad_tensor_tmp torch_cpu;@TORCH_LIBRARIES@ )
         )
         list(APPEND ad_tensor_LIBRARIES "${lib_path}" )
     endif( )
-endforeach( ) 
+endforeach( )
 message(STATUS "ad_tensor_LIBRARIES = ${ad_tensor_LIBRARIES}" )
 #
 # ad_tensor_CXX_FLAGS

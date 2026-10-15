@@ -3,7 +3,7 @@
 # SPDX-FileContributor: 2026 Bradley M. Bell
 # -----------------------------------------------------------------------------
 #[[
-{xrst_begin cmake usr}
+{xrst_begin cmake_build usr}
 {xrst_spell
     dir
     filesystem
@@ -89,7 +89,7 @@ The following command will install ad_tensor:
     cmake --install build_dir
 {xrst_code}
 
-{xrst_end cmake}
+{xrst_end cmake_build}
 ]]
 # ---------------------------------------------------------------------------
 # print_variable(variable_name)
@@ -100,7 +100,7 @@ include(cmake/print_variable.cmake)
 cmake_minimum_required(VERSION 3.12)
 #
 # project
-project(ad_tensor VERSION "2026.10.14")
+project(ad_tensor VERSION "2026.10.15")
 #
 # CMAKE_INSTALL_RPATH, CMAKE_INSTALL_RPATH_USE_LINK_PATH
 set( CMAKE_INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR} )

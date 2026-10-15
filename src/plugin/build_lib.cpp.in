@@ -47,7 +47,7 @@ CMakeLists.txt
 ==============
 A specialized  ``CMakeLists.txt`` file is added to the source_dir directory.
 The following variables will be set to their values when CMake was run
-for the ad-tensor project; see :ref:`cmake-name` :
+for the ad-tensor project; see :ref:`cmake_build-name` :
 CMAKE_CXX_STANDARD,
 CMAKE_CXX_COMPILER,
 CMAKE_CXX_FLAGS,
@@ -87,10 +87,10 @@ namespace { // Begin empty namespace
 // cmake_lists_txt
 const char* cmake_lists_txt = R"|(
 #
-# print_variable
-MACRO(print_variable variable)
-    MESSAGE(STATUS "${variable} = ${${variable}}" )
-ENDMACRO(print_variable)
+# print_variable(variable_name)
+macro(print_variable variable_name)
+    message(STATUS "${variable_name} = ${${variable_name}}" )
+endmacro( )
 #
 # project
 cmake_minimum_required(VERSION 3.10)
