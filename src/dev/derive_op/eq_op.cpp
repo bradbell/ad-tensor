@@ -8,6 +8,7 @@
 #include <ad_tensor/dev/plus_minus_equal.hpp>
 #include <ad_tensor/dev/tensor_at_index.hpp>
 #include <ad_tensor/defined.hpp>
+#include <ad_tensor/dev/src_gen_binary.hpp>
 //
 namespace ad_tensor { namespace dev { // Begin ad_tensor::dev
 // ------------------------------------------------------------------------
@@ -145,8 +146,7 @@ template <> std::string eq_op_t<at::Tensor>::src_gen(
     bool                                                  variable_agraph ,
     const std::function< std::string(size_t, adtype_t) >& tensor_src
 ) const {
-    user_assert(false, "src_gen not yet implemented for eq operator" );
-    return "";
+    return src_gen_binary(op_index, agraph, variable_agraph, tensor_src);
 }
 template <> std::string eq_op_t<adten_t>::src_gen(
     size_t                                                op_index        ,

@@ -56,6 +56,7 @@ TEST(tests_adfn, src_gen)  {
     ar.push_back( av[0].flip(dim)        + ap[0].flip(dim) );
     ar.push_back( av[0].transpose(0, 1)  + ap[0].transpose(0, 1) );
     ar.push_back( av[0].matmul( ap[0] ) );
+    ar.push_back( av[0] <= ap[0] );
     //
     adten_t ainput  = ap[1];
     adten_t aweight = av[1];
@@ -101,7 +102,7 @@ TEST(tests_adfn, src_gen)  {
     // r
     size_t i = 0;
     vector<Tensor> r = f_plugin(v, p);
-    EXPECT_EQ( r.size(), 10 );
+    EXPECT_EQ( r.size(), 11 );
     EXPECT_TRUE( r[i++].equal( (-v[0])              + (-p[0]) ) );
     EXPECT_TRUE( r[i++].equal( v[0].exp()           + p[0].exp() ) );
     EXPECT_TRUE( r[i++].equal( v[0].logdet()        + p[0].logdet() ) );
@@ -110,11 +111,12 @@ TEST(tests_adfn, src_gen)  {
     EXPECT_TRUE( r[i++].equal( v[0].flip(dim)       + p[0].flip(dim) ) );
     EXPECT_TRUE( r[i++].equal( v[0].transpose(0, 1) + p[0].transpose(0, 1) ) );
     EXPECT_TRUE( r[i++].equal( v[0].matmul( p[0] ) ) );
-    EXPECT_TRUE( r[i++].equal( 
-        ad_tensor::conv1d(p[1], v[1], bias, conv1d_options) 
+    EXPECT_TRUE( r[i++].equal( v[0] <= p[0] ) );
+    EXPECT_TRUE( r[i++].equal(
+        ad_tensor::conv1d(p[1], v[1], bias, conv1d_options)
     ));
-    EXPECT_TRUE( r[i++].equal( 
-        torch::nn::functional::pad(v[0], pad_options) 
+    EXPECT_TRUE( r[i++].equal(
+        torch::nn::functional::pad(v[0], pad_options)
     ));
     //
 }

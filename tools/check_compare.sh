@@ -15,6 +15,16 @@ then
     echo "tools/check_compare.sh: must be executed from its parent directory"
     exit 1
 fi
+replace=no
+if [ "$#" != 0 ]
+then
+    if [ "$#" != 1 ] || [ "$1" != '--replace' ]
+    then
+        echo 'usage: check_compare.sh: [--replace]'
+        exit 1
+    fi
+    replace=yes
+fi
 #
 # sed
 source tools/grep_and_sed.sh
@@ -33,12 +43,18 @@ do
     -e "s|\"gt: n_arg != 2\"|\"$name: n_arg != 2\"|"
     if ! diff $out_file temp.$$
     then
-        echo "check_compare.sh: The file $out_file"
-        echo "Does not agree with the file $gt_file"
+        if [ "$replace" == 'yes' ]
+        then
+            mv temp.$$ $out_file
+        else
+            echo "check_compare.sh: The file $out_file"
+            echo "Does not agree with the file $gt_file"
+            rm temp.$$
+            exit 1
+        fi
+    else
         rm temp.$$
-        exit 1
     fi
 done
-rm temp.$$
 #
 echo "$script_path: OK"

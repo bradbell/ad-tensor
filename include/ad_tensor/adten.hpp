@@ -482,5 +482,5 @@ namespace ad_tensor {
         const at::Tensor&                                        bias    ,
         const torch::nn::functional::ConvTranspose1dFuncOptions& options
     );
-    // END_CONV_TRANSPOSE1D_AD_TEN
+    // END_CONV_TRANSPOSE1D
 }

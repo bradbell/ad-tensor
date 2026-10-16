@@ -26,7 +26,7 @@ Prototype
 
 op_index
 ********
-Pis the index of this operator in the operation sequence.
+is the index of this operator in the operation sequence.
 It is also the index of the result for this operator.
 It must be greater than zero, because the first result is an
 independent parameter tensor.
@@ -108,6 +108,42 @@ std::string src_gen_binary(
     // src
     string src;
     switch( op_enum ) {
+        //
+        case op_enum_t::lt: {
+            constexpr const char* fmt = "{} = {} < {};";
+            src = std::format(fmt, target_src, lhs_src, rhs_src);
+        }
+        break;
+        //
+        case op_enum_t::le: {
+            constexpr const char* fmt = "{} = {} <= {};";
+            src = std::format(fmt, target_src, lhs_src, rhs_src);
+        }
+        break;
+        //
+        case op_enum_t::eq: {
+            constexpr const char* fmt = "{} = {} == {};";
+            src = std::format(fmt, target_src, lhs_src, rhs_src);
+        }
+        break;
+        //
+        case op_enum_t::ne: {
+            constexpr const char* fmt = "{} = {} != {};";
+            src = std::format(fmt, target_src, lhs_src, rhs_src);
+        }
+        break;
+        //
+        case op_enum_t::ge: {
+            constexpr const char* fmt = "{} = {} >= {};";
+            src = std::format(fmt, target_src, lhs_src, rhs_src);
+        }
+        break;
+        //
+        case op_enum_t::gt: {
+            constexpr const char* fmt = "{} = {} > {};";
+            src = std::format(fmt, target_src, lhs_src, rhs_src);
+        }
+        break;
         //
         case op_enum_t::add: {
             constexpr const char* fmt = "{} = {} + {};";
