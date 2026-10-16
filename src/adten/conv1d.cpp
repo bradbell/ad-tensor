@@ -16,12 +16,16 @@ Syntax
 {xrst_code cpp}
     output = conv1d(input, weight, bias, options)
 {xrst_code}
+In the at::Tensor syntax for this operation, the bias is part of the options.
+In order to have template code that works for both at::Tensor and adten_t,
+the syntax above is implemented for both these types.
+An :ref:`undefined<defined-name>` bias corresponds to zero; i.e., no bias.
 
 Prototype
 *********
 {xrst_literal ,
     include/ad_tensor/adten.hpp
-    BEGIN_CONV1D_AD_TEN, END_CONV1D_AD_TEN
+    BEGIN_CONV1D, END_CONV1D
 }
 
 Example

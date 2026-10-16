@@ -17,7 +17,7 @@ This might make higher order sparse derivatives feasible for huge tensors.
 Simpler Examples
 ****************
 Some of the examples are complicated because they are also being used as tests.
-More these examples to the tests directory and make simpler examples.
+Move these examples to the tests directory and make simpler examples.
 
 Fill in Missing src_gen
 ***********************

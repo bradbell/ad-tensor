@@ -453,34 +453,34 @@ namespace ad_tensor {
     // END_LINALG_SOLVE
     //
     // ad_tensor::conv1d
-    // BEGIN_CONV1D_AD_TEN
+    // BEGIN_CONV1D
     adten_t conv1d(
         const adten_t&                                  input   ,
         const adten_t&                                  weight  ,
         const adten_t&                                  bias    ,
         const torch::nn::functional::Conv1dFuncOptions& options
     );
-    // END_CONV1D_AD_TEN
     at::Tensor conv1d(
         const at::Tensor&                               input   ,
         const at::Tensor&                               weight  ,
         const at::Tensor&                               bias    ,
         const torch::nn::functional::Conv1dFuncOptions& options
     );
+    // END_CONV1D_AD_TEN
     //
     // ad_tensor::conv_transpose1d
-    // BEGIN_CONV_TRANSPOSE1D_AD_TEN
+    // BEGIN_CONV_TRANSPOSE1D
     adten_t conv_transpose1d(
         const adten_t&                                           input   ,
         const adten_t&                                           weight  ,
         const adten_t&                                           bias    ,
         const torch::nn::functional::ConvTranspose1dFuncOptions& options
     );
-    // END_CONV_TRANSPOSE1D_AD_TEN
     at::Tensor conv_transpose1d(
         const at::Tensor&                                        input   ,
         const at::Tensor&                                        weight  ,
         const at::Tensor&                                        bias    ,
         const torch::nn::functional::ConvTranspose1dFuncOptions& options
     );
+    // END_CONV_TRANSPOSE1D_AD_TEN
 }
