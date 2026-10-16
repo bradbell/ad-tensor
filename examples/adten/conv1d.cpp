@@ -54,9 +54,9 @@ TEST(examples_adten, conv1d) {
     at::Tensor y = r[0].contiguous();
     //
     // nx, nw, ny
-    int64_t nx = x.sizes()[2];
-    int64_t nw = w.sizes()[2];
-    int64_t ny = y.sizes()[2];
+    size_t nx = size_t( x.sizes()[2] );
+    size_t nw = size_t( w.sizes()[2] );
+    size_t ny = size_t( y.sizes()[2] );
     EXPECT_EQ( ny,  nx - nw + 1 );
     // ------------------------------------------------------------------------`
     // check function value
@@ -65,9 +65,9 @@ TEST(examples_adten, conv1d) {
         y.data_ptr<float>(),
         y.data_ptr<float>() + y.numel()
     );
-    for(int64_t k = 0; k < ny; ++k) {
+    for(size_t k = 0; k < ny; ++k) {
         float sum = b_vec[0];
-        for(int64_t j = 0; j < nw; ++j) {
+        for(size_t j = 0; j < nw; ++j) {
             sum += x_vec[k + j] * w_vec[j];
         }
         EXPECT_EQ( y_vec[k], sum );

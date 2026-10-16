@@ -199,7 +199,7 @@ adten_t adten_t::pad(
         agraph->m_arg_type.push_back( adtype_t::none );
         //
         for(size_t i = 0; i < pad_sizes.size(); ++i)
-        {   agraph->m_arg_value.push_back( pad_sizes[i] );
+        {   agraph->m_arg_value.push_back( size_t( pad_sizes[i] ) );
             agraph->m_arg_type.push_back( adtype_t::none );
         }
     }

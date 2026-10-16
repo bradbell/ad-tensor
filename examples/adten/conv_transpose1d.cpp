@@ -14,9 +14,9 @@ TEST(examples_adten, conv_transpose1d) {
     namespace functional = torch::nn::functional;
     //
     // x_vec, w_vec, b_vec
-    vector<float> x_vec = {2.0};
-    vector<float> w_vec = {0.15, 0.5, 0.35};
-    vector<float> b_vec = {-1.0};
+    vector<float> x_vec = {2.0f};
+    vector<float> w_vec = {0.15f, 0.5f, 0.35f};
+    vector<float> b_vec = {-1.0f};
     //
     // y, w, b
     at::Tensor x = torch::tensor(x_vec).view( {1, 1, 1} );
@@ -66,17 +66,11 @@ TEST(examples_adten, conv_transpose1d) {
         y.data_ptr<float>(),
         y.data_ptr<float>() + y.numel()
     );
-    for(int64_t i = 0; i < ny; ++i) {
+    for(size_t i = 0; i < ny; ++i) {
         float sum = b_vec[0];
-        int64_t k_begin = 0;
-        if( i + 1 >= nw ) {
-            k_begin = (i + 1) - nw;
-        }
-        int64_t k_end = i + 1;
-        if( k_end > nx ) {
-            k_end = nx;
-        }
-        for(int64_t k = k_begin; k < k_end ; ++k) {
+        size_t k_first = size_t( std::max( int64_t(0), int64_t(i) - nw + 1 ) );
+        size_t k_last  = size_t( std::min( int64_t(i), nx -1 ) );
+        for(size_t k = k_first; k <= k_last ; ++k) {
             sum += x_vec[k] * w_vec[i - k];
         }
         EXPECT_EQ( y_vec[i], sum );

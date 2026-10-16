@@ -342,12 +342,12 @@ void pad_op_t<TensorType>::reverse_der(
     TensorType input_bar          = rev_der[op_index];
     size_t n_dim = n_sizes / 2;
     for(size_t i = 0; i < n_dim; ++i) {
-        int64_t dim   = int64_t( output_shape.size() - i - 1 );
-        if( pad_sizes[2 * i] != 0 || pad_sizes[2 * i +1] != 0 ) {
+        size_t dim  = output_shape.size() - i - 1;
+        if( pad_sizes[2 * i] != 0 || pad_sizes[2 * i + 1] != 0 ) {
             int64_t start = pad_sizes[2 * i];
             int64_t stop  = output_shape[dim] - pad_sizes[2 * i + 1];
             int64_t step  = 1;
-            input_bar     = input_bar.slice(dim, start, stop, step);
+            input_bar = input_bar.slice( int64_t(dim), start, stop, step);
         }
     }
     //

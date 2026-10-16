@@ -77,6 +77,7 @@ cat << 'EOF' > CMakeLists.txt
 # This will compile and link the file get_started.cpp
 cmake_minimum_required(VERSION 3.12)
 project( ad_tensor_example )
+set(CMAKE_CXX_STANDARD 20)
 #
 find_package(ad_tensor REQUIRED)
 #
