@@ -55,7 +55,7 @@ include_plugin
 ==============
 If include_plugin is true (false), the ability to link
 source code generated using :ref:`adfn_src_gen-name` is included in the build.
-This will require the system and filesystem components of the boost library.
+This will require the  filesystem and system components of the boost library.
 
 torch_dir
 =========
@@ -136,7 +136,7 @@ if( include_plugin )
     #
     # Boost_INCLUDE_DIRS, Boost_LIBRARIES
     cmake_policy(SET CMP0167 NEW)
-    find_package(Boost REQUIRED COMPONENTS filesystem system)
+    find_package(Boost REQUIRED COMPONENTS filesystem)
     print_variable(Boost_INCLUDE_DIRS)
     print_variable(Boost_LIBRARIES)
     #

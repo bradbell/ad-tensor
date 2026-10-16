@@ -140,7 +140,7 @@ print_variable(TORCH_CXX_FLAGS)
 #
 # Boost_INCLUDE_DIRS, Boost_LIBRARIES
 cmake_policy(SET CMP0167 NEW)
-find_package(Boost REQUIRED COMPONENTS filesystem system)
+find_package(Boost REQUIRED COMPONENTS filesystem)
 print_variable(Boost_INCLUDE_DIRS)
 print_variable(Boost_LIBRARIES)
 #

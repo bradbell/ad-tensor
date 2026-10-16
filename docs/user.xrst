@@ -19,6 +19,8 @@
     venv
     torchvision
     torchaudio
+    filesystem
+    libboost
 }
 
 AD Tensor User Documentation
@@ -81,6 +83,7 @@ the benchmark summary for your machine.
     # install ad_tensor requirements
     apt update
     apt install git cmake ninja-build  libgtest-dev -y
+    apt install libboost-system-dev libboost-filesystem -y
     apt install python3 python3-pip python3-venv -y
     python3 -m venv my_venv
     source my_venv/bin/activate
@@ -88,10 +91,9 @@ the benchmark summary for your machine.
         --index-url https://download.pytorch.org/whl/cpu
     #
     # Build, run all the tests, and then run the benchmarks summary.
-    # There is some problem with boost on ubuntu so skip plugin for now.
     git clone https://github.com/bradbell/ad-tensor.git ad-tensor.git
     cd ad-tensor.git
-    tools/check_gtest.sh --release --no_plugin
+    tools/check_gtest.sh --release
     tools/run_benchmarks.sh
 {xrst_code}
 
