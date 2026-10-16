@@ -2,7 +2,7 @@
 data = 'ad-tensor'
 
 [root_file]
-ben = 'docs/benchmark.xrst'
+ben = 'benchmarks/CMakeLists.txt'
 usr = 'docs/user.xrst'
 dev = 'docs/developer.xrst'
 

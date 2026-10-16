@@ -58,6 +58,9 @@ EOF
 done
 # -----------------------------------------------------------------------------
 #
+# start_time
+start_time=$(date)
+#
 # typos
 if which typos > /dev/null
 then
@@ -97,5 +100,7 @@ echo_eval check_gtest.sh $release_flag $plugin_flag
 # test_install.sh
 tools/test_install.sh
 #
+echo "start time: $start_time"
+echo "end time:   $(date)"
 echo "$script_path: OK"
 exit 0
