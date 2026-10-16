@@ -44,15 +44,15 @@ f'(x)
 is a vector with one element.
 The element of f'(x) is a one dimensional tensor with four elements.
 
+Example Building Executable
+***************************
+see :ref:`cmake_find_package-name`
+
 Source Code
 ***********
 {xrst_literal ,
     BEGIN_CPP, END_CPP
 }
-
-Example Building Executable
-***************************
-see :ref:`cmake_find_package-name`
 
 {xrst_end get_started}
 */
