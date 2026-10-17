@@ -14,6 +14,11 @@ TEST(tests_adfn, src_gen)  {
     namespace plugin = ad_tensor::plugin;
     namespace fs     =  std::filesystem;
     //
+    // index_list
+    std::optional<Tensor>  col_index  = torch::tensor( {0, 1} );
+    std::optional<Tensor>  row_index  = torch::tensor( {0, 1} );
+    c10::List< std::optional<Tensor> > index_list = { col_index, row_index };
+    //
     // bias, conv1d_options
     at::Tensor bias = torch::zeros( {1} );
     auto conv1d_options    = torch::nn::functional::Conv1dFuncOptions();
@@ -58,13 +63,17 @@ TEST(tests_adfn, src_gen)  {
     ar.push_back( av[0].matmul( ap[0] ) );
     ar.push_back( av[0] <= ap[0] );
     //
+    // conv1d
     adten_t ainput  = ap[1];
     adten_t aweight = av[1];
     adten_t abias   = adten_t( bias );
     ar.push_back( ad_tensor::conv1d(ainput, aweight, abias, conv1d_options) );
     //
-    ainput = av[0];
-    ar.push_back( ad_tensor::pad(ainput, pad_options) );
+    // pad
+    ar.push_back( ad_tensor::pad(av[0], pad_options) );
+    //
+    // index
+    ar.push_back( av[0].index( index_list ) );
     //
     // r = f(v, p)
     adfn_t f = adten_t::stop_recording(ar, "f");
@@ -102,7 +111,7 @@ TEST(tests_adfn, src_gen)  {
     // r
     size_t i = 0;
     vector<Tensor> r = f_plugin(v, p);
-    EXPECT_EQ( r.size(), 11 );
+    EXPECT_EQ( r.size(), 12 );
     EXPECT_TRUE( r[i++].equal( (-v[0])              + (-p[0]) ) );
     EXPECT_TRUE( r[i++].equal( v[0].exp()           + p[0].exp() ) );
     EXPECT_TRUE( r[i++].equal( v[0].logdet()        + p[0].logdet() ) );
@@ -112,11 +121,17 @@ TEST(tests_adfn, src_gen)  {
     EXPECT_TRUE( r[i++].equal( v[0].transpose(0, 1) + p[0].transpose(0, 1) ) );
     EXPECT_TRUE( r[i++].equal( v[0].matmul( p[0] ) ) );
     EXPECT_TRUE( r[i++].equal( v[0] <= p[0] ) );
+    //
+    // conv1d
     EXPECT_TRUE( r[i++].equal(
         ad_tensor::conv1d(p[1], v[1], bias, conv1d_options)
     ));
+    //
+    // pad
     EXPECT_TRUE( r[i++].equal(
         torch::nn::functional::pad(v[0], pad_options)
     ));
     //
+    // index
+    EXPECT_TRUE( r[i++].equal( v[0].index( index_list ) ) );
 }

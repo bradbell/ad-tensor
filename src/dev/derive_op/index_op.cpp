@@ -244,8 +244,46 @@ template <> std::string index_op_t<at::Tensor>::src_gen(
     bool                                                  variable_agraph ,
     const std::function< std::string(size_t, adtype_t) >& tensor_src
 ) const {
-    user_assert(false, "src_gen not yet implemented for index operator" );
-    return "";
+    //
+    // string
+    using std::string;
+    //
+    // arg_start, n_idx
+    size_t arg_start = agraph.m_arg_start[op_index];
+    size_t n_idx     = agraph.m_arg_value[arg_start + 1];
+    //
+#ifndef NDEBUG
+    size_t arg_end   = agraph.m_arg_start[op_index + 1];
+    size_t n_arg     = arg_end - arg_start;
+    assert( n_arg  == 2 + n_idx );
+#endif
+    //
+    // src
+    string src = "{    c10::List< std::optional<at::Tensor> > index_list;\n";
+    for(size_t i = 0; i < n_idx; ++i) {
+        size_t con_index = agraph.m_arg_value[arg_start + 2 + i];
+        string index_src = tensor_src(con_index, adtype_t::constant);
+        index_src = "std::optional<at::Tensor> (" + index_src + ")";
+        src += "    index_list.push_back( " + index_src + ");\n";
+    }
+    //
+    // from_src
+    size_t   from_index  = agraph.m_arg_value[arg_start];
+    adtype_t from_adtype = agraph.m_arg_type[arg_start];
+    string from_src      = tensor_src(from_index, from_adtype);
+    //
+    // target_src
+    size_t   target_index   = op_index;
+    adtype_t target_adtype  =
+        variable_agraph ? adtype_t::variable : adtype_t::parameter;
+    string   target_src     = tensor_src(target_index, target_adtype);
+    //
+    // src
+    constexpr const char* fmt = "    {} = {}.index( index_list );\n";
+    src += std::format(fmt, target_src, from_src);
+    src += "}";
+    //
+    return src;
 }
 template <> std::string index_op_t<adten_t>::src_gen(
     size_t                                                op_index        ,
