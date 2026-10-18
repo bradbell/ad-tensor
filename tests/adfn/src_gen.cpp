@@ -19,6 +19,9 @@ TEST(tests_adfn, src_gen)  {
     std::optional<Tensor>  row_index  = torch::tensor( {0, 1} );
     c10::List< std::optional<Tensor> > index_list = { col_index, row_index };
     //
+    // replace
+    at::Tensor replace = torch::tensor( { 10.0, 11.0 } );
+    //
     // bias, conv1d_options
     at::Tensor bias = torch::zeros( {1} );
     auto conv1d_options    = torch::nn::functional::Conv1dFuncOptions();
@@ -75,6 +78,9 @@ TEST(tests_adfn, src_gen)  {
     // index
     ar.push_back( av[0].index( index_list ) );
     //
+    // index_put
+    ar.push_back( ap[0].index_put( index_list , adten_t(replace) ) );
+    //
     // r = f(v, p)
     adfn_t f = adten_t::stop_recording(ar, "f");
     //
@@ -111,7 +117,7 @@ TEST(tests_adfn, src_gen)  {
     // r
     size_t i = 0;
     vector<Tensor> r = f_plugin(v, p);
-    EXPECT_EQ( r.size(), 12 );
+    EXPECT_EQ( r.size(), 13 );
     EXPECT_TRUE( r[i++].equal( (-v[0])              + (-p[0]) ) );
     EXPECT_TRUE( r[i++].equal( v[0].exp()           + p[0].exp() ) );
     EXPECT_TRUE( r[i++].equal( v[0].logdet()        + p[0].logdet() ) );
@@ -134,4 +140,7 @@ TEST(tests_adfn, src_gen)  {
     //
     // index
     EXPECT_TRUE( r[i++].equal( v[0].index( index_list ) ) );
+    //
+    // index_put
+    EXPECT_TRUE( r[i++].equal( p[0].index_put( index_list , replace ) ) );
 }

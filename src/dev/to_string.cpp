@@ -86,15 +86,22 @@ namespace ad_tensor { namespace dev {
         if( ! tensor.defined() ) {
             return "not defined";
         }
-        at::IntArrayRef shape  = tensor.sizes();
-        std::string res = to_string(shape);
         //
-        int64_t length = tensor.numel();
+        // length
+        size_t length = size_t( tensor.numel() );
         //
         // vector_view
         at::Tensor vector_view = tensor.contiguous().view(length);
+        //
+        // res
+        std::string res = c10::toString( tensor.scalar_type() );
+        //
+        // res
+        res += " " + to_string( tensor.sizes() );
+        //
+        // res
         res += "[";
-        for(int64_t i = 0; i < length; ++i) {
+        for(size_t i = 0; i < length; ++i) {
             res += std::to_string( vector_view[i].item<double>() );
             if( i + 1 < length )
                 res += ", ";
