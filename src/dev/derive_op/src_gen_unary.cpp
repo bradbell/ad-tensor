@@ -31,13 +31,14 @@ It is also the index of the result for this operator.
 It must be greater than zero, because the first result is an
 independent parameter tensor.
 
+op_adtype
+*********
+is the type of the operator sequence; i.e., parameter or variable.
+
 agraph
 ******
 Is the :ref:`agraph-name` for the operation sequence that we are using.
 
-variable_agraph
-***************
-if this is true (false) the acyclic graph is for variables (parameters).
 
 tensor_src
 **********
@@ -71,10 +72,11 @@ namespace ad_tensor { namespace dev { // ad_tensor::dev
 // BEGIN_SRC_GEN_BINARY
 std::string src_gen_unary(
     size_t                                                op_index        ,
+    adtype_t                                              op_adtype       ,
     const agraph_t&                                       agraph          ,
-    bool                                                  variable_agraph ,
     const std::function< std::string(size_t, adtype_t) >& tensor_src      )
 {   // END_SRC_GEN_BINARY
+    assert( op_adtype==adtype_t::parameter || op_adtype==adtype_t::variable );
     //
     // string
     using std::string;
@@ -93,10 +95,7 @@ std::string src_gen_unary(
     string   operand_src    = tensor_src(operand_index, operand_adtype);
     //
     // target_src
-    size_t   target_index  = op_index;
-    adtype_t target_adtype =
-        variable_agraph ? adtype_t::variable : adtype_t::parameter;
-    string   target_src    = tensor_src(target_index, target_adtype);
+    string target_src = tensor_src(op_index, op_adtype);
     //
     // op_enum
     op_enum_t op_enum = agraph.m_op_seq[op_index];

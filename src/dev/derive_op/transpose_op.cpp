@@ -229,8 +229,8 @@ template void transpose_op_t<adten_t>::reverse_der(
 // src_gen
 template <> std::string transpose_op_t<at::Tensor>::src_gen(
     size_t                                                op_index        ,
+    adtype_t                                              op_adtype       ,
     const agraph_t&                                       agraph          ,
-    bool                                                  variable_agraph ,
     const std::function< std::string(size_t, adtype_t) >& tensor_src
 ) const {
     //
@@ -251,10 +251,7 @@ template <> std::string transpose_op_t<at::Tensor>::src_gen(
     string   operand_src    = tensor_src(operand_index, operand_adtype);
     //
     // target_src
-    size_t   target_index  = op_index;
-    adtype_t target_adtype =
-        variable_agraph ? adtype_t::variable : adtype_t::parameter;
-    string   target_src    = tensor_src(target_index, target_adtype);
+    string target_src = tensor_src(op_index, op_adtype);
     //
     // dim1, dim_2
     assert( agraph.m_arg_type[arg_start + 1] == adtype_t::none );
@@ -270,8 +267,8 @@ template <> std::string transpose_op_t<at::Tensor>::src_gen(
 }
 template <> std::string transpose_op_t<adten_t>::src_gen(
     size_t                                                op_index        ,
+    adtype_t                                              op_adtype       ,
     const agraph_t&                                       agraph          ,
-    bool                                                  variable_agraph ,
     const std::function< std::string(size_t, adtype_t) >& tensor_src
 ) const {
     assert(false && "adten_t version of src_gen called for transpose operator");

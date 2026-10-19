@@ -6,8 +6,8 @@
 namespace ad_tensor { namespace dev {
     std::string src_gen_binary(
         size_t                                                op_index        ,
+        adtype_t                                              op_adtype       ,
         const agraph_t&                                       agraph          ,
-        bool                                                  variable_agraph ,
         const std::function< std::string(size_t, adtype_t) >& tensor_src
     );
 } }

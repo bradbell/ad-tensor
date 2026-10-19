@@ -119,9 +119,17 @@ operator, operator index, and acyclic graph.
 It does not start or end with an newline and if it creates any new objects,
 they must be inside a local scope; i.e.,  inside of {}.
 
-variable_agraph
----------------
-if this is true (false) the acyclic graph is for variables (parameters).
+op_index
+--------
+is the operator index in agraph for this operation.
+
+op_adtype
+---------
+is the type corresponding to this operator
+
+agraph
+------
+is the acyclic graph containing this operator.
 
 tensor_src
 ----------
@@ -131,7 +139,7 @@ The function call
 {xrst_code}
 returns a source code representation of a
 constant, parameter of variable (depending on adtype) with the specified index.
-The return, src, can be used to set or get the corresponding value.
+The return, src, can be used to get the corresponding value.
 There are no newline characters in src.
 
 {xrst_end base_op}
@@ -193,8 +201,8 @@ template<class TensorType> struct base_op_t
     // BEGIN_SRC_GEN
     virtual std::string src_gen(
         size_t                       op_index        ,
+        adtype_t                     op_adtype       ,
         const agraph_t&              agraph          ,
-        bool                         variable_agraph ,
         const std::function< std::string(size_t, adtype_t) >& tensor_src
     ) const = 0;
     // END_SRC_GEN

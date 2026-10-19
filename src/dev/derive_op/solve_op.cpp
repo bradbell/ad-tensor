@@ -308,8 +308,8 @@ template void solve_op_t<adten_t>::reverse_der(
 // src_gen
 template <> std::string solve_op_t<at::Tensor>::src_gen(
     size_t                                                op_index        ,
+    adtype_t                                              op_adtype       ,
     const agraph_t&                                       agraph          ,
-    bool                                                  variable_agraph ,
     const std::function< std::string(size_t, adtype_t) >& tensor_src
 ) const {
     user_assert(false, "src_gen not yet implemented for solve operator" );
@@ -317,8 +317,8 @@ template <> std::string solve_op_t<at::Tensor>::src_gen(
 }
 template <> std::string solve_op_t<adten_t>::src_gen(
     size_t                                                op_index        ,
+    adtype_t                                              op_adtype       ,
     const agraph_t&                                       agraph          ,
-    bool                                                  variable_agraph ,
     const std::function< std::string(size_t, adtype_t) >& tensor_src
 ) const {
     assert(false && "adten_t version of src_gen called for solve operator");

@@ -423,8 +423,8 @@ R"|(    //
     //
     if( m_trace ) {
         cout << "Begin tracing " + get_name() + ".src_gen\n";
-        constexpr const char* fmt = "n_par_dom = {}, n_var_dom = {}\n";
-        cout << std::format(fmt, n_par_dom, n_var_dom);
+        constexpr const char* fmt = "n_par_dom = {}, n_par_dep = {}\n";
+        cout << std::format(fmt, n_par_dom, n_par_dep);
     }
     //
     // file_cpp: par_dep
@@ -438,7 +438,6 @@ R"|(    //
         file_cpp << std::format(fmt, n_par_dep);
     }
     size_t n_par_op        = m_par.m_op_seq.size();
-    size_t variable_agraph = false;
     for(size_t op_index = n_par_dom; op_index < n_par_op; op_index++) {
         //
         // base_op
@@ -447,8 +446,9 @@ R"|(    //
             dev::enum2derive<at::Tensor>( op_enum );
         //
         // src
+        adtype_t op_adtype = adtype_t::parameter;
         string src = base_op.src_gen(
-            op_index, m_par, variable_agraph, tensor_src
+            op_index, op_adtype, m_par, tensor_src
         );
         if( m_trace) {
             cout << src << " , " << dev::to_string(op_enum)  << "(";
@@ -466,6 +466,10 @@ R"|(    //
             file_cpp << indent_lines(src) + "\n";
         }
     }
+    if( m_trace ) {
+        constexpr const char* fmt = "n_var_dom = {}, n_var_dep = {}\n";
+        cout << std::format(fmt, n_var_dom, n_var_dep);
+    }
     //
     // file_cpp: var_dep
     {
@@ -478,7 +482,6 @@ R"|(    //
         file_cpp << std::format(fmt, n_var_dep);
     }
     size_t n_var_op = m_var.m_op_seq.size();
-    variable_agraph = true;
     for(size_t op_index = n_var_dom; op_index < n_var_op; op_index++) {
         //
         // base_op
@@ -487,8 +490,9 @@ R"|(    //
             dev::enum2derive<at::Tensor>( op_enum );
         //
         // src
+        adtype_t op_adtype = adtype_t::variable;
         string src = base_op.src_gen(
-            op_index, m_var, variable_agraph, tensor_src
+            op_index, op_adtype, m_var, tensor_src
         );
         if( m_trace) {
             cout << src << " , " << dev::to_string(op_enum)  << "(";
