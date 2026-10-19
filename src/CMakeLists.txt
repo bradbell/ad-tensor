@@ -83,6 +83,7 @@ add_library(ad_tensor SHARED
     dev/derive_op/sub_op.cpp
     dev/derive_op/sum_op.cpp
     dev/derive_op/transpose_op.cpp
+    dev/derive_op/unpack_call.cpp
     dev/derive_op/view_op.cpp
     dev/derive_op/where_op.cpp
     dev/enum2derive.cpp

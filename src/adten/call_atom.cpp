@@ -45,9 +45,9 @@ acyclic graph:
     start + 4, index of first domain argument, argument type
     ..., ..., ...
     start + 3 + n_domain, index of last domain argument, argument type
-    start + 4 + n_domain, index in range for first result, adtype::none
+    start + 4 + n_domain, range index of first result that's used, adtype::none
     ..., ..., ...
-    start + 3 + n_domain + n_result, index in range for last result, none
+    start + 3 + n_domain + n_result, range index of last used result, none
 
 The result range result indices are strictly increasing; i.e.,
 

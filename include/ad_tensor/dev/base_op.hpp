@@ -29,6 +29,7 @@ that are grouped by derived class.
     include/ad_tensor/dev/derive_op.hpp
     src/dev/derive_op/src_gen_binary.cpp
     src/dev/derive_op/src_gen_unary.cpp
+    src/dev/derive_op/unpack_call.cpp
 }
 
 Common Arguments
