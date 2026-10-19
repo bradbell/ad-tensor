@@ -79,7 +79,6 @@ Source Code
 */
 // BEGIN_CPP
 #include <ad_tensor/ad_tensor.hpp>
-#include <ad_tensor/defined.hpp>
 namespace {
     //
     // BEGIN_USING

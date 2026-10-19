@@ -65,7 +65,6 @@ Source Code
 // BEGIN_CPP
 #include <gtest/gtest.h>
 #include <ad_tensor/ad_tensor.hpp>
-#include <ad_tensor/defined.hpp>
 namespace {
     //
     using std::optional;

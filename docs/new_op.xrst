@@ -243,6 +243,9 @@ tests/adten/NEW.cpp
 ===================
 Make this file a copy of examples/adten/NEW.cpp
 (with examples changed to tests).
+Replace the ``#include <ad_tensor/ad_tensor.hpp>`` in the test by the
+necessary subset of include files in include/ad_tensor/ad_tensor.hpp.
+This is done to test that the order of these includes does not matter.
 
 tests/CMakeLists.txt
 ====================
