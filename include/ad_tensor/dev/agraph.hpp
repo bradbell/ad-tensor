@@ -11,23 +11,26 @@
 
 Acyclic Graph Representation of an Operation Sequence
 #####################################################
+
+Member Variable
+***************
 {xrst_literal ,
-    BEGIN_AGRAPH, END_AGRAPH
+    BEGIN_MEMBER_VARIABLES, END_MEMBER_VARIABLES
 }
 
 m_dom_shapes
-************
+============
 is a vector with size equal to the number of domain tensors
 and each element is the shape of the corresponding domain tensor.
 
 m_op_seq
-********
+========
 This vector has one element for each operation in the operation sequence.
 The value m_op_seq[op_index]
 is the :ref:`op_enum-name` for this operator usage.
 
 m_arg_start
-***********
+===========
 This vector has the same length as m_op_seq.
 The number of arguments for the op_index operator usage is
 
@@ -35,7 +38,7 @@ The number of arguments for the op_index operator usage is
 
 
 m_arg_value
-***********
+===========
 For i_arg = 0, ... n_arg,
 
     m_arg_value[ m_arg_start[op_index] + i_arg ]
@@ -44,7 +47,7 @@ is he value of the i_arg argument for the op_index operator usage.
 
 
 m_arg_type
-**********
+==========
 This vector has the same length as m_arg_value. If
 
     m_arg_type[ m_arg_start[op_index] + i_arg ]
@@ -56,9 +59,14 @@ is constant (parameter) [variable] then
 is the index value in the array of all the
 constants (parameters) [variables] where the tensor for this argument resides.
 
-default constructor
-*******************
-This constructor creates an empty graph (all its vectors are empty).
+Constructors
+************
+{xrst_literal ,
+    BEGIN_COPY_CTOR, END_COPY_CTOR
+    BEGIN_DEFAULT_CTOR, END_DEFAULT_CTOR
+    BEGIN_MOVE_CTOR, END_MOVE_CTOR
+    BEGIN_MOVE_ASSIGN, END_MOVE_ASSIGN
+}
 
 is_empty
 ********
@@ -72,21 +80,51 @@ This member function returns true if all the vectors in the graph are empty.
 
 // BEGIN_AGRAPH
 namespace ad_tensor { namespace dev { class agraph_t {
+// BEGIN_MEMBER_VARIABLES
 public:
     vector< vector<int64_t> >    m_dom_shapes;
     vector<op_enum_t>            m_op_seq;
     vector<size_t>               m_arg_start;
     vector<size_t>               m_arg_value;
     vector<adtype_t>             m_arg_type;
+// END_MEMBER_VARIABLES
     //
-    // default constructor
+    // BEGIN_COPY_CTOR
+    agraph_t(const agraph_t& other) = delete;
+    // END_COPY_CTOR
+    //
+    // BEGIN_DEFAULT_CTOR
     agraph_t()
+    // END_DEFAULT_CTOR
     : m_dom_shapes()
     , m_op_seq()
     , m_arg_start()
     , m_arg_value()
     , m_arg_type()
     { }
+    //
+    // BEGIN_MOVE_CTOR
+    agraph_t(agraph_t&& other)
+    // END_MOVE_CTOR
+    : m_dom_shapes( std::move(other.m_dom_shapes) )
+    , m_op_seq( std::move(other.m_op_seq) )
+    , m_arg_start( std::move(other.m_arg_start) )
+    , m_arg_value( std::move(other.m_arg_value) )
+    , m_arg_type( std::move(other.m_arg_type) )
+    { }
+    //
+    // BEGIN_MOVE_ASSIGN
+    void operator=(agraph_t&& other)
+    // END_MOVE_ASSIGN
+    {   if( this != &other ) {
+            m_dom_shapes = std::move(other.m_dom_shapes);
+            m_op_seq     = std::move(other.m_op_seq);
+            m_arg_start  = std::move(other.m_arg_start);
+            m_arg_value  = std::move(other.m_arg_value);
+            m_arg_type   = std::move(other.m_arg_type);
+        }
+    }
+    //
     //
     // is_empty
     bool is_empty(void) const {

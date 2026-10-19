@@ -218,6 +218,8 @@ std::tuple< agraph_t, vector<size_t> > new_agraph(
             rng_index_new[i] = old2new[ rng_index_old[i] ];
         }
     }
-    return std::tuple< agraph_t, vector<size_t> >(agraph_new, rng_index_new);
+    return std::tuple< agraph_t, vector<size_t> >(
+        std::move(agraph_new), std::move(rng_index_new)
+    );
 }
 } } // End ad_tensor::dev

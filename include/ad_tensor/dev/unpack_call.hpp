@@ -11,8 +11,8 @@ namespace ad_tensor { namespace dev {
     //
     // unpack_call
     inline std::array<size_t, 5> unpack_call(
-        size_t         op_index,
-        const agraph_t agraph  ) {
+        size_t          op_index ,
+        const agraph_t& agraph   ) {
         size_t arg_start = agraph.m_arg_start[op_index];
         size_t atom_id   = agraph.m_arg_value[arg_start + 0];
         size_t n_domain  = agraph.m_arg_value[arg_start + 1];
