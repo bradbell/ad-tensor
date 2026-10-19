@@ -14,8 +14,8 @@ namespace ad_tensor { namespace dev { // Begin ad_tensor::dev
 // derive_chkpnt_t
 // ------------------------------------------------------------------------
 // ctor
-derive_chkpnt_t::derive_chkpnt_t(chkpnt_info_t& info)
-: m_info(info) {
+derive_chkpnt_t::derive_chkpnt_t(chkpnt_info_t&& info)
+: m_info( std::move(info) ) {
     set_name( "chkpnt_" + info.m_adfn.get_name() );
 }
 // depend

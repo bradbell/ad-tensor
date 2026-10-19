@@ -248,7 +248,7 @@ size_t adfn_t::make_chkpnt(
     // atom_id
     dev::atom_global_t& atom_global = dev::atom_global_t::singleton();
     std::unique_ptr<base_atom_t> base_atom_ptr =
-        std::make_unique<dev::derive_chkpnt_t>(info);
+        std::make_unique<dev::derive_chkpnt_t>( std::move(info) );
     size_t atom_id = atom_global.store(base_atom_ptr);
     //
     return atom_id;

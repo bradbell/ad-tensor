@@ -28,7 +28,7 @@ namespace ad_tensor  { namespace dev {
         chkpnt_info_t m_info;
     public:
         // ctor
-        derive_chkpnt_t(chkpnt_info_t& info);
+        derive_chkpnt_t(chkpnt_info_t&& info);
         //
         // depend
         std::optional<sparsity_t> depend(void) const override;
