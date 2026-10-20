@@ -9,22 +9,16 @@
 #include <ad_tensor/dev/tensor_at_index.hpp>
 //
 namespace {
-//
-// where
-using at::Tensor;
-using ad_tensor::adten_t;
-/*
-inline Tensor where(
-    const Tensor& cond, const Tensor& false_case, const Tensor& true_case
-) {
-    return at::where(cond, false_case, true_case);
-}
-*/
-inline adten_t where(
-    const adten_t& cond, const adten_t& false_case, const adten_t& true_case
-) {
-    return adten_t::where(cond, false_case, true_case);
-}
+    //
+    // where
+    using ad_tensor::adten_t;
+    inline adten_t where(
+        const adten_t& cond,
+        const adten_t& false_case,
+        const adten_t& true_case
+    ) {
+        return adten_t::where(cond, false_case, true_case);
+    }
 }
 //
 namespace ad_tensor { namespace dev { // Begin ad_tensor::dev
@@ -282,8 +276,43 @@ template <> std::string where_op_t<at::Tensor>::src_gen(
     const agraph_t&                                       agraph          ,
     const std::function< std::string(size_t, adtype_t) >& tensor_src
 ) const {
-    user_assert(false, "src_gen not yet implemented for where operator" );
-    return "";
+    //
+    // string
+    using std::string;
+    //
+    // arg_start
+    size_t arg_start = agraph.m_arg_start[op_index];
+    //
+#ifndef NDEBUG
+    size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
+    assert( n_arg == 3 && "where: n_arg != 3" );
+# endif
+    //
+    // cond_src
+    size_t   cond_index  = agraph.m_arg_value[arg_start];
+    adtype_t cond_adtype = agraph.m_arg_type[arg_start];
+    string   cond_src    = tensor_src(cond_index, cond_adtype);
+    //
+    // true_case_src
+    size_t   true_case_index  = agraph.m_arg_value[arg_start + 1];
+    adtype_t true_case_adtype = agraph.m_arg_type[arg_start + 1];
+    string   true_case_src    = tensor_src(true_case_index, true_case_adtype);
+    //
+    // false_case_src
+    size_t   false_case_index  = agraph.m_arg_value[arg_start + 2];
+    adtype_t false_case_adtype = agraph.m_arg_type[arg_start + 2];
+    string   false_case_src = tensor_src(false_case_index, false_case_adtype);
+    //
+    // target_src
+    string target_src = tensor_src(op_index, op_adtype);
+    //
+    // src
+    constexpr const char* fmt = "{} = where({}, {}, {});";
+    string src = std::format(fmt,
+        target_src, cond_src, true_case_src, false_case_src
+    );
+    //
+    return src;
 }
 template <> std::string where_op_t<adten_t>::src_gen(
     size_t                                                op_index        ,

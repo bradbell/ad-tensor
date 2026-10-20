@@ -41,6 +41,7 @@ TEST(tests_adfn, src_gen)  {
         {3.0, 4.0}
     } ) );
     p.push_back( torch::tensor( {1.0, 2.0, 3.0, 4.0} ).view( {1,1,4} ) );
+    p.push_back( torch::tensor( {1.0, 3.0, 5.0, 7.0, 9.0} ) );
     //
     // v
     // We use v for the domain variables
@@ -50,6 +51,7 @@ TEST(tests_adfn, src_gen)  {
         {5.0, 6.0}
     } ) );
     v.push_back( torch::tensor( {5.0, 6.0, 7.0} ).view( {1,1,3} ) );
+    v.push_back( torch::tensor( {2.0, 3.0, 4.0, 5.0, 6.0} ) );
     //
     // ap, av
     auto [av, ap] = adten_t::start_recording(v, p);
@@ -80,6 +82,9 @@ TEST(tests_adfn, src_gen)  {
     //
     // index_put
     ar.push_back( ap[0].index_put( index_list , adten_t(replace) ) );
+    //
+    // where
+    ar.push_back( adten_t::where( ap[2] > av[2], ap[2], av[2] ) );
     //
     // r = f(v, p)
     adfn_t f = adten_t::stop_recording(ar, "f");
@@ -117,7 +122,7 @@ TEST(tests_adfn, src_gen)  {
     // r
     size_t i = 0;
     vector<Tensor> r = f_plugin(v, p);
-    EXPECT_EQ( r.size(), 13 );
+    EXPECT_EQ( r.size(), 14 );
     EXPECT_TRUE( r[i++].equal( (-v[0])              + (-p[0]) ) );
     EXPECT_TRUE( r[i++].equal( v[0].exp()           + p[0].exp() ) );
     EXPECT_TRUE( r[i++].equal( v[0].logdet()        + p[0].logdet() ) );
@@ -143,4 +148,7 @@ TEST(tests_adfn, src_gen)  {
     //
     // index_put
     EXPECT_TRUE( r[i++].equal( p[0].index_put( index_list , replace ) ) );
+    //
+    // where
+    EXPECT_TRUE( r[i++].equal( where( p[2] > v[2], p[2], v[2] ) ) );
 }

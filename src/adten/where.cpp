@@ -27,16 +27,16 @@ Prototype
 
 condition
 *********
-is a boolean at::Tensor.
+is an AD tensor with boolean scalar type.
 
 true_case
 *********
-tensor with the values that are chosen for elements where cond is true.
+AD tensor with the values that are chosen for elements where cond is true.
 It must have the same shape as cond.
 
 false_case
 **********
-tensor with the values that are chosen for elements where cond is false.
+AD tensor with the values that are chosen for elements where cond is false.
 It must have the same shape as cond.
 
 result
@@ -45,6 +45,12 @@ is the result of the element-wise conditional assignment
 
     result = true_case if cond else false_case
 
+Example
+*******
+{xrst_literal ,
+    examples/adten/where.cpp
+    BEGIN_CPP, END_CPP
+}
 {xrst_end adten_where}
 -------------------------------------------------------------------------------
 {xrst_begin adten_where_dev dev}
