@@ -100,7 +100,7 @@ include(cmake/print_variable.cmake)
 cmake_minimum_required(VERSION 3.12)
 #
 # project
-project(ad_tensor VERSION "2026.10.19")
+project(ad_tensor VERSION "2026.10.20")
 #
 # CMAKE_INSTALL_RPATH, CMAKE_INSTALL_RPATH_USE_LINK_PATH
 set( CMAKE_INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR} )

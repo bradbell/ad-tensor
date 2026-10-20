@@ -62,8 +62,10 @@ Prototype
 adfn
 ****
 On input, this as an AD function representation of the checkpoint function.
+It's domain :ref:`start_recording@dom_par` vector must empty; i.e.,
+there are no parameters in this AD function.
 Upon return, this AD function is empty.
-The representation is moved to global data
+The original adfn is moved to global data
 and can be accessed using chkpnt_id.
 
 chkpnt_id
@@ -82,7 +84,7 @@ Let n_dir = directions.size().
 If g is an adfn recorded using calls to this chkpnt function,
 this checkpoint will support all the g operations except possibly that
 vector<adten_t> versions of g.forward_der and g.reverse_der.
-The this checkpoint will support recording up to order n_dir
+This checkpoint will support recording up to order n_dir
 derivatives of g and evaluation of order n_dir+1 derivatives.
 
 forward
@@ -145,6 +147,7 @@ is the AD tensor version of the range for this checkpoint function call.
 
 {xrst_end call_chkpnt}
 */
+#include <ad_tensor/dev/user_assert.hpp>
 #include <ad_tensor/dev/move_swap.hpp>
 #include <ad_tensor/dev/chkpnt.hpp>
 #include <ad_tensor/chkpnt.hpp>
@@ -163,6 +166,12 @@ size_t adfn_t::make_chkpnt(
     adfn_t&                          adfn,
     const vector<at::Tensor>&        domain,
     const c10::ArrayRef<direction_t> directions ) {
+    //
+    if( adfn.m_par.m_dom_shapes.size() != 0 )
+    {   constexpr const char* fmt = "make_chkpnt: {} has domain parameters";
+        std::string msg = std::format(fmt, adfn.get_name() );
+        dev::user_assert(false, msg);
+    }
     //
     // info
     dev::chkpnt_info_t info;

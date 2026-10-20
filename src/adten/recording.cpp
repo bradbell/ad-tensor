@@ -51,7 +51,8 @@ The range space is defined when the recording is stopped; see
 dom_par
 *******
 This is the domain parameter vector of tensors.
-It this argument is (is not) present, the are no parameters in this recording.
+It this argument is not present, or if it is empty,
+there are no parameters in this recording.
 
 dom_var
 *******
