@@ -355,14 +355,6 @@ public:
     );
     // END_STOP_RECORDING
     //
-    // BEGIN_WHERE
-    static adten_t where(
-        const adten_t& cond      ,
-        const adten_t& true_case ,
-        const adten_t& false_case
-    );
-    // END_WHERE
-    //
     // Compound Assignment operators
     AD_TENSOR_COMPOUND_ASSIGNMENT(+)
     AD_TENSOR_COMPOUND_ASSIGNMENT(-)
@@ -412,6 +404,13 @@ public:
     // pad
     adten_t pad(const torch::nn::functional::PadFuncOptions& options) const;
     //
+    // where
+    static adten_t where(
+        const adten_t& cond      ,
+        const adten_t& true_case ,
+        const adten_t& false_case
+    );
+    //
     // conv1d
     adten_t conv1d(
         const adten_t&                                  weight  ,
@@ -451,6 +450,15 @@ namespace ad_tensor {
         const adten_t& linear, const adten_t& rhs, bool left = true
     );
     // END_LINALG_SOLVE
+    //
+    // ad_tensor::where
+    // BEGIN_WHERE
+    adten_t where(
+        const adten_t& cond      ,
+        const adten_t& true_case ,
+        const adten_t& false_case
+    );
+    // END_WHERE
     //
     // ad_tensor::conv1d
     // BEGIN_CONV1D

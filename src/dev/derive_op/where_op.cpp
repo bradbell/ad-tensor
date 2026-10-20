@@ -8,19 +8,6 @@
 #include <ad_tensor/dev/plus_minus_equal.hpp>
 #include <ad_tensor/dev/tensor_at_index.hpp>
 //
-namespace {
-    //
-    // where
-    using ad_tensor::adten_t;
-    inline adten_t where(
-        const adten_t& cond,
-        const adten_t& false_case,
-        const adten_t& true_case
-    ) {
-        return adten_t::where(cond, false_case, true_case);
-    }
-}
-//
 namespace ad_tensor { namespace dev { // Begin ad_tensor::dev
 // ------------------------------------------------------------------------
 // forward_par

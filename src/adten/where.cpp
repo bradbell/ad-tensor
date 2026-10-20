@@ -15,7 +15,7 @@ Element-Wise Conditional Assignment
 Syntax
 ******
 {xrst_code cpp}
-    result = adten_t::where(cond, true_case, false_case)
+    result = where(cond, true_case, false_case)
 {xrst_code}
 
 Prototype
@@ -93,6 +93,8 @@ where start is the length of arg_value and arg_type before this call to
 #include <ad_tensor/dev/user_assert.hpp>
 //
 namespace ad_tensor { // Begin ad_tensor
+
+// ad_tensor::adten_t::where
 adten_t adten_t::where(
     const adten_t& cond,
     const adten_t& true_case,
@@ -158,6 +160,14 @@ adten_t adten_t::where(
         agraph->m_arg_type.push_back( false_case.m_adtype );
     }
     return adten_t(res_tape_id, res_index, res_at_ten, res_adtype);
+}
+//
+// ad_tensor::where
+adten_t where(
+    const adten_t& cond       ,
+    const adten_t& true_case  ,
+    const adten_t& false_case ) {
+        return adten_t::where(cond, true_case, false_case);
 }
 // ---------------------------------------------------------------------------
 } // End ad_tensor

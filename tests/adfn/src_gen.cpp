@@ -9,15 +9,15 @@
 TEST(tests_adfn, src_gen)  {
     using ad_tensor::adten_t;
     using ad_tensor::adfn_t;
-    using at::Tensor;
     using ad_tensor::vector;
     namespace plugin = ad_tensor::plugin;
     namespace fs     =  std::filesystem;
     //
     // index_list
-    std::optional<Tensor>  col_index  = torch::tensor( {0, 1} );
-    std::optional<Tensor>  row_index  = torch::tensor( {0, 1} );
-    c10::List< std::optional<Tensor> > index_list = { col_index, row_index };
+    std::optional<at::Tensor>  col_index  = torch::tensor( {0, 1} );
+    std::optional<at::Tensor>  row_index  = torch::tensor( {0, 1} );
+    c10::List< std::optional<at::Tensor> >
+        index_list = { col_index, row_index };
     //
     // replace
     at::Tensor replace = torch::tensor( { 10.0, 11.0 } );
@@ -35,7 +35,7 @@ TEST(tests_adfn, src_gen)  {
     //
     // p
     // We use p for the domain parameters
-    vector<Tensor> p;
+    vector<at::Tensor> p;
     p.push_back( torch::tensor( {
         {2.0, 1.0},
         {3.0, 4.0}
@@ -45,7 +45,7 @@ TEST(tests_adfn, src_gen)  {
     //
     // v
     // We use v for the domain variables
-    vector<Tensor> v;
+    vector<at::Tensor> v;
     v.push_back( torch::tensor( {
         {4.0, 3.0},
         {5.0, 6.0}
@@ -84,7 +84,7 @@ TEST(tests_adfn, src_gen)  {
     ar.push_back( ap[0].index_put( index_list , adten_t(replace) ) );
     //
     // where
-    ar.push_back( adten_t::where( ap[2] > av[2], ap[2], av[2] ) );
+    ar.push_back( where( ap[2] > av[2], ap[2], av[2] ) );
     //
     // r = f(v, p)
     adfn_t f = adten_t::stop_recording(ar, "f");
@@ -121,7 +121,7 @@ TEST(tests_adfn, src_gen)  {
     //
     // r
     size_t i = 0;
-    vector<Tensor> r = f_plugin(v, p);
+    vector<at::Tensor> r = f_plugin(v, p);
     EXPECT_EQ( r.size(), 14 );
     EXPECT_TRUE( r[i++].equal( (-v[0])              + (-p[0]) ) );
     EXPECT_TRUE( r[i++].equal( v[0].exp()           + p[0].exp() ) );
