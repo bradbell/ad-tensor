@@ -12,7 +12,7 @@ but with the added flexibility and difficulty that the user
 defines the derivative computations; see :ref:`base_atom-name` .
 
 {xrst_toc_table after
-    include/ad_tensor/base_atom.hpp
+    src/base_atom.cpp
 }
 
 {xrst_end atom}
