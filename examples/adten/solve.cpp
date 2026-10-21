@@ -126,8 +126,6 @@ TEST(examples_adten, solve)  {
     adten_t aR = ad_tensor::linalg_solve(aV, aP, left);
     //
     // r = f(v, p)
-    // TODO: once adten_t::contiguous is available, change ar to a vector here.
-    // and remove the use of contiguous below.
     vector<adten_t> ar = {aR};
     adfn_t f           = adten_t::stop_recording(ar, "f");
     //

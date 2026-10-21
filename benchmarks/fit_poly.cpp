@@ -386,9 +386,15 @@ TEST(benchmarks, fit_poly_plugin) {
     //
     // source_path
     fs::path source_path  = fs::temp_directory_path() / "fit_poly";
-    if( ! fs::is_directory(source_path) ) {
-        fs::create_directory( source_path );
+    if( fs::is_directory(source_path) ) {
+        try {
+            fs::remove_all(source_path);
+        } catch(...) {
+            EXPECT_TRUE(false);
+        }
     }
+    fs::create_directory( source_path );
+    //
     try { fs::permissions(
         source_path, fs::perms::owner_all, fs::perm_options::replace
     ); } catch (...) {

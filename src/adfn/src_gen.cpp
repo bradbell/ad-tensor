@@ -39,12 +39,16 @@ is the directory where the C++ source and binary constant
 output files are output.
 We suggest that you restrict the permissions on this directory so that
 it is not possible for other people to change your generated source code.
+We also suggest that you start with an empty directory before
+using this routine to write the first src_gen file in this directory.
 
 adfn_name.cpp
 =============
 The C++ output file name begins with the name of this adfn
 (see :ref:`stop_recording-name`) and the ends with ``.cpp`` .
 It defines the source code function defined below.
+It is an error if this file already exists,
+incase you try to place multiple functions with the same name in src_gen_dir.
 
 adfn_name.con
 =============
@@ -52,6 +56,8 @@ The binary constant output file name begins with the name of this adfn;
 and the ends with ``.con`` .
 It contains the constant at::Tensors used to evaluate the
 source code function defined below.
+It is an error if this file already exists,
+incase you try to place multiple functions with the same name in src_gen_dir.
 
 Source Code Function
 ********************
@@ -121,6 +127,7 @@ Example
 #include <filesystem>
 #include <fstream>
 #include <format>
+#include <ad_tensor/dev/user_assert.hpp>
 #include <ad_tensor/adfn.hpp>
 #include <ad_tensor/dev/base_op.hpp>
 #include <ad_tensor/dev/derive_op.hpp>
@@ -319,10 +326,20 @@ void adfn_t::src_gen(const std::string& src_gen_dir) const
     //
     // file_cpp
     fs::path file_cpp_path = src_gen_path / ( adfn_name + ".cpp" );
+    if( fs::exists(file_cpp_path) ) {
+        string msg = "src_gen: The source for this fucnction already exists";
+        msg       += "; i.e.,\n" + file_cpp_path.string();
+        dev::user_assert(false, msg);
+    }
     std::ofstream file_cpp(file_cpp_path);
     //
     // file_con_path
     fs::path file_con_path = src_gen_path / ( adfn_name + ".con" );
+    if( fs::exists(file_con_path) ) {
+        string msg = "src_gen: The constants for this functionn already exists";
+        msg       += "; i.e.,\n" + file_con_path.string();
+        dev::user_assert(false, msg);
+    }
     //
     // adfn_name.con
     {   string file_name = file_con_path.string();

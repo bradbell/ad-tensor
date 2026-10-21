@@ -279,7 +279,7 @@ private:
     size_t        m_tape_id;
     size_t        m_index;
     at::Tensor    m_at_ten;
-    adtype_t     m_adtype;
+    adtype_t      m_adtype;
     // END_MEMBER_DATA
     //
     // BEGIN_PRIVATE_CTOR
