@@ -91,8 +91,8 @@ void call_op_depend(
     );
     //
     // base_atom
-    atom_global_t&         atom_global  = atom_global_t::singleton();
-    const base_atom_t&     base_atom    = atom_global.get_base_atom(atom_id);
+    atom_global_t&     atom_global  = atom_global_t::singleton();
+    const base_atom_t& base_atom    = atom_global.get_base_atom(atom_id);
     //
     // sparsity
     std::optional<sparsity_t> opt = base_atom.depend();
@@ -173,8 +173,8 @@ template<> void call_op_t<at::Tensor>::forward_par(
     );
     //
     // base_atom
-    atom_global_t&         atom_global   = atom_global_t::singleton();
-    const base_atom_t&     base_atom = atom_global.get_base_atom(atom_id);
+    atom_global_t&     atom_global  = atom_global_t::singleton();
+    const base_atom_t& base_atom    = atom_global.get_base_atom(atom_id);
     //
     // domain
     domain.resize(0);
@@ -240,8 +240,8 @@ template<> void call_op_t<at::Tensor>::forward_var(
     );
     //
     // base_atom
-    atom_global_t&         atom_global   = atom_global_t::singleton();
-    const base_atom_t&     base_atom = atom_global.get_base_atom(atom_id);
+    atom_global_t&     atom_global  = atom_global_t::singleton();
+    const base_atom_t& base_atom    = atom_global.get_base_atom(atom_id);
     //
     // domain
     domain.resize(0);
@@ -337,8 +337,8 @@ void call_op_t<TensorType>::forward_der(
     );
     //
     // base_atom
-    atom_global_t&         atom_global   = atom_global_t::singleton();
-    const base_atom_t&     base_atom = atom_global.get_base_atom(atom_id);
+    atom_global_t&     atom_global  = atom_global_t::singleton();
+    const base_atom_t& base_atom    = atom_global.get_base_atom(atom_id);
     //
     // rng_used
     rng_used.resize(0);
@@ -439,8 +439,8 @@ void call_op_t<TensorType>::reverse_der(
     );
     //
     // base_atom
-    atom_global_t&         atom_global   = atom_global_t::singleton();
-    const base_atom_t&     base_atom = atom_global.get_base_atom(atom_id);
+    atom_global_t&     atom_global  = atom_global_t::singleton();
+    const base_atom_t& base_atom    = atom_global.get_base_atom(atom_id);
     //
     // rng_used, rng_der
     rng_used.resize(0);
