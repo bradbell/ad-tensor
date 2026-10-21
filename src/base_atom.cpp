@@ -82,8 +82,8 @@ Discussion
 **********
 This virtual function is first used during make a :ref:`call_atom-name`
 for a derived atomic function.
-If you do not over ride this virtual function its return
-will have has_value() equal to false.
+If you do not over ride this virtual function,
+depend.has_value() will be false.
 You should also use this return when an error occurs during
 the evaluation of the sparsity pattern for the derived atomic function.
 
@@ -119,8 +119,8 @@ Discussion
 **********
 This virtual function is first used during make a :ref:`call_atom-name`
 for a derived atomic function.
-If you do not over ride this virtual function its return
-will have has_value() equal to false.
+If you do not over ride this virtual function,
+range.has_value() will be false.
 You should also use this return when an error occurs during
 the evaluation of the sparsity pattern for the derived atomic function.
 
@@ -184,8 +184,8 @@ This virtual function is used if:
 #.  The :ref:`forward derivative<adfn_forward_der-name>`
     of the AD function is evaluated.
 
-If you do not over ride this virtual function its return
-will have has_value() equal to false.
+If you do not over ride this virtual function,
+rng_der.has_value() will be false.
 You should also use this case when an error occurs during
 the evaluation of this derivative of the atomic function.
 
@@ -250,8 +250,8 @@ This virtual function is used if:
 #.  The :ref:`reverse derivative<adfn_reverse_der-name>`
     of the AD function is evaluated.
 
-If you do not over ride this virtual function its return
-will have has_value() equal to false.
+If you do not over ride this virtual function,
+dom_der.has_value() will be false.
 You should also use this case when an error occurs during
 the evaluation of this derivative of the atomic function.
 
