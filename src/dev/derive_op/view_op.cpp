@@ -205,8 +205,48 @@ template <> std::string view_op_t<at::Tensor>::src_gen(
     const agraph_t&                                       agraph          ,
     const std::function< std::string(size_t, adtype_t) >& tensor_src
 ) const {
-    user_assert(false, "src_gen not yet implemented for view operator" );
-    return "";
+    //
+    // string
+    using std::string;
+    //
+    // arg_start
+    size_t    arg_start = agraph.m_arg_start[op_index];
+    assert( adtype_t::none !=  agraph.m_arg_type[arg_start] );
+    //
+    // n_dim
+    size_t n_dim = agraph.m_arg_value[arg_start + 1];
+    assert( adtype_t::none ==  agraph.m_arg_type[arg_start + 1] );
+    //
+#ifndef NDEBUG
+    //
+    // n_arg
+    size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
+    assert( n_arg == 2 + n_dim && "view_op: n_arg != 2 + n_dim");
+    for(size_t i = 0; i < n_dim; ++i) {
+        assert( agraph.m_arg_type[arg_start + 2 + i] == adtype_t::none );
+    }
+#endif
+    // operand_src
+    size_t   operand_index  = agraph.m_arg_value[arg_start];
+    adtype_t operand_adtype = agraph.m_arg_type[arg_start];
+    string   operand_src    = tensor_src(operand_index, operand_adtype);
+    //
+    // target_src
+    string target_src = tensor_src(op_index, op_adtype);
+    //
+    // src
+    string src = std::format("{} = {}.view({{", target_src, operand_src);
+    for(size_t i = 0; i < n_dim; ++i) {
+        size_t size = agraph.m_arg_value[arg_start + 2 + i];
+        if( i == 0 ) {
+            src += std::format("{}", size);
+        } else {
+            src += std::format(", {}", size);
+        }
+    }
+    src += "});";
+    //
+    return src;
 }
 template <> std::string view_op_t<adten_t>::src_gen(
     size_t                                                op_index        ,

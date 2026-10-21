@@ -19,9 +19,16 @@ gtest_name="$1"
 # progran
 program=$(echo $gtest_name | sed -e 's|[_.].*||')
 #
-cd build
-ninja $program
-cd ..
+# n_job
+if ! tools/n_compile_job.sh
+then
+    tools/n_compile_job.sh
+fi
+n_job=$(n_compile_job.sh)
+#
+echo "ninja -C build -j $n_job $program"
+ninja -C build -j $n_job $program
+#
 echo build/$program/$program --gtest_filter=$gtest_name
 build/$program/$program --gtest_filter=$gtest_name
 # -----------------------------------------------------------------------------

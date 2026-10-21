@@ -65,6 +65,8 @@ TEST(tests_adfn, src_gen)  {
     ar.push_back( av[0].sum(dim)         + ap[0].sum(dim) );
     ar.push_back( av[0].flip(dim)        + ap[0].flip(dim) );
     ar.push_back( av[0].transpose(0, 1)  + ap[0].transpose(0, 1) );
+    ar.push_back( av[0].view({4})        + ap[0].view({4}) );
+    //
     ar.push_back( av[0].matmul( ap[0] ) );
     ar.push_back( av[0] <= ap[0] );
     //
@@ -122,7 +124,7 @@ TEST(tests_adfn, src_gen)  {
     // r
     size_t i = 0;
     vector<at::Tensor> r = f_plugin(v, p);
-    EXPECT_EQ( r.size(), 14 );
+    EXPECT_EQ( r.size(), 15 );
     EXPECT_TRUE( r[i++].equal( (-v[0])              + (-p[0]) ) );
     EXPECT_TRUE( r[i++].equal( v[0].exp()           + p[0].exp() ) );
     EXPECT_TRUE( r[i++].equal( v[0].logdet()        + p[0].logdet() ) );
@@ -130,6 +132,8 @@ TEST(tests_adfn, src_gen)  {
     EXPECT_TRUE( r[i++].equal( v[0].sum(dim)        + p[0].sum(dim) ) );
     EXPECT_TRUE( r[i++].equal( v[0].flip(dim)       + p[0].flip(dim) ) );
     EXPECT_TRUE( r[i++].equal( v[0].transpose(0, 1) + p[0].transpose(0, 1) ) );
+    EXPECT_TRUE( r[i++].equal( v[0].view({4})       + p[0].view({4}) ) );
+    //
     EXPECT_TRUE( r[i++].equal( v[0].matmul( p[0] ) ) );
     EXPECT_TRUE( r[i++].equal( v[0] <= p[0] ) );
     //
