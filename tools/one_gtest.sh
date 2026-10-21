@@ -20,11 +20,11 @@ gtest_name="$1"
 program=$(echo $gtest_name | sed -e 's|[_.].*||')
 #
 # n_job
-if ! tools/n_compile_job.sh
+if ! n_job=$(n_compile_job.sh)
 then
-    tools/n_compile_job.sh
+    echo $n_job
+    exit 1
 fi
-n_job=$(n_compile_job.sh)
 #
 echo "ninja -C build -j $n_job $program"
 ninja -C build -j $n_job $program

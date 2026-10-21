@@ -49,11 +49,11 @@ done
 tools/run_cmake.sh $release_flag $plugin_flag
 #
 # n_job
-if ! tools/n_compile_job.sh > /dev/null
+if ! n_job=$(tools/n_compile_job.sh)
 then
-    tools/n_compile_job.sh
+    echo $n_job
+    exit 1
 fi
-n_job=$(tools/n_compile_job.sh)
 #
 # build
 cd build

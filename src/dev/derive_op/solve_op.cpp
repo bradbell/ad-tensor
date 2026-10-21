@@ -312,8 +312,44 @@ template <> std::string solve_op_t<at::Tensor>::src_gen(
     const agraph_t&                                       agraph          ,
     const std::function< std::string(size_t, adtype_t) >& tensor_src
 ) const {
-    user_assert(false, "src_gen not yet implemented for solve operator" );
-    return "";
+    //
+    // string
+    using std::string;
+    //
+    // arg_start
+    size_t arg_start = agraph.m_arg_start[op_index];
+    //
+    // left
+    bool left = bool( agraph.m_arg_value[arg_start + 2] );
+    //
+#ifndef NDEBUG
+    size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
+    assert( n_arg == 3  );
+    assert( agraph.m_arg_type[arg_start+2] == adtype_t::none );
+# endif
+    //
+    // linear_src
+    size_t   linear_index  = agraph.m_arg_value[arg_start];
+    adtype_t linear_adtype = agraph.m_arg_type[arg_start];
+    string   linear_src    = tensor_src(linear_index, linear_adtype);
+    //
+    // rhs_src
+    size_t   rhs_index  = agraph.m_arg_value[arg_start + 1];
+    adtype_t rhs_adtype = agraph.m_arg_type[arg_start + 1];
+    string   rhs_src    = tensor_src(rhs_index, rhs_adtype);
+    //
+    // left_src
+    string left_src = left ? "true" : "false";
+    //
+    // target_src
+    string target_src = tensor_src(op_index, op_adtype);
+    //
+    // src
+    string src = std::format( "{} = linalg_solve({}, {}, {});",
+        target_src, linear_src, rhs_src, left_src
+    );
+    //
+    return src;
 }
 template <> std::string solve_op_t<adten_t>::src_gen(
     size_t                                                op_index        ,

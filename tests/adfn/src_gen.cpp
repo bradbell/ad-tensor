@@ -58,6 +58,8 @@ TEST(tests_adfn, src_gen)  {
     //
     // ar
     vector<adten_t> ar;
+    //
+    // unary operators
     ar.push_back( (-av[0])               + (-ap[0]) );
     ar.push_back( av[0].exp()            + ap[0].exp() );
     ar.push_back( av[0].logdet()         + ap[0].logdet() );
@@ -67,8 +69,10 @@ TEST(tests_adfn, src_gen)  {
     ar.push_back( av[0].transpose(0, 1)  + ap[0].transpose(0, 1) );
     ar.push_back( av[0].view({4})        + ap[0].view({4}) );
     //
+    // binary operators
     ar.push_back( av[0].matmul( ap[0] ) );
     ar.push_back( av[0] <= ap[0] );
+    ar.push_back( linalg_solve( av[0], ap[0], true ) );
     //
     // conv1d
     adten_t ainput  = ap[1];
@@ -124,7 +128,7 @@ TEST(tests_adfn, src_gen)  {
     // r
     size_t i = 0;
     vector<at::Tensor> r = f_plugin(v, p);
-    EXPECT_EQ( r.size(), 15 );
+    EXPECT_EQ( r.size(), 16 );
     EXPECT_TRUE( r[i++].equal( (-v[0])              + (-p[0]) ) );
     EXPECT_TRUE( r[i++].equal( v[0].exp()           + p[0].exp() ) );
     EXPECT_TRUE( r[i++].equal( v[0].logdet()        + p[0].logdet() ) );
@@ -136,6 +140,7 @@ TEST(tests_adfn, src_gen)  {
     //
     EXPECT_TRUE( r[i++].equal( v[0].matmul( p[0] ) ) );
     EXPECT_TRUE( r[i++].equal( v[0] <= p[0] ) );
+    EXPECT_TRUE( r[i++].equal( linalg_solve( v[0], p[0], true ) ) );
     //
     // conv1d
     EXPECT_TRUE( r[i++].equal(
