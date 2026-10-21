@@ -46,7 +46,7 @@ adfn_name.cpp
 =============
 The C++ output file name begins with the name of this adfn
 (see :ref:`stop_recording-name`) and the ends with ``.cpp`` .
-It defines the source code function defined below.
+It implements the source code function specified below.
 It is an error if this file already exists,
 incase you try to place multiple functions with the same name in src_gen_dir.
 
@@ -55,7 +55,7 @@ adfn_name.con
 The binary constant output file name begins with the name of this adfn;
 and the ends with ``.con`` .
 It contains the constant at::Tensors used to evaluate the
-source code function defined below.
+source code function specified below.
 It is an error if this file already exists,
 incase you try to place multiple functions with the same name in src_gen_dir.
 
