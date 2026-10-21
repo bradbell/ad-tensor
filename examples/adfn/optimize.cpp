@@ -9,18 +9,17 @@
 TEST(examples_adfn, optimize)  {
     using ad_tensor::adten_t;
     using ad_tensor::adfn_t;
-    using at::Tensor;
     using ad_tensor::vector;
     //
     // p
     // We use p for the domain parameters
-    vector<Tensor> p;
+    vector<at::Tensor> p;
     p.push_back( torch::tensor( {1.0, 1.0} ) );
     p.push_back( torch::tensor( {1.0, 1.0} ) );
     //
     // v
     // We use v for the domain variables
-    vector<Tensor> v;
+    vector<at::Tensor> v;
     v.push_back( torch::tensor( {1.0, 1.0} ) );
     //
     // ap, av
@@ -56,9 +55,9 @@ TEST(examples_adfn, optimize)  {
     EXPECT_EQ( f.n_par(), 3);
     EXPECT_EQ( f.n_var(), 2);
     //
-    vector<Tensor> p_all = f.forward_par(p);
-    vector<Tensor> v_all = f.forward_var(v, p_all);
-    vector<Tensor> range = f.get_range(v_all, p_all);
+    vector<at::Tensor> p_all = f.forward_par(p);
+    vector<at::Tensor> v_all = f.forward_var(v, p_all);
+    vector<at::Tensor> range = f.get_range(v_all, p_all);
     //
     bool equal = range[0].equal( used_con.at_ten() );
     EXPECT_TRUE( equal );

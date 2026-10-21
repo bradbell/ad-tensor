@@ -90,17 +90,16 @@ Source Code
 TEST(examples_adten, solve)  {
     using ad_tensor::adten_t;
     using ad_tensor::adfn_t;
-    using at::Tensor;
     using ad_tensor::vector;
     //
     // p
     double p0 = 1.0, p1 = 2.0, p2 = 3.0, p3 = 4.0;
-    vector<Tensor> p;
+    vector<at::Tensor> p;
     p.push_back( torch::tensor( {p0, p1, p2, p3} ) );
     //
     // v
     double v0 = 5.0, v1 = 6.0, v2 = 7.0;
-    vector<Tensor> v;
+    vector<at::Tensor> v;
     v.push_back( torch::tensor( {v0, v1, v2} ) );
     //
     // r0, r1, r2, r3
@@ -133,17 +132,17 @@ TEST(examples_adten, solve)  {
     adfn_t f           = adten_t::stop_recording(ar, "f");
     //
     // par_all, var_all
-    vector<Tensor> par_all = f.forward_par(p);
-    vector<Tensor> var_all = f.forward_var(v, par_all);
+    vector<at::Tensor> par_all = f.forward_par(p);
+    vector<at::Tensor> var_all = f.forward_var(v, par_all);
     //
     // r
-    vector<Tensor> r = f.get_range(var_all, par_all);
-    Tensor check = torch::tensor( {r0, r1, r2, r3} );
+    vector<at::Tensor> r = f.get_range(var_all, par_all);
+    at::Tensor check = torch::tensor( {r0, r1, r2, r3} );
     bool close  = r[0].contiguous().view({4}).allclose( check );
     EXPECT_TRUE( close );
     //
     // Jacobian
-    Tensor Jacobian = torch::tensor({
+    at::Tensor Jacobian = torch::tensor({
         { -p0/(v0*v0),       0.0,          0.0    },
         { -p1/(v0*v0),       0.0,          0.0    },
         { v1*p0/(v0*v0*v2),  -p0/(v0*v2),  -r2/v2 },
@@ -151,7 +150,7 @@ TEST(examples_adten, solve)  {
     });
     //
     // dv, dr
-    vector<Tensor> dv(1), dr(1);
+    vector<at::Tensor> dv(1), dr(1);
     //
     // (partial of f w.r.t v_j) (v, p)
     for(int64_t j = 0; j < 3; ++j) {

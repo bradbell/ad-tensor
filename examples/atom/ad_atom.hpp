@@ -85,7 +85,6 @@ namespace {
     using ad_tensor::vector;
     using ad_tensor::adten_t;
     using ad_tensor::is_defined;
-    using at::Tensor;
     using std::cout;
     // END_USING
     //
@@ -115,34 +114,34 @@ namespace {
             return opt;
         }
         // forward
-        std::optional< vector<Tensor> > forward(
-            const vector<bool>&   rng_used ,
-            const vector<Tensor>& domain ) const override {
+        std::optional< vector<at::Tensor> > forward(
+            const vector<bool>&       rng_used ,
+            const vector<at::Tensor>& domain ) const override {
             //
-            Tensor x = domain[0];
+            at::Tensor x = domain[0];
             //
             // range
-            vector<Tensor> range;
+            vector<at::Tensor> range;
             range.push_back( x * x * x );
             //
             if( get_trace() ) {
                 cout << "forward_y: domain =\n" << to_string(domain);
                 cout << "forward_y: range =\n" << to_string(range);
             }
-            std::optional< vector<Tensor> > opt = range;
+            std::optional< vector<at::Tensor> > opt = range;
             return opt;
         }
         // forward_der
-        std::optional< vector<Tensor> > forward_der(
-            const vector<bool>&   rng_used  ,
-            const vector<Tensor>& domain    ,
-            const vector<Tensor>& dom_der   ) const override {
+        std::optional< vector<at::Tensor> > forward_der(
+            const vector<bool>&       rng_used  ,
+            const vector<at::Tensor>& domain    ,
+            const vector<at::Tensor>& dom_der   ) const override {
             //
-            Tensor x  = domain[0];
-            Tensor dx = dom_der[0];
+            at::Tensor x  = domain[0];
+            at::Tensor dx = dom_der[0];
             //
             // range
-            vector<Tensor> rng_der;
+            vector<at::Tensor> rng_der;
             rng_der.push_back( 3.0 * x * x * dx );
             //
             if( get_trace() ) {
@@ -150,7 +149,7 @@ namespace {
                 cout << "forward_der_y: dom_der =\n" << to_string(dom_der);
                 cout << "forward_der_y: rng_der =\n" << to_string(rng_der);
             }
-            std::optional< vector<Tensor> > opt = rng_der;
+            std::optional< vector<at::Tensor> > opt = rng_der;
             return opt;
         }
         // AD forward_der
@@ -236,35 +235,35 @@ namespace {
             return opt;
         }
         // forward
-        std::optional< vector<Tensor> > forward(
-            const vector<bool>&   rng_used ,
-            const vector<Tensor>& domain ) const override {
+        std::optional< vector<at::Tensor> > forward(
+            const vector<bool>&       rng_used ,
+            const vector<at::Tensor>& domain ) const override {
             //
-            Tensor x  = domain[0];
-            Tensor u  = domain[1];
-            Tensor z  = 3.0 * x * x * u;
+            at::Tensor x  = domain[0];
+            at::Tensor u  = domain[1];
+            at::Tensor z  = 3.0 * x * x * u;
             // range
-            vector<Tensor> range;
+            vector<at::Tensor> range;
             range.push_back( z );
             if( get_trace() ) {
                 cout << "forward_z: domain =\n" << to_string(domain);
                 cout << "forward_z: range =\n" << to_string(range);
             }
-            std::optional< vector<Tensor> > opt = range;
+            std::optional< vector<at::Tensor> > opt = range;
             return opt;
         }
         // forward_der
-        std::optional< vector<Tensor> > forward_der(
-            const vector<bool>&   rng_used,
-            const vector<Tensor>& domain,
-            const vector<Tensor>& dom_der) const override {
+        std::optional< vector<at::Tensor> > forward_der(
+            const vector<bool>&       rng_used,
+            const vector<at::Tensor>& domain,
+            const vector<at::Tensor>& dom_der) const override {
             //
             // dz
-            Tensor x    = domain[0];
-            Tensor u    = domain[1];
-            Tensor dx   = dom_der[0];
-            Tensor du   = dom_der[1];
-            Tensor dz   = ad_tensor::not_defined();
+            at::Tensor x    = domain[0];
+            at::Tensor u    = domain[1];
+            at::Tensor dx   = dom_der[0];
+            at::Tensor du   = dom_der[1];
+            at::Tensor dz   = ad_tensor::not_defined();
             if( is_defined(dx) && is_defined(du) ) {
                 dz   = 6.0 * x * u * dx + 3.0 * x * x * du;
             } else if( is_defined(dx) ) {
@@ -274,14 +273,14 @@ namespace {
             }
             //
             // rng_der
-            vector<Tensor> rng_der;
+            vector<at::Tensor> rng_der;
             rng_der.push_back( dz );
             if( get_trace() ) {
                 cout << "forward_der_z: domain =\n" << to_string(domain);
                 cout << "forward_der_z: dom_der =\n" << to_string(dom_der);
                 cout << "forward_der_z: rng_der =\n" << to_string(rng_der);
             }
-            std::optional< vector<Tensor> > opt = rng_der;
+            std::optional< vector<at::Tensor> > opt = rng_der;
             return opt;
         }
     };

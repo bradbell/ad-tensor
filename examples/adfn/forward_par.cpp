@@ -34,17 +34,16 @@ Source Code
 TEST(examples_adfn, forward_par)  {
     using ad_tensor::adten_t;
     using ad_tensor::adfn_t;
-    using at::Tensor;
     using ad_tensor::vector;
     //
     // p
     // We use p for the domain parameters
-    vector<Tensor> p;
+    vector<at::Tensor> p;
     p.push_back( torch::ones( {2} ) );
     p.push_back( torch::zeros( {2} ) );
     //
     // ap
-    vector<Tensor> v;
+    vector<at::Tensor> v;
     auto [av, ap] = adten_t::start_recording(v, p);
     //
     // ar
@@ -60,7 +59,7 @@ TEST(examples_adfn, forward_par)  {
     p[1] = torch::tensor( {3.0, 4.0} );
     //
     // p_all
-    vector<Tensor> p_all = f.forward_par(p);
+    vector<at::Tensor> p_all = f.forward_par(p);
     //
     bool equal = p_all[0].equal( p[0] );
     EXPECT_TRUE( equal );

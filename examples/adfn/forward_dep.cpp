@@ -65,19 +65,18 @@ namespace {
 TEST(examples_adfn, forward_dep)  {
     using ad_tensor::adten_t;
     using ad_tensor::adfn_t;
-    using at::Tensor;
     using ad_tensor::vector;
     //
     // p
     // We use p for the domain parameters
-    vector<Tensor> p;
+    vector<at::Tensor> p;
     p.push_back( torch::tensor( {1.0, 1.0} ) );
     p.push_back( torch::tensor( {1.0, 1.0} ) );
     p.push_back( torch::tensor( {1.0, 1.0} ) );
     //
     // v
     // We use v for the domain variables
-    vector<Tensor> v;
+    vector<at::Tensor> v;
     v.push_back( torch::tensor( {1.0, 1.0} ) );
     //
     // ap, av

@@ -20,10 +20,9 @@ Example Exponentiation
 TEST(examples_adten, unary_exp)  {
     using ad_tensor::adten_t;
     using ad_tensor::vector;
-    using at::Tensor;
     //
     // v, f
-    vector<Tensor> v;
+    vector<at::Tensor> v;
     v.push_back( torch::tensor( {2.0, 4.0} ) );
     vector<adten_t> av = adten_t::start_recording(v);
     vector<adten_t>  ar;
@@ -31,14 +30,14 @@ TEST(examples_adten, unary_exp)  {
     ad_tensor::adfn_t f  = adten_t::stop_recording(ar, "f");
     //
     // v_all, r
-    vector<Tensor> v_all = f.forward_var(v);
-    vector<Tensor> r     = f.get_range(v_all);
+    vector<at::Tensor> v_all = f.forward_var(v);
+    vector<at::Tensor> r     = f.get_range(v_all);
     EXPECT_TRUE( r[0].equal( v[0].exp() ) );
     //
     // dv, dr
-    vector<Tensor> dv;
+    vector<at::Tensor> dv;
     dv.push_back( torch::tensor( {3.0, 5.0} ) );
-    vector<Tensor> dr = f.forward_der(dv, v_all);
+    vector<at::Tensor> dr = f.forward_der(dv, v_all);
     EXPECT_TRUE( dr[0].equal( r[0] * dv[0] ) );
     //
     // dr, dv

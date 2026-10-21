@@ -10,15 +10,14 @@
 TEST(examples_adten, minus)  {
     using ad_tensor::adten_t;
     using ad_tensor::adfn_t;
-    using at::Tensor;
     using ad_tensor::vector;
     //
     // p
-    vector<Tensor> p;
+    vector<at::Tensor> p;
     p.push_back( torch::tensor( {2.0, 3.0} ) );
     //
     // x
-    vector<Tensor> x;
+    vector<at::Tensor> x;
     x.push_back( torch::tensor( { {1.0, 2.0, 3.0}, {4.0, 5.0, 6.0} } ) );
     //
     // ap, ax
@@ -33,11 +32,11 @@ TEST(examples_adten, minus)  {
     adfn_t f = adten_t::stop_recording(ay, "f");
     //
     // par_all, var_all
-    vector<Tensor> par_all = f.forward_par(p);
-    vector<Tensor> var_all = f.forward_var(x, par_all);
+    vector<at::Tensor> par_all = f.forward_par(p);
+    vector<at::Tensor> var_all = f.forward_var(x, par_all);
     //
     // y
-    vector<Tensor> y = f.get_range(var_all, par_all);
+    vector<at::Tensor> y = f.get_range(var_all, par_all);
     //
     EXPECT_EQ( y.size(), ay.size() );
     //
@@ -48,11 +47,11 @@ TEST(examples_adten, minus)  {
     EXPECT_TRUE( equal );
     //
     // dx
-    vector<Tensor> dx;
+    vector<at::Tensor> dx;
     dx.push_back(torch::tensor( { {7.0, 8.0, 9.0}, {10.0, 11.0, 12.0} } ));
     //
     // dy
-    vector<Tensor> dy = f.forward_der(dx, var_all, par_all);
+    vector<at::Tensor> dy = f.forward_der(dx, var_all, par_all);
     //
     EXPECT_EQ( dy.size(), y.size() );
     //

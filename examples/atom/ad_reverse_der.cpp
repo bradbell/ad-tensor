@@ -55,7 +55,7 @@ TEST(examples_atom, ad_reverse_der)  {
     size_t atom_id_y = ad_tensor::make_atom(base_atom_y_ptr);
     //
     // v, av
-    vector<Tensor> v;
+    vector<at::Tensor> v;
     v.push_back( torch::tensor( {0.0, 0.0} ) );
     vector<adten_t> av = adten_t::start_recording(v);
     //
@@ -81,17 +81,17 @@ TEST(examples_atom, ad_reverse_der)  {
     //
     // v, v_all, fp
     v[0] = torch::tensor( {3.0, 4.0} );
-    vector<Tensor> v_all = g.forward_var(v);
-    vector<Tensor> fp    = g.get_range(v_all);
+    vector<at::Tensor> v_all = g.forward_var(v);
+    vector<at::Tensor> fp    = g.get_range(v_all);
     //
     // equal
     bool equal = fp[0].equal( 3.0 * v[0] * v[0] );
     EXPECT_TRUE(equal);
     //
     // dv, gp
-    vector<Tensor> dv;
+    vector<at::Tensor> dv;
     dv.push_back( torch::tensor( {1.0, 1.0} ) );
-    vector<Tensor> gp = g.forward_der(dv, v_all);
+    vector<at::Tensor> gp = g.forward_der(dv, v_all);
     //
     // equal
     equal = gp[0].equal(6.0 * v[0]);

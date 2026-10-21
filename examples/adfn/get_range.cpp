@@ -36,18 +36,17 @@ Source Code
 TEST(examples_adfn, get_range)  {
     using ad_tensor::adten_t;
     using ad_tensor::adfn_t;
-    using at::Tensor;
     using ad_tensor::vector;
     //
     // c
-    Tensor c = torch::tensor( {1.0, 2.0} );
+    at::Tensor c = torch::tensor( {1.0, 2.0} );
     //
     // p
-    vector<Tensor> p;
+    vector<at::Tensor> p;
     p.push_back( torch::tensor( {0.0, 0.0} ) );
     //
     // v
-    vector<Tensor> v;
+    vector<at::Tensor> v;
     v.push_back( torch::tensor( {0.0, 0.0} ) );
     //
     // av, ap
@@ -74,9 +73,9 @@ TEST(examples_adfn, get_range)  {
     v[0] = torch::tensor( {9.0, 10.0} );
     //
     // r
-    vector<Tensor> p_all = f.forward_par(p);
-    vector<Tensor> v_all = f.forward_var(v, p_all);
-    vector<Tensor> r     = f.get_range(v_all, p_all);
+    vector<at::Tensor> p_all = f.forward_par(p);
+    vector<at::Tensor> v_all = f.forward_var(v, p_all);
+    vector<at::Tensor> r     = f.get_range(v_all, p_all);
     //
     EXPECT_EQ( r.size(), 3 );
     //

@@ -10,19 +10,18 @@
 TEST(examples_adfn, src_gen)  {
     using ad_tensor::adten_t;
     using ad_tensor::adfn_t;
-    using at::Tensor;
     using ad_tensor::vector;
     namespace plugin = ad_tensor::plugin;
     namespace fs     =  std::filesystem;
     //
     // p
     // We use p for the domain parameters
-    vector<Tensor> p;
+    vector<at::Tensor> p;
     p.push_back( torch::tensor( {1.0, 2.0} ) );
     //
     // v
     // We use v for the domain variables
-    vector<Tensor> v;
+    vector<at::Tensor> v;
     v.push_back( torch::tensor( {3.0, 4.0} ) );
     //
     // ap, av
@@ -70,7 +69,7 @@ TEST(examples_adfn, src_gen)  {
     );
     //
     // r
-    vector<Tensor> r = f_plugin(v, p);
+    vector<at::Tensor> r = f_plugin(v, p);
     EXPECT_EQ( r.size(), 4 );
     EXPECT_TRUE( r[0].equal( v[0] + p[0] ) );
     EXPECT_TRUE( r[1].equal( v[0] - p[0] ) );

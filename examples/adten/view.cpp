@@ -10,11 +10,10 @@
 TEST(examples_adten, view)  {
     using ad_tensor::adten_t;
     using ad_tensor::adfn_t;
-    using at::Tensor;
     using ad_tensor::vector;
     //
     // x
-    vector<Tensor> x;
+    vector<at::Tensor> x;
     x.push_back( torch::tensor( {1.0, 2.0, 3.0, 4.0} ) );
     //
     // ax
@@ -31,10 +30,10 @@ TEST(examples_adten, view)  {
     adfn_t f = adten_t::stop_recording(ay, "f");
     //
     // var_all
-    vector<Tensor> var_all = f.forward_var(x);
+    vector<at::Tensor> var_all = f.forward_var(x);
     //
     // y
-    vector<Tensor> y = f.get_range(var_all);
+    vector<at::Tensor> y = f.get_range(var_all);
     //
     EXPECT_EQ( y.size(), ay.size() );
     //
@@ -42,11 +41,11 @@ TEST(examples_adten, view)  {
     EXPECT_TRUE( equal );
     //
     // dx
-    vector<Tensor> dx;
+    vector<at::Tensor> dx;
     dx.push_back( torch::tensor( {5.0, 6.0, 7.0, 8.0} ) );
     //
     // dy
-    vector<Tensor> dy = f.forward_der(dx, var_all);
+    vector<at::Tensor> dy = f.forward_der(dx, var_all);
     equal = dy[0].equal( torch::tensor( { {5.0, 6.0}, {7.0, 8.0} } ) );
     EXPECT_TRUE( equal );
     //

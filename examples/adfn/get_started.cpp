@@ -9,19 +9,18 @@ namespace {
     using ad_tensor::adten_t;
     using ad_tensor::adfn_t;
     using ad_tensor::vector;
-    using at::Tensor;
     //
     adfn_t objective(int64_t n_data) {
         //
         // dom_par
-        Tensor x               = torch::zeros(n_data);
-        Tensor y               = torch::zeros(n_data);
-        vector<Tensor> dom_par = {x, y};
+        at::Tensor x               = torch::zeros(n_data);
+        at::Tensor y               = torch::zeros(n_data);
+        vector<at::Tensor> dom_par = {x, y};
         //
         // dom_var
-        Tensor slope           = torch::tensor(0.0);
-        Tensor intercept       = torch::tensor(0.0);
-        vector<Tensor> dom_var = {slope, intercept};
+        at::Tensor slope           = torch::tensor(0.0);
+        at::Tensor intercept       = torch::tensor(0.0);
+        vector<at::Tensor> dom_var = {slope, intercept};
         //
         // adom_par, adom_var
         auto [adom_var, adom_par] = adten_t::start_recording(dom_var, dom_par);
@@ -56,37 +55,37 @@ TEST(examples_adfn, get_started_first_derivative)  {
     adfn_t f = objective(n_data);
     //
     // x, y, dom_par
-    Tensor x               = torch::tensor( {0.0, 1.0, 2.0}  );
-    Tensor y               = torch::tensor( {2.0, 5.0, 8.0} );
-    vector<Tensor> dom_par = {x, y};
+    at::Tensor x               = torch::tensor( {0.0, 1.0, 2.0}  );
+    at::Tensor y               = torch::tensor( {2.0, 5.0, 8.0} );
+    vector<at::Tensor> dom_par = {x, y};
     //
     // dom_var
-    Tensor slope           = torch::tensor(1.0);
-    Tensor intercept       = torch::tensor(1.0);
-    vector<Tensor> dom_var = {slope, intercept};
+    at::Tensor slope           = torch::tensor(1.0);
+    at::Tensor intercept       = torch::tensor(1.0);
+    vector<at::Tensor> dom_var = {slope, intercept};
     //
     // par_all, var_all
-    vector<Tensor> par_all = f.forward_par(dom_par);
-    vector<Tensor> var_all = f.forward_var(dom_var, par_all);
+    vector<at::Tensor> par_all = f.forward_par(dom_par);
+    vector<at::Tensor> var_all = f.forward_var(dom_var, par_all);
     //
     // sumsq
-    vector<Tensor> range = f.get_range(var_all, par_all);
-    Tensor sumsq         = range[0];
+    vector<at::Tensor> range = f.get_range(var_all, par_all);
+    at::Tensor sumsq         = range[0];
     //
     // residual
-    Tensor model    = slope * x + intercept;
-    Tensor residual = y - model;
+    at::Tensor model    = slope * x + intercept;
+    at::Tensor residual = y - model;
     //
     // check
-    Tensor res_sq   = residual * residual;
-    Tensor check    = res_sq.sum();
+    at::Tensor res_sq   = residual * residual;
+    at::Tensor check    = res_sq.sum();
     EXPECT_EQ( sumsq.item<float>(), check.item<float>() );
     //
     // sumsq_intercept, sumsq_slope
-    vector<Tensor> rng_der = { torch::tensor(1.0) };
-    vector<Tensor> dom_der = f.reverse_der(rng_der, var_all, par_all);
-    Tensor sumsq_slope     = dom_der[0];
-    Tensor sumsq_intercept = dom_der[1];
+    vector<at::Tensor> rng_der = { torch::tensor(1.0) };
+    vector<at::Tensor> dom_der = f.reverse_der(rng_der, var_all, par_all);
+    at::Tensor sumsq_slope     = dom_der[0];
+    at::Tensor sumsq_intercept = dom_der[1];
     //
     // sumsq_slope
     check = - 2.0 * (residual * x).sum();
@@ -107,14 +106,14 @@ TEST(examples_adfn, get_started_second_derivative)  {
     adfn_t f = objective(n_data);
     //
     // dom_par
-    Tensor x               = torch::zeros(n_data);
-    Tensor y               = torch::zeros(n_data);
-    vector<Tensor> dom_par = {x, y};
+    at::Tensor x               = torch::zeros(n_data);
+    at::Tensor y               = torch::zeros(n_data);
+    vector<at::Tensor> dom_par = {x, y};
     //
     // dom_var
-    Tensor slope           = torch::tensor(0.0);
-    Tensor intercept       = torch::tensor(0.0);
-    vector<Tensor> dom_var = {slope, intercept};
+    at::Tensor slope           = torch::tensor(0.0);
+    at::Tensor intercept       = torch::tensor(0.0);
+    vector<at::Tensor> dom_var = {slope, intercept};
     //
     // adom_par, adom_var
     auto [adom_var, adom_par] = adten_t::start_recording(dom_var, dom_par);
@@ -140,17 +139,17 @@ TEST(examples_adfn, get_started_second_derivative)  {
     dom_var   = {slope, intercept};
     //
     // par_all, var_all
-    vector<Tensor> par_all = g.forward_par(dom_par);
-    vector<Tensor> var_all = g.forward_var(dom_var, par_all);
+    vector<at::Tensor> par_all = g.forward_par(dom_par);
+    vector<at::Tensor> var_all = g.forward_var(dom_var, par_all);
     //
     // sumsq_slope_slope, sumsq_intercept_slope
-    vector<Tensor> dom_der  = { torch::tensor(1.0), torch::tensor(0.0) };
-    vector<Tensor> rng_der  = g.forward_der(dom_der, var_all, par_all);
-    Tensor sumsq_slope_slope     = rng_der[0];
-    Tensor sumsq_intercept_slope = rng_der[1];
+    vector<at::Tensor> dom_der  = { torch::tensor(1.0), torch::tensor(0.0) };
+    vector<at::Tensor> rng_der  = g.forward_der(dom_der, var_all, par_all);
+    at::Tensor sumsq_slope_slope     = rng_der[0];
+    at::Tensor sumsq_intercept_slope = rng_der[1];
     //
     // sumsq_slope_slope
-    Tensor check = 2.0 * (x * x).sum();
+    at::Tensor check = 2.0 * (x * x).sum();
     EXPECT_EQ( sumsq_slope_slope.item<float>(), check.item<float>() );
     //
     // sumsq_intercept_slope
@@ -160,8 +159,8 @@ TEST(examples_adfn, get_started_second_derivative)  {
     // sumsq_slope_intercept, sumsq_intercept_intercept
     dom_der  = { torch::tensor(0.0), torch::tensor(1.0) };
     rng_der  = g.forward_der(dom_der, var_all, par_all);
-    Tensor sumsq_slope_intercept     = rng_der[0];
-    Tensor sumsq_intercept_intercept = rng_der[1];
+    at::Tensor sumsq_slope_intercept     = rng_der[0];
+    at::Tensor sumsq_intercept_intercept = rng_der[1];
     //
     // sumsq_slope_intercept
     check = 2.0 * x.sum();

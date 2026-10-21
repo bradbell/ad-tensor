@@ -32,7 +32,6 @@ Source Code
 #include <ad_tensor/ad_tensor.hpp>
 //
 namespace {
-    using at::Tensor;
     using ad_tensor::vector;
     using ad_tensor::adten_t;
     using ad_tensor::adfn_t;
@@ -41,7 +40,7 @@ namespace {
 TEST(examples_chkpnt, ad_forward_der)  {
     //
     // v
-    vector<Tensor> v;
+    vector<at::Tensor> v;
     v.push_back( torch::tensor( {0.0, 0.0} ) );
     //
     // av
@@ -76,18 +75,18 @@ TEST(examples_chkpnt, ad_forward_der)  {
     adfn_t h = adten_t::stop_recording(agp, "h");
     //
     // v, v_all, gp
-    v[0]                 = torch::tensor( {3.0, 4.0} );
-    vector<Tensor> v_all = h.forward_var(v);
-    vector<Tensor> gp    = h.get_range(v_all);
+    v[0]                     = torch::tensor( {3.0, 4.0} );
+    vector<at::Tensor> v_all = h.forward_var(v);
+    vector<at::Tensor> gp    = h.get_range(v_all);
     //
     // equal
     bool equal =  gp[0].equal( 3.0 * v[0] * v[0] );
     EXPECT_TRUE(equal);
     //
     // hp
-    vector<Tensor> dv;
+    vector<at::Tensor> dv;
     dv.push_back( torch::tensor( {1.0, 1.0} ) );
-    vector<Tensor> hp = h.forward_der(dv, v_all);
+    vector<at::Tensor> hp = h.forward_der(dv, v_all);
     //
     // equal
     equal =  hp[0].equal( 6.0 * v[0] );

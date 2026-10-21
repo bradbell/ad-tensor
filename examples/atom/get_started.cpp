@@ -71,7 +71,6 @@ namespace {
     using ad_tensor::vector;
     using ad_tensor::adten_t;
     using ad_tensor::base_atom_t;
-    using at::Tensor;
     //
     // derive_atom
     class derive_atom_t : public base_atom_t {
@@ -92,49 +91,49 @@ namespace {
             return opt;
         }
         // forward
-        std::optional< vector<Tensor> > forward(
-            const vector<bool>&   rng_used ,
-            const vector<Tensor>& domain ) const override {
+        std::optional< vector<at::Tensor> > forward(
+            const vector<bool>&       rng_used ,
+            const vector<at::Tensor>& domain ) const override {
             //
             // range
-            vector<Tensor> range;
+            vector<at::Tensor> range;
             range.push_back( domain[0] * domain[0] );
             //
-            std::optional< vector<Tensor> > opt = range;
+            std::optional< vector<at::Tensor> > opt = range;
             return opt;
         }
         // forward_der
-        std::optional< vector<Tensor> > forward_der(
-            const vector<bool>&   rng_used ,
-            const vector<Tensor>& domain   ,
-            const vector<Tensor>& dom_der ) const override {
+        std::optional< vector<at::Tensor> > forward_der(
+            const vector<bool>&       rng_used ,
+            const vector<at::Tensor>& domain   ,
+            const vector<at::Tensor>& dom_der ) const override {
             //
             // rng_der
-            vector<Tensor> rng_der;
+            vector<at::Tensor> rng_der;
             if( ad_tensor::not_defined(dom_der[0]) ) {
                 rng_der.push_back( ad_tensor::not_defined() );
             } else {
                 rng_der.push_back( 2.0 * domain[0] * dom_der[0] );
             }
             //
-            std::optional< vector<Tensor> > opt = rng_der;
+            std::optional< vector<at::Tensor> > opt = rng_der;
             return opt;
         }
         // reverse_der
-        std::optional< vector<Tensor> > reverse_der(
-            const vector<bool>&   rng_used ,
-            const vector<Tensor>& domain   ,
-            const vector<Tensor>& rng_der ) const override {
+        std::optional< vector<at::Tensor> > reverse_der(
+            const vector<bool>&       rng_used ,
+            const vector<at::Tensor>& domain   ,
+            const vector<at::Tensor>& rng_der ) const override {
             //
             // dom_der
-            vector<Tensor> dom_der;
+            vector<at::Tensor> dom_der;
             if( ad_tensor::not_defined(rng_der[0]) ) {
                 dom_der.push_back( ad_tensor::not_defined() );
             } else {
                 dom_der.push_back( 2.0 * domain[0] * rng_der[0] );
             }
             //
-            std::optional< vector<Tensor> > opt = dom_der;
+            std::optional< vector<at::Tensor> > opt = dom_der;
             return opt;
         }
     };
@@ -150,7 +149,7 @@ TEST(examples_atom, get_started)  {
     //
     // v
     // We use x for the adfn domain variables
-    vector<Tensor> v;
+    vector<at::Tensor> v;
     v.push_back( torch::tensor( {0.0, 0.0} ) );
     //
     // av
@@ -168,17 +167,17 @@ TEST(examples_atom, get_started)  {
     v[0] = torch:: tensor( {3.0, 4.0} );
     //
     // r
-    vector<Tensor> v_all = g.forward_var(v);
-    vector<Tensor> r     = g.get_range(v_all);
+    vector<at::Tensor> v_all = g.forward_var(v);
+    vector<at::Tensor> r     = g.get_range(v_all);
     //
     // check
     EXPECT_EQ( r[0].item<float>(), (v[0] * v[0]).sum().item<float>() );
     //
     // dv, dr
     // domain direction derivative
-    vector<Tensor> dv;
+    vector<at::Tensor> dv;
     dv.push_back( torch::tensor( {5.0, 6.0} ) );
-    vector<Tensor> dr = g.forward_der(dv, v_all);
+    vector<at::Tensor> dr = g.forward_der(dv, v_all);
     //
     // check
     EXPECT_EQ( dr[0].item<float>(), (2.0 * v[0] * dv[0]).sum().item<float>() );

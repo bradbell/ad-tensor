@@ -10,26 +10,25 @@
 TEST(examples_adten, index_put)  {
     using ad_tensor::adten_t;
     using ad_tensor::adfn_t;
-    using at::Tensor;
     using ad_tensor::vector;
     //
     // index_list_t
     //
     // before
-    Tensor before;
+    at::Tensor before;
     before = torch::tensor( { {1.0, 2.0}, {3.0, 4.0} } );
     //
     // replace
-    Tensor replace;
+    at::Tensor replace;
     replace = torch::tensor( { 0.0 } );
     //
     // index_list
-    std::optional<Tensor>  row_index  = torch::tensor( {0} );
-    std::optional<Tensor>  col_index  = torch::tensor( {1} );
-    c10::List< std::optional<Tensor> > index_list = { row_index, col_index };
+    std::optional<at::Tensor>  row_index  = torch::tensor( {0} );
+    std::optional<at::Tensor>  col_index  = torch::tensor( {1} );
+    c10::List< std::optional<at::Tensor> > index_list = { row_index, col_index };
     //
     // x
-    vector<Tensor> x = {before, replace};
+    vector<at::Tensor> x = {before, replace};
     //
     // ax
     vector<adten_t> ax = adten_t::start_recording(x);
@@ -50,27 +49,27 @@ TEST(examples_adten, index_put)  {
     x[1]    = replace;
     //
     // var_all
-    vector<Tensor> var_all = f.forward_var(x);
+    vector<at::Tensor> var_all = f.forward_var(x);
     //
     // y
-    vector<Tensor> y = f.get_range(var_all);
+    vector<at::Tensor> y = f.get_range(var_all);
     //
     bool equal = y[0].equal( torch::tensor( { {1.0, 5.0}, {3.0, 4.0} } ) );
     EXPECT_TRUE( equal );
     //
     // dx
-    Tensor         dbefore    = torch::tensor( {{6.0, 7.0}, {8.0, 9.0} } );
-    Tensor         dreplace   = torch::tensor( { 10.0 } );
-    vector<Tensor> dx         = {dbefore, dreplace};
+    at::Tensor         dbefore    = torch::tensor( {{6.0, 7.0}, {8.0, 9.0} } );
+    at::Tensor         dreplace   = torch::tensor( { 10.0 } );
+    vector<at::Tensor> dx         = {dbefore, dreplace};
     //
     // dy
-    vector<Tensor> dy = f.forward_der(dx, var_all);
+    vector<at::Tensor> dy = f.forward_der(dx, var_all);
     equal = dy[0].equal( torch::tensor( { {6.0, 10.0}, {8.0, 9.0} } ) );
     EXPECT_TRUE( equal );
     //
     // dy
-    Tensor  dafter  = torch::tensor( {{6.0, 7.0}, {8.0, 9.0} } );
-    dy              = {dafter};
+    at::Tensor  dafter  = torch::tensor( {{6.0, 7.0}, {8.0, 9.0} } );
+    dy                  = {dafter};
     //
     // dbefore, dreplace
     dx       = f.reverse_der(dy, var_all);

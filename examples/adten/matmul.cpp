@@ -10,13 +10,12 @@
 TEST(examples_adten, matmul)  {
     using ad_tensor::adten_t;
     using ad_tensor::adfn_t;
-    using at::Tensor;
     using ad_tensor::vector;
     //
     double x00 = 1.0, x01 = 2.0, x10 = 3.0, x11 = 4.0;
     //
     // x
-    vector<Tensor> x;
+    vector<at::Tensor> x;
     x.push_back( torch::tensor( {
         {x00, x01},
         {x10, x11}
@@ -33,14 +32,14 @@ TEST(examples_adten, matmul)  {
     adfn_t f = adten_t::stop_recording(ay, "f");
     //
     // var_all
-    vector<Tensor> var_all = f.forward_var(x);
+    vector<at::Tensor> var_all = f.forward_var(x);
     //
     // y
-    vector<Tensor> y = f.get_range(var_all);
+    vector<at::Tensor> y = f.get_range(var_all);
     //
     EXPECT_EQ( y.size(), ay.size() );
     //
-    Tensor check = torch::tensor( {
+    at::Tensor check = torch::tensor( {
         {x00*x00 + x01*x10, x00*x01 + x01*x11 },
         {x10*x00 + x11*x10, x10*x01 + x11*x11 }
     } );
@@ -48,14 +47,14 @@ TEST(examples_adten, matmul)  {
     EXPECT_TRUE( equal );
     //
     // dx
-    vector<Tensor> dx;
+    vector<at::Tensor> dx;
     dx.push_back( torch::tensor( {
         {0.0, 0.0},
         {0.0, 1.0}
     } ) );
     //
     // dy
-    vector<Tensor> dy = f.forward_der(dx, var_all);
+    vector<at::Tensor> dy = f.forward_der(dx, var_all);
     check = torch::tensor( {
             {0.0,       x01},
             {x10, 2.0 * x11}

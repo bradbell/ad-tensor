@@ -138,14 +138,13 @@ Source Code
 TEST(examples_adten, unary_inverse)  {
     using ad_tensor::adten_t;
     using ad_tensor::vector;
-    using at::Tensor;
     //
     // options
     at::TensorOptions options = torch::TensorOptions().dtype(torch::kFloat64);
     //
     // v
     double v0 = 1.0, v1 = 2.0, v2 = 3.0, v3 = 4.0;
-    vector<Tensor> v;
+    vector<at::Tensor> v;
     v.push_back( torch::tensor( {
         {v0, v1},
         {v2, v3}
@@ -160,7 +159,7 @@ TEST(examples_adten, unary_inverse)  {
         {-v2, v0}
     } / det(v0, v1, v2, v3)
     */
-    Tensor inverse = torch::tensor(
+    at::Tensor inverse = torch::tensor(
         { {v3, -v1}, {-v2, v0} }, options
     ) / det;
     //
@@ -171,17 +170,17 @@ TEST(examples_adten, unary_inverse)  {
     ad_tensor::adfn_t f  = adten_t::stop_recording(ar, "f");
     //
     // v_all, r
-    vector<Tensor> v_all = f.forward_var(v);
-    vector<Tensor> r     = f.get_range(v_all);
+    vector<at::Tensor> v_all = f.forward_var(v);
+    vector<at::Tensor> r     = f.get_range(v_all);
     EXPECT_TRUE( r[0].allclose( inverse ) );
     //
     // dv, dr
-    vector<Tensor> dv;
+    vector<at::Tensor> dv;
     double dv0 = 5.0, dv1 = 6.0, dv2 = 7.0, dv3 = 8.0;
     dv.push_back( torch::tensor(
         { {dv0, dv1}, {dv2, dv3} }, options
     ) );
-    vector<Tensor> dr = f.forward_der(dv, v_all);
+    vector<at::Tensor> dr = f.forward_der(dv, v_all);
     //
     // check
     double term   = v3 * dv0 - v2 * dv1 - v1 * dv2 + v0 * dv3;
@@ -190,7 +189,7 @@ TEST(examples_adten, unary_inverse)  {
     double dr1  = - dv1 / det + v1 * term;
     double dr2  = - dv2 / det + v2 * term;
     double dr3  = + dv0 / det - v0 * term;
-    Tensor check = torch::tensor({
+    at::Tensor check = torch::tensor({
         {dr0, dr1},
         {dr2, dr3}
     }, options );

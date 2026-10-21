@@ -51,13 +51,12 @@ Source Code
 #include <ad_tensor/ad_tensor.hpp>
 //
 TEST(examples_chkpnt, get_started)  {
-    using at::Tensor;
     using ad_tensor::vector;
     using ad_tensor::adten_t;
     using ad_tensor::adfn_t;
     //
     // v
-    vector<Tensor> v;
+    vector<at::Tensor> v;
     v.push_back( torch::tensor( {1.0, 1.0} ) );
     //
     // av
@@ -82,17 +81,17 @@ TEST(examples_chkpnt, get_started)  {
     //
     // v, v_all, s
     v[0] = torch::tensor( {3.0, 4.0} );
-    vector<Tensor> v_all = g.forward_var(v);
-    vector<Tensor> s     = g.get_range(v_all);
+    vector<at::Tensor> v_all = g.forward_var(v);
+    vector<at::Tensor> s     = g.get_range(v_all);
     //
     // equal
     bool equal =  s[0].equal( v[0] * v[0] * v[0] );
     EXPECT_TRUE(equal);
     //
     // dv, ds
-    vector<Tensor> dv;
+    vector<at::Tensor> dv;
     dv.push_back( torch::tensor( {1.0, 2.0} ) );
-    vector<Tensor> ds = g.forward_der(dv, v_all);
+    vector<at::Tensor> ds = g.forward_der(dv, v_all);
     //
     // equal
     equal =  ds[0].equal( 3.0 * v[0] * v[0] * dv[0] );

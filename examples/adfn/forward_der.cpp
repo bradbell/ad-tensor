@@ -62,12 +62,11 @@ Source Code
 TEST(examples_adfn, forward_der)  {
     using ad_tensor::adten_t;
     using ad_tensor::adfn_t;
-    using at::Tensor;
     using ad_tensor::vector;
     //
     // v
     // We use v for the domain variables
-    vector<Tensor> v;
+    vector<at::Tensor> v;
     v.push_back( torch::tensor( {1.0, 1.0} ) );
     v.push_back( torch::tensor( {1.0, 1.0} ) );
     //
@@ -89,15 +88,15 @@ TEST(examples_adfn, forward_der)  {
     // v, v_all
     v[0] = torch::tensor( {1.0, 2.0} );
     v[1] = torch::tensor( {3.0, 4.0} );
-    vector<Tensor> v_all = f.forward_var(v);
+    vector<at::Tensor> v_all = f.forward_var(v);
     //
     // dv
-    vector<Tensor> dv;
+    vector<at::Tensor> dv;
     dv.push_back( torch::tensor( {5.0, 6.0} ) );
     dv.push_back( torch::tensor( {7.0, 8.0} ) );
     //
     // dr
-    vector<Tensor> dr = f.forward_der(dv, v_all);
+    vector<at::Tensor> dr = f.forward_der(dv, v_all);
     //
     // equal, close
     bool equal, close;
