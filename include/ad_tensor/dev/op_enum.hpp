@@ -21,6 +21,12 @@ Unary Operators
     BEGIN_UNARY, END_UNARY
 }
 
+Index Array Operators
+*********************
+{xrst_literal ,
+    BEGIN_INDEX_ARRAY, END_INDEX_ARRAY
+}
+
 Binary Operators
 ****************
 {xrst_literal ,
@@ -45,6 +51,12 @@ namespace ad_tensor { namespace dev { enum struct op_enum_t
     logdet,      // log of determinant
     // END_UNARY END_SORT_THIS_LINE_MINUS_1
     //
+    // BEGIN_INDEX_ARRAY  BEGIN_SORT_THIS_LINE_PLUS_1
+    flip,        // flip(dims)
+    sum,         // sum(dims)
+    view,        // view(shape)
+    // END_INDEX_ARRAY END_SORT_THIS_LINE_MINUS_1
+    //
     // BEGIN_BINARY BEGIN_SORT_THIS_LINE_PLUS_1
     add,         // addition
     div,         // division
@@ -64,16 +76,13 @@ namespace ad_tensor { namespace dev { enum struct op_enum_t
     conv1d,              // one dimensional convolution
     conv_transpose1d,    // transposed one dimensional convolution
     dom,                 // domain tensor
-    flip,                // Reverse order of elements
     index,               // extract elements of a tensor
     index_put,           // replace elements of a tensor
     matmul,              // matrix multiplication
     minus,               // unary minus
     pad,                 // functional padding
     solve,               // solve matrix equation
-    sum,                 // summation
     transpose,           // transpose
-    view,                // view
     where,               // where function
     // END_OTHER END_SORT_THIS_LINE_MINUS_1
 }; } }

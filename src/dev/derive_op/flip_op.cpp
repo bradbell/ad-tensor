@@ -2,6 +2,7 @@
 // SPDX-FileCopyrightText: Bradley M. Bell <bradbell@seanet.com>
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
+#include <ad_tensor/dev/src_gen_index.hpp>
 #include <ad_tensor/dev/derive_op.hpp>
 #include <ad_tensor/adten.hpp>
 #include <ad_tensor/dev/plus_minus_equal.hpp>
@@ -241,50 +242,7 @@ template <> std::string flip_op_t<at::Tensor>::src_gen(
     const agraph_t&                                       agraph          ,
     const std::function< std::string(size_t, adtype_t) >& tensor_src
 ) const {
-    //
-    // string
-    using std::string;
-    //
-    // arg_start
-    size_t    arg_start = agraph.m_arg_start[op_index];
-    //
-    // n_dim
-    size_t n_dim = agraph.m_arg_value[arg_start + 1];
-    assert( adtype_t::none ==  agraph.m_arg_type[arg_start + 1] );
-    //
-#ifndef NDEBUG
-    //
-    // n_arg
-    size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
-    assert( n_arg == 2 + n_dim && "flip_op: n_arg != 2 + n_dim" );
-#endif
-    //
-    // operand_src
-    size_t   operand_index  = agraph.m_arg_value[arg_start];
-    adtype_t operand_adtype = agraph.m_arg_type[arg_start];
-    string   operand_src    = tensor_src(operand_index, operand_adtype);
-    //
-    // target_src
-    string target_src = tensor_src(op_index, op_adtype);
-    //
-    // src
-    string src;
-    constexpr const char* fmt1 = "{{   std::array<int64_t,{}> dim = {{";
-    src += std::format(fmt1, n_dim);
-    for(size_t i = 0; i < n_dim; ++i) {
-        assert( agraph.m_arg_type[arg_start + 2 + i] == adtype_t::none );
-        size_t index = agraph.m_arg_value[arg_start + 2 + i];
-        if( 0 < i ) {
-            src += ", ";
-        }
-        src += std::to_string(index);
-    }
-    src += "};\n";
-    constexpr const char* fmt2 = "    {} = {}.flip(dim);\n";
-    src += std::format(fmt2, target_src, operand_src);
-    src += "}";
-    //
-    return src;
+    return src_gen_index_array(op_index, op_adtype, agraph, tensor_src);
 }
 template <> std::string flip_op_t<adten_t>::src_gen(
     size_t                                                op_index        ,

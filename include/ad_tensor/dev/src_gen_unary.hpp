@@ -3,6 +3,10 @@
 // SPDX-FileCopyrightText: Bradley M. Bell <bradbell@seanet.com>
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
+#include <functional>
+#include <string>
+#include <ad_tensor/adtype.hpp>
+#include <ad_tensor/dev/agraph.hpp>
 namespace ad_tensor { namespace dev {
     std::string src_gen_unary(
         size_t                                                op_index        ,
