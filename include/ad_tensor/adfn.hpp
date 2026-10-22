@@ -79,6 +79,9 @@ public:
     // is_empty
     bool is_empty(void) const;
     //
+    // n_range
+    size_t n_range(void) const;
+    //
     // n_con
     size_t n_con(void) const;
     //

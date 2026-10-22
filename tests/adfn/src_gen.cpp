@@ -134,7 +134,7 @@ TEST(tests_adfn, src_gen)  {
     // r
     size_t i = 0;
     vector<at::Tensor> r = f_plugin(v, p);
-    EXPECT_EQ( r.size(), 16 );
+    EXPECT_EQ( r.size(), f.n_range() );
     EXPECT_TRUE( r[i++].equal( (-v[0])              + (-p[0]) ) );
     EXPECT_TRUE( r[i++].equal( v[0].exp()           + p[0].exp() ) );
     EXPECT_TRUE( r[i++].equal( v[0].logdet()        + p[0].logdet() ) );

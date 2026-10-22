@@ -39,6 +39,13 @@ trace
 get_trace returns the previous value chosen by set_trace.
 The default value, when trace has not been set, is false.
 
+n_range
+*******
+{xrst_literal ,
+    BEGIN_N_RANGE, END_N_RANGE
+}
+Returns the number of tensors in the range space for this AD function.
+
 n_con
 *****
 {xrst_literal ,
@@ -155,6 +162,12 @@ namespace ad_tensor {
         m_rng_shapes.empty() &&
         m_name.empty()
         ;
+    }
+    //
+    // BEGIN_N_RANGE
+    size_t adfn_t::n_range(void) const
+    {   // END_N_RANGE
+        return m_rng_index.size();
     }
     //
     // BEGIN_N_CON
