@@ -21,13 +21,13 @@ endif()
 add_library(ad_tensor SHARED
     # BEGIN_SORT_THIS_LINE_PLUS_1
     ${plugin_SRCS}
+    adfn/adfn.cpp
     adfn/forward_dep.cpp
     adfn/forward_der.cpp
     adfn/forward_par.cpp
     adfn/forward_var.cpp
     adfn/get_range.cpp
     adfn/optimize.cpp
-    adfn/print_con.cpp
     adfn/reverse_der.cpp
     adfn/src_gen.cpp
     adten/binary.cpp
