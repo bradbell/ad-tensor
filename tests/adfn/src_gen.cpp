@@ -6,12 +6,69 @@
 #include <gtest/gtest.h>
 #include <ad_tensor/ad_tensor.hpp>
 //
-TEST(tests_adfn, src_gen)  {
+namespace {
     using ad_tensor::adten_t;
     using ad_tensor::adfn_t;
     using ad_tensor::vector;
     namespace plugin = ad_tensor::plugin;
     namespace fs     =  std::filesystem;
+    //
+    // src_gen_path
+    std::string setup_src_gen_path(void) {
+        //
+        // src_gen_path
+        fs::path src_gen_path  = fs::temp_directory_path() / "test_src_gen";
+        if( fs::is_directory(src_gen_path) ) {
+            try {
+                fs::remove_all(src_gen_path);
+            } catch(...) {
+                EXPECT_TRUE(false);
+            }
+        }
+        fs::create_directory( src_gen_path );
+        //
+        try { fs::permissions(
+            src_gen_path, fs::perms::owner_all, fs::perm_options::replace
+        ); } catch (...) {
+            // cannot change permissions for src_gen_path directory
+            EXPECT_TRUE(false);
+        }
+        return src_gen_path.string();
+    }
+    fs::path src_gen_path = setup_src_gen_path();
+    //
+    // create_chkpnt
+    // g(v) = { v[0] + v[1], v[0] * v[1] }
+    size_t create_chkpnt(void) {
+        //
+        // av
+        vector<at::Tensor> v;
+        v.push_back( torch::zeros({5}) );
+        v.push_back( torch::zeros({5}) );
+        vector<adten_t> av = adten_t::start_recording(v);
+        //
+        // ar
+        vector<adten_t> ar;
+        ar.push_back( av[0] + av[1] );
+        ar.push_back( av[0] * av[1] );
+        //
+        // r = g(v)
+        adfn_t g = adten_t::stop_recording(ar, "g");
+        //
+        // src_gen_path : g.cpp, g.con
+        g.src_gen(src_gen_path.string());
+        //
+        // chkpnt_id
+        size_t chkpnt_id = ad_tensor::make_chkpnt(g);
+        //
+        return chkpnt_id;
+    }
+}
+//
+TEST(tests_adfn, src_gen)  {
+    //
+    // chkpnt_id
+    size_t chkpnt_id = create_chkpnt();
     //
     // index_list
     std::optional<at::Tensor>  col_index  = torch::tensor( {0, 1} );
@@ -92,39 +149,29 @@ TEST(tests_adfn, src_gen)  {
     // where
     ar.push_back( where( ap[2] > av[2], ap[2], av[2] ) );
     //
+    // call
+    vector<adten_t> ax;
+    ax.push_back( av[2] );
+    ax.push_back( ap[2] );
+    vector<adten_t> ay = call_chkpnt(chkpnt_id, ax);
+    ar.push_back( ay[0] );
+    ar.push_back( ay[1] );
+    //
     // r = f(v, p)
     adfn_t f = adten_t::stop_recording(ar, "f");
     //
-    // source_path
-    fs::path source_path  = fs::temp_directory_path() / "test_src_gen";
-    if( fs::is_directory(source_path) ) {
-        try {
-            fs::remove_all(source_path);
-        } catch(...) {
-            EXPECT_TRUE(false);
-        }
-    }
-    fs::create_directory( source_path );
-    //
-    try { fs::permissions(
-        source_path, fs::perms::owner_all, fs::perm_options::replace
-    ); } catch (...) {
-        // cannot change permissions for source_path directory
-        EXPECT_TRUE(false);
-    }
-    //
-    // source_path: f.cpp, f.con
-    f.src_gen(source_path.string());
+    // src_gen_path: f.cpp, f.con
+    f.src_gen(src_gen_path.string());
     //
     // src_gen_path/build
     bool quiet                   = true;
     bool use_installed_ad_tensor = false;
     plugin::build_lib(
-        source_path, quiet, use_installed_ad_tensor
+        src_gen_path, quiet, use_installed_ad_tensor
     );
     //
     // f_plugin
-    fs::path build_path        = source_path / "build";
+    fs::path build_path        = src_gen_path / "build";
     std::string plugin_lib     = "plugin_lib";
     std::string function_name  = f.get_name();
     auto f_plugin = plugin::src_gen_fun(
@@ -166,4 +213,8 @@ TEST(tests_adfn, src_gen)  {
     //
     // where
     EXPECT_TRUE( r[i++].equal( where( p[2] > v[2], p[2], v[2] ) ) );
+    //
+    // call
+    EXPECT_TRUE( r[i++].equal( v[2] + p[2] ) );
+    EXPECT_TRUE( r[i++].equal( v[2] * p[2] ) );
 }

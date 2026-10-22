@@ -509,8 +509,46 @@ template <> std::string call_op_t<at::Tensor>::src_gen(
     const agraph_t&                                       agraph          ,
     const std::function< std::string(size_t, adtype_t) >& tensor_src
 ) const {
-    user_assert(false, "src_gen not yet implemented for call operator" );
-    return "";
+    //
+    // string
+    using std::string;
+    //
+    // arg_start, atom_id, n_domain, n_range, n_result
+    auto [arg_start, atom_id, n_domain, n_range, n_result] = unpack_call(
+        op_index, agraph
+    );
+    //
+    // atom_name
+    atom_global_t&     atom_global  = atom_global_t::singleton();
+    const base_atom_t& base_atom    = atom_global.get_base_atom(atom_id);
+    string             atom_name    = base_atom.get_name();
+    //
+    // src
+    string src = "{   vector<at::Tensor> domain, empty;\n";
+    for(size_t j = 0; j < n_domain; ++j) {
+        size_t   ten_index  = agraph.m_arg_value[arg_start + 4 + j];
+        adtype_t ten_adtype = agraph.m_arg_type[arg_start + 4 + j];
+        string   ten_src    = tensor_src(ten_index, ten_adtype);
+        src += std::format( "    domain.push_back( {} );\n", ten_src);
+    }
+    //
+    // range
+    constexpr const char* fmt =
+R"|(    extern vector<at::Tensor> {}_plugin(
+        const vector<at::Tensor>& dom_var ,
+        const vector<at::Tensor>& dom_par
+    );
+    vector<at::Tensor> range = {}_plugin(domain, empty);
+)|";
+    src += std::format(fmt, atom_name, atom_name);
+    for(size_t i = 0; i < n_result; ++i) {
+        string ten_src     = tensor_src(op_index + i, op_adtype);
+        size_t range_index = agraph.m_arg_value[arg_start + 4 + n_domain + i];
+        src += std::format("    {} = range[{}];\n", ten_src, range_index);
+    }
+    src += "}";
+    //
+    return src;
 }
 template <> std::string call_op_t<adten_t>::src_gen(
     size_t                                                op_index        ,

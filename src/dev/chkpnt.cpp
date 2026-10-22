@@ -15,9 +15,9 @@ namespace ad_tensor { namespace dev { // Begin ad_tensor::dev
 // ------------------------------------------------------------------------
 // ctor
 derive_chkpnt_t::derive_chkpnt_t(chkpnt_info_t&& info)
-: m_info( std::move(info) ) {
-    set_name( "chkpnt_" + info.m_adfn.get_name() );
-}
+: m_info( std::move(info) )
+{ }
+//
 // depend
 std::optional<sparsity_t> derive_chkpnt_t::depend(void) const {
     //
@@ -27,6 +27,7 @@ std::optional<sparsity_t> derive_chkpnt_t::depend(void) const {
     std::optional<sparsity_t> opt = depend;
     return opt;
 }
+//
 // forward
 std::optional< vector<at::Tensor> > derive_chkpnt_t::forward(
     const vector<bool>&               rng_used  ,
@@ -41,6 +42,7 @@ std::optional< vector<at::Tensor> > derive_chkpnt_t::forward(
     std::optional< vector<at::Tensor> > opt = range;
     return opt;
 }
+//
 // forward_der: at::Tensor
 std::optional< vector<at::Tensor> > derive_chkpnt_t::forward_der(
     const vector<bool>&               rng_used  ,
@@ -56,6 +58,7 @@ std::optional< vector<at::Tensor> > derive_chkpnt_t::forward_der(
     std::optional< vector<at::Tensor> > opt = rng_der;
     return opt;
 }
+//
 // reverse_der: at::Tensor
 std::optional< vector<at::Tensor> > derive_chkpnt_t::reverse_der(
     const vector<bool>&               rng_used  ,
@@ -71,6 +74,7 @@ std::optional< vector<at::Tensor> > derive_chkpnt_t::reverse_der(
     std::optional< vector<at::Tensor> > opt = dom_der;
     return opt;
 }
+//
 // forward_der: adten_t
 std::optional< vector<adten_t> > derive_chkpnt_t::forward_der(
     const vector<bool>&               rng_used  ,
@@ -100,6 +104,7 @@ std::optional< vector<adten_t> > derive_chkpnt_t::forward_der(
     std::optional< vector<adten_t> > opt = rng_der;
     return opt;
 }
+//
 // reverse_der: adten_t
 std::optional< vector<adten_t> > derive_chkpnt_t::reverse_der(
     const vector<bool>&               rng_used  ,

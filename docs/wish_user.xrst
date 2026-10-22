@@ -19,9 +19,4 @@ Simpler Examples
 Some of the examples are complicated because they are also being used as tests.
 Move these examples to the tests directory and make simpler examples.
 
-Fill in Missing src_gen
-***********************
-Some operators do not yet support :ref:`adfn_src_gen-name` .
-Fix this.
-
 {xrst_end wish_user}

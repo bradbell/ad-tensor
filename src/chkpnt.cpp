@@ -173,6 +173,10 @@ size_t adfn_t::make_chkpnt(
         dev::user_assert(false, msg);
     }
     //
+    // adfn_name, adfn_trace
+    std::string adfn_name  = adfn.get_name();
+    bool        adfn_trace = adfn.get_trace();
+    //
     // info
     dev::chkpnt_info_t info;
     //
@@ -202,9 +206,9 @@ size_t adfn_t::make_chkpnt(
         vector<adten_t> arng_der = adfn.forward_der(adom_der, avar_all);
         //
         // adfn_forward
-        std::string name = adfn.get_name() + "_forward";
+        std::string name = adfn_name + "_forward";
         adfn_t adfn_forward = adten_t::stop_recording(arng_der, name);
-        adfn_forward.set_trace( adfn.get_trace() );
+        adfn_forward.set_trace( adfn_trace );
         //
         info.m_for_chkpnt_id = make_chkpnt(
             adfn_forward, dom_both, directions.slice(1)
@@ -240,9 +244,9 @@ size_t adfn_t::make_chkpnt(
         vector<adten_t> adom_der = adfn.reverse_der(arng_der, avar_all);
         //
         // adfn_reverse
-        std::string name = adfn.get_name() + "_reverse";
+        std::string name = adfn_name + "_reverse";
         adfn_t adfn_reverse = adten_t::stop_recording(adom_der, name);
-        adfn_reverse.set_trace( adfn.get_trace() );
+        adfn_reverse.set_trace( adfn_trace );
         //
         info.m_rev_chkpnt_id = make_chkpnt(
             adfn_reverse, dom_both, directions.slice(1)
@@ -254,10 +258,13 @@ size_t adfn_t::make_chkpnt(
     dev::move_swap( depend_var, info.m_depend );
     dev::move_swap( adfn,       info.m_adfn );
     //
-    // atom_id
-    dev::atom_global_t& atom_global = dev::atom_global_t::singleton();
+    // base_atom_ptr
     std::unique_ptr<base_atom_t> base_atom_ptr =
         std::make_unique<dev::derive_chkpnt_t>( std::move(info) );
+    base_atom_ptr->set_name( adfn_name );
+    //
+    // atom_id
+    dev::atom_global_t& atom_global = dev::atom_global_t::singleton();
     size_t atom_id = atom_global.store(base_atom_ptr);
     //
     return atom_id;

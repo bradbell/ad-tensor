@@ -91,7 +91,7 @@ template <> std::string call_result_op_t<at::Tensor>::src_gen(
     const agraph_t&                                       agraph          ,
     const std::function< std::string(size_t, adtype_t) >& tensor_src
 ) const {
-    user_assert(false, "src_gen not yet implemented for call_result operator" );
+    // call_op generates results for this operator
     return "";
 }
 template <> std::string call_result_op_t<adten_t>::src_gen(
