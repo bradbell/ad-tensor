@@ -63,6 +63,7 @@ Other Member Functions
     src/adten/minus.cpp
     src/adten/pad.cpp
     src/adten/recording.cpp
+    src/adten/slice.cpp
     src/adten/solve.cpp
     src/adten/sum.cpp
     src/adten/transpose.cpp
@@ -188,6 +189,7 @@ The adten_t Class Developer Documentation
     src/adten/matmul.cpp
     src/adten/minus.cpp
     src/adten/pad.cpp
+    src/adten/slice.cpp
     src/adten/solve.cpp
     src/adten/sum.cpp
     src/adten/transpose.cpp
@@ -435,6 +437,15 @@ public:
     adten_t index(
         const c10::List< std::optional<at::Tensor> >& index_list
     ) const;
+    //
+    // BEGIN_SLICE
+    adten_t slice(
+        int64_t                   dim   = 0,
+        std::optional< int64_t >  start = ::std::nullopt,
+        std::optional< int64_t >  end   = ::std::nullopt,
+        int64_t                   step  = 1
+    ) const;
+    // END_SLICE
 }; }
 
 namespace ad_tensor {
