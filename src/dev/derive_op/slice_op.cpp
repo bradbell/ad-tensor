@@ -2,6 +2,7 @@
 // SPDX-FileCopyrightText: Bradley M. Bell <bradbell@seanet.com>
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
+#include <ad_tensor/dev/plus_minus_equal.hpp>
 #include <ad_tensor/dev/derive_op.hpp>
 #include <ad_tensor/adten.hpp>
 //
@@ -143,9 +144,46 @@ void slice_op_t<TensorType>::reverse_der(
     const vector<TensorType>&    var_all     ,
     vector<TensorType>&          rev_der
 ) const {
-    user_assert(false,
-        "reverse_der not yet implemented for slice operator"
-    );
+    //
+    // arg_start, dim, start, end, step
+    UNPACK
+    CHECK_ARGUMENTS(adtype_t::variable)
+    //
+    if( step != 1 ) { user_assert(false ,
+        "reverse_der: slice operation with step !=1 is not yet implemented"
+    ); }
+    //
+    // operand_index, operand_shape
+    size_t           operand_index = agraph.m_arg_value[arg_start];
+    c10::IntArrayRef operand_shape = var_all[operand_index].sizes();  
+    //
+    // operand_bar
+    TensorType operand_bar;
+    if( start == 0 && end == operand_shape[dim] ) {
+        operand_bar = rev_der[op_index];
+    } else {
+        //
+        // zero_start, zero_end
+        vector<int64_t> shape( operand_shape.begin(), operand_shape.end() );
+        shape[dim]            = start;
+        TensorType zero_start = TensorType( torch::zeros( shape ) );
+        shape[dim]            = operand_shape[dim] - end;
+        TensorType zero_end   = TensorType( torch::zeros( shape ) );
+        //
+        // operand_bar
+        if( start == 0 ) { 
+            operand_bar = torch::cat( {rev_der[op_index], zero_end}, dim );
+        } else if( end == operand_shape[dim] ) {
+            operand_bar = torch::cat( {zero_start, rev_der[op_index]}, dim );
+        } else {
+            operand_bar = torch::cat( 
+                {zero_start, rev_der[op_index], zero_end}, dim 
+            );
+        }
+    }
+    //
+    // rev_der[operand_index]
+    plus_equal(rev_der[operand_index], operand_bar);
 }
 template void slice_op_t<at::Tensor>::reverse_der(
     size_t                       op_index    ,
@@ -155,14 +193,18 @@ template void slice_op_t<at::Tensor>::reverse_der(
     const vector<at::Tensor>&    var_all     ,
     vector<at::Tensor>&          rev_der
 ) const;
-template void slice_op_t<adten_t>::reverse_der(
+// TODO: use template version of reverse_der to implement this once
+// forward_var and forward_par are implemented for cat operator.
+template <> void slice_op_t<adten_t>::reverse_der(
     size_t                       op_index    ,
     const agraph_t&              agraph      ,
     const vector<at::Tensor>&    con_vec     ,
     const vector<adten_t>&       par_all     ,
     const vector<adten_t>&       var_all     ,
     vector<adten_t>&             rev_der
-) const;
+) const {
+    assert(false && "slice not yet implemented for adten_t version of slice");
+}
 // ---------------------------------------------------------------------------
 // src_gen
 template <> std::string slice_op_t<at::Tensor>::src_gen(

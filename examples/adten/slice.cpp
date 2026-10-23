@@ -65,16 +65,20 @@ TEST(examples_adten, slice)  {
     } );
     equal = dy[0].equal( check );
     EXPECT_TRUE( equal );
-#if 0
     //
     // dx
-    dx    = f.reverse_der(dy, var_all, par_all);
+    dy[0] = torch::tensor( {
+        { 1.0,  2.0},
+        { 3.0,  4.0},
+        { 5.0,  6.0}
+    } );
+    dx    = f.reverse_der(dy, var_all);
     check = torch::tensor( {
-        {5.0, 6.0},
-        {7.0, 8.0}
+        {0.0,  1.0,  2.0,  0.0},
+        {0.0,  3.0,  4.0,  0.0},
+        {0.0,  5.0,  6.0,  0.0},
     } );
     equal = dx[0].equal( check );
     EXPECT_TRUE( equal );
-#endif
 }
 // END_CPP
