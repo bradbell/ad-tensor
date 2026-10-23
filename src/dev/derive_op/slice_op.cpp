@@ -16,12 +16,11 @@
 //
 // CHECK_ARGUMENTS
 #ifdef NDEBUG
-    #define CHECK_ARGUMENTS(adtype)
+    #define CHECK_ARGUMENTS
 #else
-    #define CHECK_ARGUMENTS(adtype) \
+    #define CHECK_ARGUMENTS \
     {   size_t n_arg = agraph.m_arg_start[op_index + 1] - arg_start; \
         assert( n_arg == 5  ); \
-        assert( agraph.m_arg_type[arg_start] == adtype ); \
         for(size_t i = 1; i < 5; ++i) { \
             assert( agraph.m_arg_type[arg_start+i] == adtype_t::none ); \
         } \
@@ -41,7 +40,8 @@ void slice_op_t<TensorType>::forward_par(
     //
     // arg_start, dim, start, end, step
     UNPACK
-    CHECK_ARGUMENTS(adtype_t::parameter)
+    CHECK_ARGUMENTS
+    assert( agraph.m_arg_type[arg_start] == (adtype_t::parameter) );
     //
     // operand_index
     size_t operand_index  = agraph.m_arg_value[arg_start];
@@ -74,7 +74,8 @@ void slice_op_t<TensorType>::forward_var(
     //
     // arg_start, dim, start, end, step
     UNPACK
-    CHECK_ARGUMENTS(adtype_t::variable)
+    CHECK_ARGUMENTS
+    assert( agraph.m_arg_type[arg_start] == (adtype_t::variable) );
     //
     // operand_index
     size_t operand_index  = agraph.m_arg_value[arg_start];
@@ -110,7 +111,8 @@ void slice_op_t<TensorType>::forward_der(
     //
     // arg_start, dim, start, end, step
     UNPACK
-    CHECK_ARGUMENTS(adtype_t::variable)
+    CHECK_ARGUMENTS
+    assert( agraph.m_arg_type[arg_start] == (adtype_t::variable) );
     //
     // operand_index
     size_t operand_index  = agraph.m_arg_value[arg_start];
@@ -147,7 +149,8 @@ void slice_op_t<TensorType>::reverse_der(
     //
     // arg_start, dim, start, end, step
     UNPACK
-    CHECK_ARGUMENTS(adtype_t::variable)
+    CHECK_ARGUMENTS
+    assert( agraph.m_arg_type[arg_start] == (adtype_t::variable) );
     //
     if( step != 1 ) { user_assert(false ,
         "reverse_der: slice operation with step !=1 is not yet implemented"
@@ -155,7 +158,7 @@ void slice_op_t<TensorType>::reverse_der(
     //
     // operand_index, operand_shape
     size_t           operand_index = agraph.m_arg_value[arg_start];
-    c10::IntArrayRef operand_shape = var_all[operand_index].sizes();  
+    c10::IntArrayRef operand_shape = var_all[operand_index].sizes();
     //
     // operand_bar
     TensorType operand_bar;
@@ -171,13 +174,13 @@ void slice_op_t<TensorType>::reverse_der(
         TensorType zero_end   = TensorType( torch::zeros( shape ) );
         //
         // operand_bar
-        if( start == 0 ) { 
+        if( start == 0 ) {
             operand_bar = torch::cat( {rev_der[op_index], zero_end}, dim );
         } else if( end == operand_shape[dim] ) {
             operand_bar = torch::cat( {zero_start, rev_der[op_index]}, dim );
         } else {
-            operand_bar = torch::cat( 
-                {zero_start, rev_der[op_index], zero_end}, dim 
+            operand_bar = torch::cat(
+                {zero_start, rev_der[op_index], zero_end}, dim
             );
         }
     }
@@ -213,10 +216,33 @@ template <> std::string slice_op_t<at::Tensor>::src_gen(
     const agraph_t&                                       agraph          ,
     const std::function< std::string(size_t, adtype_t) >& tensor_src
 ) const {
-    user_assert(false,
-        "src_gen not yet implemented for slice operator"
+    //
+    // string
+    using std::string;
+    //
+    // arg_start, dim, start, end, step
+    UNPACK
+    CHECK_ARGUMENTS
+    assert(
+        agraph.m_arg_type[arg_start] == adtype_t::parameter ||
+        agraph.m_arg_type[arg_start] == adtype_t::variable
     );
-    return "";
+    //
+    // operand_src
+    size_t   operand_index  = agraph.m_arg_value[arg_start];
+    adtype_t operand_adtype = agraph.m_arg_type[arg_start];
+    string   operand_src    = tensor_src(operand_index, operand_adtype);
+    //
+    // target_src
+    string target_src = tensor_src(op_index, op_adtype);
+    //
+    // src
+    constexpr const char* fmt = "{} = {}.slice({}, {}, {}, {});";
+    string src = std::format(
+        fmt, target_src, operand_src, dim, start, end, step
+    );
+    //
+    return src;
 }
 template <> std::string slice_op_t<adten_t>::src_gen(
     size_t                                                op_index        ,

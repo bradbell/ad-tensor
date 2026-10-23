@@ -189,7 +189,7 @@ include/ad_tensor/dev/op_enum.hpp
 The following file will require a lot of corrections:
 src/adten/${name_new}.cpp
 
-Implement and test forward_par, foreard_var, forward_der, reverse_der, 
+Implement and test forward_par, forward_var, forward_der, reverse_der,
 and src_gen in the ${name_new}_op.cpp (in that order):
 src/dev/derive_op/${name_new}_op.cpp
 src/examples/adten/${name_new}.cpp
