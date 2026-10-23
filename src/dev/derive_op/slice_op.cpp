@@ -106,9 +106,16 @@ void slice_op_t<TensorType>::forward_der(
     const vector<TensorType>&    var_all     ,
     vector<TensorType>&          for_der
 ) const {
-    user_assert(false,
-        "forward_der not yet implemented for slice operator"
-    );
+    //
+    // arg_start, dim, start, end, step
+    UNPACK
+    CHECK_ARGUMENTS(adtype_t::variable)
+    //
+    // operand_index
+    size_t operand_index  = agraph.m_arg_value[arg_start];
+    //
+    // var_all
+    for_der[op_index] = for_der[operand_index].slice(dim, start, end, step);
 }
 template void slice_op_t<at::Tensor>::forward_der(
     size_t                       op_index    ,
