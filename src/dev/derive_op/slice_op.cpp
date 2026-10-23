@@ -5,6 +5,28 @@
 #include <ad_tensor/dev/derive_op.hpp>
 #include <ad_tensor/adten.hpp>
 //
+// UNPACK
+#define UNPACK \
+    size_t  arg_start = agraph.m_arg_start[op_index];                 \
+    int64_t dim       = int64_t( agraph.m_arg_value[arg_start + 1] ); \
+    int64_t start     = int64_t( agraph.m_arg_value[arg_start + 2] ); \
+    int64_t end       = int64_t( agraph.m_arg_value[arg_start + 3] ); \
+    int64_t step      = int64_t( agraph.m_arg_value[arg_start + 4] );
+//
+// CHECK_ARGUMENTS
+#ifdef NDEBUG
+    #define CHECK_ARGUMENTS(adtype)
+#else
+    #define CHECK_ARGUMENTS(adtype) \
+    {   size_t n_arg = agraph.m_arg_start[op_index + 1] - arg_start; \
+        assert( n_arg == 5  ); \
+        assert( agraph.m_arg_type[arg_start] == adtype ); \
+        for(size_t i = 1; i < 5; ++i) { \
+            assert( agraph.m_arg_type[arg_start+i] == adtype_t::none ); \
+        } \
+    }
+#endif
+//
 namespace ad_tensor { namespace dev { // Begin ad_tensor::dev
 // ------------------------------------------------------------------------
 // forward_par
@@ -15,9 +37,16 @@ void slice_op_t<TensorType>::forward_par(
     const vector<at::Tensor>&    con_vec     ,
     vector<TensorType>&          par_all
 ) const {
-    user_assert(false,
-        "forward_par not yet implemented for slice operator"
-    );
+    //
+    // arg_start, dim, start, end, step
+    UNPACK
+    CHECK_ARGUMENTS(adtype_t::parameter)
+    //
+    // operand_index
+    size_t operand_index  = agraph.m_arg_value[arg_start];
+    //
+    // par_all
+    par_all[op_index] = par_all[operand_index].slice(dim, start, end, step);
 }
 template void slice_op_t<at::Tensor>::forward_par(
     size_t                       op_index    ,
@@ -41,9 +70,16 @@ void slice_op_t<TensorType>::forward_var(
     const vector<TensorType>&    par_all     ,
     vector<TensorType>&          var_all
 ) const {
-    user_assert(false,
-        "forward_var not yet implemented for slice operator"
-    );
+    //
+    // arg_start, dim, start, end, step
+    UNPACK
+    CHECK_ARGUMENTS(adtype_t::variable)
+    //
+    // operand_index
+    size_t operand_index  = agraph.m_arg_value[arg_start];
+    //
+    // var_all
+    var_all[op_index] = var_all[operand_index].slice(dim, start, end, step);
 }
 template void slice_op_t<at::Tensor>::forward_var(
     size_t                       op_index    ,

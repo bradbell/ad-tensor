@@ -11,44 +11,43 @@ TEST(examples_adten, slice)  {
     using ad_tensor::adten_t;
     using ad_tensor::adfn_t;
     using ad_tensor::vector;
-# if 0
-    //
-    // p
-    vector<at::Tensor> p;
     //
     // x
     vector<at::Tensor> x;
     x.push_back( torch::tensor( {
-        {1.0, 2.0},
-        {3.0, 4.0}
+        {1.0,  2.0,  3.0,  4.0},
+        {5.0,  6.0,  7.0,  8.0},
+        {9.0, 10.0, 11.0, 12.0},
     } ) );
     //
-    // ap, ax
-    auto [ax, ap] = adten_t::start_recording(x, p);
+    // ax
+    vector<adten_t> ax = adten_t::start_recording(x);
     //
     // ay
     vector<adten_t> ay;
-    ay.push_back( ax[0].slice(0, 1) );
+    int64_t dim   = 1;
+    int64_t start = 1;
+    int64_t end   = 3;
+    ay.push_back( ax[0].slice(dim, start, end) );
     //
     // y = f(x)
     adfn_t f = adten_t::stop_recording(ay, "f");
     //
-    // par_all, var_all
-    vector<at::Tensor> par_all = f.forward_par(p);
-    vector<at::Tensor> var_all = f.forward_var(x, par_all);
+    // var_all
+    vector<at::Tensor> var_all = f.forward_var(x);
     //
     // y
-    vector<at::Tensor> y = f.get_range(var_all, par_all);
-    //
+    vector<at::Tensor> y = f.get_range(var_all);
     EXPECT_EQ( y.size(), ay.size() );
     //
     at::Tensor check = torch::tensor( {
-        {1.0, 3.0},
-        {2.0, 4.0}
+        {2.0,  3.0},
+        {6.0,  7.0},
+        {10.0, 11.0}
     } );
     bool equal = y[0].equal( check );
     EXPECT_TRUE( equal );
-    //
+#if 0
     // dx
     vector<at::Tensor> dx;
     dx.push_back( torch::tensor( {
@@ -73,6 +72,6 @@ TEST(examples_adten, slice)  {
     } );
     equal = dx[0].equal( check );
     EXPECT_TRUE( equal );
-# endif
+#endif
 }
 // END_CPP
