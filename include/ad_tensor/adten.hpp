@@ -379,37 +379,9 @@ public:
     AD_TENSOR_BINARY_OP(!=, ne)
     AD_TENSOR_BINARY_OP(>=, ge)
     AD_TENSOR_BINARY_OP(>,  gt)
-    //
-    // minus
-    adten_t operator -(void) const;
-    //
-    // sum
-    adten_t sum(const c10::IntArrayRef& dim = c10::IntArrayRef() ) const;
-    //
-    // flip
-    adten_t flip(const c10::IntArrayRef& dim ) const;
-    //
-    // view
-    adten_t view(const c10::IntArrayRef& shape) const;
-    //
-    // matmul
-    adten_t matmul(const adten_t& rhs) const;
-    //
-    // transpose
-    adten_t transpose(int64_t dim1, int64_t dim2) const;
-    //
-    // solve
-    adten_t solve(const adten_t& rhs, bool left) const;
-    //
-    // pad
-    adten_t pad(const torch::nn::functional::PadFuncOptions& options) const;
-    //
-    // where
-    static adten_t where(
-        const adten_t& cond      ,
-        const adten_t& true_case ,
-        const adten_t& false_case
-    );
+    // -----------------------------------------------------------------------
+    // The functions below are in alphabetical order
+    // -----------------------------------------------------------------------
     //
     // conv1d
     adten_t conv1d(
@@ -425,43 +397,53 @@ public:
         const torch::nn::functional::ConvTranspose1dFuncOptions& options
     ) const;
     //
+    // flip
+    adten_t flip(const c10::IntArrayRef& dim ) const;
+    //
+    // index
+    adten_t index(
+        const c10::List< std::optional<at::Tensor> >& index_list
+    ) const;
+    //
     // index_put
     adten_t index_put(
         const c10::List< std::optional<at::Tensor> >& index_list ,
         const adten_t&                                replace
     ) const;
     //
-    // index
-    adten_t index(
-        const c10::List< std::optional<at::Tensor> >& index_list
-    ) const;
-}; }
-
-namespace ad_tensor {
-    // BEGIN_PAD
-    adten_t pad(
-        const adten_t&                               input  ,
-        const torch::nn::functional::PadFuncOptions& options
-    );
-    // END_PAD
+    // matmul
+    adten_t matmul(const adten_t& rhs) const;
     //
-    // BEGIN_LINALG_SOLVE
-    adten_t linalg_solve(
-        const adten_t& linear, const adten_t& rhs, bool left = true
-    );
-    // END_LINALG_SOLVE
+    // minus
+    adten_t operator -(void) const;
     //
-    // ad_tensor::where
-    // BEGIN_WHERE
-    adten_t where(
+    // pad
+    adten_t pad(const torch::nn::functional::PadFuncOptions& options) const;
+    //
+    // sum
+    adten_t sum(const c10::IntArrayRef& dim = c10::IntArrayRef() ) const;
+    //
+    // transpose
+    adten_t transpose(int64_t dim1, int64_t dim2) const;
+    //
+    // solve
+    adten_t solve(const adten_t& rhs, bool left) const;
+    //
+    // view
+    adten_t view(const c10::IntArrayRef& shape) const;
+    //
+    // where
+    static adten_t where(
         const adten_t& cond      ,
         const adten_t& true_case ,
         const adten_t& false_case
     );
-    // END_WHERE
+}; }
+
+namespace ad_tensor {
     //
-    // ad_tensor::conv1d
     // BEGIN_CONV1D
+    // ad_tensor::conv1d
     adten_t conv1d(
         const adten_t&                                  input   ,
         const adten_t&                                  weight  ,
@@ -474,10 +456,10 @@ namespace ad_tensor {
         const at::Tensor&                               bias    ,
         const torch::nn::functional::Conv1dFuncOptions& options
     );
-    // END_CONV1D_AD_TEN
+    // END_CONV1D
     //
-    // ad_tensor::conv_transpose1d
     // BEGIN_CONV_TRANSPOSE1D
+    // ad_tensor::conv_transpose1d
     adten_t conv_transpose1d(
         const adten_t&                                           input   ,
         const adten_t&                                           weight  ,
@@ -491,4 +473,27 @@ namespace ad_tensor {
         const torch::nn::functional::ConvTranspose1dFuncOptions& options
     );
     // END_CONV_TRANSPOSE1D
+    //
+    // BEGIN_LINALG_SOLVE
+    // ad_tensor::linalg_solve
+    adten_t linalg_solve(
+        const adten_t& linear, const adten_t& rhs, bool left = true
+    );
+    // END_LINALG_SOLVE
+    //
+    // BEGIN_PAD
+    adten_t pad(
+        const adten_t&                               input  ,
+        const torch::nn::functional::PadFuncOptions& options
+    );
+    // END_PAD
+    //
+    // BEGIN_WHERE
+    // ad_tensor::where
+    adten_t where(
+        const adten_t& cond      ,
+        const adten_t& true_case ,
+        const adten_t& false_case
+    );
+    // END_WHERE
 }
