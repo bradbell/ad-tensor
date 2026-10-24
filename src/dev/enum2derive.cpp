@@ -33,6 +33,7 @@ const base_op_t<TensorType>& enum2derive(op_enum_t op_enum) {
     static const mul_op_t<TensorType>                 mul_op;
     static const ne_op_t<TensorType>                  ne_op;
     static const pad_op_t<TensorType>                 pad_op;
+    static const slice_op_t<TensorType>               slice_op;
     static const solve_op_t<TensorType>               solve_op;
     static const sub_op_t<TensorType>                 sub_op;
     static const sum_op_t<TensorType>                 sum_op;
@@ -66,6 +67,7 @@ const base_op_t<TensorType>& enum2derive(op_enum_t op_enum) {
         case op_enum_t::mul:                 return mul_op;
         case op_enum_t::ne:                  return ne_op;
         case op_enum_t::pad:                 return pad_op;
+        case op_enum_t::slice:               return slice_op;
         case op_enum_t::solve:               return solve_op;
         case op_enum_t::sub:                 return sub_op;
         case op_enum_t::sum:                 return sum_op;

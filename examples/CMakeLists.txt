@@ -35,6 +35,7 @@ add_executable(examples
     adten/minus.cpp
     adten/pad.cpp
     adten/recording.cpp
+    adten/slice.cpp
     adten/solve.cpp
     adten/sum.cpp
     adten/transpose.cpp

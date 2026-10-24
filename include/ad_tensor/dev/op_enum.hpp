@@ -81,6 +81,7 @@ namespace ad_tensor { namespace dev { enum struct op_enum_t
     matmul,              // matrix multiplication
     minus,               // unary minus
     pad,                 // functional padding
+    slice,               // slice in one dimension
     solve,               // solve matrix equation
     transpose,           // transpose
     where,               // where function

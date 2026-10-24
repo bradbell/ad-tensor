@@ -45,6 +45,7 @@ namespace ad_tensor { namespace dev {
             case op_enum_t::mul:          return "mul";
             case op_enum_t::ne:           return "ne";
             case op_enum_t::pad:          return "pad";
+            case op_enum_t::slice:        return "slice";
             case op_enum_t::solve:        return "solve";
             case op_enum_t::sub:          return "sub";
             case op_enum_t::sum:          return "sum";

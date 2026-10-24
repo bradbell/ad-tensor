@@ -125,6 +125,7 @@ TEST(tests_adfn, src_gen)  {
     ar.push_back( av[0].flip(dim)        + ap[0].flip(dim) );
     ar.push_back( av[0].transpose(0, 1)  + ap[0].transpose(0, 1) );
     ar.push_back( av[0].view({4})        + ap[0].view({4}) );
+    ar.push_back( av[0].slice(0,0,1,1)   + ap[0].slice(0,1,2,1) );
     //
     // binary operators
     ar.push_back( av[0].matmul( ap[0] ) );
@@ -190,6 +191,7 @@ TEST(tests_adfn, src_gen)  {
     EXPECT_TRUE( r[i++].equal( v[0].flip(dim)       + p[0].flip(dim) ) );
     EXPECT_TRUE( r[i++].equal( v[0].transpose(0, 1) + p[0].transpose(0, 1) ) );
     EXPECT_TRUE( r[i++].equal( v[0].view({4})       + p[0].view({4}) ) );
+    EXPECT_TRUE( r[i++].equal( v[0].slice(0,0,1,1)  + p[0].slice(0,1,2,1) ) );
     //
     EXPECT_TRUE( r[i++].equal( v[0].matmul( p[0] ) ) );
     EXPECT_TRUE( r[i++].equal( v[0] <= p[0] ) );
