@@ -146,7 +146,7 @@ if( include_plugin )
     include_directories( ${Boost_INCLUDE_DIRS} )
     include_directories( ${CMAKE_CURRENT_BINARY_DIR} )
     #
-    # plugin_LIBRARIES, plutin_INCLUDE_DIRS
+    # plugin_LIBRARIES, plugin_INCLUDE_DIRS
     set(plugin_LIBRARIES    "${Boost_LIBRARIES}")
     set(plugin_INCLUDE_DIRS "${Boost_INCLUDE_DIRS}")
 endif()
