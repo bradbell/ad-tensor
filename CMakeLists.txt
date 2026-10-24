@@ -46,16 +46,17 @@ is which cmake generator to use; e.g. Ninja.
 
 include_gtest
 =============
-If include_gtest is true (false), the following google targets
+If include_gtest is true (false), the google targets
 will be included (will not be included) in the build:
-examples, benchmarks, and tests.
-These targets require the google test package.
+The google test targets are examples, benchmarks, and tests.
+The default value for include_gtest is false.
 
 include_plugin
 ==============
 If include_plugin is true (false), the ability to link
 source code generated using :ref:`adfn_src_gen-name` is included in the build.
 This will require the  filesystem and system components of the boost library.
+The default value for include_plugin is false.
 
 torch_dir
 =========
@@ -132,6 +133,7 @@ include_directories( ${ad_tensor_BINARY_DIR}/include )
 #
 # plugin_LIBRARIES, include_directories
 set(plugin_LIBRARIES "")
+set(plugin_INCLUDE_DIRS "")
 if( include_plugin )
     #
     # Boost_INCLUDE_DIRS, Boost_LIBRARIES
@@ -144,8 +146,9 @@ if( include_plugin )
     include_directories( ${Boost_INCLUDE_DIRS} )
     include_directories( ${CMAKE_CURRENT_BINARY_DIR} )
     #
-    # plugin_LIBRARIES
-    set(plugin_LIBRARIES "${Boost_LIBRARIES}")
+    # plugin_LIBRARIES, plutin_INCLUDE_DIRS
+    set(plugin_LIBRARIES    "${Boost_LIBRARIES}")
+    set(plugin_INCLUDE_DIRS "${Boost_INCLUDE_DIRS}")
 endif()
 #
 # ad_tensor, src

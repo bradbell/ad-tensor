@@ -79,7 +79,7 @@ message(STATUS "ad_tensor_torch_prefix = ${ad_tensor_torch_prefix}" )
 #
 # ad_tensor_INCLUDE_DIRS
 set(ad_tensor_INCLUDE_DIRS
-    "@CMAKE_INSTALL_FULL_INCLUDEDIR@;@TORCH_INCLUDE_DIRS@"
+    "@CMAKE_INSTALL_FULL_INCLUDEDIR@;@TORCH_INCLUDE_DIRS@;@plugin_INCLUDE_DIRS@"
 )
 #
 # ad_tensor_LIBRARIES
