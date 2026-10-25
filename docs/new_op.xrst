@@ -104,16 +104,25 @@ and *name_other* is the name of a similar already implemented operator.
 
 Review changes to the following files (should not need editing)
 ===============================================================
-#.  src/dev/enum2derive.cpp
-#.  include/ad_tensor/dev/derive_op.hpp
 #.  examples/CMakeLists.txt
+#.  include/ad_tensor/dev/derive_op.hpp
 #.  src/CMakeLists.txt
+#.  src/dev/enum2derive.cpp
 #.  src/dev/to_string.cpp
 
 Make minor corrections changes in the following files
 =====================================================
-#.  include/ad_tensor/adten.hpp
-#.  include/ad_tensor/dev/op_enum.hpp
+#.  include/ad_tensor/adten.hpp:
+    The API interface for the new function is either
+    adten_t::NEW or ad_tensor::NEW.
+    You should place your new prototype (possibly more than one)
+    below the comment about functions being in alphabetical order.
+    Prototypes in this file are not automatically sorted because some
+    are more than one line long.
+
+#.  include/ad_tensor/dev/op_enum.hpp:
+    Choose a short description as a one line comment just after the
+    operator enum value.
 
 The following file will require a lot of corrections
 ====================================================

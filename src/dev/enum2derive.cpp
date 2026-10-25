@@ -13,6 +13,7 @@ const base_op_t<TensorType>& enum2derive(op_enum_t op_enum) {
     static const add_op_t<TensorType>                 add_op;
     static const call_op_t<TensorType>                call_op;
     static const call_result_op_t<TensorType>         call_result_op;
+    static const cat_op_t<TensorType>                 cat_op;
     static const conv1d_op_t<TensorType>              conv1d_op;
     static const conv_transpose1d_op_t<TensorType>    conv_transpose1d;
     static const div_op_t<TensorType>                 div_op;
@@ -47,6 +48,7 @@ const base_op_t<TensorType>& enum2derive(op_enum_t op_enum) {
         case op_enum_t::add:                 return add_op;
         case op_enum_t::call:                return call_op;
         case op_enum_t::call_result:         return call_result_op;
+        case op_enum_t::cat:                 return cat_op;
         case op_enum_t::conv1d:              return conv1d_op;
         case op_enum_t::conv_transpose1d:    return conv_transpose1d;
         case op_enum_t::div:                 return div_op;

@@ -54,6 +54,7 @@ Other Member Functions
 **********************
 {xrst_comment BEGIN_SORT_THIS_LINE_PLUS_2}
 {xrst_toc_table after
+    src/adten/cat.cpp
     src/adten/conv1d.cpp
     src/adten/conv_transpose1d.cpp
     src/adten/flip.cpp
@@ -181,6 +182,7 @@ The adten_t Class Developer Documentation
 {xrst_comment BEGIN_SORT_THIS_LINE_PLUS_2}
 {xrst_toc_table after
     src/adten/binary.cpp
+    src/adten/cat.cpp
     src/adten/conv1d.cpp
     src/adten/conv_transpose1d.cpp
     src/adten/flip.cpp
@@ -385,6 +387,12 @@ public:
     // The functions below are in alphabetical order
     // -----------------------------------------------------------------------
     //
+    // cat
+    static adten_t cat(
+        const c10::ArrayRef<adten_t>&  tensor_list ,
+        int64_t                        dim
+    );
+    //
     // conv1d
     adten_t conv1d(
         const adten_t&                                  weight  ,
@@ -452,6 +460,14 @@ public:
 }; }
 
 namespace ad_tensor {
+    //
+    // BEGIN_CAT BEGIN_DEV_CAT
+    // ad_tensor::cat
+    adten_t cat(
+        const c10::ArrayRef<adten_t>&  tensor_list ,
+        int64_t                        dim
+    );
+    // END_CAT END_DEV_CAT
     //
     // BEGIN_CONV1D
     // ad_tensor::conv1d

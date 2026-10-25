@@ -32,6 +32,7 @@ add_library(ad_tensor SHARED
     adfn/src_gen.cpp
     adten/binary.cpp
     adten/call_atom.cpp
+    adten/cat.cpp
     adten/conv1d.cpp
     adten/conv_transpose1d.cpp
     adten/ctor.cpp
@@ -58,6 +59,7 @@ add_library(ad_tensor SHARED
     dev/derive_op/add_op.cpp
     dev/derive_op/call_op.cpp
     dev/derive_op/call_result_op.cpp
+    dev/derive_op/cat_op.cpp
     dev/derive_op/conv1d_op.cpp
     dev/derive_op/conv_transpose1d_op.cpp
     dev/derive_op/div_op.cpp
