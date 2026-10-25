@@ -8,6 +8,24 @@
 #include <ad_tensor/dev/plus_minus_equal.hpp>
 #include <ad_tensor/dev/tensor_at_index.hpp>
 //
+// UNPACK
+#define UNPACK \
+    size_t arg_start = agraph.m_arg_start[op_index]; \
+    size_t dim       = agraph.m_arg_value[arg_start]; \
+    size_t n_ten     = agraph.m_arg_value[arg_start + 1]; \
+
+//
+// EXPECT_ARGUMENTS
+#ifdef NDEBUG
+#define EXPECT_ARGUMENTS
+#else
+#define EXPECT_ARGUMENTS \
+    assert( agraph.m_arg_type[arg_start] == adtype_t::none ); \
+    assert( agraph.m_arg_type[arg_start + 1] == adtype_t::none ); \
+    size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start; \
+    assert( n_arg == 2 + n_ten && "cat: n_arg != 2 + n_ten" );
+#endif
+//
 namespace ad_tensor { namespace dev { // Begin ad_tensor::dev
 // ------------------------------------------------------------------------
 // forward_par
@@ -19,27 +37,24 @@ void cat_op_t<TensorType>::forward_par(
     vector<TensorType>&          par_all
 ) const {
     //
-    // arg_start
-    size_t arg_start = agraph.m_arg_start[op_index];
+    // tensor_list
+    vector<TensorType> tensor_list;
     //
-#ifndef NDEBUG
-    size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
-    assert( n_arg == 3 && "where: n_arg != 3" );
-# endif
+    // arg_start, dim, n_ten
+    UNPACK
+    EXPECT_ARGUMENTS
     //
-    // cond, true_case, false_case
-    TensorType cond  = tensor_at_arg_index(
-        arg_start, agraph, con_vec, par_all
-    );
-    TensorType true_case  = tensor_at_arg_index(
-        arg_start + 1, agraph, con_vec, par_all
-    );
-    TensorType false_case  = tensor_at_arg_index(
-        arg_start + 2, agraph, con_vec, par_all
-    );
+    // tensor_list
+    tensor_list.resize(0);
+    for(size_t i = 0; i < n_ten; ++i) {
+        TensorType tensor = tensor_at_arg_index(
+            arg_start + 2 + i, agraph, con_vec, par_all
+        );
+        tensor_list.push_back( std::move(tensor) );
+    }
     //
     // par_all
-    par_all[op_index] = where(cond, true_case, false_case);
+    par_all[op_index] = cat(tensor_list, dim);
 }
 template void cat_op_t<at::Tensor>::forward_par(
     size_t                       op_index    ,
@@ -64,28 +79,24 @@ void cat_op_t<TensorType>::forward_var(
     vector<TensorType>&          var_all
 ) const {
     //
-    // arg_start
-    size_t arg_start = agraph.m_arg_start[op_index];
+    // tensor_list
+    vector<TensorType> tensor_list;
     //
-#ifndef NDEBUG
-    size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
-    assert( n_arg == 3 && "where: n_arg != 3" );
-# endif
+    // arg_start, dim, n_ten
+    UNPACK
+    EXPECT_ARGUMENTS
     //
-    // cond, true_case, false_case
-    TensorType cond  = tensor_at_arg_index(
-        arg_start, agraph, con_vec, par_all, var_all
-    );
-    TensorType true_case  = tensor_at_arg_index(
-        arg_start + 1, agraph, con_vec, par_all, var_all
-    );
-    TensorType false_case  = tensor_at_arg_index(
-        arg_start + 2, agraph, con_vec, par_all, var_all
-    );
+    // tensor_list
+    tensor_list.resize(0);
+    for(size_t i = 0; i < n_ten; ++i) {
+        TensorType tensor = tensor_at_arg_index(
+            arg_start + 2 + i, agraph, con_vec, par_all, var_all
+        );
+        tensor_list.push_back( std::move(tensor) );
+    }
     //
-    // var_all
-    var_all[op_index] = where(cond, true_case, false_case);
-    //
+    // par_all
+    var_all[op_index] = cat(tensor_list, dim);
 }
 template void cat_op_t<at::Tensor>::forward_var(
     size_t                       op_index    ,

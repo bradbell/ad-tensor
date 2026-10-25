@@ -147,10 +147,10 @@ adten_t adten_t::cat(
         agraph->m_op_seq.push_back( dev::op_enum_t::cat );
         agraph->m_arg_start.push_back( agraph->m_arg_value.size() );
         //
-        agraph->m_arg_value.push_back( n_ten );
+        agraph->m_arg_value.push_back( size_t(dim) );
         agraph->m_arg_type.push_back( adtype_t::none );
         //
-        agraph->m_arg_value.push_back( size_t(dim) );
+        agraph->m_arg_value.push_back( n_ten );
         agraph->m_arg_type.push_back( adtype_t::none );
         //
         for(size_t i = 0; i < n_ten; ++i) {
