@@ -170,14 +170,14 @@ The function forward_der determines the forward derivative with index op_index.
 During this function, all the parameters and variables are known
 and the forward derivatives with index less that op_index are known.
 
-tests/adten/NEW.cpp
-===================
+examples/adten/NEW.cpp
+======================
 Add a test of forward_der for the NEW operator;
-see tests/adten/OTHER.cpp or example/adten/OTHER.cpp.
+see examples/adten/OTHER.cpp or tests/adten/OTHER.cpp.
 
 Test and Commit NEW.cpp Test
 ============================
-Run check_all.sh to check that the modified test compiles, runs,
+Run check_all.sh to check that the modified example compiles, runs,
 and passes it tests.
 
 Step 4: Implement Reverse Derivative Evaluation
@@ -193,14 +193,14 @@ Upon return, the result of the operator with index op_index
 is removed (as an argument to the objective)
 and its contribution is added to each of the NEW operator arguments.
 
-tests/adten/NEW.cpp
-===================
+examples/adten/NEW.cpp
+======================
 Add a test of reverse_der for the NEW operator;
-see tests/adten/OTHER.cpp or examples/adten/OTHER.cpp.
+see examples/adten/OTHER.cpp or tests/adten/OTHER.cpp.
 
 Test and Commit NEW.cpp Test
 ============================
-Run check_all.sh to check that the modified test compiles, runs,
+Run check_all.sh to check that the modified example compiles, runs,
 and passes it tests.
 
 Step 5: Test Source Code Generation
@@ -216,13 +216,13 @@ Note that only the at::Tensor version of src_gen should be implemented
 tests/adfn/src_gen.cpp
 ======================
 Add a test of the NEW operator to this test.
-All the operators use this src_gen test to reduce compile time
-during testing.
+All the operators use this src_gen test to reduce the number of times
+the compiler must be launched.
 
 Test and Commit src_gen.cpp
 ===========================
 Run ``check_all.sh`` (not ``check_all.sh --no_plugin``)
-to check that the modified test compiles, runs, and passes it tests.
+to check that the modified example compiles, runs, and passes it tests.
 
 
 {xrst_end new_op}

@@ -53,15 +53,27 @@ TEST(examples_adten, cat)  {
         {3.0, 4.0, 5.0, 9.0, 10.0, 11.0}
     } );
     EXPECT_TRUE( y[1].equal(check) );
-#if 0
     //
-    // dx0, dx1, dx
-    double dx0  = -4.0;
-    double dx1  = 4.0;
+    // dy
     vector<at::Tensor> dx;
-    dx.push_back( torch::tensor( {dx0, dx1} ) );
+    dx.push_back( 2.0 * torch::ones( x[0].sizes() ) );
+    dx.push_back( 3.0 * torch::ones( x[1].sizes() ) );
     vector<at::Tensor> dy = f.forward_der(dx, v_all);
-    EXPECT_TRUE( dy[0].equal( torch::tensor( {2 * x0 * dx0, dx1} ) ) );
-#endif
+    //
+    // dy[0]
+    check = torch::tensor( {
+        {2.0, 2.0, 2.0},
+        {2.0, 2.0, 2.0},
+        {3.0, 3.0, 3.0},
+        {3.0, 3.0, 3.0}
+    } );
+    EXPECT_TRUE( dy[0].equal( check ) );
+    //
+    // dy[1]
+    check = torch::tensor( {
+        {2.0, 2.0, 2.0, 3.0, 3.0, 3.0},
+        {2.0, 2.0, 2.0, 3.0, 3.0, 3.0}
+    } );
+    EXPECT_TRUE( dy[1].equal( check ) );
 }
 // END_CPP
