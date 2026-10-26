@@ -175,11 +175,11 @@ void slice_op_t<TensorType>::reverse_der(
         //
         // operand_bar
         if( start == 0 ) {
-            operand_bar = torch::cat( {rev_der[op_index], zero_end}, dim );
+            operand_bar = ad_tensor::cat({ rev_der[op_index], zero_end}, dim );
         } else if( end == operand_shape[dim] ) {
-            operand_bar = torch::cat( {zero_start, rev_der[op_index]}, dim );
+            operand_bar = ad_tensor::cat({ zero_start, rev_der[op_index]}, dim);
         } else {
-            operand_bar = torch::cat(
+            operand_bar = ad_tensor::cat(
                 {zero_start, rev_der[op_index], zero_end}, dim
             );
         }
@@ -196,18 +196,14 @@ template void slice_op_t<at::Tensor>::reverse_der(
     const vector<at::Tensor>&    var_all     ,
     vector<at::Tensor>&          rev_der
 ) const;
-// TODO: use template version of reverse_der to implement this once
-// forward_var and forward_par are implemented for cat operator.
-template <> void slice_op_t<adten_t>::reverse_der(
+template void slice_op_t<adten_t>::reverse_der(
     size_t                       op_index    ,
     const agraph_t&              agraph      ,
     const vector<at::Tensor>&    con_vec     ,
     const vector<adten_t>&       par_all     ,
     const vector<adten_t>&       var_all     ,
     vector<adten_t>&             rev_der
-) const {
-    assert(false && "slice not yet implemented for adten_t version of slice");
-}
+) const;
 // ---------------------------------------------------------------------------
 // src_gen
 template <> std::string slice_op_t<at::Tensor>::src_gen(
