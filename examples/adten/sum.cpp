@@ -49,29 +49,5 @@ TEST(examples_adten, sum)  {
     //
     equal = y[1].equal( x[0].sum(dim) );
     EXPECT_TRUE( equal );
-    //
-    // dx
-    vector<at::Tensor> dx;
-    dx.push_back(torch::tensor( { {7.0, 8.0, 9.0}, {10.0, 11.0, 12.0} } ));
-    //
-    // dy
-    vector<at::Tensor> dy = f.forward_der(dx, var_all, par_all);
-    //
-    EXPECT_EQ( dy.size(), y.size() );
-    //
-    EXPECT_EQ( dy[0].numel(), 0);
-    //
-    equal = dy[1].equal( dx[0].sum(dim) );
-    EXPECT_TRUE( equal );
-    //
-    // dy, dx
-    dy[0] = torch::tensor( 2.0 );
-    dy[1] = torch::tensor( {3.0, 4.0} );
-    dx    = f.reverse_der(dy, var_all, par_all);
-    //
-    EXPECT_EQ( x.size(), dx.size() );
-    //
-    equal = dx[0].equal(torch::tensor( { {3.0, 3.0, 3.0}, {4.0, 4.0, 4.0} } ));
-    EXPECT_TRUE( equal );
 }
 // END_CPP

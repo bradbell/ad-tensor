@@ -14,9 +14,4 @@ Sparsity Calculations
 Provide a way to calculation sparsity between elements of a tensor.
 This might make higher order sparse derivatives feasible for huge tensors.
 
-Simpler Examples
-****************
-Some of the examples are complicated because they are also being used as tests.
-Move these examples to the tests directory and make simpler examples.
-
 {xrst_end wish_user}

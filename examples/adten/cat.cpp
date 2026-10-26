@@ -53,54 +53,5 @@ TEST(examples_adten, cat)  {
         {3.0, 4.0, 5.0, 9.0, 10.0, 11.0}
     } );
     EXPECT_TRUE( y[1].equal(check) );
-    //
-    // dy
-    vector<at::Tensor> dx;
-    dx.push_back( 2.0 * torch::ones( x[0].sizes() ) );
-    dx.push_back( 3.0 * torch::ones( x[1].sizes() ) );
-    vector<at::Tensor> dy = f.forward_der(dx, v_all);
-    //
-    // dy[0]
-    check = torch::tensor( {
-        {2.0, 2.0, 2.0},
-        {2.0, 2.0, 2.0},
-        {3.0, 3.0, 3.0},
-        {3.0, 3.0, 3.0}
-    } );
-    EXPECT_TRUE( dy[0].equal( check ) );
-    //
-    // dy[1]
-    check = torch::tensor( {
-        {2.0, 2.0, 2.0, 3.0, 3.0, 3.0},
-        {2.0, 2.0, 2.0, 3.0, 3.0, 3.0}
-    } );
-    EXPECT_TRUE( dy[1].equal( check ) );
-    //
-    // dx
-    dy[0] = torch::tensor( {
-        {2.0, 2.0, 2.0},
-        {2.0, 2.0, 2.0},
-        {3.0, 3.0, 3.0},
-        {3.0, 3.0, 3.0}
-    } );
-    dy[1] = torch::tensor( {
-        {2.0, 2.0, 2.0, 3.0, 3.0, 3.0},
-        {2.0, 2.0, 2.0, 3.0, 3.0, 3.0}
-    } );
-    dx = f.reverse_der(dy, v_all);
-    //
-    // dx[0]
-    check = torch::tensor( {
-        {4.0, 4.0, 4.0},
-        {4.0, 4.0, 4.0}
-    } );
-    EXPECT_TRUE( dx[0].equal( check ) );
-    //
-    // dx[1]
-    check = torch::tensor( {
-        {6.0, 6.0, 6.0},
-        {6.0, 6.0, 6.0}
-    } );
-    EXPECT_TRUE( dx[1].equal( check ) );
 }
 // END_CPP

@@ -19,11 +19,21 @@ add_executable(tests
     adfn/forward_der.cpp
     adfn/optimize.cpp
     adfn/reverse_der.cpp
+    adten/cat.cpp
     adten/conv1d.cpp
     adten/conv_transpose1d.cpp
+    adten/flip.cpp
+    adten/index.cpp
+    adten/index_put.cpp
     adten/matmul.cpp
+    adten/minus.cpp
     adten/pad.cpp
+    adten/slice.cpp
     adten/solve.cpp
+    adten/sum.cpp
+    adten/transpose.cpp
+    adten/view.cpp
+    adten/where.cpp
     dev/base_op.cpp
     dev/op_enum.cpp
     dev/rng_depend.cpp

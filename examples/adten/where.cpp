@@ -39,13 +39,5 @@ TEST(examples_adten, where)  {
     // y
     vector<at::Tensor> y = f.get_range(v_all);
     EXPECT_TRUE( y[0].equal( torch::tensor({x0 * x0, x1}) ) );
-    //
-    // dx0, dx1, dx
-    double dx0  = -4.0;
-    double dx1  = 4.0;
-    vector<at::Tensor> dx;
-    dx.push_back( torch::tensor( {dx0, dx1} ) );
-    vector<at::Tensor> dy = f.forward_der(dx, v_all);
-    EXPECT_TRUE( dy[0].equal( torch::tensor( {2 * x0 * dx0, dx1} ) ) );
 }
 // END_CPP

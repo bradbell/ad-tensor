@@ -56,27 +56,5 @@ TEST(examples_adten, index_put)  {
     //
     bool equal = y[0].equal( torch::tensor( { {1.0, 5.0}, {3.0, 4.0} } ) );
     EXPECT_TRUE( equal );
-    //
-    // dx
-    at::Tensor         dbefore    = torch::tensor( {{6.0, 7.0}, {8.0, 9.0} } );
-    at::Tensor         dreplace   = torch::tensor( { 10.0 } );
-    vector<at::Tensor> dx         = {dbefore, dreplace};
-    //
-    // dy
-    vector<at::Tensor> dy = f.forward_der(dx, var_all);
-    equal = dy[0].equal( torch::tensor( { {6.0, 10.0}, {8.0, 9.0} } ) );
-    EXPECT_TRUE( equal );
-    //
-    // dy
-    at::Tensor  dafter  = torch::tensor( {{6.0, 7.0}, {8.0, 9.0} } );
-    dy                  = {dafter};
-    //
-    // dbefore, dreplace
-    dx       = f.reverse_der(dy, var_all);
-    dbefore  = dx[0];
-    dreplace = dx[1];
-    equal    = dbefore.equal( torch::tensor( { {6.0, 0.0}, {8.0, 9.0} } ) );
-    EXPECT_TRUE( equal );
-    EXPECT_EQ( dreplace.item<double>(), 7.0 );
 }
 // END_CPP

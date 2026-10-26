@@ -228,4 +228,13 @@ Run ``check_all.sh`` (not ``check_all.sh --no_plugin``)
 to check that the modified example compiles, runs, and passes it tests.
 
 
+Step 6: Create Separate Tests
+*****************************
+Use git to copy the file examples/adten/NEW.cpp to tests/adten/NEW.cpp
+and add adten/NEW.cpp to tests/CMakeLists.txt.
+Then copy tests/adten/New.cpp back to examples/aden/New.cpp
+and remove its testing of derivatives.
+Evaluation of derivatives is similar for all operators and not needed
+in an operator example.
+
 {xrst_end new_op}

@@ -49,29 +49,5 @@ TEST(examples_adten, flip)  {
     //
     equal = y[1].equal( x[0].flip(dim_x) );
     EXPECT_TRUE( equal );
-    //
-    // dx
-    vector<at::Tensor> dx;
-    dx.push_back(torch::tensor( {{6.0, 7.0}} ));
-    //
-    // dy
-    vector<at::Tensor> dy = f.forward_der(dx, var_all, par_all);
-    //
-    EXPECT_EQ( dy.size(), y.size() );
-    //
-    EXPECT_EQ(ad_tensor::not_defined( dy[0] ), true );
-    //
-    equal = dy[1].equal( torch::tensor( {{7.0, 6.0}} ) );
-    EXPECT_TRUE( equal );
-    //
-    // dy, dx
-    dy[0] = torch::tensor( {3.0, 4.0} );
-    dy[1] = torch::tensor( {{1.0, 2.0}} );
-    dx    = f.reverse_der(dy, var_all, par_all);
-    //
-    EXPECT_EQ( x.size(), dx.size() );
-    //
-    equal = dx[0].equal(torch::tensor( {{2.0, 1.0}} ));
-    EXPECT_TRUE( equal );
 }
 // END_CPP

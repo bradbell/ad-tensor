@@ -50,22 +50,5 @@ TEST(examples_adten, index)  {
     //
     bool equal = y[0].equal( torch::tensor( {6.0, 9.0} ) );
     EXPECT_TRUE( equal );
-    //
-    // dx
-    at::Tensor         dfrom  = torch::tensor( {{10.0, 11.0}, {12.0, 13.0} } );
-    vector<at::Tensor> dx     = {dfrom};
-    //
-    // dy
-    vector<at::Tensor> dy = f.forward_der(dx, var_all);
-    equal = dy[0].equal( torch::tensor( {10.0, 13.0} ) );
-    EXPECT_TRUE( equal );
-    //
-    // dy
-    dy[0] = torch::tensor( {14.0, 15.0} );
-    //
-    // dx
-    dx = f.reverse_der(dy, var_all);
-    equal = dx[0].equal( torch::tensor( { {14.0, 0.0}, {0.0, 15.0} } ) );
-    EXPECT_TRUE( equal );
 }
 // END_CPP

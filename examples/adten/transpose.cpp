@@ -47,30 +47,5 @@ TEST(examples_adten, transpose)  {
     } );
     bool equal = y[0].equal( check );
     EXPECT_TRUE( equal );
-    //
-    // dx
-    vector<at::Tensor> dx;
-    dx.push_back( torch::tensor( {
-        {5.0, 6.0},
-        {7.0, 8.0}
-    } ) );
-    //
-    // dy
-    vector<at::Tensor> dy = f.forward_der(dx, var_all, par_all);
-    check = torch::tensor( {
-        {5.0, 7.0},
-        {6.0, 8.0}
-    } );
-    equal = dy[0].equal( check );
-    EXPECT_TRUE( equal );
-    //
-    // dx
-    dx    = f.reverse_der(dy, var_all, par_all);
-    check = torch::tensor( {
-        {5.0, 6.0},
-        {7.0, 8.0}
-    } );
-    equal = dx[0].equal( check );
-    EXPECT_TRUE( equal );
 }
 // END_CPP
