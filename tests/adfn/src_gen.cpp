@@ -158,6 +158,9 @@ TEST(tests_adfn, src_gen)  {
     ar.push_back( ay[0] );
     ar.push_back( ay[1] );
     //
+    // cat
+    ar.push_back( ad_tensor::cat( { av[0], ap[0] }, 1) );
+    //
     // r = f(v, p)
     adfn_t f = adten_t::stop_recording(ar, "f");
     //
@@ -219,4 +222,7 @@ TEST(tests_adfn, src_gen)  {
     // call
     EXPECT_TRUE( r[i++].equal( v[2] + p[2] ) );
     EXPECT_TRUE( r[i++].equal( v[2] * p[2] ) );
+    //
+    // cat
+    EXPECT_TRUE( r[i++].equal( ad_tensor::cat( { v[0], p[0] }, 1 ) ) );
 }

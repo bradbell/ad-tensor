@@ -203,8 +203,8 @@ Test and Commit NEW.cpp Test
 Run check_all.sh to check that the modified example compiles, runs,
 and passes it tests.
 
-Step 5: Test Source Code Generation
-***********************************
+Step 5: Implement Source Code Generation
+****************************************
 
 src/dev/derive_op/NEW_op.cpp
 ============================
@@ -212,12 +212,15 @@ Implement the src_gen for the NEW operator,
 use src/dev/derive_op/OTHER_op.cpp as an example for how to do this.
 Note that only the at::Tensor version of src_gen should be implemented
 (the adten_t version is not used).
+Also note that src_gen evaluates function values similar to forward_par
+and forward_var for the NEW operator.
 
 tests/adfn/src_gen.cpp
 ======================
 Add a test of the NEW operator to this test.
-All the operators use this src_gen test to reduce the number of times
-the compiler must be launched.
+All the operators use this src_gen test.
+This reduces the number of times the compiler is launched during testing
+(because it takes a significant amount of time).
 
 Test and Commit src_gen.cpp
 ===========================

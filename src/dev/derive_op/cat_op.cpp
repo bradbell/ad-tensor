@@ -54,7 +54,7 @@ void cat_op_t<TensorType>::forward_par(
     }
     //
     // par_all
-    par_all[op_index] = cat(tensor_list, dim);
+    par_all[op_index] = ad_tensor::cat(tensor_list, dim);
 }
 template void cat_op_t<at::Tensor>::forward_par(
     size_t                       op_index    ,
@@ -96,7 +96,7 @@ void cat_op_t<TensorType>::forward_var(
     }
     //
     // var_all
-    var_all[op_index] = cat(tensor_list, dim);
+    var_all[op_index] = ad_tensor::cat(tensor_list, dim);
 }
 template void cat_op_t<at::Tensor>::forward_var(
     size_t                       op_index    ,
@@ -162,7 +162,7 @@ void cat_op_t<TensorType>::forward_der(
     }
     //
     // for_der
-    for_der[op_index] = cat(tensor_list, dim);
+    for_der[op_index] = ad_tensor::cat(tensor_list, dim);
 }
 template void cat_op_t<at::Tensor>::forward_der(
     size_t                       op_index    ,
@@ -262,37 +262,26 @@ template <> std::string cat_op_t<at::Tensor>::src_gen(
     // string
     using std::string;
     //
-    // arg_start
-    size_t arg_start = agraph.m_arg_start[op_index];
-    //
-#ifndef NDEBUG
-    size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
-    assert( n_arg == 3 && "where: n_arg != 3" );
-# endif
-    //
-    // cond_src
-    size_t   cond_index  = agraph.m_arg_value[arg_start];
-    adtype_t cond_adtype = agraph.m_arg_type[arg_start];
-    string   cond_src    = tensor_src(cond_index, cond_adtype);
-    //
-    // true_case_src
-    size_t   true_case_index  = agraph.m_arg_value[arg_start + 1];
-    adtype_t true_case_adtype = agraph.m_arg_type[arg_start + 1];
-    string   true_case_src    = tensor_src(true_case_index, true_case_adtype);
-    //
-    // false_case_src
-    size_t   false_case_index  = agraph.m_arg_value[arg_start + 2];
-    adtype_t false_case_adtype = agraph.m_arg_type[arg_start + 2];
-    string   false_case_src = tensor_src(false_case_index, false_case_adtype);
+    // arg_start, dim, n_ten
+    UNPACK
+    EXPECT_ARGUMENTS
     //
     // target_src
     string target_src = tensor_src(op_index, op_adtype);
     //
     // src
-    constexpr const char* fmt = "{} = where({}, {}, {});";
-    string src = std::format(fmt,
-        target_src, cond_src, true_case_src, false_case_src
-    );
+    string src = std::format("{} = ad_tensor::cat({{", target_src);
+    for(size_t i = 0; i < n_ten; ++i) {
+        size_t   operand_index  = agraph.m_arg_value[arg_start + 2 + i];
+        adtype_t operand_adtype = agraph.m_arg_type[arg_start + 2 + i];
+        string   operand_src    = tensor_src(operand_index, operand_adtype);
+        if( i == 0 ) {
+            src += std::format("{}", operand_src);
+        } else {
+            src += std::format(", {}", operand_src);
+        }
+    }
+    src += std::format("}}, {});", dim);
     //
     return src;
 }

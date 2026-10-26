@@ -467,6 +467,10 @@ namespace ad_tensor {
         const c10::ArrayRef<adten_t>&  tensor_list ,
         int64_t                        dim
     );
+    at::Tensor cat(
+        const c10::ArrayRef<at::Tensor>&  tensor_list ,
+        int64_t                           dim
+    );
     // END_CAT END_DEV_CAT
     //
     // BEGIN_CONV1D
