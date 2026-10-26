@@ -11,6 +11,7 @@
     checkpointing
     versa
     podman
+    py
 }
 
 AD Tensor User Documentation
@@ -22,7 +23,9 @@ Git Repository
 
 Overview
 ********
-This package takes an alternative approach to AD in libtorch
+The libtorch library is
+the computational engine for `PyTorch <https://pytorch.org/>`_ .
+This package, ad-tensor, takes an alternative approach to AD in libtorch
 using improved and simplified implementations of the techniques in
 `CppAD <https://cppad.readthedocs.io/latest/user_guide.html>`_ .
 This version is mainly for people interested in
