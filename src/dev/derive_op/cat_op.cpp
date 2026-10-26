@@ -192,57 +192,46 @@ void cat_op_t<TensorType>::reverse_der(
     vector<TensorType>&          rev_der
 ) const {
     //
-    // array
-    thread_local vector<int64_t> array;
+    // arg_start, dim, n_ten
+    UNPACK
+    EXPECT_ARGUMENTS
     //
-    // arg_start
-    size_t arg_start = agraph.m_arg_start[op_index];
-    //
-#ifndef NDEBUG
-    size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
-    assert( n_arg == 3 && "where: n_arg != 3" );
-# endif
-    // cond
-    TensorType cond  = tensor_at_arg_index(
-        arg_start, agraph, con_vec, par_all, var_all
-    );
-    //
-    // true_type, false_type
-    adtype_t true_type  = agraph.m_arg_type[arg_start + 1];
-    adtype_t false_type = agraph.m_arg_type[arg_start + 2];
-    //
-    // rev_der[true_index]
-    if( true_type  == adtype_t::variable ) {
+    // start
+    int64_t start = 0;
+    for(size_t i = 0; i < n_ten; ++i) {
         //
-        // true_index
-        size_t true_index  = agraph.m_arg_value[arg_start + 1];
+        // shape
+        c10::IntArrayRef shape;
+        size_t   tensor_index  = agraph.m_arg_value[arg_start + 2 + i];
+        adtype_t tensor_adtype = agraph.m_arg_type[arg_start + 2 + i];
+        switch( tensor_adtype ) {
+            //
+            case adtype_t::variable:
+            shape = var_all[tensor_index].sizes();
+            break;
+            //
+            case adtype_t::parameter:
+            shape = par_all[tensor_index].sizes();
+            break;
+            //
+            case adtype_t::constant:
+            shape = con_vec[tensor_index].sizes();
+            break;
+            //
+            default:
+            assert(false && "cat: unexpected tensor type in tensor list");
+        }
         //
-        // dim
-        broadcast(
-            var_all[op_index].sizes(), var_all[true_index].sizes(), array
-        );
-        c10::IntArrayRef dim(array);
+        // end
+        int64_t end = start + shape[dim];
         //
-        // rev_der[true_index] += rev_der[op_index]
-        plus_equal(rev_der[true_index], rev_der[op_index], dim);
+        // rev_der[tensor_index]
+        int64_t step = 1;
+        TensorType tensor_bar = rev_der[op_index].slice(dim, start, end, step);
+        plus_equal( rev_der[tensor_index], tensor_bar );
         //
-    }
-    //
-    // rev_der[false_index]
-    if( false_type  == adtype_t::variable ) {
-        //
-        // false_index
-        size_t false_index  = agraph.m_arg_value[arg_start];
-        //
-        // dim
-        broadcast(
-            var_all[op_index].sizes(), var_all[false_index].sizes(), array
-        );
-        c10::IntArrayRef dim(array);
-        //
-        // rev_der[false_index] += rev_der[op_index]
-        plus_equal(rev_der[false_index], rev_der[op_index], dim);
-        //
+        // start
+        start = end;
     }
 }
 template void cat_op_t<at::Tensor>::reverse_der(

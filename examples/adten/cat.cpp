@@ -75,5 +75,32 @@ TEST(examples_adten, cat)  {
         {2.0, 2.0, 2.0, 3.0, 3.0, 3.0}
     } );
     EXPECT_TRUE( dy[1].equal( check ) );
+    //
+    // dx
+    dy[0] = torch::tensor( {
+        {2.0, 2.0, 2.0},
+        {2.0, 2.0, 2.0},
+        {3.0, 3.0, 3.0},
+        {3.0, 3.0, 3.0}
+    } );
+    dy[1] = torch::tensor( {
+        {2.0, 2.0, 2.0, 3.0, 3.0, 3.0},
+        {2.0, 2.0, 2.0, 3.0, 3.0, 3.0}
+    } );
+    dx = f.reverse_der(dy, v_all);
+    //
+    // dx[0]
+    check = torch::tensor( {
+        {4.0, 4.0, 4.0},
+        {4.0, 4.0, 4.0}
+    } );
+    EXPECT_TRUE( dx[0].equal( check ) );
+    //
+    // dx[1]
+    check = torch::tensor( {
+        {6.0, 6.0, 6.0},
+        {6.0, 6.0, 6.0}
+    } );
+    EXPECT_TRUE( dx[1].equal( check ) );
 }
 // END_CPP
