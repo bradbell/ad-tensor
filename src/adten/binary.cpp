@@ -10,6 +10,48 @@
 //
 namespace ad_tensor { // Begin ad_tensor::dev
 /*
+------------------------------------------------------------------------------
+{xrst_begin adten_binary usr}
+{xrst_spell
+    lhs
+    rhs
+    op
+}
+
+AD Tensor Binary Operators
+##########################
+
+Syntax
+******
+{xrst_code cpp}
+    result = lhs op rhs
+{xrst_code}
+where lhs and rhs are ``const adten_t&`` ,
+result is ``adten_t`` and op is one of the following:
+
+.. csv-table::
+    :header-rows: 1
+
+    op , description
+   \+  ,  addition
+   \-  ,  subtraction
+   \*  ,  multiplication
+    /  ,  division
+    <  ,  less than
+    <= , less than or equal
+    == , equal
+    != , not equal
+    >= , greater than or equal
+    >  ,  greater than
+
+Example
+*******
+{xrst_literal ,
+    examples/adten/binary.cpp
+    BEGIN_CPP, END_CPP
+}
+
+{xrst_end adten_binary}
 -------------------------------------------------------------------------------
 {xrst_begin adten_binary_dev dev}
 {xrst_spell

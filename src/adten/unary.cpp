@@ -7,8 +7,52 @@
 #include <ad_tensor/dev/op_enum.hpp>
 #include <ad_tensor/dev/agraph.hpp>
 #include <ad_tensor/dev/user_assert.hpp>
-//
 /*
+------------------------------------------------------------------------------
+{xrst_begin adten_unary usr}
+{xrst_spell
+    exp
+    aresult
+    logdet
+}
+
+AD Tensor Unary Operators
+#########################
+
+Syntax
+******
+{xrst_code cpp}
+    aresult = adten.unary_function()
+{xrst_code}
+
+adten
+*****
+is a ``const aten_t&`` object.
+
+unary_function
+**************
+is one of the following unary functions:
+{xrst_comment BEGIN_SORT_THIS_LINE_PLUS_1}
+exp,
+inverse,
+logdet,
+{xrst_comment END_SORT_THIS_LINE_MINUS_1}
+
+aresult
+*******
+is the result of the unary function for this adten object.
+
+Example
+*******
+{xrst_comment BEGIN_SORT_THIS_LINE_PLUS_2}
+{xrst_toc_table
+    examples/adten/unary/exp.cpp
+    examples/adten/unary/inverse.cpp
+    examples/adten/unary/logdet.cpp
+}
+{xrst_comment END_SORT_THIS_LINE_MINUS_2}
+
+{xrst_end adten_unary}
 -------------------------------------------------------------------------------
 {xrst_begin adten_unary_dev dev}
 

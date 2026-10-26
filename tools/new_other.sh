@@ -178,23 +178,23 @@ tools/run_cmake.sh
 set -e
 cat << EOF
 Review changes to the following files (should not need editing):
-src/dev/enum2derive.cpp
-include/ad_tensor/dev/derive_op.hpp
-examples/CMakeLists.txt
-src/CMakeLists.txt
-src/dev/to_string.cpp
+    examples/CMakeLists.txt
+    include/ad_tensor/dev/derive_op.hpp
+    src/CMakeLists.txt
+    src/dev/enum2derive.cpp
+    src/dev/to_string.cpp
 
 Make minor corrections changes in the following files:
-include/ad_tensor/adten.hpp
-include/ad_tensor/dev/op_enum.hpp
+    include/ad_tensor/adten.hpp
+    include/ad_tensor/dev/op_enum.hpp
 
 The following file will require a lot of corrections:
-src/adten/${name_new}.cpp
+    src/adten/${name_new}.cpp
 
 Implement and test forward_par, forward_var, forward_der, reverse_der,
 and src_gen in the ${name_new}_op.cpp (in that order):
-src/dev/derive_op/${name_new}_op.cpp
-src/examples/adten/${name_new}.cpp
+    src/dev/derive_op/${name_new}_op.cpp
+    src/examples/adten/${name_new}.cpp
 EOF
 echo "$script_path: OK"
 exit 0

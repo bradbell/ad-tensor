@@ -54,6 +54,7 @@ Other Member Functions
 **********************
 {xrst_comment BEGIN_SORT_THIS_LINE_PLUS_2}
 {xrst_toc_table after
+    src/adten/binary.cpp
     src/adten/cat.cpp
     src/adten/conv1d.cpp
     src/adten/conv_transpose1d.cpp
@@ -68,83 +69,13 @@ Other Member Functions
     src/adten/solve.cpp
     src/adten/sum.cpp
     src/adten/transpose.cpp
+    src/adten/unary.cpp
     src/adten/view.cpp
     src/adten/where.cpp
 }
 {xrst_comment END_SORT_THIS_LINE_MINUS_2}
 
 {xrst_end adten}
-------------------------------------------------------------------------------
-{xrst_begin adten_unary usr}
-{xrst_spell
-    exp
-}
-
-
-AD Tensor Unary Operators
-#########################
-
-Syntax
-******
-{xrst_code cpp}
-    result = adten.unary_function()
-{xrst_code}
-where adten is a ``const aten_t&`` and unary_function is one of the following:
-``exp`` .
-
-Example
-*******
-{xrst_comment BEGIN_SORT_THIS_LINE_PLUS_2}
-{xrst_toc_table
-    examples/adten/unary/exp.cpp
-    examples/adten/unary/inverse.cpp
-    examples/adten/unary/logdet.cpp
-}
-{xrst_comment END_SORT_THIS_LINE_MINUS_2}
-
-{xrst_end adten_unary}
-------------------------------------------------------------------------------
-{xrst_begin adten_binary usr}
-{xrst_spell
-    lhs
-    rhs
-    op
-}
-
-AD Tensor Binary Operators
-##########################
-
-Syntax
-******
-{xrst_code cpp}
-    result = lhs op rhs
-{xrst_code}
-where lhs and rhs are ``const adten_t&`` ,
-result is ``adten_t`` and op is one of the following:
-
-.. csv-table::
-    :header-rows: 1
-
-    op , description
-   \+  ,  addition
-   \-  ,  subtraction
-   \*  ,  multiplication
-    /  ,  division
-    <  ,  less than
-    <= , less than or equal
-    == , equal
-    != , not equal
-    >= , greater than or equal
-    >  ,  greater than
-
-Example
-*******
-{xrst_literal ,
-    examples/adten/binary.cpp
-    BEGIN_CPP, END_CPP
-}
-
-{xrst_end adten_binary}
 ------------------------------------------------------------------------------
 {xrst_begin adten_compound usr}
 {xrst_spell
