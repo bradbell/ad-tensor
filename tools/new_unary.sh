@@ -115,7 +115,7 @@ sed -i $file -f temp.sed
 # -----------------------------------------------------------------------------
 file='src/adten/unary.cpp'
 cat << EOF > temp.sed
-/[/][/] exp/! b end
+/[/][/] exp/! b one
 N
 N
 N
@@ -126,6 +126,17 @@ s|^\\( *\\).*|&\\
 \\1res_at_ten = operand.at_ten().$fun_name();\\
 \\1break;\\
 \\1//|
+b end
+: one
+/^Example\$/! b two
+: loop
+N
+/exp[.]cpp/! b loop
+s|\$|\\n    examples/adten/unary/$fun_name.cpp|
+b end
+#
+: two
+s|^exp,\$|&\\n$fun_name,|
 : end
 EOF
 git checkout --quiet $file
@@ -134,7 +145,7 @@ sed -i $file -f temp.sed
 # -----------------------------------------------------------------------------
 file='src/dev/derive_op/src_gen_unary.cpp'
 cat << EOF > temp.sed
-/[/][/] exp/! b end
+/[/][/] exp/! b one
 N
 N
 N
@@ -147,6 +158,19 @@ s|^\\( *\\).*|&\\
 \\1    constexpr const char* fmt = "{} = {}.$fun_name();";\\
 \\1    src = std::format(fmt, target_src, operand_src);\\
 \\1}|
+b end
+#
+: one
+/^Example\$/! b two
+: loop
+N
+/exp.cpp/! b loop
+s|\$|\\n    example/adten/unary/$fun_name.cpp|
+b end
+#
+: two
+s|^exp,\$|&\\n$fun_name|
+#
 : end
 EOF
 git checkout --quiet $file
@@ -182,11 +206,13 @@ git checkout --quiet $file
 echo "$file"
 sed -i $file -f temp.sed
 # -----------------------------------------------------------------------------
-tools/run_cmake.sh
+set +e
+tools/check_sort.sh
+set -e
 echo
 echo 'The following files require editing by hand:'
-echo src/dev/derive_op/${fun_name}_op.cpp
-echo examples/adten/unary.cpp
+echo '    src/dev/derive_op/${fun_name}_op.cpp'
+echo '    examples/adten/unary.cpp'
 # -----------------------------------------------------------------------------
 
 echo "$script_path: OK"
