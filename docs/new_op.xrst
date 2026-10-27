@@ -170,10 +170,9 @@ The function forward_der determines the forward derivative with index op_index.
 During this function, all the parameters and variables are known
 and the forward derivatives with index less that op_index are known.
 
-examples/adten/NEW.cpp
-======================
-Add a test of forward_der for the NEW operator;
-see examples/adten/OTHER.cpp or tests/adten/OTHER.cpp.
+tests/adten/NEW.cpp
+===================
+Add a test of forward_der for the NEW operator; see tests/adten/OTHER.cpp.
 
 Test and Commit NEW.cpp Test
 ============================
@@ -193,10 +192,9 @@ Upon return, the result of the operator with index op_index
 is removed (as an argument to the objective)
 and its contribution is added to each of the NEW operator arguments.
 
-examples/adten/NEW.cpp
-======================
-Add a test of reverse_der for the NEW operator;
-see examples/adten/OTHER.cpp or tests/adten/OTHER.cpp.
+tests/adten/NEW.cpp
+===================
+Add a test of reverse_der for the NEW operator; see tests/adten/OTHER.cpp.
 
 Test and Commit NEW.cpp Test
 ============================
@@ -226,15 +224,5 @@ Test and Commit src_gen.cpp
 ===========================
 Run ``check_all.sh`` (not ``check_all.sh --no_plugin``)
 to check that the modified example compiles, runs, and passes it tests.
-
-
-Step 6: Create Separate Tests
-*****************************
-Use git to copy the file examples/adten/NEW.cpp to tests/adten/NEW.cpp
-and add adten/NEW.cpp to tests/CMakeLists.txt.
-Then copy tests/adten/New.cpp back to examples/aden/New.cpp
-and remove its testing of derivatives.
-Evaluation of derivatives is similar for all operators and not needed
-in an operator example.
 
 {xrst_end new_op}

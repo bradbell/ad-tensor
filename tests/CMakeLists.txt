@@ -22,6 +22,7 @@ add_executable(tests
     adten/cat.cpp
     adten/conv1d.cpp
     adten/conv_transpose1d.cpp
+    adten/expand.cpp
     adten/flip.cpp
     adten/index.cpp
     adten/index_put.cpp

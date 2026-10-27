@@ -36,6 +36,7 @@ add_library(ad_tensor SHARED
     adten/conv1d.cpp
     adten/conv_transpose1d.cpp
     adten/ctor.cpp
+    adten/expand.cpp
     adten/flip.cpp
     adten/index.cpp
     adten/index_put.cpp
@@ -66,6 +67,7 @@ add_library(ad_tensor SHARED
     dev/derive_op/dom_op.cpp
     dev/derive_op/eq_op.cpp
     dev/derive_op/exp_op.cpp
+    dev/derive_op/expand_op.cpp
     dev/derive_op/flip_op.cpp
     dev/derive_op/ge_op.cpp
     dev/derive_op/gt_op.cpp

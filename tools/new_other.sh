@@ -71,6 +71,8 @@ file_other=tests/adten/$name_other.cpp
 file_new=tests/adten/$name_new.cpp
 cat << EOF > temp.sed
 s|$name_other|$name_new|g
+s|^TEST(examples.*|&\\n#if 0|
+s|^}$|#endif\\n&|
 EOF
 if [ -e $file_other ]
 then
@@ -195,6 +197,7 @@ Implement and test forward_par, forward_var, forward_der, reverse_der,
 and src_gen in the ${name_new}_op.cpp (in that order):
     src/dev/derive_op/${name_new}_op.cpp
     src/examples/adten/${name_new}.cpp
+    src/tests/adten/${name_new}.cpp
 EOF
 echo "$script_path: OK"
 exit 0

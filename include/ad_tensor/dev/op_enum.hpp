@@ -52,6 +52,7 @@ namespace ad_tensor { namespace dev { enum struct op_enum_t
     // END_UNARY END_SORT_THIS_LINE_MINUS_1
     //
     // BEGIN_INDEX_ARRAY  BEGIN_SORT_THIS_LINE_PLUS_1
+    expand,      // expand(shape)
     flip,        // flip(dims)
     sum,         // sum(dims)
     view,        // view(shape)

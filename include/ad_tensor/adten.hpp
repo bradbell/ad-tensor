@@ -58,6 +58,7 @@ Other Member Functions
     src/adten/cat.cpp
     src/adten/conv1d.cpp
     src/adten/conv_transpose1d.cpp
+    src/adten/expand.cpp
     src/adten/flip.cpp
     src/adten/index.cpp
     src/adten/index_put.cpp
@@ -116,6 +117,7 @@ The adten_t Class Developer Documentation
     src/adten/cat.cpp
     src/adten/conv1d.cpp
     src/adten/conv_transpose1d.cpp
+    src/adten/expand.cpp
     src/adten/flip.cpp
     src/adten/index.cpp
     src/adten/index_put.cpp
@@ -337,6 +339,9 @@ public:
         const adten_t&                                           bias    ,
         const torch::nn::functional::ConvTranspose1dFuncOptions& options
     ) const;
+    //
+    // expand
+    adten_t expand(const c10::IntArrayRef& shape) const;
     //
     // flip
     adten_t flip(const c10::IntArrayRef& dim ) const;

@@ -29,6 +29,7 @@ add_executable(examples
     adten/compound.cpp
     adten/conv1d.cpp
     adten/conv_transpose1d.cpp
+    adten/expand.cpp
     adten/flip.cpp
     adten/index.cpp
     adten/index_put.cpp

@@ -20,6 +20,7 @@ const base_op_t<TensorType>& enum2derive(op_enum_t op_enum) {
     static const dom_op_t<TensorType>                 dom_op;
     static const eq_op_t<TensorType>                  eq_op;
     static const exp_op_t<TensorType>                 exp_op;
+    static const expand_op_t<TensorType>              expand_op;
     static const flip_op_t<TensorType>                flip_op;
     static const ge_op_t<TensorType>                  ge_op;
     static const gt_op_t<TensorType>                  gt_op;
@@ -55,6 +56,7 @@ const base_op_t<TensorType>& enum2derive(op_enum_t op_enum) {
         case op_enum_t::dom:                 return dom_op;
         case op_enum_t::eq:                  return eq_op;
         case op_enum_t::exp:                 return exp_op;
+        case op_enum_t::expand:              return expand_op;
         case op_enum_t::flip:                return flip_op;
         case op_enum_t::ge:                  return ge_op;
         case op_enum_t::gt:                  return gt_op;
