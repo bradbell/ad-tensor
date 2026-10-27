@@ -2,6 +2,7 @@
 // SPDX-FileCopyrightText: Bradley M. Bell <bradbell@seanet.com>
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
+#include <ad_tensor/dev/broadcast.hpp>
 #include <ad_tensor/dev/src_gen_index.hpp>
 #include <ad_tensor/dev/derive_op.hpp>
 #include <ad_tensor/adten.hpp>
@@ -167,21 +168,24 @@ void expand_op_t<TensorType>::reverse_der(
     vector<TensorType>&          rev_der
 ) const {
     //
+    // array
+    thread_local vector<int64_t> array;
+    //
+    //
     // arg_start
     size_t    arg_start = agraph.m_arg_start[op_index];
     //
     // operand_index
     size_t operand_index  = agraph.m_arg_value[arg_start];
     //
-    // shape
-    c10::IntArrayRef shape = var_all[operand_index].sizes();
+    // dim
+    broadcast(
+        var_all[op_index].sizes(), var_all[operand_index].sizes(), array
+    );
+    c10::IntArrayRef dim(array);
     //
-    // rev_der
-    if( not_defined(rev_der[operand_index]) ) {
-        rev_der[operand_index] = rev_der[op_index].view(shape);
-    } else {
-        rev_der[operand_index] += rev_der[op_index].view(shape);
-    }
+    // rev_der[operand_index] += rev_der[op_index]
+    plus_equal(rev_der[operand_index], rev_der[op_index], dim);
 }
 template void expand_op_t<at::Tensor>::reverse_der(
     size_t                       op_index    ,

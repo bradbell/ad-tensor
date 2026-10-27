@@ -207,7 +207,6 @@ void add_op_t<TensorType>::reverse_der(
         //
         // rev_der[lhs_index] += rev_der[op_index]
         plus_equal(rev_der[lhs_index], rev_der[op_index], dim);
-        //
     }
     //
     // rev_der[rhs_index]

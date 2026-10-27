@@ -53,12 +53,14 @@ TEST(tests_adten, expand)  {
         {5.0, 6.0, 7.0},
         {5.0, 6.0, 7.0}
     } ) );
-#if 0
+    //
     // dy, dx
-    dy[0] = torch::tensor( { {1.0, 2.0}, {3.0, 4.0} } );
+    dy[0] = torch::tensor( {
+        {5.0, 6.0,  7.0},
+        {8.0, 9.0, 10.0}
+    } );
     dx    = f.reverse_der(dy, var_all);
-    equal = dx[0].equal( torch::tensor( {1.0, 2.0, 3.0, 4.0} ) );
+    equal = dx[0].equal( torch::tensor( {13.0, 15.0, 17.0} ) );
     EXPECT_TRUE( equal );
-#endif
 }
 // END_CPP
