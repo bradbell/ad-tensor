@@ -47,8 +47,6 @@ file_new=src/dev/derive_op/${name_new}_op.cpp
 cat << EOF > temp.sed
 s|${name_other}_op|${name_new}_op|
 s|$name_other()|$name_new()|
-s|^TEST(examples.*|&\\n#if 0|
-s|^}$|#endif\\n&|
 EOF
 git checkout --quiet $file_other
 sed -f temp.sed $file_other > $file_new
@@ -60,6 +58,8 @@ file_other=examples/adten/$name_other.cpp
 file_new=examples/adten/$name_new.cpp
 cat << EOF > temp.sed
 s|$name_other|$name_new|g
+s|^TEST(examples.*|&\\n#if 0|
+s|^}$|#endif\\n&|
 EOF
 git checkout --quiet $file_other
 sed -f temp.sed $file_other > $file_new
