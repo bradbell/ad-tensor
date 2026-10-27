@@ -28,7 +28,6 @@ TEST(examples_adten, expand)  {
     //
     // y = f(x)
     adfn_t f = adten_t::stop_recording(ay, "f");
-    f.set_trace(true);
     //
     // var_all
     vector<at::Tensor> var_all = f.forward_var(x);

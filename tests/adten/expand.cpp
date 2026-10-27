@@ -8,20 +8,19 @@
 #include <torch/torch.h>
 //
 TEST(tests_adten, expand)  {
-#if 0
     using ad_tensor::adten_t;
     using ad_tensor::adfn_t;
     using ad_tensor::vector;
     //
     // x
     vector<at::Tensor> x;
-    x.push_back( torch::tensor( {1.0, 2.0, 3.0, 4.0} ) );
+    x.push_back( torch::tensor( {1.0, 2.0, 3.0} ) );
     //
     // ax
     vector<adten_t> ax = adten_t::start_recording(x);
     //
     // shape
-    vector<int64_t> shape = {2, 2};
+    vector<int64_t> shape = {2, -1};
     //
     // ay
     vector<adten_t> ay;
@@ -38,18 +37,23 @@ TEST(tests_adten, expand)  {
     //
     EXPECT_EQ( y.size(), ay.size() );
     //
-    bool equal = y[0].equal( torch::tensor( { {1.0, 2.0}, {3.0, 4.0} } ) );
+    bool equal = y[0].equal( torch::tensor( {
+        {1.0, 2.0, 3.0},
+        {1.0, 2.0, 3.0}
+    } ) );
     EXPECT_TRUE( equal );
     //
     // dx
     vector<at::Tensor> dx;
-    dx.push_back( torch::tensor( {5.0, 6.0, 7.0, 8.0} ) );
+    dx.push_back( torch::tensor( {5.0, 6.0, 7.0} ) );
     //
     // dy
     vector<at::Tensor> dy = f.forward_der(dx, var_all);
-    equal = dy[0].equal( torch::tensor( { {5.0, 6.0}, {7.0, 8.0} } ) );
-    EXPECT_TRUE( equal );
-    //
+    equal = dy[0].equal( torch::tensor( {
+        {5.0, 6.0, 7.0},
+        {5.0, 6.0, 7.0}
+    } ) );
+#if 0
     // dy, dx
     dy[0] = torch::tensor( { {1.0, 2.0}, {3.0, 4.0} } );
     dx    = f.reverse_der(dy, var_all);

@@ -136,7 +136,7 @@ void expand_op_t<TensorType>::forward_der(
     //
     // for_der[op_index]
     if( is_defined(for_der[operand_index]) ) {
-        for_der[op_index] = for_der[operand_index].view(shape);
+        for_der[op_index] = for_der[operand_index].expand(shape);
     }
 }
 template void expand_op_t<at::Tensor>::forward_der(
