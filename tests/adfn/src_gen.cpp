@@ -17,7 +17,7 @@ namespace {
     std::string setup_src_gen_path(void) {
         //
         // src_gen_path
-        fs::path src_gen_path  = fs::temp_directory_path() / "test_src_gen";
+        fs::path src_gen_path  = fs::temp_directory_path() / "tests_src_gen";
         if( fs::is_directory(src_gen_path) ) {
             try {
                 fs::remove_all(src_gen_path);
@@ -123,8 +123,9 @@ TEST(tests_adfn, src_gen)  {
     ar.push_back( av[0].inverse()        + ap[0].inverse() );
     ar.push_back( av[0].sum(dim)         + ap[0].sum(dim) );
     ar.push_back( av[0].flip(dim)        + ap[0].flip(dim) );
-    ar.push_back( av[0].transpose(0, 1)  + ap[0].transpose(0, 1) );
+    ar.push_back( av[0].transpose(0,1)   + ap[0].transpose(0,1) );
     ar.push_back( av[0].view({4})        + ap[0].view({4}) );
+    ar.push_back( av[0].expand({2,2,2})  + ap[0].expand({2,2,2}) );
     ar.push_back( av[0].slice(0,0,1,1)   + ap[0].slice(0,1,2,1) );
     //
     // binary operators
@@ -194,6 +195,7 @@ TEST(tests_adfn, src_gen)  {
     EXPECT_TRUE( r[i++].equal( v[0].flip(dim)       + p[0].flip(dim) ) );
     EXPECT_TRUE( r[i++].equal( v[0].transpose(0, 1) + p[0].transpose(0, 1) ) );
     EXPECT_TRUE( r[i++].equal( v[0].view({4})       + p[0].view({4}) ) );
+    EXPECT_TRUE( r[i++].equal( v[0].expand({2,2,2}) + p[0].expand({2,2,2}) ) );
     EXPECT_TRUE( r[i++].equal( v[0].slice(0,0,1,1)  + p[0].slice(0,1,2,1) ) );
     //
     EXPECT_TRUE( r[i++].equal( v[0].matmul( p[0] ) ) );

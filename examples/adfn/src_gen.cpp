@@ -38,7 +38,7 @@ TEST(examples_adfn, src_gen)  {
     adfn_t f = adten_t::stop_recording(ar, "f");
     //
     // source_path
-    fs::path source_path  = fs::temp_directory_path() / "src_gen";
+    fs::path source_path  = fs::temp_directory_path() / "examples_src_gen";
     if( fs::is_directory(source_path) ) {
         try {
             fs::remove_all(source_path);
