@@ -142,7 +142,7 @@ namespace {
     //
     // BEGIN_LOSS
     template<class TensorType>
-    TensorType loss(const TensorType y ) {
+    TensorType loss(const TensorType& y ) {
         TensorType weight      = TensorType( weight_at );
         TensorType finite_diff = conv1d(y, weight, options);
         TensorType data_res    = (TensorType(data) - y);
