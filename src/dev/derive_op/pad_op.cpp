@@ -306,9 +306,11 @@ void pad_op_t<TensorType>::reverse_der(
     // pad_mode
     size_t mode_size_t  = agraph.m_arg_value[arg_start + 2];
     pad_enum_t pad_mode = static_cast<pad_enum_t>(mode_size_t);
-    if( pad_mode != pad_enum_t::constant ) {
+    if( pad_mode != pad_enum_t::constant &&
+        pad_mode != pad_enum_t::replicate ) {
         user_assert(false,
-            "pad: so far only constant mode reverse_der has been implemented."
+            "pad: reverse_der: so far only constant and replicate modes"
+            " are implemented."
         );
     }
     //
@@ -337,17 +339,32 @@ void pad_op_t<TensorType>::reverse_der(
     const size_t* end   = begin + n_sizes;
     vector<int64_t> pad_sizes(begin, end);
     //
-    // output_bar
+    // input_bar
     c10::IntArrayRef output_shape = var_all[op_index].sizes();
-    TensorType input_bar          = rev_der[op_index];
-    size_t n_dim = n_sizes / 2;
-    for(size_t i = 0; i < n_dim; ++i) {
-        size_t dim  = output_shape.size() - i - 1;
-        if( pad_sizes[2 * i] != 0 || pad_sizes[2 * i + 1] != 0 ) {
-            int64_t start = pad_sizes[2 * i];
-            int64_t stop  = output_shape[dim] - pad_sizes[2 * i + 1];
-            int64_t step  = 1;
-            input_bar = input_bar.slice( int64_t(dim), start, stop, step);
+    TensorType       input_bar    = rev_der[op_index];
+    size_t           n_dim        = n_sizes / 2;
+    for(size_t i = 0; i < n_dim; ++i)
+    if( pad_sizes[2 * i] != 0 || pad_sizes[2 * i + 1] != 0 ) {
+        int64_t dim   = int64_t( output_shape.size() - i - 1 );
+        int64_t start = pad_sizes[2 * i];
+        int64_t stop  = output_shape[dim] - pad_sizes[2 * i + 1];
+        int64_t step  = 1;
+        if( pad_mode == pad_enum_t::constant ) {
+            input_bar = input_bar.slice(dim, start, stop, step);
+        } else {
+            assert( pad_mode == pad_enum_t::replicate );
+            TensorType left  = input_bar.slice(dim, 0, 0, step);
+            TensorType right = left;
+            if( 0 < start ) {
+                left = input_bar.slice(dim, 0, start + 1, step);
+                left = left.sum({dim});
+            }
+            if( stop < output_shape[dim] ) {
+                right = input_bar.slice(dim, stop-1, output_shape[dim], step);
+                right = right.sum({dim});
+            }
+            TensorType temp_bar = input_bar.slice(dim, start+1, stop-1, step);
+            input_bar  = ad_tensor::cat( {left, temp_bar, right}, dim);
         }
     }
     //

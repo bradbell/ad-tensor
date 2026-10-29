@@ -74,7 +74,10 @@ the following is added to the parameter (variable) acyclic graph:
 where start be the length of arg_value and arg_type before this call to
 ``adten_t::binary`` .
 
-Note that mode_size_t can be converted to an pad_enum_t using
+#.  constant_value is only used when the padding mode is constant,
+    otherwise its index is zero and its value is the undefined tensor.
+
+#.  mode_size_t can be converted to an pad_enum_t using
 {xrst_code cpp}
     pad_enum_t mode = static_cast<op_enum_t>(mode_size_t)
 {xrst_code}
