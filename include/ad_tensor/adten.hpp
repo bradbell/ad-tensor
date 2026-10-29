@@ -366,8 +366,11 @@ public:
     // pad
     adten_t pad(const torch::nn::functional::PadFuncOptions& options) const;
     //
-    // sum
-    adten_t sum(const c10::IntArrayRef& dim = c10::IntArrayRef() ) const;
+    // BEGIN_SUM
+    adten_t sum(
+        const c10::IntArrayRef& dim     = c10::IntArrayRef() ,
+        bool                    keepdim = false
+    ) const;
     //
     // transpose
     adten_t transpose(int64_t dim1, int64_t dim2) const;

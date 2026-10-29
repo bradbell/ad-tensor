@@ -90,7 +90,7 @@ If n_dim is zero, all the dimensions are summed.
 */
 // BEGIN_SUM  BEGIN_DEV_SUM
 // asum = adten.sum(dim)
-adten_t adten_t::sum(const c10::IntArrayRef& dim) const
+adten_t adten_t::sum(const c10::IntArrayRef& dim, bool keepdim) const
 // END_SUM END_DEV_SUM
 {
     //
