@@ -382,22 +382,14 @@ template void pad_op_t<at::Tensor>::reverse_der(
     const vector<at::Tensor>&    var_all     ,
     vector<at::Tensor>&          rev_der
 ) const;
-template <> void pad_op_t<adten_t>::reverse_der(
+template void pad_op_t<adten_t>::reverse_der(
     size_t                       op_index    ,
     const agraph_t&              agraph      ,
     const vector<at::Tensor>&    con_vec     ,
     const vector<adten_t>&       par_all     ,
     const vector<adten_t>&       var_all     ,
     vector<adten_t>&             rev_der
-) const {
-    // TODO: Change this function to use the TensorType implementation above
-    // once the following operators have forward_var adten_t implementations:
-    // slice
-    user_assert(false,
-    "reverse_der not yet implemented for pad with adten_t arguments" );
-}
-
-;
+) const;
 // ---------------------------------------------------------------------------
 // src_gen
 template <> std::string pad_op_t<at::Tensor>::src_gen(
