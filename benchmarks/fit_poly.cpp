@@ -182,7 +182,7 @@ namespace {
 // END_SETUP
 //
 // BEGIN_AUTOGRAD
-TEST(benchmarks, fit_poly_autograd) {
+TEST(benchmarks_fit_poly, autograd) {
     //
     // c
     vector<torch::Tensor> c;
@@ -224,7 +224,7 @@ TEST(benchmarks, fit_poly_autograd) {
 // END_AUTOGRAD
 //
 // BEGIN_AD_TENSOR
-TEST(benchmarks, fit_poly_ad_tensor) {
+TEST(benchmarks_fit_poly, ad_tensor) {
     //
     // c
     vector<at::Tensor> c;
@@ -283,7 +283,7 @@ TEST(benchmarks, fit_poly_ad_tensor) {
 // END_AD_TENSOR
 //
 // BEGIN_RECORD_GRADIENT
-TEST(benchmarks, fit_poly_record_gradient) {
+TEST(benchmarks_fit_poly, record_gradient) {
     //
     // c
     vector<at::Tensor> c;
@@ -357,7 +357,7 @@ TEST(benchmarks, fit_poly_record_gradient) {
 //
 // BEGIN_PLUGIN
 #if INCLUDE_PLUGIN
-TEST(benchmarks, fit_poly_plugin) {
+TEST(benchmarks_fit_poly, plugin) {
     //
     // fs, plugin
     namespace fs     = std::filesystem;

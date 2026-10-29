@@ -165,7 +165,7 @@ namespace {
 // END_SETUP
 //
 // BEGIN_AUTOGRAD
-TEST(benchmarks, smooth_spline_autograd) {
+TEST(benchmarks_smooth_spline, autograd) {
     //
     // y
     torch::Tensor y = initial_y.clone().set_requires_grad(true);
@@ -206,7 +206,7 @@ TEST(benchmarks, smooth_spline_autograd) {
 // END_AUTOGRAD
 //
 // BEGIN_AD_TENSOR
-TEST(benchmarks, smooth_spline_ad_tensor) {
+TEST(benchmarks_smooth_spline, ad_tensor) {
     //
     // y
     vector<at::Tensor> y;
@@ -255,7 +255,7 @@ TEST(benchmarks, smooth_spline_ad_tensor) {
 // END_AD_TENSOR
 //
 // BEGIN_RECORD_GRADIENT
-TEST(benchmarks, smooth_spline_record_gradient) {
+TEST(benchmarks_smooth_spline, record_gradient) {
     //
     // y
     vector<at::Tensor> y;
@@ -320,7 +320,7 @@ TEST(benchmarks, smooth_spline_record_gradient) {
 //
 // BEGIN_PLUGIN
 #if INCLUDE_PLUGIN
-TEST(benchmarks, smooth_spline_plugin) {
+TEST(benchmarks_smooth_spline, plugin) {
     //
     // fs, plugin
     namespace fs     = std::filesystem;

@@ -248,7 +248,7 @@ namespace {
 // END_SETUP
 //
 // BEGIN_AUTOGRAD
-TEST(benchmarks, multi_normal_autograd) {
+TEST(benchmarks_multi_normal, autograd) {
     //
     // previous_time
     elapsed_ms();
@@ -291,7 +291,7 @@ TEST(benchmarks, multi_normal_autograd) {
 // END_AUTOGRAD
 //
 // BEGIN_AD_TENSOR
-TEST(benchmarks, multi_normal_ad_tensor) {
+TEST(benchmarks_multi_normal, ad_tensor) {
     //
     // L
     vector<at::Tensor> L     = { initial_L.clone() };
@@ -341,7 +341,7 @@ TEST(benchmarks, multi_normal_ad_tensor) {
 // END_AD_TENSOR
 //
 // BEGIN_OPTIMIZE
-TEST(benchmarks, multi_normal_record_gradient) {
+TEST(benchmarks_multi_normal, record_gradient) {
     //
     // L
     vector<at::Tensor> L     = { initial_L.clone() };
@@ -406,7 +406,7 @@ TEST(benchmarks, multi_normal_record_gradient) {
 //
 // BEGIN_SRC_GEN
 #if INCLUDE_PLUGIN
-TEST(benchmarks, multi_normal_plugin) {
+TEST(benchmarks_multi_normal, plugin) {
     //
     // fs, plugin
     namespace fs     = std::filesystem;
