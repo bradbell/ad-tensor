@@ -15,14 +15,22 @@ namespace ad_tensor { // Begin ad_tensor::dev
 {xrst_begin adten_sum usr}
 {xrst_spell
     asum
+    keepdim
 }
 
 The Sum Function
 ################
 
+Syntax
+******
+{xrst_code cpp}
+    asum = adten.sum(dim, keepdim)
+{xrst_code}
+
 Prototype
 *********
 {xrst_literal ,
+    include/ad_tensor/adten.hpp
     BEGIN_SUM, END_SUM
 }
 
@@ -33,8 +41,11 @@ is the tensor that we are summing.
 dim
 ***
 is a vector containing the dimensions we are summing with respect to.
-Currently there is no option to keep dimension
-so the summed dimensions are removed from the result.
+
+keepdim
+*******
+If this is true, asum will have the same shape as adten.
+Otherwise, the summed dimensions are removed from the result.
 
 asum
 ****
@@ -50,6 +61,7 @@ Example
 -------------------------------------------------------------------------------
 {xrst_begin adten_sum_dev dev}
 {xrst_spell
+    keepdim
 }
 
 Compute and Record Sum Function
@@ -74,12 +86,13 @@ the following is added to the parameter (variable) acyclic graph:
 .. csv-table::
     :header-rows: 1
 
-    arg_index, arg_value, arg_type
-    start + 0, index for operand, type for operand
-    start + 1, number of dimensions being summed (n_dim),    adtype_t::none
-    start + 2, index of first dimension being summed,        adtype_t::none
+    arg_index, arg_value,                                   arg_type
+    start + 0, index for operand,                           operand type
+    start + 1, keepdim,                                     none
+    start + 1, number of dimensions being summed (n_dim),   none
+    start + 2, index of first dimension being summed,       none
     ..., ..., ...
-    start + n_dim + 1, index of last dimension being summed, adtype::none
+    start + n_dim + 1, index of last dimension being summed,none
 
 where start is the length of arg_value and arg_type before this call to
 ``adten_t::binary`` .
@@ -88,19 +101,13 @@ If n_dim is zero, all the dimensions are summed.
 
 {xrst_end adten_sum_dev}
 */
-// BEGIN_SUM  BEGIN_DEV_SUM
-// asum = adten.sum(dim)
+// BEGIN_DEV_SUM
 adten_t adten_t::sum(const c10::IntArrayRef& dim, bool keepdim) const
-// END_SUM END_DEV_SUM
+// END_DEV_SUM
 {
     //
     // res_tensor
-    at::Tensor res_tensor = not_defined();
-    if( dim.size() == 0 ) {
-        res_tensor = m_at_ten.sum();
-    } else {
-        res_tensor = m_at_ten.sum(dim);
-    }
+    at::Tensor res_tensor = m_at_ten.sum(dim, keepdim);
     //
     // tape
     dev::tape_t& tape = dev::this_threads_tape();
@@ -143,6 +150,9 @@ adten_t adten_t::sum(const c10::IntArrayRef& dim, bool keepdim) const
         //
         agraph->m_arg_value.push_back( m_index );
         agraph->m_arg_type.push_back( m_adtype );
+        //
+        agraph->m_arg_value.push_back( size_t(keepdim) );
+        agraph->m_arg_type.push_back( adtype_t::none );
         //
         size_t n_dim = dim.size();
         agraph->m_arg_value.push_back( n_dim );

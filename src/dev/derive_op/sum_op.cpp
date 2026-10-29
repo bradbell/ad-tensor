@@ -2,12 +2,39 @@
 // SPDX-FileCopyrightText: Bradley M. Bell <bradbell@seanet.com>
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
+#include <ad_tensor/dev/to_string.hpp>
 #include <ad_tensor/dev/src_gen_index.hpp>
 #include <ad_tensor/dev/derive_op.hpp>
 #include <ad_tensor/adten.hpp>
 #include <ad_tensor/dev/plus_minus_equal.hpp>
 #include <ad_tensor/dev/rev_sum_view.hpp>
 #include <ad_tensor/defined.hpp>
+//
+// UNPACK
+// arg_start, operand_index, keepdim, n_dim
+#define UNPACK \
+    size_t    arg_start     = agraph.m_arg_start[op_index]; \
+    size_t    operand_index = agraph.m_arg_value[arg_start]; \
+    bool      keepdim       = agraph.m_arg_value[arg_start + 1]; \
+    size_t    n_dim         = agraph.m_arg_value[arg_start + 2];
+//
+// EXPECT_ARGUMENTS(operand_adtype)
+#if NDEBUG
+#define EXPECT_ARGUMENTS(operand_adtype)
+#else
+#define EXPECT_ARGUMENTS(operand_adtype) \
+    size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start; \
+    assert( n_arg == 3 + n_dim && "sum_op: n_arg != 3 + n_dim" ); \
+    if( operand_adtype == adtype_t::none ) { \
+        assert(  \
+            agraph.m_arg_type[arg_start] == adtype_t::parameter || \
+            agraph.m_arg_type[arg_start] == adtype_t::variable \
+        ); \
+    } \
+    for(size_t i = 1; i < n_arg; ++i) { \
+        assert( agraph.m_arg_type[arg_start + i] == adtype_t::none ); \
+    }
+#endif
 //
 namespace ad_tensor { namespace dev { // Begin ad_tensor::dev
 // ------------------------------------------------------------------------
@@ -20,38 +47,23 @@ void sum_op_t<TensorType>::forward_par(
     vector<TensorType>&          par_all
 ) const {
     //
-    // arg_start
-    size_t    arg_start = agraph.m_arg_start[op_index];
-    //
-    // n_dim
-    size_t n_dim = agraph.m_arg_value[arg_start + 1];
-    assert( adtype_t::none ==  agraph.m_arg_type[arg_start + 1] );
-    //
-#ifndef NDEBUG
-    //
-    // adtype
-    adtype_t adtype   = agraph.m_arg_type[arg_start];
-    assert( adtype  == adtype_t::parameter );
-    //
-    // n_arg
-    size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
-    assert( n_arg == 2 + n_dim && "sum_op: n_arg != 2 + n_dim" );
-#endif
-    // operand_index
-    size_t operand_index  = agraph.m_arg_value[arg_start];
+    // arg_start, operand_index, keepdim, n_dim
+    UNPACK
+    EXPECT_ARGUMENTS( adtype_t::parameter );
     //
     if( n_dim == 0 ) {
         // par_all
-        par_all[op_index] = par_all[operand_index].sum();
+        auto dim          = c10::IntArrayRef();
+        par_all[op_index] = par_all[operand_index].sum(dim, keepdim);
     } else {
         //
         // dim
-        const size_t* begin = agraph.m_arg_value.data() + arg_start + 2;
+        const size_t* begin = agraph.m_arg_value.data() + arg_start + 3;
         const size_t* end   = begin + n_dim;
         const vector<int64_t> dim(begin, end);
         //
         // par_all
-        par_all[op_index] = par_all[operand_index].sum(dim);
+        par_all[op_index] = par_all[operand_index].sum(dim, keepdim);
     }
 }
 template void sum_op_t<at::Tensor>::forward_par(
@@ -77,38 +89,23 @@ void sum_op_t<TensorType>::forward_var(
     vector<TensorType>&          var_all
 ) const {
     //
-    // arg_start
-    size_t    arg_start = agraph.m_arg_start[op_index];
-    //
-    // n_dim
-    size_t n_dim = agraph.m_arg_value[arg_start + 1];
-    assert( adtype_t::none ==  agraph.m_arg_type[arg_start + 1] );
-    //
-#ifndef NDEBUG
-    //
-    // adtype
-    adtype_t adtype   = agraph.m_arg_type[arg_start];
-    assert( adtype  == adtype_t::variable );
-    //
-    // n_arg
-    size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
-    assert( n_arg == 2 + n_dim && "sum_op: n_arg != 2 + n_dim" );
-#endif
-    // operand_index
-    size_t operand_index  = agraph.m_arg_value[arg_start];
+    // arg_start, operand_index, keepdim, n_dim
+    UNPACK
+    EXPECT_ARGUMENTS( adtype_t::variable );
     //
     if( n_dim == 0 ) {
         // var_all
-        var_all[op_index] = var_all[operand_index].sum();
+        auto dim          = c10::IntArrayRef();
+        var_all[op_index] = var_all[operand_index].sum(dim, keepdim);
     } else {
         //
         // dim
-        const size_t* begin = agraph.m_arg_value.data() + arg_start + 2;
+        const size_t* begin = agraph.m_arg_value.data() + arg_start + 3;
         const size_t* end   = begin + n_dim;
         const vector<int64_t> dim(begin, end);
         //
         // var_all
-        var_all[op_index] = var_all[operand_index].sum(dim);
+        var_all[op_index] = var_all[operand_index].sum(dim, keepdim);
     }
 }
 template void sum_op_t<at::Tensor>::forward_var(
@@ -137,41 +134,27 @@ void sum_op_t<TensorType>::forward_der(
     vector<TensorType>&          for_der
 ) const {
     //
-    // arg_start
-    size_t    arg_start = agraph.m_arg_start[op_index];
+    // arg_start, operand_index, keepdim, n_dim
+    UNPACK
+    EXPECT_ARGUMENTS( adtype_t::variable );
     //
-    // n_dim
-    size_t n_dim = agraph.m_arg_value[arg_start + 1];
-    assert( adtype_t::none ==  agraph.m_arg_type[arg_start + 1] );
-    //
-#ifndef NDEBUG
-    //
-    // adtype
-    adtype_t adtype   = agraph.m_arg_type[arg_start];
-    assert( adtype  == adtype_t::variable );
-    //
-    // n_arg
-    size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
-    assert( n_arg == 2 + n_dim && "sum_op: n_arg != 2 + n_dim" );
-#endif
-    // operand_index
-    size_t operand_index  = agraph.m_arg_value[arg_start];
     if( not_defined(for_der[operand_index]) ) {
         return;
     }
     //
     if( n_dim == 0 ) {
         // for_der
-        for_der[op_index] = for_der[operand_index].sum();
+        auto dim          = c10::IntArrayRef();
+        for_der[op_index] = for_der[operand_index].sum(dim, keepdim);
     } else {
         //
         // dim
-        const size_t* begin = agraph.m_arg_value.data() + arg_start + 2;
+        const size_t* begin = agraph.m_arg_value.data() + arg_start + 3;
         const size_t* end   = begin + n_dim;
         const vector<int64_t> dim(begin, end);
         //
         // for_der
-        for_der[op_index] = for_der[operand_index].sum(dim);
+        for_der[op_index] = for_der[operand_index].sum(dim, keepdim);
     }
 }
 template void sum_op_t<at::Tensor>::forward_der(
@@ -205,36 +188,21 @@ void sum_op_t<TensorType>::reverse_der(
     // array
     thread_local vector<int64_t> array;
     //
-    // check for case where this operation is not connected to the range
+    // arg_start, operand_index, keepdim, n_dim
+    UNPACK
+    EXPECT_ARGUMENTS( adtype_t::variable );
+    //
     if( not_defined(rev_der[op_index]) ) {
         return;
     }
     //
-    // arg_start
-    size_t    arg_start = agraph.m_arg_start[op_index];
-    //
-    // n_dim
-    size_t n_dim = agraph.m_arg_value[arg_start + 1];
-    assert( adtype_t::none ==  agraph.m_arg_type[arg_start + 1] );
-    //
-#ifndef NDEBUG
-    //
-    // adtype
-    adtype_t adtype   = agraph.m_arg_type[arg_start];
-    assert( adtype  == adtype_t::variable );
-    //
-    // n_arg
-    size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
-    assert( n_arg == 2 + n_dim && "sum_op: n_arg != 2 + n_dim" );
-#endif
-    // operand_index, operand_shape
-    size_t           operand_index  = agraph.m_arg_value[arg_start];
+    // operand_shape
     c10::IntArrayRef operand_shape  = var_all[operand_index].sizes();
     //
     // rev_der[operand_index]
-    if( rev_der[op_index].numel() == 1 ) {
+    if( rev_der[op_index].numel() == 1 || keepdim ) {
         if( not_defined(rev_der[operand_index]) ) {
-            TensorType zeros   = TensorType( torch::zeros(operand_shape) );
+            TensorType zeros = TensorType( torch::zeros(operand_shape) );
             rev_der[operand_index] = zeros + rev_der[op_index];
         } else {
             rev_der[operand_index] += rev_der[op_index];
@@ -243,24 +211,24 @@ void sum_op_t<TensorType>::reverse_der(
         assert( n_dim != 0 );
         //
         // dim
-        const size_t* begin = agraph.m_arg_value.data() + arg_start + 2;
+        const size_t* begin = agraph.m_arg_value.data() + arg_start + 3;
         const size_t* end   = begin + n_dim;
         const vector<int64_t> dim(begin, end);
         //
-        // res_shape
+        // res_reshape
         rev_sum_view(
             dim,
             var_all[op_index].sizes(),
             var_all[operand_index].sizes(),
             array
         );
-        c10::IntArrayRef res_shape(array);
+        c10::IntArrayRef res_reshape(array);
         if( not_defined(rev_der[operand_index]) ) {
-            TensorType zeros   = TensorType( torch::zeros(operand_shape) );
+            TensorType zeros = TensorType( torch::zeros(operand_shape) );
             rev_der[operand_index] = zeros + \
-                rev_der[op_index].view(res_shape);
+                rev_der[op_index].view(res_reshape);
         } else {
-            rev_der[operand_index] += rev_der[op_index].view(res_shape);
+            rev_der[operand_index] += rev_der[op_index].view(res_reshape);
         }
     }
 }
@@ -288,7 +256,43 @@ template <> std::string sum_op_t<at::Tensor>::src_gen(
     const agraph_t&                                       agraph          ,
     const std::function< std::string(size_t, adtype_t) >& tensor_src
 ) const {
-    return src_gen_index_array(op_index, op_adtype, agraph, tensor_src);
+    //
+    // arg_start, operand_index, keepdim, n_dim
+    UNPACK
+    EXPECT_ARGUMENTS(adtype_t::none)
+    //
+    // string
+    using std::string;
+    //
+    // openum_src
+    string op_enum_src = to_string( agraph.m_op_seq[op_index] );
+    //
+    // operand_src
+    adtype_t operand_adtype = agraph.m_arg_type[arg_start];
+    string   operand_src    = tensor_src(operand_index, operand_adtype);
+    //
+    // target_src
+    string target_src = tensor_src(op_index, op_adtype);
+    //
+    // src
+    string src = std::format(
+        "{} = {}.{}({{", target_src, operand_src, op_enum_src
+    );
+    for(size_t i = 0; i < n_dim; ++i) {
+        size_t size = agraph.m_arg_value[arg_start + 3 + i];
+        if( i == 0 ) {
+            src += std::format("{}", size);
+        } else {
+            src += std::format(", {}", size);
+        }
+    }
+    if( keepdim ) {
+        src += "}, true);";
+    } else {
+        src += "}, false);";
+    }
+    //
+    return src;
 }
 template <> std::string sum_op_t<adten_t>::src_gen(
     size_t                                                op_index        ,

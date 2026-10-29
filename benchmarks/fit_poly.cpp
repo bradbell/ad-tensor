@@ -156,9 +156,28 @@ namespace {
     }
     const vector<at::Tensor> initial_c = random_c();
     //
+    // initial_autograd
+    vector<at::Tensor> initial_autograd(void) {
+        // c
+        vector<torch::Tensor> c;
+        for(size_t j = 0; j < number_coefficients; ++j) {
+            c.push_back( initial_c[j].clone().set_requires_grad(true) );
+        }
+        //
+        // initial_loss
+        at::Tensor initial_loss = loss(c, grid, data);
+        initial_loss.backward();
+        //
+        // grad
+        vector<at::Tensor> grad;
+        for(size_t j = 0; j < number_coefficients; ++j) {
+            grad.push_back( c[j].grad().clone() );
+        }
+        return grad;
+    }
+    //
     // initial_grad
-    // set by autograd and checked by other cases
-    vector<at::Tensor> initial_grad;
+    vector<at::Tensor> initial_grad = initial_autograd();
 }
 // END_SETUP
 //
@@ -184,13 +203,6 @@ TEST(benchmarks, fit_poly_autograd) {
         // c
         loss_t.backward();
         {   torch::NoGradGuard no_grad;
-            //
-            if( t == 0 ) {
-                // initial_grad
-                for(size_t j = 0; j < number_coefficients; ++j) {
-                    initial_grad.push_back( c[j].grad().clone() );
-                }
-            }
             //
             // c
             for(size_t j = 0; j < number_coefficients; ++j) {

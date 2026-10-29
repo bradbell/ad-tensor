@@ -12,13 +12,19 @@ TEST(tests_adten, sum)  {
     using ad_tensor::adfn_t;
     using ad_tensor::vector;
     //
+    // keepdim
+    bool keepdim = true;
+    //
     // p
     vector<at::Tensor> p;
     p.push_back( torch::tensor( {2.0, 3.0} ) );
     //
     // x
     vector<at::Tensor> x;
-    x.push_back( torch::tensor( { {1.0, 2.0, 3.0}, {4.0, 5.0, 6.0} } ) );
+    x.push_back( torch::tensor( {
+        {1.0, 2.0, 3.0},
+        {4.0, 5.0, 6.0}
+    } ) );
     //
     // ap, ax
     auto [ax, ap] = adten_t::start_recording(x, p);
@@ -31,9 +37,11 @@ TEST(tests_adten, sum)  {
     vector<adten_t> ay;
     ay.push_back(  ap[0].sum() );
     ay.push_back( ax[0].sum(dim) );
+    ay.push_back( ax[0].sum(dim, keepdim) );
     //
     // y = f(x, p)
     adfn_t f = adten_t::stop_recording(ay, "f");
+    f.set_trace(true);
     //
     // par_all, var_all
     vector<at::Tensor> par_all = f.forward_par(p);
@@ -52,7 +60,10 @@ TEST(tests_adten, sum)  {
     //
     // dx
     vector<at::Tensor> dx;
-    dx.push_back(torch::tensor( { {7.0, 8.0, 9.0}, {10.0, 11.0, 12.0} } ));
+    dx.push_back(torch::tensor( {
+        {7.0, 8.0, 9.0},
+        {10.0, 11.0, 12.0}
+    } ));
     //
     // dy
     vector<at::Tensor> dy = f.forward_der(dx, var_all, par_all);
@@ -67,11 +78,28 @@ TEST(tests_adten, sum)  {
     // dy, dx
     dy[0] = torch::tensor( 2.0 );
     dy[1] = torch::tensor( {3.0, 4.0} );
+    dy[2] = ad_tensor::not_defined();
     dx    = f.reverse_der(dy, var_all, par_all);
-    //
     EXPECT_EQ( x.size(), dx.size() );
+    equal = dx[0].equal(torch::tensor( {
+        {3.0, 3.0, 3.0},
+        {4.0, 4.0, 4.0}
+    } ));
+    EXPECT_TRUE( equal );
     //
-    equal = dx[0].equal(torch::tensor( { {3.0, 3.0, 3.0}, {4.0, 4.0, 4.0} } ));
+    // dy, dx
+    dy[0] = torch::tensor( 2.0 );
+    dy[1] = ad_tensor::not_defined();
+    dy[2] = torch::tensor( {
+        {3.0},
+        {4.0}
+    } );
+    dx    = f.reverse_der(dy, var_all, par_all);
+    EXPECT_EQ( x.size(), dx.size() );
+    equal = dx[0].equal(torch::tensor( {
+        {3.0, 3.0, 3.0},
+        {4.0, 4.0, 4.0}
+    } ));
     EXPECT_TRUE( equal );
 }
 // END_CPP

@@ -371,6 +371,7 @@ public:
         const c10::IntArrayRef& dim     = c10::IntArrayRef() ,
         bool                    keepdim = false
     ) const;
+    // END_SUM
     //
     // transpose
     adten_t transpose(int64_t dim1, int64_t dim2) const;
