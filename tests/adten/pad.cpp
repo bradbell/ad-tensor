@@ -147,7 +147,6 @@ TEST(tests_adten, pad_replicate)  {
     //
     // f
     adfn_t f = adten_t::stop_recording(ay, "f");
-    f.set_trace(true);
     //
     // y
     vector<at::Tensor> par_all = f.forward_par(p);
@@ -194,8 +193,6 @@ TEST(tests_adten, pad_replicate)  {
     // ------------------------------------------------------------------------
     // check reverse mode
     // ------------------------------------------------------------------------
-# if 0
-    // TODO: get this case to work
     vector<at::Tensor> py;
     py.push_back( ad_tensor::not_defined() );
     py.push_back( torch::tensor( { {
@@ -213,6 +210,5 @@ TEST(tests_adten, pad_replicate)  {
         {29.0+31.0,      30.0+32.0},
     } } );
     EXPECT_TRUE( px[0].equal( check_px ) );
-# endif
 }
 // END_CPP

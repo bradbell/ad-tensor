@@ -339,6 +339,9 @@ void pad_op_t<TensorType>::reverse_der(
     const size_t* end   = begin + n_sizes;
     vector<int64_t> pad_sizes(begin, end);
     //
+    // keepdim
+    bool keepdim = true;
+    //
     // input_bar
     c10::IntArrayRef output_shape = var_all[op_index].sizes();
     TensorType       input_bar    = rev_der[op_index];
@@ -357,11 +360,11 @@ void pad_op_t<TensorType>::reverse_der(
             TensorType right = left;
             if( 0 < start ) {
                 left = input_bar.slice(dim, 0, start + 1, step);
-                left = left.sum({dim});
+                left = left.sum({dim}, keepdim);
             }
             if( stop < output_shape[dim] ) {
                 right = input_bar.slice(dim, stop-1, output_shape[dim], step);
-                right = right.sum({dim});
+                right = right.sum({dim}, keepdim);
             }
             TensorType temp_bar = input_bar.slice(dim, start+1, stop-1, step);
             input_bar  = ad_tensor::cat( {left, temp_bar, right}, dim);
