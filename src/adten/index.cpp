@@ -106,8 +106,8 @@ namespace ad_tensor { // Begin ad_tensor::dev
 //
 // BEGIN_INDEX  BEGIN_DEV_INDEX
 adten_t adten_t::index(
-        const c10::List< std::optional<at::Tensor> >& index_list
-    ) const
+    const c10::List< std::optional<at::Tensor> >& index_list
+) const
 {   // END_INDEX END_DEV_INDEX
     //
     // before

@@ -117,9 +117,9 @@ namespace ad_tensor { // Begin ad_tensor::dev
 //
 // BEGIN_INDEX_PUT  BEGIN_DEV_INDEX_PUT
 adten_t adten_t::index_put(
-        const c10::List< std::optional<at::Tensor> >& index_list ,
-        const adten_t&                                replace
-    ) const
+    const c10::List< std::optional<at::Tensor> >& index_list ,
+    const adten_t&                                replace
+) const
 {   // END_INDEX_PUT END_DEV_INDEX_PUT
     //
     // before

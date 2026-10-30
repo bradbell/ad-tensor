@@ -19,6 +19,12 @@ namespace ad_tensor { // Begin ad_tensor::dev
 Create a Transpose of an AD Tensor
 ##################################
 
+Syntax
+******
+{xrst_code cpp}
+    atranspose = adten.transpose(dim1, dim1)
+{xrst_code}
+
 Prototype
 *********
 {xrst_literal ,

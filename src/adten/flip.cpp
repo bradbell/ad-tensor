@@ -20,6 +20,12 @@ namespace ad_tensor { // Begin ad_tensor::dev
 The Flip Function
 #################
 
+Syntax
+******
+{xrst_code cpp}
+    aflip = adten.flip(dim)
+{xrst_code}
+
 Prototype
 *********
 {xrst_literal ,

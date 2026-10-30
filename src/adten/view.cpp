@@ -18,6 +18,12 @@
 Create a View of an AD Tensor
 #############################
 
+Syntax
+******
+{xrst_code cpp}
+    aview = adten.view(shape)
+{xrst_code}
+
 Prototype
 *********
 {xrst_literal ,

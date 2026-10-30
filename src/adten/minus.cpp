@@ -19,6 +19,12 @@ namespace ad_tensor { // Begin ad_tensor::dev
 The Unary Minus Operator
 ########################
 
+Syntax
+******
+{xrst_code cpp}
+    aminus = - adten
+{xrst_code}
+
 Prototype
 *********
 {xrst_literal ,
@@ -31,7 +37,7 @@ is the tensor we are negating.
 
 aminus
 ******
-is the negative of the aten.
+is the negative of adten.
 
 Example
 *******
