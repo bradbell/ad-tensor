@@ -4,48 +4,99 @@
 // ----------------------------------------------------------------------------
 // BEGIN_CPP
 #include <gtest/gtest.h>
-#include <ad_tensor/ad_tensor.hpp>
 #include <torch/torch.h>
 //
-TEST(tests_adten, pad_constant)  {
+#include <ad_tensor/dev/pad_enum.hpp>
+#include <ad_tensor/adten.hpp>
+#include <ad_tensor/adfn.hpp>
+#include <ad_tensor/defined.hpp>
+//
+namespace {
+    //
+    // adten_t, adfn_t, vector, pad_enum_t, functional
     using ad_tensor::adten_t;
     using ad_tensor::adfn_t;
     using ad_tensor::vector;
+    using ad_tensor::dev::pad_enum_t;
     namespace functional = torch::nn::functional;
     //
     // p
-    vector<at::Tensor> p;
-    p.push_back( torch::tensor( {
+    vector<at::Tensor> p = { torch::tensor( { {
         {1.0, 2.0, 3.0},
-        {4.0, 5.0, 6.0}
-    } ) );
+        {4.0, 5.0, 6.0},
+    } } ) };
     //
     // v
-    vector<at::Tensor> v;
-    v.push_back( torch::tensor( {
-        {1.0, 2.0},
-        {3.0, 4.0},
-        {5.0, 6.0}
-    } ) );
+    vector<at::Tensor> v = { torch::tensor( { {
+            {1.0, 2.0},
+            {3.0, 4.0},
+            {5.0, 6.0},
+    } } ) };
     //
-    auto options_p = functional::PadFuncOptions( {1, 2, 0, 0} );
-    options_p.mode(torch::kConstant);
-    options_p.value(7.0);
+    // dv
+    vector<at::Tensor> dv = { torch::tensor( { {
+        {11.0, 12.0},
+        {13.0, 14.0},
+        {15.0, 16.0},
+    } } ) };
+    vector<at::Tensor> py = {
+        ad_tensor::not_defined(),
+        torch::tensor( { {
+            {21.0, 22.0},
+            {23.0, 24.0},
+            {25.0, 26.0},
+            {27.0, 28.0},
+            {29.0, 30.0},
+            {31.0, 32.0},
+        } } ),
+    };
     //
-    auto options_v = functional::PadFuncOptions( {0, 0, 2, 1} );
-    options_v.mode(torch::kConstant);
-    options_v.value(7.0);
+    // record_adfn
+    adfn_t record_adfn( pad_enum_t pad_enum ) {
+        //
+        // options_p, options_v, adfn_name
+        std::string adfn_name;
+        auto options_p = functional::PadFuncOptions( {1, 2, 0, 0} );
+        auto options_v = functional::PadFuncOptions( {0, 0, 2, 1} );
+        switch( pad_enum ) {
+            //
+            case pad_enum_t::constant:
+            options_p.mode(torch::kConstant);
+            options_v.mode(torch::kConstant);
+            options_p.value(7.0);
+            options_v.value(7.0);
+            adfn_name = "constant_padding";
+            break;
+            //
+            case pad_enum_t::replicate:
+            options_p.mode(torch::kReplicate);
+            options_v.mode(torch::kReplicate);
+            adfn_name = "replicate_padding";
+            break;
+            //
+            default:
+            assert( false );
+            break;
+        }
+        //
+        // av, ap
+        auto [av, ap] = adten_t::start_recording(v, p);
+        //
+        // ay
+        vector<adten_t> ay;
+        ay.push_back( ad_tensor::pad(ap[0], options_p) );
+        ay.push_back( ad_tensor::pad(av[0], options_v) );
+        //
+        // f
+        adfn_t adfn = adten_t::stop_recording(ay, adfn_name);
+        //
+        return adfn;
+    }
+}
+//
+TEST(tests_adten, pad_constant)  {
     //
-    // av, ap
-    auto [av, ap] = adten_t::start_recording(v, p);
-    //
-    // ay
-    vector<adten_t> ay;
-    ay.push_back( ad_tensor::pad(ap[0], options_p) );
-    ay.push_back( ad_tensor::pad(av[0], options_v) );
-    //
-    // f
-    adfn_t f = adten_t::stop_recording(ay, "f");
+    adfn_t f = record_adfn( pad_enum_t::constant );
     //
     // y
     vector<at::Tensor> par_all = f.forward_par(p);
@@ -54,99 +105,51 @@ TEST(tests_adten, pad_constant)  {
     // ----------------------------------------------------------------------
     // check function values
     // ----------------------------------------------------------------------
-    at::Tensor check_p = torch::tensor( {
+    at::Tensor check_p = torch::tensor( { {
         {7.0, 1.0, 2.0, 3.0, 7.0, 7.0},
         {7.0, 4.0, 5.0, 6.0, 7.0, 7.0}
-    } );
+    } } );
     EXPECT_TRUE( y[0].equal( check_p ) );
     //
     // check y[1]
-    at::Tensor check_v = torch::tensor( {
+    at::Tensor check_v = torch::tensor( { {
         {7.0, 7.0},
         {7.0, 7.0},
         {1.0, 2.0},
         {3.0, 4.0},
         {5.0, 6.0},
         {7.0, 7.0}
-    } );
+    } } );
     EXPECT_TRUE( y[1].equal( check_v ) );
     // ------------------------------------------------------------------------
     // check forward mode
     // ------------------------------------------------------------------------
-    vector<at::Tensor> dv = { torch::tensor( {
-        {11.0, 12.0},
-        {13.0, 14.0},
-        {15.0, 16.0}
-    } ) };
     vector<at::Tensor> dy = f.forward_der(dv, var_all, par_all);
     EXPECT_TRUE( ad_tensor::not_defined( dy[0] ) );
-    at::Tensor check_dy = torch::tensor( {
+    at::Tensor check_dy = torch::tensor( { {
         {0.0, 0.0},
         {0.0, 0.0},
         {11.0, 12.0},
         {13.0, 14.0},
         {15.0, 16.0},
         {0.0, 0.0}
-    } );
+    } } );
     EXPECT_TRUE( dy[1].equal( check_dy ) );
     // ------------------------------------------------------------------------
     // check reverse mode
     // ------------------------------------------------------------------------
-    vector<at::Tensor> py;
-    py.push_back( ad_tensor::not_defined() );
-    py.push_back( torch::tensor( {
-        {21.0, 22.0},
-        {23.0, 24.0},
-        {25.0, 26.0},
-        {27.0, 28.0},
-        {29.0, 30.0},
-        {31.0, 32.0},
-    } ) );
     vector<at::Tensor> px = f.reverse_der(py, var_all, par_all);
-    at::Tensor check_px = torch::tensor( {
+    at::Tensor check_px = torch::tensor( { {
         {25.0, 26.0},
         {27.0, 28.0},
         {29.0, 30.0},
-    } );
+    } } );
     EXPECT_TRUE( px[0].equal( check_px ) );
 }
 TEST(tests_adten, pad_replicate)  {
-    using ad_tensor::adten_t;
-    using ad_tensor::adfn_t;
-    using ad_tensor::vector;
-    namespace functional = torch::nn::functional;
-    //
-    // p
-    vector<at::Tensor> p;
-    p.push_back( torch::tensor( { {
-        {1.0, 2.0, 3.0},
-        {4.0, 5.0, 6.0}
-    } } ) );
-    //
-    // v
-    vector<at::Tensor> v;
-    v.push_back( torch::tensor( { {
-        {1.0, 2.0},
-        {3.0, 4.0},
-        {5.0, 6.0}
-    } } ) );
-    //
-    auto options_p = functional::PadFuncOptions( {1, 2, 0, 0} );
-    options_p.mode(torch::kReplicate);
-    //
-    auto options_v = functional::PadFuncOptions( {0, 0, 2, 1} );
-    options_v.mode(torch::kReplicate);
-    //
-    // av, ap
-    auto [av, ap] = adten_t::start_recording(v, p);
-    //
-    // ay
-    vector<adten_t> ay;
-    ay.push_back( ad_tensor::pad(ap[0], options_p) );
-    ay.push_back( ad_tensor::pad(av[0], options_v) );
     //
     // f
-    adfn_t f = adten_t::stop_recording(ay, "f");
+    adfn_t f = record_adfn( pad_enum_t::replicate );
     //
     // y
     vector<at::Tensor> par_all = f.forward_par(p);
@@ -174,11 +177,6 @@ TEST(tests_adten, pad_replicate)  {
     // ------------------------------------------------------------------------
     // check forward mode
     // ------------------------------------------------------------------------
-    vector<at::Tensor> dv = { torch::tensor( { {
-        {11.0, 12.0},
-        {13.0, 14.0},
-        {15.0, 16.0}
-    } } ) };
     vector<at::Tensor> dy = f.forward_der(dv, var_all, par_all);
     EXPECT_TRUE( ad_tensor::not_defined( dy[0] ) );
     at::Tensor check_dy = torch::tensor( { {
@@ -193,16 +191,6 @@ TEST(tests_adten, pad_replicate)  {
     // ------------------------------------------------------------------------
     // check reverse mode
     // ------------------------------------------------------------------------
-    vector<at::Tensor> py;
-    py.push_back( ad_tensor::not_defined() );
-    py.push_back( torch::tensor( { {
-        {21.0, 22.0},
-        {23.0, 24.0},
-        {25.0, 26.0},
-        {27.0, 28.0},
-        {29.0, 30.0},
-        {31.0, 32.0},
-    } } ) );
     vector<at::Tensor> px = f.reverse_der(py, var_all, par_all);
     at::Tensor check_px = torch::tensor( { {
         {21.0+23.0+25.0, 22.0+24.0+26.0},
