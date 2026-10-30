@@ -22,32 +22,33 @@ namespace {
     //
     // p
     vector<at::Tensor> p = { torch::tensor( { {
-        {1.0, 2.0, 3.0},
-        {4.0, 5.0, 6.0},
+        {9, 8, 7},
+        {6, 5, 4},
+        {3, 2, 1},
     } } ) };
     //
     // v
     vector<at::Tensor> v = { torch::tensor( { {
-            {1.0, 2.0},
-            {3.0, 4.0},
-            {5.0, 6.0},
+        {1, 2, 3},
+        {4, 5, 6},
+        {7, 9, 9},
     } } ) };
     //
     // dv
     vector<at::Tensor> dv = { torch::tensor( { {
-        {11.0, 12.0},
-        {13.0, 14.0},
-        {15.0, 16.0},
+        {11, 12, 13},
+        {14, 15, 16},
+        {17, 18, 19},
     } } ) };
     vector<at::Tensor> py = {
         ad_tensor::not_defined(),
         torch::tensor( { {
-            {21.0, 22.0},
-            {23.0, 24.0},
-            {25.0, 26.0},
-            {27.0, 28.0},
-            {29.0, 30.0},
-            {31.0, 32.0},
+            { 1,  2,  3},
+            { 4,  5,  6},
+            {11, 12, 13},
+            {14, 15, 16},
+            {17, 18, 19},
+            { 7,  8,  9}
         } } ),
     };
     //
@@ -63,8 +64,8 @@ namespace {
             case pad_enum_t::constant:
             options_p.mode(torch::kConstant);
             options_v.mode(torch::kConstant);
-            options_p.value(7.0);
-            options_v.value(7.0);
+            options_p.value(10);
+            options_v.value(10);
             adfn_name = "constant_padding";
             break;
             //
@@ -106,19 +107,20 @@ TEST(tests_adten, pad_constant)  {
     // check function values
     // ----------------------------------------------------------------------
     at::Tensor check_p = torch::tensor( { {
-        {7.0, 1.0, 2.0, 3.0, 7.0, 7.0},
-        {7.0, 4.0, 5.0, 6.0, 7.0, 7.0}
+        {10, 9, 8, 7, 10, 10},
+        {10, 6, 5, 4, 10, 10},
+        {10, 3, 2, 1, 10, 10},
     } } );
     EXPECT_TRUE( y[0].equal( check_p ) );
     //
     // check y[1]
     at::Tensor check_v = torch::tensor( { {
-        {7.0, 7.0},
-        {7.0, 7.0},
-        {1.0, 2.0},
-        {3.0, 4.0},
-        {5.0, 6.0},
-        {7.0, 7.0}
+        {10, 10, 10},
+        {10, 10, 10},
+        { 1,  2,  3},
+        { 4,  5,  6},
+        { 7,  9,  9},
+        {10, 10, 10},
     } } );
     EXPECT_TRUE( y[1].equal( check_v ) );
     // ------------------------------------------------------------------------
@@ -127,12 +129,12 @@ TEST(tests_adten, pad_constant)  {
     vector<at::Tensor> dy = f.forward_der(dv, var_all, par_all);
     EXPECT_TRUE( ad_tensor::not_defined( dy[0] ) );
     at::Tensor check_dy = torch::tensor( { {
-        {0.0, 0.0},
-        {0.0, 0.0},
-        {11.0, 12.0},
-        {13.0, 14.0},
-        {15.0, 16.0},
-        {0.0, 0.0}
+        { 0,  0,  0},
+        { 0,  0,  0},
+        {11, 12, 13},
+        {14, 15, 16},
+        {17, 18, 19},
+        { 0,  0,  0},
     } } );
     EXPECT_TRUE( dy[1].equal( check_dy ) );
     // ------------------------------------------------------------------------
@@ -140,9 +142,9 @@ TEST(tests_adten, pad_constant)  {
     // ------------------------------------------------------------------------
     vector<at::Tensor> px = f.reverse_der(py, var_all, par_all);
     at::Tensor check_px = torch::tensor( { {
-        {25.0, 26.0},
-        {27.0, 28.0},
-        {29.0, 30.0},
+        {11, 12, 13},
+        {14, 15, 16},
+        {17, 18, 19},
     } } );
     EXPECT_TRUE( px[0].equal( check_px ) );
 }
@@ -159,19 +161,20 @@ TEST(tests_adten, pad_replicate)  {
     // check function values
     // ----------------------------------------------------------------------
     at::Tensor check_p = torch::tensor( { {
-        {1.0, 1.0, 2.0, 3.0, 3.0, 3.0},
-        {4.0, 4.0, 5.0, 6.0, 6.0, 6.0}
+        {9, 9, 8, 7, 7, 7},
+        {6, 6, 5, 4, 4, 4},
+        {3, 3, 2, 1, 1, 1},
     } } );
     EXPECT_TRUE( y[0].equal( check_p ) );
     //
     // check y[1]
     at::Tensor check_v = torch::tensor( { {
-        {1.0, 2.0},
-        {1.0, 2.0},
-        {1.0, 2.0},
-        {3.0, 4.0},
-        {5.0, 6.0},
-        {5.0, 6.0}
+        {1, 2, 3},
+        {1, 2, 3},
+        {1, 2, 3},
+        {4, 5, 6},
+        {7, 9, 9},
+        {7, 9, 9},
     } } );
     EXPECT_TRUE( y[1].equal( check_v ) );
     // ------------------------------------------------------------------------
@@ -180,12 +183,12 @@ TEST(tests_adten, pad_replicate)  {
     vector<at::Tensor> dy = f.forward_der(dv, var_all, par_all);
     EXPECT_TRUE( ad_tensor::not_defined( dy[0] ) );
     at::Tensor check_dy = torch::tensor( { {
-        {11.0, 12.0},
-        {11.0, 12.0},
-        {11.0, 12.0},
-        {13.0, 14.0},
-        {15.0, 16.0},
-        {15.0, 16.0}
+        {11, 12, 13},
+        {11, 12, 13},
+        {11, 12, 13},
+        {14, 15, 16},
+        {17, 18, 19},
+        {17, 18, 19},
     } } );
     EXPECT_TRUE( dy[1].equal( check_dy ) );
     // ------------------------------------------------------------------------
@@ -193,9 +196,9 @@ TEST(tests_adten, pad_replicate)  {
     // ------------------------------------------------------------------------
     vector<at::Tensor> px = f.reverse_der(py, var_all, par_all);
     at::Tensor check_px = torch::tensor( { {
-        {21.0+23.0+25.0, 22.0+24.0+26.0},
-        {27.0,           28.0},
-        {29.0+31.0,      30.0+32.0},
+        {11+4+1, 12+5+2, 13+6+3},
+        {    14,     15,     16},
+        {  17+7,   18+8,   19+9},
     } } );
     EXPECT_TRUE( px[0].equal( check_px ) );
 }
