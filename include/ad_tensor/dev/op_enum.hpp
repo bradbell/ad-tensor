@@ -54,7 +54,6 @@ namespace ad_tensor { namespace dev { enum struct op_enum_t
     // BEGIN_INDEX_ARRAY  BEGIN_SORT_THIS_LINE_PLUS_1
     expand,      // expand(shape)
     flip,        // flip(dims)
-    sum,         // sum(dims)
     view,        // view(shape)
     // END_INDEX_ARRAY END_SORT_THIS_LINE_MINUS_1
     //
@@ -85,6 +84,7 @@ namespace ad_tensor { namespace dev { enum struct op_enum_t
     pad,                 // functional padding
     slice,               // slice in one dimension
     solve,               // solve matrix equation
+    sum,                 // summation along specified dimensions
     transpose,           // transpose
     where,               // where function
     // END_OTHER END_SORT_THIS_LINE_MINUS_1
