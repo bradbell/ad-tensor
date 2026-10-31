@@ -59,7 +59,6 @@ add_library(ad_tensor SHARED
     dev/chkpnt.cpp
     dev/derive_op/add_op.cpp
     dev/derive_op/call_op.cpp
-    dev/derive_op/call_result_op.cpp
     dev/derive_op/cat_op.cpp
     dev/derive_op/conv1d_op.cpp
     dev/derive_op/conv_transpose1d_op.cpp
@@ -82,6 +81,7 @@ add_library(ad_tensor SHARED
     dev/derive_op/mul_op.cpp
     dev/derive_op/ne_op.cpp
     dev/derive_op/pad_op.cpp
+    dev/derive_op/result_op.cpp
     dev/derive_op/slice_op.cpp
     dev/derive_op/solve_op.cpp
     dev/derive_op/src_gen_binary.cpp

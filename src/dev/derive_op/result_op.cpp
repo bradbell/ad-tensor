@@ -11,14 +11,14 @@
 namespace ad_tensor { namespace dev { // Begin ad_tensor::dev
 // ------------------------------------------------------------------------
 // forward_par
-template<> void call_result_op_t<adten_t>::forward_par(
+template<> void result_op_t<adten_t>::forward_par(
     size_t                       op_index    ,
     const agraph_t&              agraph      ,
     const vector<at::Tensor>&    con_vec     ,
     vector<adten_t>&             par_all
 ) const {
 }
-template<> void call_result_op_t<at::Tensor>::forward_par(
+template<> void result_op_t<at::Tensor>::forward_par(
     size_t                       op_index    ,
     const agraph_t&              agraph      ,
     const vector<at::Tensor>&    con_vec     ,
@@ -27,7 +27,7 @@ template<> void call_result_op_t<at::Tensor>::forward_par(
 }
 // ------------------------------------------------------------------------
 // forward_var
-template<> void call_result_op_t<adten_t>::forward_var(
+template<> void result_op_t<adten_t>::forward_var(
     size_t                       op_index    ,
     const agraph_t&              agraph      ,
     const vector<at::Tensor>&    con_vec     ,
@@ -35,7 +35,7 @@ template<> void call_result_op_t<adten_t>::forward_var(
     vector<adten_t>&             var_all
 ) const {
 }
-template<> void call_result_op_t<at::Tensor>::forward_var(
+template<> void result_op_t<at::Tensor>::forward_var(
     size_t                       op_index    ,
     const agraph_t&              agraph      ,
     const vector<at::Tensor>&    con_vec     ,
@@ -45,7 +45,7 @@ template<> void call_result_op_t<at::Tensor>::forward_var(
 }
 // ------------------------------------------------------------------------
 // forward_der
-template<> void call_result_op_t<adten_t>::forward_der(
+template<> void result_op_t<adten_t>::forward_der(
     size_t                       op_index    ,
     const agraph_t&              agraph      ,
     const vector<at::Tensor>&    con_vec     ,
@@ -54,7 +54,7 @@ template<> void call_result_op_t<adten_t>::forward_der(
     vector<adten_t>&             for_der
 ) const {
 }
-template<> void call_result_op_t<at::Tensor>::forward_der(
+template<> void result_op_t<at::Tensor>::forward_der(
     size_t                       op_index    ,
     const agraph_t&              agraph      ,
     const vector<at::Tensor>&    con_vec     ,
@@ -65,7 +65,7 @@ template<> void call_result_op_t<at::Tensor>::forward_der(
 }
 // ------------------------------------------------------------------------
 // reverse_der
-template<> void call_result_op_t<adten_t>::reverse_der(
+template<> void result_op_t<adten_t>::reverse_der(
     size_t                       op_index    ,
     const agraph_t&              agraph      ,
     const vector<at::Tensor>&    con_vec     ,
@@ -74,7 +74,7 @@ template<> void call_result_op_t<adten_t>::reverse_der(
     vector<adten_t>&             rev_der
 ) const {
 }
-template<> void call_result_op_t<at::Tensor>::reverse_der(
+template<> void result_op_t<at::Tensor>::reverse_der(
     size_t                       op_index    ,
     const agraph_t&              agraph      ,
     const vector<at::Tensor>&    con_vec     ,
@@ -85,7 +85,7 @@ template<> void call_result_op_t<at::Tensor>::reverse_der(
 }
 // ---------------------------------------------------------------------------
 // src_gen
-template <> std::string call_result_op_t<at::Tensor>::src_gen(
+template <> std::string result_op_t<at::Tensor>::src_gen(
     size_t                                                op_index        ,
     adtype_t                                              op_adtype       ,
     const agraph_t&                                       agraph          ,
@@ -94,7 +94,7 @@ template <> std::string call_result_op_t<at::Tensor>::src_gen(
     // call_op generates results for this operator
     return "";
 }
-template <> std::string call_result_op_t<adten_t>::src_gen(
+template <> std::string result_op_t<adten_t>::src_gen(
     size_t                                                op_index        ,
     adtype_t                                              op_adtype       ,
     const agraph_t&                                       agraph          ,

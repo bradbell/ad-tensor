@@ -12,7 +12,6 @@ const base_op_t<TensorType>& enum2derive(op_enum_t op_enum) {
     // BEGIN_SORT_THIS_LINE_PLUS_1
     static const add_op_t<TensorType>                 add_op;
     static const call_op_t<TensorType>                call_op;
-    static const call_result_op_t<TensorType>         call_result_op;
     static const cat_op_t<TensorType>                 cat_op;
     static const conv1d_op_t<TensorType>              conv1d_op;
     static const conv_transpose1d_op_t<TensorType>    conv_transpose1d;
@@ -35,6 +34,7 @@ const base_op_t<TensorType>& enum2derive(op_enum_t op_enum) {
     static const mul_op_t<TensorType>                 mul_op;
     static const ne_op_t<TensorType>                  ne_op;
     static const pad_op_t<TensorType>                 pad_op;
+    static const result_op_t<TensorType>              result_op;
     static const slice_op_t<TensorType>               slice_op;
     static const solve_op_t<TensorType>               solve_op;
     static const sub_op_t<TensorType>                 sub_op;
@@ -48,7 +48,7 @@ const base_op_t<TensorType>& enum2derive(op_enum_t op_enum) {
         // BEGIN_SORT_THIS_LINE_PLUS_1
         case op_enum_t::add:                 return add_op;
         case op_enum_t::call:                return call_op;
-        case op_enum_t::call_result:         return call_result_op;
+        case op_enum_t::call_result:         return result_op;
         case op_enum_t::cat:                 return cat_op;
         case op_enum_t::conv1d:              return conv1d_op;
         case op_enum_t::conv_transpose1d:    return conv_transpose1d;
