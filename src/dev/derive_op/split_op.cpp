@@ -15,8 +15,8 @@
 #define UNPACK \
     size_t    arg_start     = agraph.m_arg_start[op_index]; \
     size_t    operand_index = agraph.m_arg_value[arg_start]; \
-    bool      keepdim       = agraph.m_arg_value[arg_start + 1]; \
-    size_t    n_dim         = agraph.m_arg_value[arg_start + 2];
+    size_t    dim           = agraph.m_arg_value[arg_start + 1]; \
+    size_t    n_split       = agraph.m_arg_value[arg_start + 2];
 //
 // EXPECT_ARGUMENTS(operand_adtype)
 #if NDEBUG
@@ -24,7 +24,7 @@
 #else
 #define EXPECT_ARGUMENTS(operand_adtype) \
     size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start; \
-    assert( n_arg == 3 + n_dim && "split_op: n_arg != 3 + n_dim" ); \
+    assert( n_arg == 3 + n_split && "split_op: n_arg != 3 + n_split" ); \
     if( operand_adtype == adtype_t::none ) { \
         assert(  \
             agraph.m_arg_type[arg_start] == adtype_t::parameter || \
@@ -47,23 +47,19 @@ void split_op_t<TensorType>::forward_par(
     vector<TensorType>&          par_all
 ) const {
     //
-    // arg_start, operand_index, keepdim, n_dim
+    // arg_start, operand_index, dim, n_split
     UNPACK
     EXPECT_ARGUMENTS( adtype_t::parameter );
     //
-    if( n_dim == 0 ) {
-        // par_all
-        auto dim          = c10::IntArrayRef();
-        par_all[op_index] = par_all[operand_index].sum(dim, keepdim);
-    } else {
-        //
-        // dim
-        const size_t* begin = agraph.m_arg_value.data() + arg_start + 3;
-        const size_t* end   = begin + n_dim;
-        const vector<int64_t> dim(begin, end);
-        //
-        // par_all
-        par_all[op_index] = par_all[operand_index].sum(dim, keepdim);
+    // split_size
+    const size_t* begin = agraph.m_arg_value.data() + arg_start + 3;
+    const size_t* end   = begin + n_split;
+    const vector<int64_t> split_size(begin, end);
+    //
+    // var_all
+    vector<TensorType> vec = par_all[operand_index].split(split_size, dim);
+    for(size_t i = 0; i < n_split; ++i) {
+        par_all[op_index + i] = std::move( vec[i] );
     }
 }
 template void split_op_t<at::Tensor>::forward_par(
@@ -89,23 +85,19 @@ void split_op_t<TensorType>::forward_var(
     vector<TensorType>&          var_all
 ) const {
     //
-    // arg_start, operand_index, keepdim, n_dim
+    // arg_start, operand_index, dim, n_split
     UNPACK
     EXPECT_ARGUMENTS( adtype_t::variable );
     //
-    if( n_dim == 0 ) {
-        // var_all
-        auto dim          = c10::IntArrayRef();
-        var_all[op_index] = var_all[operand_index].sum(dim, keepdim);
-    } else {
-        //
-        // dim
-        const size_t* begin = agraph.m_arg_value.data() + arg_start + 3;
-        const size_t* end   = begin + n_dim;
-        const vector<int64_t> dim(begin, end);
-        //
-        // var_all
-        var_all[op_index] = var_all[operand_index].sum(dim, keepdim);
+    // split_size
+    const size_t* begin = agraph.m_arg_value.data() + arg_start + 3;
+    const size_t* end   = begin + n_split;
+    const vector<int64_t> split_size(begin, end);
+    //
+    // var_all
+    vector<TensorType> vec = var_all[operand_index].split(split_size, dim);
+    for(size_t i = 0; i < n_split; ++i) {
+        var_all[op_index + i] = std::move( vec[i] );
     }
 }
 template void split_op_t<at::Tensor>::forward_var(
@@ -133,6 +125,7 @@ void split_op_t<TensorType>::forward_der(
     const vector<TensorType>&    var_all     ,
     vector<TensorType>&          for_der
 ) const {
+# if 0
     //
     // arg_start, operand_index, keepdim, n_dim
     UNPACK
@@ -156,6 +149,7 @@ void split_op_t<TensorType>::forward_der(
         // for_der
         for_der[op_index] = for_der[operand_index].sum(dim, keepdim);
     }
+# endif
 }
 template void split_op_t<at::Tensor>::forward_der(
     size_t                       op_index    ,
@@ -184,6 +178,7 @@ void split_op_t<TensorType>::reverse_der(
     const vector<TensorType>&    var_all     ,
     vector<TensorType>&          rev_der
 ) const {
+#if 0
     //
     // array
     thread_local vector<int64_t> array;
@@ -231,6 +226,7 @@ void split_op_t<TensorType>::reverse_der(
             rev_der[operand_index] += rev_der[op_index].view(res_reshape);
         }
     }
+#endif
 }
 template void split_op_t<at::Tensor>::reverse_der(
     size_t                       op_index    ,
@@ -256,6 +252,7 @@ template <> std::string split_op_t<at::Tensor>::src_gen(
     const agraph_t&                                       agraph          ,
     const std::function< std::string(size_t, adtype_t) >& tensor_src
 ) const {
+#if 0
     //
     // arg_start, operand_index, keepdim, n_dim
     UNPACK
@@ -292,7 +289,8 @@ template <> std::string split_op_t<at::Tensor>::src_gen(
         src += "}, false);";
     }
     //
-    return src;
+#endif
+    return "";
 }
 template <> std::string split_op_t<adten_t>::src_gen(
     size_t                                                op_index        ,

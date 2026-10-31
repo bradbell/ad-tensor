@@ -73,8 +73,6 @@ namespace ad_tensor {
         // BEGIN_CTOR_FROM_STD_VECTOR
         vector(std::vector<T>&& vec) : std::vector<T>( std::move(vec) )
         { }
-        vector(const std::vector<T>& vec) : std::vector<T>(vec)
-        { }
         // END_CTOR_FROM_STD_VECTOR
         //
         // assignments

@@ -8,48 +8,53 @@
 #include <torch/torch.h>
 //
 TEST(examples_adten, split)  {
-#if 0
     using ad_tensor::adten_t;
     using ad_tensor::adfn_t;
     using ad_tensor::vector;
     //
-    // p
-    vector<at::Tensor> p;
-    p.push_back( torch::tensor( {2.0, 3.0} ) );
-    //
     // x
-    vector<at::Tensor> x;
-    x.push_back( torch::tensor( { {1.0, 2.0, 3.0}, {4.0, 5.0, 6.0} } ) );
+    vector<at::Tensor> x = { torch::tensor( {
+        {1, 2, 3,  4,  5,  6},
+        {7, 8, 9, 10, 11, 12},
+    } ) };
     //
     // ap, ax
-    auto [ax, ap] = adten_t::start_recording(x, p);
+    vector<adten_t> ax = adten_t::start_recording(x);
     //
-    // dim
-    vector<int64_t> dim_array( { 1 } );
-    c10::IntArrayRef dim(dim_array);
+    // split_size, dim
+    vector<int64_t> split_size( {1, 2, 3} );
+    int64_t         dim = 1;
     //
     // ay
-    vector<adten_t> ay;
-    ay.push_back(  ap[0].split() );
-    ay.push_back( ax[0].split(dim) );
+    vector<adten_t> ay = ax[0].split(split_size, dim);
     //
     // y = f(x, p)
     adfn_t f = adten_t::stop_recording(ay, "f");
     //
     // par_all, var_all
-    vector<at::Tensor> par_all = f.forward_par(p);
-    vector<at::Tensor> var_all = f.forward_var(x, par_all);
+    vector<at::Tensor> var_all = f.forward_var(x);
     //
     // y
-    vector<at::Tensor> y = f.get_range(var_all, par_all);
+    vector<at::Tensor> y = f.get_range(var_all);
     //
-    EXPECT_EQ( y.size(), ay.size() );
+    EXPECT_EQ( y.size(), split_size.size() );
     //
-    bool equal = y[0].equal( p[0].split() );
+    bool equal = y[0].equal( torch::tensor( {
+        {1},
+        {7},
+    } ) );
     EXPECT_TRUE( equal );
     //
-    equal = y[1].equal( x[0].split(dim) );
+    equal = y[1].equal( torch::tensor( {
+        {2, 3},
+        {8, 9},
+    } ) );
     EXPECT_TRUE( equal );
-#endif
+    //
+    equal = y[2].equal( torch::tensor( {
+        { 4,  5,  6},
+        {10, 11, 12},
+    } ) );
+    EXPECT_TRUE( equal );
 }
 // END_CPP

@@ -88,10 +88,10 @@ the following is added to the parameter (variable) acyclic graph:
     arg_index, arg_value,                                     arg_type
     start + 0, index for operand,                             operand type
     start + 1, dim,                                           none
-    start + 1, number of split sizes (n_split),               none
-    start + 2, size of first piece in dim direction,          none
+    start + 2, number of split sizes (n_split),               none
+    start + 3, size of first piece in dim direction,          none
     ..., ..., ...
-    start + n_split + 1, size of last piece in dim direction, none
+    start + n_split + 2, size of last piece in dim direction, none
 
 where start is the length of arg_value and arg_type before this call to
 ``adten_t::binary`` .
