@@ -46,6 +46,7 @@ add_library(ad_tensor SHARED
     adten/recording.cpp
     adten/slice.cpp
     adten/solve.cpp
+    adten/split.cpp
     adten/sum.cpp
     adten/transpose.cpp
     adten/unary.cpp
@@ -84,6 +85,7 @@ add_library(ad_tensor SHARED
     dev/derive_op/result_op.cpp
     dev/derive_op/slice_op.cpp
     dev/derive_op/solve_op.cpp
+    dev/derive_op/split_op.cpp
     dev/derive_op/src_gen_binary.cpp
     dev/derive_op/src_gen_index.cpp
     dev/derive_op/src_gen_unary.cpp

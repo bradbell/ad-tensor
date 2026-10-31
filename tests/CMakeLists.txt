@@ -31,6 +31,7 @@ add_executable(tests
     adten/pad.cpp
     adten/slice.cpp
     adten/solve.cpp
+    adten/split.cpp
     adten/sum.cpp
     adten/transpose.cpp
     adten/view.cpp

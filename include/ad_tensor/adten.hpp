@@ -68,6 +68,7 @@ Other Member Functions
     src/adten/recording.cpp
     src/adten/slice.cpp
     src/adten/solve.cpp
+    src/adten/split.cpp
     src/adten/sum.cpp
     src/adten/transpose.cpp
     src/adten/unary.cpp
@@ -126,6 +127,7 @@ The adten_t Class Developer Documentation
     src/adten/pad.cpp
     src/adten/slice.cpp
     src/adten/solve.cpp
+    src/adten/split.cpp
     src/adten/sum.cpp
     src/adten/transpose.cpp
     src/adten/unary.cpp
@@ -365,6 +367,13 @@ public:
     //
     // pad
     adten_t pad(const torch::nn::functional::PadFuncOptions& options) const;
+    //
+    // BEGIN_SPLIT
+    vector<adten_t> split(
+        const c10::IntArrayRef& split_size,
+        int64_t                 dim = 0
+    ) const;
+    // END_SPLIT
     //
     // BEGIN_SUM
     adten_t sum(

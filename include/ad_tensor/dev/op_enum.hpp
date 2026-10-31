@@ -84,7 +84,9 @@ namespace ad_tensor { namespace dev { enum struct op_enum_t
     pad,                 // functional padding
     slice,               // slice in one dimension
     solve,               // solve matrix equation
-    sum,                 // summation along specified dimensions
+    split,               // split along a dimension
+    split_result,        // place holder when more than one result for a split
+    sum,                 // summation along a dimension
     transpose,           // transpose
     where,               // where function
     // END_OTHER END_SORT_THIS_LINE_MINUS_1

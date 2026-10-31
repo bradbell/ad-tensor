@@ -120,6 +120,7 @@ namespace ad_tensor { namespace dev {
     AD_TENSOR_DERIVE_OP(result_op)
     AD_TENSOR_DERIVE_OP(slice_op)
     AD_TENSOR_DERIVE_OP(solve_op)
+    AD_TENSOR_DERIVE_OP(split_op)
     AD_TENSOR_DERIVE_OP(sub_op)
     AD_TENSOR_DERIVE_OP(sum_op)
     AD_TENSOR_DERIVE_OP(transpose_op)

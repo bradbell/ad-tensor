@@ -25,6 +25,12 @@ Prototype
     BEGIN_BOTTOM, END_BOTTOM
 }
 
+Constructor From Standard Vector
+********************************
+{xrst_literal ,
+    BEGIN_CTOR_FROM_STD_VECTOR, END_CTOR_FROM_STD_VECTOR
+}
+
 {xrst_end vector}
 */
 // BEGIN_TOP
@@ -63,6 +69,13 @@ namespace ad_tensor {
         vector(std::initializer_list<T> init)
         : std::vector<T>(init)
         { }
+        //
+        // BEGIN_CTOR_FROM_STD_VECTOR
+        vector(std::vector<T>&& vec) : std::vector<T>( std::move(vec) )
+        { }
+        vector(const std::vector<T>& vec) : std::vector<T>(vec)
+        { }
+        // END_CTOR_FROM_STD_VECTOR
         //
         // assignments
         vector& operator=(const vector& other) {
