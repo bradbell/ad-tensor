@@ -30,6 +30,8 @@ Check for a Defined tensor
 
 {xrst_end defined}
 */
+#include <torch/torch.h>
+//
 namespace ad_tensor {
     //
     // BEGIN_UNDEFINED

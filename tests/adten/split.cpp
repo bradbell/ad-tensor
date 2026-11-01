@@ -3,11 +3,11 @@
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
 // BEGIN_CPP
-#include <gtest/gtest.h>
+#include <ad_tensor/defined.hpp>
 #include <ad_tensor/adten.hpp>
 #include <ad_tensor/adfn.hpp>
-#include <ad_tensor/defined.hpp>
 #include <torch/torch.h>
+#include <gtest/gtest.h>
 //
 TEST(tests_adten, split)  {
     using ad_tensor::adten_t;
