@@ -168,55 +168,19 @@ void split_op_t<TensorType>::reverse_der(
     const vector<TensorType>&    var_all     ,
     vector<TensorType>&          rev_der
 ) const {
-#if 0
     //
-    // array
-    thread_local vector<int64_t> array;
-    //
-    // arg_start, operand_index, keepdim, n_dim
+    // arg_start, operand_index, dim, n_split
     UNPACK
     EXPECT_ARGUMENTS( adtype_t::variable );
     //
-    if( not_defined(rev_der[op_index]) ) {
-        return;
+    // tensor_list
+    vector<TensorType> tensor_list;
+    for(size_t i = 0; i < n_split; ++i) {
+        tensor_list.push_back( rev_der[op_index + i] );
     }
-    //
-    // operand_shape
-    c10::IntArrayRef operand_shape  = var_all[operand_index].sizes();
     //
     // rev_der[operand_index]
-    if( rev_der[op_index].numel() == 1 || keepdim ) {
-        if( not_defined(rev_der[operand_index]) ) {
-            TensorType zeros = TensorType( torch::zeros(operand_shape) );
-            rev_der[operand_index] = zeros + rev_der[op_index];
-        } else {
-            rev_der[operand_index] += rev_der[op_index];
-        }
-    } else {
-        assert( n_dim != 0 );
-        //
-        // dim
-        const size_t* begin = agraph.m_arg_value.data() + arg_start + 3;
-        const size_t* end   = begin + n_dim;
-        const vector<int64_t> dim(begin, end);
-        //
-        // res_reshape
-        rev_sum_view(
-            dim,
-            var_all[op_index].sizes(),
-            var_all[operand_index].sizes(),
-            array
-        );
-        c10::IntArrayRef res_reshape(array);
-        if( not_defined(rev_der[operand_index]) ) {
-            TensorType zeros = TensorType( torch::zeros(operand_shape) );
-            rev_der[operand_index] = zeros + \
-                rev_der[op_index].view(res_reshape);
-        } else {
-            rev_der[operand_index] += rev_der[op_index].view(res_reshape);
-        }
-    }
-#endif
+    rev_der[operand_index] = ad_tensor::cat(tensor_list, dim);
 }
 template void split_op_t<at::Tensor>::reverse_der(
     size_t                       op_index    ,

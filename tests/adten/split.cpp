@@ -83,7 +83,6 @@ TEST(tests_adten, split)  {
     // check forward_der
     // ----------------------------------------------------------------------
     // dx
-    // x
     vector<at::Tensor> dx = { - x[0] };
     //
     // dy
@@ -94,5 +93,15 @@ TEST(tests_adten, split)  {
     for(size_t i = 0; i < n_split; ++i) {
         EXPECT_TRUE( not_defined( dy[n_split + i] ) );
     }
+    // ----------------------------------------------------------------------
+    // check reverse_der
+    // ----------------------------------------------------------------------
+    // py, px
+    vector<at::Tensor> py = {
+        - y[0], -y[1], -y[2], not_defined(), not_defined(), not_defined()
+    };
+    vector<at::Tensor> px = f.reverse_der(py, var_all, par_all);
+    //
+    EXPECT_TRUE( px[0].equal( - x[0] ) );
 }
 // END_CPP
