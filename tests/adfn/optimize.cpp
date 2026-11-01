@@ -6,6 +6,53 @@
 #include <ad_tensor/ad_tensor.hpp>
 #include <ad_tensor/defined.hpp>
 //
+TEST(tests_adfn, optimize_split) {
+    using ad_tensor::adten_t;
+    using ad_tensor::adfn_t;
+    using at::Tensor;
+    using ad_tensor::vector;
+    //
+    // p
+    vector<Tensor> p;
+    p.push_back( torch::arange(3) );
+    //
+    // v
+    vector<Tensor> v;
+    v.push_back( - p[0] );
+    //
+    // ap, av
+    auto [av, ap] = adten_t::start_recording(v, p);
+    //
+    // not_used_split, used_split, repeat_split
+    vector<adten_t> not_used_split = ap[0].split( {1, 2} );
+    vector<adten_t> used_split     = av[0].split( {1, 2} );
+    vector<adten_t> repeat_split   = av[0].split( {1, 2} );
+    //
+    vector<adten_t> ar;
+    ar.push_back( used_split[1] );
+    ar.push_back( repeat_split[1] );
+    //
+    // r = f(v, p)
+    adfn_t f = adten_t::stop_recording(ar, "f");
+    EXPECT_EQ( f.n_par(), 3 );
+    EXPECT_EQ( f.n_var(), 5 );
+    //
+    // f
+    f.optimize();
+    EXPECT_EQ( f.n_par(), 1 );
+    EXPECT_EQ( f.n_var(), 3 );
+    //
+    vector<Tensor> p_all = f.forward_par(p);
+    vector<Tensor> v_all = f.forward_var(v, p_all);
+    vector<Tensor> range = f.get_range(v_all, p_all);
+    //
+    bool equal = range[0].equal( torch::tensor( {-1, -2} ) );
+    EXPECT_TRUE( equal );
+    //
+    equal = range[1].equal( torch::tensor( {-1, -2} ) );
+    EXPECT_TRUE( equal );
+}
+//
 // BEGIN_ADFN_OPTIMIZE_CON
 TEST(tests_adfn, optimize_con) {
     using ad_tensor::adten_t;

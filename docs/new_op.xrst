@@ -12,6 +12,7 @@
     enum
     der
     agraph
+    rng
 }
 
 Implementation of a New Operator Using new_other.sh
@@ -224,5 +225,21 @@ Test and Commit src_gen.cpp
 ===========================
 Run ``check_all.sh`` (not ``check_all.sh --no_plugin``)
 to check that the modified example compiles, runs, and passes it tests.
+
+Step 6: If NEW has Multiple Results
+***********************************
+
+#.  If the NEW operator has one AD Tensor arguments and
+    multiple AD Tensor results, change the code for the split operator in
+    src/dev/optimize/rng_depend.cpp so it also works for the NEW operator.
+
+#.  If it has multiple AD Tensor arguments and multiple results,
+    use the code that is call operator specific in src/dev/optimize/\*.cpp
+    to figure out how you need to change the optimizer
+    so it works with the NEW operator.
+
+#.  Add a test called tests_adfn.optimize_NEW, in tests/adfn/optimize.cpp,
+    which tests optimization of the new operator.
+    Use the test tests_adfn.optimize_split as an example.
 
 {xrst_end new_op}
