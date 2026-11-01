@@ -159,6 +159,11 @@ TEST(tests_adfn, src_gen)  {
     ar.push_back( ay[0] );
     ar.push_back( ay[1] );
     //
+    // split
+    vector<adten_t> ad_split = av[2].split( {2, 3} );
+    ar.push_back( ad_split[0] );
+    ar.push_back( ad_split[1] );
+    //
     // cat
     ar.push_back( ad_tensor::cat( { av[0], ap[0] }, 1) );
     //
@@ -224,6 +229,11 @@ TEST(tests_adfn, src_gen)  {
     // call
     EXPECT_TRUE( r[i++].equal( v[2] + p[2] ) );
     EXPECT_TRUE( r[i++].equal( v[2] * p[2] ) );
+    //
+    // split
+    vector<at::Tensor> at_split = v[2].split( {2, 3} );
+    EXPECT_TRUE( r[i++].equal( at_split[0] ) );
+    EXPECT_TRUE( r[i++].equal( at_split[1] ) );
     //
     // cat
     EXPECT_TRUE( r[i++].equal( ad_tensor::cat( { v[0], p[0] }, 1 ) ) );

@@ -206,9 +206,8 @@ template <> std::string split_op_t<at::Tensor>::src_gen(
     const agraph_t&                                       agraph          ,
     const std::function< std::string(size_t, adtype_t) >& tensor_src
 ) const {
-#if 0
     //
-    // arg_start, operand_index, keepdim, n_dim
+    // arg_start, operand_index, dim, n_split
     UNPACK
     EXPECT_ARGUMENTS(adtype_t::none)
     //
@@ -222,14 +221,10 @@ template <> std::string split_op_t<at::Tensor>::src_gen(
     adtype_t operand_adtype = agraph.m_arg_type[arg_start];
     string   operand_src    = tensor_src(operand_index, operand_adtype);
     //
-    // target_src
-    string target_src = tensor_src(op_index, op_adtype);
-    //
     // src
-    string src = std::format(
-        "{} = {}.{}({{", target_src, operand_src, op_enum_src
-    );
-    for(size_t i = 0; i < n_dim; ++i) {
+    constexpr const char* fmt = "{{   vector<Tensor> at_split = {}.split({{";
+    string src = std::format(fmt, operand_src);
+    for(size_t i = 0; i < n_split; ++i) {
         size_t size = agraph.m_arg_value[arg_start + 3 + i];
         if( i == 0 ) {
             src += std::format("{}", size);
@@ -237,14 +232,14 @@ template <> std::string split_op_t<at::Tensor>::src_gen(
             src += std::format(", {}", size);
         }
     }
-    if( keepdim ) {
-        src += "}, true);";
-    } else {
-        src += "}, false);";
+    src += std::format("}}, {});\n", dim);
+    for(size_t i = 0; i < n_split; ++i) {
+        string ten_src     = tensor_src(op_index + i, operand_adtype);
+        src += std::format("    {} = at_split[{}];\n", ten_src, i);
     }
+    src += "}";
     //
-#endif
-    return "";
+    return src;
 }
 template <> std::string split_op_t<adten_t>::src_gen(
     size_t                                                op_index        ,
