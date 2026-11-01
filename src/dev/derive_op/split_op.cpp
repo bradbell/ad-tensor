@@ -125,31 +125,21 @@ void split_op_t<TensorType>::forward_der(
     const vector<TensorType>&    var_all     ,
     vector<TensorType>&          for_der
 ) const {
-# if 0
     //
-    // arg_start, operand_index, keepdim, n_dim
+    // arg_start, operand_index, dim, n_split
     UNPACK
     EXPECT_ARGUMENTS( adtype_t::variable );
     //
-    if( not_defined(for_der[operand_index]) ) {
-        return;
-    }
+    // split_size
+    const size_t* begin = agraph.m_arg_value.data() + arg_start + 3;
+    const size_t* end   = begin + n_split;
+    const vector<int64_t> split_size(begin, end);
     //
-    if( n_dim == 0 ) {
-        // for_der
-        auto dim          = c10::IntArrayRef();
-        for_der[op_index] = for_der[operand_index].sum(dim, keepdim);
-    } else {
-        //
-        // dim
-        const size_t* begin = agraph.m_arg_value.data() + arg_start + 3;
-        const size_t* end   = begin + n_dim;
-        const vector<int64_t> dim(begin, end);
-        //
-        // for_der
-        for_der[op_index] = for_der[operand_index].sum(dim, keepdim);
+    // var_all
+    vector<TensorType> vec = for_der[operand_index].split(split_size, dim);
+    for(size_t i = 0; i < n_split; ++i) {
+        for_der[op_index + i] = std::move( vec[i] );
     }
-# endif
 }
 template void split_op_t<at::Tensor>::forward_der(
     size_t                       op_index    ,

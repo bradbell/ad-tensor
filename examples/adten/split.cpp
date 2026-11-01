@@ -18,7 +18,7 @@ TEST(examples_adten, split)  {
         {7, 8, 9, 10, 11, 12},
     } ) };
     //
-    // ap, ax
+    // ax
     vector<adten_t> ax = adten_t::start_recording(x);
     //
     // split_size, dim

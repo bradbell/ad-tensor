@@ -26,7 +26,7 @@ TEST(tests_adten, sum)  {
         {4.0, 5.0, 6.0}
     } ) );
     //
-    // ap, ax
+    // ax, ap
     auto [ax, ap] = adten_t::start_recording(x, p);
     //
     // dim
@@ -41,7 +41,6 @@ TEST(tests_adten, sum)  {
     //
     // y = f(x, p)
     adfn_t f = adten_t::stop_recording(ay, "f");
-    f.set_trace(true);
     //
     // par_all, var_all
     vector<at::Tensor> par_all = f.forward_par(p);

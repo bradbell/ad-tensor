@@ -4,104 +4,95 @@
 // ----------------------------------------------------------------------------
 // BEGIN_CPP
 #include <gtest/gtest.h>
-#include <ad_tensor/ad_tensor.hpp>
+#include <ad_tensor/adten.hpp>
+#include <ad_tensor/adfn.hpp>
+#include <ad_tensor/defined.hpp>
 #include <torch/torch.h>
 //
 TEST(tests_adten, split)  {
-#if 0
     using ad_tensor::adten_t;
     using ad_tensor::adfn_t;
     using ad_tensor::vector;
+    using ad_tensor::not_defined;
     //
-    // keepdim
-    bool keepdim = true;
+    // split_size, n_split, dim
+    vector<int64_t> split_size( {1, 2, 3} );
+    size_t          n_split = split_size.size();
+    int64_t         dim = 1;
     //
     // p
-    vector<at::Tensor> p;
-    p.push_back( torch::tensor( {2.0, 3.0} ) );
+    vector<at::Tensor> p = { torch::tensor( {
+        {1, 2, 3,  4,  5,  6},
+        {7, 8, 9, 10, 11, 12},
+    } ) };
     //
     // x
-    vector<at::Tensor> x;
-    x.push_back( torch::tensor( {
-        {1.0, 2.0, 3.0},
-        {4.0, 5.0, 6.0}
-    } ) );
+    vector<at::Tensor> x = { torch::tensor( {
+        {1, 2, 3,  4,  5,  6},
+        {7, 8, 9, 10, 11, 12},
+    } ) };
     //
     // ap, ax
     auto [ax, ap] = adten_t::start_recording(x, p);
     //
-    // dim
-    vector<int64_t> dim_array( { 1 } );
-    c10::IntArrayRef dim(dim_array);
-    //
     // ay
+    vector<adten_t> ap_split = ap[0].split(split_size, dim);
+    vector<adten_t> ax_split = ax[0].split(split_size, dim);
     vector<adten_t> ay;
-    ay.push_back(  ap[0].split() );
-    ay.push_back( ax[0].split(dim) );
-    ay.push_back( ax[0].split(dim, keepdim) );
+    for(size_t i = 0; i < n_split; ++i) {
+        ay.push_back( ax_split[i] );
+    }
+    for(size_t i = 0; i < n_split; ++i) {
+        ay.push_back( ap_split[i] );
+    }
     //
     // y = f(x, p)
     adfn_t f = adten_t::stop_recording(ay, "f");
-    f.set_trace(true);
     //
     // par_all, var_all
-    vector<at::Tensor> par_all = f.forward_par(p);
+    vector<at::Tensor> par_all = f.forward_var(p);
     vector<at::Tensor> var_all = f.forward_var(x, par_all);
+    // ---------------------------------------------------------------------
+    // check function value
+    // ---------------------------------------------------------------------
     //
     // y
     vector<at::Tensor> y = f.get_range(var_all, par_all);
     //
-    EXPECT_EQ( y.size(), ay.size() );
+    EXPECT_EQ( y.size(), 2 * n_split );
     //
-    bool equal = y[0].equal( p[0].split() );
-    EXPECT_TRUE( equal );
+    EXPECT_TRUE( y[0].equal( torch::tensor( {
+        {1},
+        {7},
+    } ) ) );
     //
-    equal = y[1].equal( x[0].split(dim) );
-    EXPECT_TRUE( equal );
+    EXPECT_TRUE(y[1].equal( torch::tensor( {
+        {2, 3},
+        {8, 9},
+    } ) ) );
     //
+    EXPECT_TRUE( y[2].equal( torch::tensor( {
+        { 4,  5,  6},
+        {10, 11, 12},
+    } ) ) );
+    //
+    for(size_t i = 0; i < n_split; ++i) {
+        EXPECT_TRUE( y[n_split + i].equal( y[i] ) );
+    }
+    // ----------------------------------------------------------------------
+    // check forward_der
+    // ----------------------------------------------------------------------
     // dx
-    vector<at::Tensor> dx;
-    dx.push_back(torch::tensor( {
-        {7.0, 8.0, 9.0},
-        {10.0, 11.0, 12.0}
-    } ));
+    // x
+    vector<at::Tensor> dx = { - x[0] };
     //
     // dy
     vector<at::Tensor> dy = f.forward_der(dx, var_all, par_all);
-    //
-    EXPECT_EQ( dy.size(), y.size() );
-    //
-    EXPECT_EQ( dy[0].numel(), 0);
-    //
-    equal = dy[1].equal( dx[0].split(dim) );
-    EXPECT_TRUE( equal );
-    //
-    // dy, dx
-    dy[0] = torch::tensor( 2.0 );
-    dy[1] = torch::tensor( {3.0, 4.0} );
-    dy[2] = ad_tensor::not_defined();
-    dx    = f.reverse_der(dy, var_all, par_all);
-    EXPECT_EQ( x.size(), dx.size() );
-    equal = dx[0].equal(torch::tensor( {
-        {3.0, 3.0, 3.0},
-        {4.0, 4.0, 4.0}
-    } ));
-    EXPECT_TRUE( equal );
-    //
-    // dy, dx
-    dy[0] = torch::tensor( 2.0 );
-    dy[1] = ad_tensor::not_defined();
-    dy[2] = torch::tensor( {
-        {3.0},
-        {4.0}
-    } );
-    dx    = f.reverse_der(dy, var_all, par_all);
-    EXPECT_EQ( x.size(), dx.size() );
-    equal = dx[0].equal(torch::tensor( {
-        {3.0, 3.0, 3.0},
-        {4.0, 4.0, 4.0}
-    } ));
-    EXPECT_TRUE( equal );
-#endif
+    for(size_t i = 0; i < n_split; ++i) {
+        EXPECT_TRUE( dy[i].equal( -y[i]  ) );
+    }
+    for(size_t i = 0; i < n_split; ++i) {
+        EXPECT_TRUE( not_defined( dy[n_split + i] ) );
+    }
 }
 // END_CPP
