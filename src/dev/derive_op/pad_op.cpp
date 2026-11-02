@@ -342,37 +342,38 @@ void pad_op_t<TensorType>::reverse_der(
     // keepdim
     bool keepdim = true;
     //
-    // input_bar
-    c10::IntArrayRef output_shape = var_all[op_index].sizes();
-    TensorType       input_bar    = rev_der[op_index];
-    size_t           n_dim        = n_sizes / 2;
+    // in_bar
+    c10::IntArrayRef out_shape = var_all[op_index].sizes();
+    TensorType       in_bar    = rev_der[op_index];
+    size_t           n_dim     = n_sizes / 2;
     for(size_t i = 0; i < n_dim; ++i)
     if( pad_sizes[2 * i] != 0 || pad_sizes[2 * i + 1] != 0 ) {
-        int64_t dim   = int64_t( output_shape.size() - i - 1 );
-        int64_t start = pad_sizes[2 * i];
-        int64_t stop  = output_shape[dim] - pad_sizes[2 * i + 1];
-        int64_t step  = 1;
+        int64_t dim       = int64_t( out_shape.size() - i - 1 );
+        int64_t out_size  = out_shape[dim];
+        int64_t in_start  = pad_sizes[2 * i];
+        int64_t in_stop   = out_size - pad_sizes[2 * i + 1];
+        int64_t step      = 1;
         if( pad_mode == pad_enum_t::constant ) {
-            input_bar = input_bar.slice(dim, start, stop, step);
+            in_bar = in_bar.slice(dim, in_start, in_stop, step);
         } else {
             assert( pad_mode == pad_enum_t::replicate );
-            TensorType left  = input_bar.slice(dim, 0, 0, step);
+            TensorType left  = in_bar.slice(dim, 0, 0, step);
             TensorType right = left;
-            if( 0 < start ) {
-                left = input_bar.slice(dim, 0, start + 1, step);
+            if( 0 < in_start ) {
+                left = in_bar.slice(dim, 0, in_start + 1, step);
                 left = left.sum({dim}, keepdim);
             }
-            if( stop < output_shape[dim] ) {
-                right = input_bar.slice(dim, stop-1, output_shape[dim], step);
+            if( in_stop < out_size ) {
+                right = in_bar.slice(dim, in_stop-1, out_size, step);
                 right = right.sum({dim}, keepdim);
             }
-            TensorType temp_bar = input_bar.slice(dim, start+1, stop-1, step);
-            input_bar  = ad_tensor::cat( {left, temp_bar, right}, dim);
+            TensorType middle = in_bar.slice(dim, in_start+1, in_stop-1, step);
+            in_bar            = ad_tensor::cat( {left, middle, right}, dim);
         }
     }
     //
-    // rev_der[input_index] += input_bar
-    plus_equal(rev_der[input_index], input_bar);
+    // rev_der[input_index] += in_bar
+    plus_equal(rev_der[input_index], in_bar);
 };
 template void pad_op_t<at::Tensor>::reverse_der(
     size_t                       op_index    ,
