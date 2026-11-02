@@ -253,7 +253,6 @@ TEST(tests_adten, pad_reflect)  {
     // ------------------------------------------------------------------------
     // check reverse mode
     // ------------------------------------------------------------------------
-    /* TODO: implement reverse mode for reflect so this test works
     vector<at::Tensor> px = f.reverse_der(py, var_all, par_all);
     at::Tensor check_px = torch::tensor( { {
             {    11,     12,     13},
@@ -261,6 +260,5 @@ TEST(tests_adten, pad_reflect)  {
             {  17+1,   18+2,   19+3},
     } } );
     EXPECT_TRUE( px[0].equal( check_px ) );
-    */
 }
 // END_CPP

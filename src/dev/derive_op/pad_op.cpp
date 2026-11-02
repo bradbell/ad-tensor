@@ -2,6 +2,7 @@
 // SPDX-FileCopyrightText: Bradley M. Bell <bradbell@seanet.com>
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
+#include <ad_tensor/dev/to_string.hpp>
 #include <ad_tensor/dev/derive_op.hpp>
 #include <ad_tensor/adten.hpp>
 #include <ad_tensor/dev/pad_enum.hpp>
@@ -306,13 +307,6 @@ void pad_op_t<TensorType>::reverse_der(
     // pad_mode
     size_t mode_size_t  = agraph.m_arg_value[arg_start + 2];
     pad_enum_t pad_mode = static_cast<pad_enum_t>(mode_size_t);
-    if( pad_mode != pad_enum_t::constant &&
-        pad_mode != pad_enum_t::replicate ) {
-        user_assert(false,
-            "pad: reverse_der: so far only constant and replicate modes"
-            " are implemented."
-        );
-    }
     //
     // n_sizes
     size_t n_sizes = agraph.m_arg_value[arg_start + 3];
@@ -350,25 +344,65 @@ void pad_op_t<TensorType>::reverse_der(
     if( pad_sizes[2 * i] != 0 || pad_sizes[2 * i + 1] != 0 ) {
         int64_t dim       = int64_t( out_shape.size() - i - 1 );
         int64_t out_size  = out_shape[dim];
-        int64_t in_start  = pad_sizes[2 * i];
-        int64_t in_stop   = out_size - pad_sizes[2 * i + 1];
+        int64_t pad_left  = pad_sizes[2 * i];
+        int64_t pad_right = pad_sizes[2 * i + 1];
         int64_t step      = 1;
+        TensorType empty  = in_bar.slice(dim, 0, 0, step);
         if( pad_mode == pad_enum_t::constant ) {
-            in_bar = in_bar.slice(dim, in_start, in_stop, step);
-        } else {
-            assert( pad_mode == pad_enum_t::replicate );
-            TensorType left  = in_bar.slice(dim, 0, 0, step);
-            TensorType right = left;
-            if( 0 < in_start ) {
-                left = in_bar.slice(dim, 0, in_start + 1, step);
+            size_t start = pad_left;
+            size_t stop  = out_size - pad_right;
+            in_bar = in_bar.slice(dim, start, stop, step);
+        } else if( pad_mode == pad_enum_t::replicate ) {
+            TensorType left  = empty;
+            TensorType right = empty;
+            if( 0 < pad_left ) {
+                int64_t start = 0;
+                int64_t stop  = pad_left + 1;
+                left = in_bar.slice(dim, start, stop, step);
                 left = left.sum({dim}, keepdim);
             }
-            if( in_stop < out_size ) {
-                right = in_bar.slice(dim, in_stop-1, out_size, step);
+            if( 0 < pad_right ) {
+                int64_t start = out_size - pad_right - 1;
+                int64_t stop  = out_size;
+                right = in_bar.slice(dim, start, stop, step);
                 right = right.sum({dim}, keepdim);
             }
-            TensorType middle = in_bar.slice(dim, in_start+1, in_stop-1, step);
-            in_bar            = ad_tensor::cat( {left, middle, right}, dim);
+            size_t start = pad_left + 1;
+            size_t stop  = out_size - pad_right - 1;
+            TensorType middle = in_bar.slice(dim, start, stop, step);
+            in_bar = ad_tensor::cat( {left, middle, right}, dim);
+        } else if( pad_mode == pad_enum_t::reflect ) {
+            TensorType left_slice = empty;
+            if( 0 < pad_left ) {
+                int64_t start = 0;
+                int64_t stop  = pad_left;
+                left_slice    = in_bar.slice(dim, start, stop, step);
+            }
+            if( 0 < pad_right ) {
+                int64_t s0 = out_size - 2 * pad_right - 1;
+                int64_t s1 = pad_right;
+                int64_t s2 = 1;
+                int64_t s3 = pad_right;
+                vector<TensorType> split = in_bar.split({s0, s1, s2, s3}, dim);
+                split[1] += split[3].flip({dim});
+                in_bar = ad_tensor::cat( {split[0], split[1], split[2]}, dim);
+            }
+            assert( in_bar.sizes()[dim] == out_size - pad_right );
+            if( 0 < pad_left ) {
+                int64_t s0 = pad_left;
+                int64_t s1 = 1;
+                int64_t s2 = pad_left;
+                int64_t s3 = out_size - pad_right - 2 * pad_left - 1;
+                vector<TensorType> split = in_bar.split({s0, s1, s2, s3}, dim);
+                split[2] += left_slice.flip({dim});
+                in_bar = ad_tensor::cat( {split[1], split[2], split[3]}, dim);
+            }
+            assert( in_bar.sizes()[dim] == out_size - pad_right - pad_left );
+        } else {
+            user_assert(false,
+                "pad: reverse_der: so far only constant and replicate "
+                "modes are implemented."
+            );
         }
     }
     //
