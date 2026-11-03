@@ -164,7 +164,7 @@ size_t new_op_hash(
 //
 // BEGIN_NEW_OP_EQUAL
 bool new_op_equal(
-    adtype_t            adtype,
+    adtype_t             adtype,
     const agraph_t&      agraph_old,
     const vector<size_t> old2new ,
     size_t               old_index_1 ,
@@ -173,6 +173,12 @@ bool new_op_equal(
     //
     // op_enum, narg, start_1
     op_enum_t op_enum = agraph_old.m_op_seq[old_index_1];
+    /* TODO: fix optimizaiton of split so this assertion holds
+    assert(
+        op_enum != op_enum_t::call_result &&
+        op_enum != op_enum_t::split_result
+    );
+    */
     size_t start_1 = agraph_old.m_arg_start[old_index_1];
     size_t end_1   = agraph_old.m_arg_start[old_index_1 + 1];
     size_t n_arg   = end_1 - start_1;
