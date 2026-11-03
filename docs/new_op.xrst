@@ -231,11 +231,12 @@ Step 6: If NEW has Multiple Results
 
 #.  If the NEW operator has one AD Tensor arguments and
     multiple AD Tensor results, change the code for the split operator in
-    src/dev/optimize/rng_depend.cpp so it also works for the NEW operator.
+    rng_depend.cpp in src/dev/optimize so it also works for the NEW operator.
+    Also see new_agraph.cpp and new_split.cpp in that directory.
 
 #.  If it has multiple AD Tensor arguments and multiple results,
-    use the code that is call operator specific in src/dev/optimize/\*.cpp
-    to figure out how you need to change the optimizer
+    use the code that is call operator specific in the src/dev/optimize
+    directory to figure out how you need to change the optimizer
     so it works with the NEW operator.
 
 #.  Add a test called tests_adfn.optimize_NEW, in tests/adfn/optimize.cpp,

@@ -195,28 +195,6 @@ void op_depend(
                     op_enum = agraph.m_op_seq[op_index];
                 }
                 assert( op_enum == op_enum_t::split );
-                //
-                // depend_var, depend_par
-                // need this so that building old2new from dependencies works
-                size_t    arg_start    = agraph.m_arg_start[op_index];
-                size_t    n_split      = agraph.m_arg_value[arg_start + 2];
-                op_enum_t split_result = op_enum_t::split_result;
-                if( var_op ) {
-                    depend_var[op_index] = true;
-                    for(size_t i = 1; i < n_split; ++i) {
-                        assert( agraph.m_op_seq[op_index+i] == split_result );
-                        depend_var[op_index + i] = true;
-                    }
-                } else {
-                    depend_par[op_index] = true;
-                    for(size_t i = 1; i < n_split; ++i) {
-                        assert( agraph.m_op_seq[op_index+i] == split_result );
-                        depend_par[op_index + i] = true;
-                    }
-                }
-                if( op_index + n_split < agraph.m_op_seq.size() ) {
-                    assert( agraph.m_op_seq[op_index+n_split] != split_result);
-                }
             }
             size_t start = agraph.m_arg_start[op_index];
             size_t end   = agraph.m_arg_start[op_index + 1];
