@@ -10,8 +10,8 @@
     std
 }
 
-Add an Atomic Function Call to a New AD Function
-################################################
+Add an Atomic Function Call to a New Acyclic Graph
+##################################################
 
 Syntax
 ******
@@ -45,18 +45,24 @@ or adtype_t::variable.
 
 agraph_new
 **********
-The new graph up to but not including the call the an atomic function.
+The new graph up to but not including the new call to an atomic function.
 
 agraph_old
 **********
-The old graph that contains the call to an atomic function.
+The old graph that contains this call to an atomic function.
 
 op_index_old
 ************
-On input op_index_old is the old graph index for a call, or a call result,
+On input op_index_old is the old graph index for this call, or call result,
 that is used in the new graph.
 Upon return, is op_index_old is the next operator index,
-after this call,  in the old graph.
+after the last call result for this call, in the old graph.
+
+depend_old
+**********
+if depend[op_index] is true (false) the results in the old operation sequence
+depend (do not depend) on the result for operation op_index.
+This must be true for op_index_old.
 
 old2new
 *******
@@ -66,6 +72,17 @@ If not_used is equal (not equal) to old2new for an old index,
 the corresponding result is not (is) in the new graph.
 On input (output), this is only defined for old indices less than or equal
 the input (output) value of op_index_old.
+
+hash2old_agraph
+***************
+This maps operator hash codes operator index in the old graph of
+a previous operator that has this hash code.
+This is both an input and an output.
+To be more specific, if the hash code for this operation is not
+in hash2old_agraph, it is placed there with op_index_old as the result.
+If the hash code is in hash2old_agraph, but the previous old operator
+is not equivalent to this one, the result for this has is changed to
+op_index_old.
 
 Test
 ****
@@ -86,7 +103,7 @@ namespace ad_tensor { namespace dev { // Begin ad_tensor::dev
 //
 // BEGIN_NEW_CALL
 size_t new_call(
-    adtype_t                 agraph_type,
+    adtype_t                  agraph_type,
     agraph_t&                 agraph_new,
     const agraph_t&           agraph_old,
     size_t                    op_index_old,
@@ -119,7 +136,7 @@ size_t new_call(
     //
     // op_before, replace
     bool   replace   = false;
-    size_t op_before = std::numeric_limits<size_t>::max();
+    size_t op_before = not_used;
     if( itr != hash2old_agraph.end() ) {
         op_before = itr->second;
         assert( op_before <= op_index_old );

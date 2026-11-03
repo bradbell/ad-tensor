@@ -133,9 +133,23 @@ std::tuple< agraph_t, vector<size_t> > new_agraph(
         switch( op_enum ) {
             // --------------------------------------------------------------
             // agraph_new, op_index_old
+            // --------------------------------------------------------------
             case op_enum_t::call:
             case op_enum_t::call_result:
             op_index_old = new_call(
+                agraph_type,
+                agraph_new,
+                agraph_old,
+                op_index_old,
+                depend_old,
+                old2new,
+                hash2old_agraph
+            );
+            break;
+            //
+            case op_enum_t::split:
+            case op_enum_t::split_result:
+            op_index_old = new_split(
                 agraph_type,
                 agraph_new,
                 agraph_old,

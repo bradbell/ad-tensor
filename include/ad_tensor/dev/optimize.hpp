@@ -14,12 +14,15 @@ The Optimizer Implementation
     src/dev/optimize/optimize_con.cpp
     src/dev/optimize/old2new.cpp
     src/dev/optimize/new_call.cpp
+    src/dev/optimize/new_split.cpp
     src/dev/optimize/new_agraph.cpp
     src/dev/optimize/new_operator.cpp
 }
 
 {xrst_end optimize_dev}
 */
+// TODO; split this up into separate include files for each function
+// in the include/ad_tensor/dev/optimize directory.
 #include <array>
 #include <ad_tensor/adfn.hpp>
 //
@@ -39,6 +42,17 @@ namespace ad_tensor { namespace dev {
     //
     // new_call
     size_t new_call(
+        adtype_t                  agraph_type,
+        agraph_t&                 agraph_new,
+        const agraph_t&           agraph_old,
+        size_t                    op_index_old,
+        const vector<bool>&       depend_old,
+        vector<size_t>&           old2new,
+        std::map<size_t, size_t>& hash2old_agraph
+    );
+    //
+    // new_split
+    size_t new_split(
         adtype_t                  agraph_type,
         agraph_t&                 agraph_new,
         const agraph_t&           agraph_old,

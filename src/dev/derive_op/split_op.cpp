@@ -12,6 +12,7 @@
 //
 // UNPACK
 // arg_start, operand_index, keepdim, n_dim
+// use 'git grep n_split *= *agraph' to see where this order is assumed.
 #define UNPACK \
     size_t    arg_start     = agraph.m_arg_start[op_index]; \
     size_t    operand_index = agraph.m_arg_value[arg_start]; \
