@@ -333,9 +333,6 @@ void pad_op_t<TensorType>::reverse_der(
     const size_t* end   = begin + n_sizes;
     vector<int64_t> pad_sizes(begin, end);
     //
-    // keepdim
-    bool keepdim = true;
-    //
     // in_bar
     c10::IntArrayRef out_shape = var_all[op_index].sizes();
     TensorType       in_bar    = rev_der[op_index].clone();
@@ -353,31 +350,40 @@ void pad_op_t<TensorType>::reverse_der(
             size_t stop  = out_size - pad_right;
             in_bar = in_bar.slice(dim, start, stop, step);
         } else if( pad_mode == pad_enum_t::replicate ) {
+            // keepdim
+            bool keepdim = true;
+            //
+            // left
             TensorType left  = empty;
-            TensorType right = empty;
             if( 0 < pad_left ) {
                 int64_t start = 0;
                 int64_t stop  = pad_left + 1;
                 left = in_bar.slice(dim, start, stop, step);
                 left = left.sum({dim}, keepdim);
             }
+            //
+            // right
+            TensorType right = empty;
             if( 0 < pad_right ) {
                 int64_t start = out_size - pad_right - 1;
                 int64_t stop  = out_size;
                 right = in_bar.slice(dim, start, stop, step);
                 right = right.sum({dim}, keepdim);
             }
+            // middle
             size_t start = pad_left + 1;
+            if( pad_left == 0 ) {
+                start = 0;
+            }
             size_t stop  = out_size - pad_right - 1;
+            if( pad_right == 0 ) {
+                stop = out_size;
+            }
             TensorType middle = in_bar.slice(dim, start, stop, step);
+            //
+            // in_bar
             in_bar = ad_tensor::cat( {left, middle, right}, dim);
         } else if( pad_mode == pad_enum_t::reflect ) {
-            TensorType left_slice = empty;
-            if( 0 < pad_left ) {
-                int64_t start = 0;
-                int64_t stop  = pad_left;
-                left_slice    = in_bar.slice(dim, start, stop, step);
-            }
             if( 0 < pad_right ) {
                 int64_t s0 = out_size - 2 * pad_right - 1;
                 int64_t s1 = pad_right;
@@ -394,7 +400,7 @@ void pad_op_t<TensorType>::reverse_der(
                 int64_t s2 = pad_left;
                 int64_t s3 = out_size - pad_right - 2 * pad_left - 1;
                 vector<TensorType> split = in_bar.split({s0, s1, s2, s3}, dim);
-                split[2] += left_slice.flip({dim});
+                split[2] += split[0].flip({dim});
                 in_bar = ad_tensor::cat( {split[1], split[2], split[3]}, dim);
             }
             assert( in_bar.sizes()[dim] == out_size - pad_right - pad_left );
