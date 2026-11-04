@@ -140,6 +140,20 @@ vector<TensorType> adfn_t::reverse_der(
     size_t op_index = n_op;
     while( n_dom_var < op_index )
     {   --op_index;
+            //
+            if( m_trace) {
+                dev::op_enum_t op_enum = m_var.m_op_seq[ op_index ];
+                string element = to_string( all_der[op_index] );
+                cout << "all_der[" << op_index << "] = " << element;
+                cout << ", " << to_string(op_enum)  << "(";
+                size_t start = m_var.m_arg_start[op_index];
+                size_t stop  = m_var.m_arg_start[op_index + 1];
+                for(size_t i = start; i < stop; ++i) {
+                    cout << "[" << m_var.m_arg_value[i] << ",";
+                    cout << to_string( m_var.m_arg_type[i] ) << "]";
+                }
+                cout << ")\n";
+            }
         //
         // all_der[op_index]
         // Only propcess this operator if its result is connected to the range
@@ -154,19 +168,6 @@ vector<TensorType> adfn_t::reverse_der(
             base_op.reverse_der(
                 op_index, m_var, m_con_vec, par_all, var_all, all_der
             );
-            //
-            if( m_trace) {
-                string element = to_string( all_der[op_index] );
-                cout << "all_der[" << op_index << "] = " << element;
-                cout << ", " << to_string(op_enum)  << "(";
-                size_t start = m_var.m_arg_start[op_index];
-                size_t stop  = m_var.m_arg_start[op_index + 1];
-                for(size_t i = start; i < stop; ++i) {
-                    cout << "[" << m_var.m_arg_value[i] << ",";
-                    cout << to_string( m_var.m_arg_type[i] ) << "]";
-                }
-                cout << ")\n";
-            }
         } else {
             // no longer need this memory so free it.
             all_der[op_index] = TensorType( not_defined() );

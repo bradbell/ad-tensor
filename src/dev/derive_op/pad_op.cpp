@@ -338,7 +338,7 @@ void pad_op_t<TensorType>::reverse_der(
     //
     // in_bar
     c10::IntArrayRef out_shape = var_all[op_index].sizes();
-    TensorType       in_bar    = rev_der[op_index];
+    TensorType       in_bar    = rev_der[op_index].clone();
     size_t           n_dim     = n_sizes / 2;
     for(size_t i = 0; i < n_dim; ++i)
     if( pad_sizes[2 * i] != 0 || pad_sizes[2 * i + 1] != 0 ) {
@@ -398,11 +398,28 @@ void pad_op_t<TensorType>::reverse_der(
                 in_bar = ad_tensor::cat( {split[1], split[2], split[3]}, dim);
             }
             assert( in_bar.sizes()[dim] == out_size - pad_right - pad_left );
+        } else if( pad_mode == pad_enum_t::circular ) {
+            if( 0 < pad_left ) {
+                int64_t s0 = pad_left;
+                int64_t s1 = out_size - 2 * pad_left - pad_right;;
+                int64_t s2 = pad_left;
+                int64_t s3 = pad_right;
+                vector<TensorType> split = in_bar.split({s0, s1, s2, s3}, dim);
+                split[2] += split[0];
+                in_bar = ad_tensor::cat( {split[1], split[2], split[3]}, dim);
+            }
+            assert( in_bar.sizes()[dim] == out_size - pad_left );
+            if( 0 < pad_right ) {
+                int64_t s0 = pad_right;
+                int64_t s1 = out_size - pad_left - 2 * pad_right;
+                int64_t s2 = pad_right;
+                vector<TensorType> split = in_bar.split({s0, s1, s2}, dim);
+                split[0] += split[2];
+                in_bar = ad_tensor::cat( {split[0], split[1]}, dim);
+            }
+            assert( in_bar.sizes()[dim] == out_size - pad_left - pad_right );
         } else {
-            user_assert(false,
-                "pad: reverse_der: so far only constant and replicate "
-                "modes are implemented."
-            );
+            assert(false && "pad: reverse_der: invalid mode");
         }
     }
     //

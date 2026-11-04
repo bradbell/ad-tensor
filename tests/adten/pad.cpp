@@ -6,6 +6,7 @@
 #include <gtest/gtest.h>
 #include <torch/torch.h>
 //
+#include <ad_tensor/dev/to_string.hpp>
 #include <ad_tensor/dev/pad_enum.hpp>
 #include <ad_tensor/adten.hpp>
 #include <ad_tensor/adfn.hpp>
@@ -21,26 +22,26 @@ namespace {
     namespace functional = torch::nn::functional;
     //
     // p
-    vector<at::Tensor> p = { torch::tensor( { {
+    const vector<at::Tensor> p = { torch::tensor( { {
         {9, 8, 7},
         {6, 5, 4},
         {3, 2, 1},
     } } ) };
     //
     // v
-    vector<at::Tensor> v = { torch::tensor( { {
+    const vector<at::Tensor> v = { torch::tensor( { {
         {1, 2, 3},
         {4, 5, 6},
         {7, 8, 9},
     } } ) };
     //
     // dv
-    vector<at::Tensor> dv = { torch::tensor( { {
+    const vector<at::Tensor> dv = { torch::tensor( { {
         {11, 12, 13},
         {14, 15, 16},
         {17, 18, 19},
     } } ) };
-    vector<at::Tensor> py = {
+    const vector<at::Tensor> py = {
         ad_tensor::not_defined(),
         torch::tensor( { {
             { 1,  2,  3},
@@ -79,6 +80,12 @@ namespace {
             options_p.mode(torch::kReflect);
             options_v.mode(torch::kReflect);
             adfn_name = "reflect_padding";
+            break;
+            //
+            case pad_enum_t::circular:
+            options_p.mode(torch::kCircular);
+            options_v.mode(torch::kCircular);
+            adfn_name = "circular_padding";
             break;
             //
             default:
@@ -258,6 +265,59 @@ TEST(tests_adten, pad_reflect)  {
             {    11,     12,     13},
             {14+4+7, 15+5+8, 16+6+9},
             {  17+1,   18+2,   19+3},
+    } } );
+    EXPECT_TRUE( px[0].equal( check_px ) );
+}
+TEST(tests_adten, pad_circular)  {
+    //
+    adfn_t f = record_adfn( pad_enum_t::circular );
+    //
+    // y
+    vector<at::Tensor> par_all = f.forward_par(p);
+    vector<at::Tensor> var_all = f.forward_var(v, par_all);
+    vector<at::Tensor> y = f.get_range(var_all, par_all);
+    // ----------------------------------------------------------------------
+    // check function values
+    // ----------------------------------------------------------------------
+    at::Tensor check_p = torch::tensor( { {
+        { 7, 9, 8, 7,  9,  8},
+        { 4, 6, 5, 4,  6,  5},
+        { 1, 3, 2, 1,  3,  2},
+    } } );
+    EXPECT_TRUE( y[0].equal( check_p ) );
+    //
+    // check y[1]
+    at::Tensor check_v = torch::tensor( { {
+        { 4,  5,  6},
+        { 7,  8,  9},
+        { 1,  2,  3},
+        { 4,  5,  6},
+        { 7,  8,  9},
+        { 1,  2,  3},
+    } } );
+    EXPECT_TRUE( y[1].equal( check_v ) );
+    // ------------------------------------------------------------------------
+    // check forward mode
+    // ------------------------------------------------------------------------
+    vector<at::Tensor> dy = f.forward_der(dv, var_all, par_all);
+    EXPECT_TRUE( ad_tensor::not_defined( dy[0] ) );
+    at::Tensor check_dy = torch::tensor( { {
+        {14, 15, 16},
+        {17, 18, 19},
+        {11, 12, 13},
+        {14, 15, 16},
+        {17, 18, 19},
+        {11, 12, 13},
+    } } );
+    EXPECT_TRUE( dy[1].equal( check_dy ) );
+    // ------------------------------------------------------------------------
+    // check reverse mode
+    // ------------------------------------------------------------------------
+    vector<at::Tensor> px = f.reverse_der(py, var_all, par_all);
+    at::Tensor check_px = torch::tensor( { {
+            {    11+7,     12+8,     13+9},
+            {    14+1,     15+2,     16+3},
+            {    17+4,     18+5,     19+6},
     } } );
     EXPECT_TRUE( px[0].equal( check_px ) );
 }

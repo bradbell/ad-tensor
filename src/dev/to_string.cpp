@@ -108,7 +108,18 @@ namespace ad_tensor { namespace dev {
         // res
         res += "[";
         for(size_t i = 0; i < length; ++i) {
-            res += std::to_string( vector_view[i].item<double>() );
+            // TODO: better conversion of more types; e.g., kChar.
+            switch( tensor.scalar_type() ) {
+                case torch::kShort:
+                case torch::kInt:
+                case torch::kLong:
+                case torch::kHalf:
+                res += std::to_string(vector_view[i].item<int64_t>());
+                break;
+
+                default:
+                res += std::to_string(vector_view[i].item<double>());
+            }
             if( i + 1 < length )
                 res += ", ";
         }
