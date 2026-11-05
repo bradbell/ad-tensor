@@ -384,24 +384,24 @@ void pad_op_t<TensorType>::reverse_der(
             // in_bar
             in_bar = ad_tensor::cat( {left, middle, right}, dim);
         } else if( pad_mode == pad_enum_t::reflect ) {
+            if( 0 < pad_left ) {
+                int64_t s0 = pad_left;
+                int64_t s1 = 1;
+                int64_t s2 = pad_left;
+                int64_t s3 = out_size - 2 * pad_left - 1;
+                vector<TensorType> split = in_bar.split({s0, s1, s2, s3}, dim);
+                split[2] += split[0].flip({dim});
+                in_bar = ad_tensor::cat( {split[1], split[2], split[3]}, dim);
+            }
+            assert( in_bar.sizes()[dim] == out_size - pad_left );
             if( 0 < pad_right ) {
-                int64_t s0 = out_size - 2 * pad_right - 1;
+                int64_t s0 = out_size - pad_left - 2 * pad_right - 1;
                 int64_t s1 = pad_right;
                 int64_t s2 = 1;
                 int64_t s3 = pad_right;
                 vector<TensorType> split = in_bar.split({s0, s1, s2, s3}, dim);
                 split[1] += split[3].flip({dim});
                 in_bar = ad_tensor::cat( {split[0], split[1], split[2]}, dim);
-            }
-            assert( in_bar.sizes()[dim] == out_size - pad_right );
-            if( 0 < pad_left ) {
-                int64_t s0 = pad_left;
-                int64_t s1 = 1;
-                int64_t s2 = pad_left;
-                int64_t s3 = out_size - pad_right - 2 * pad_left - 1;
-                vector<TensorType> split = in_bar.split({s0, s1, s2, s3}, dim);
-                split[2] += split[0].flip({dim});
-                in_bar = ad_tensor::cat( {split[1], split[2], split[3]}, dim);
             }
             assert( in_bar.sizes()[dim] == out_size - pad_right - pad_left );
         } else if( pad_mode == pad_enum_t::circular ) {
