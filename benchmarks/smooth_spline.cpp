@@ -22,12 +22,22 @@ for this example is defined by
 
 .. math::
 
-    f(y) = \sum_{i=0}^{m-1} \left( \sin( x_i ) - y_i \right)^2
-         + \sum_{i=0}^{m-3} \left( y_i - 2 y_{i+1} + y_{i+2} \right)^2
+    \hat{y}_i = \begin{cases}
+        y_i     & \text{if} \; i < m \\
+        y_{i-m} & \text{otherwise}
+    \end{cases}
 
-This objective is a finite difference approximation for the
-second derivative in a cubic
-`Smoothing spline <https://en.wikipedia.org/wiki/Smoothing_spline>`_ ,
+    f(y) = \sum_{i=0}^{m-1}
+            \left( \sin( x_i ) - y_i \right)^2
+         + \sum_{i=0}^{m-1}
+            \left( y_i - 2 \hat{y}_{i+1} + \hat{y}_{i+2} \right)^2
+
+#.  This objective is a finite difference approximation for the
+    second derivative in a cubic; see
+    `Smoothing spline <https://en.wikipedia.org/wiki/Smoothing_spline>`_  .
+
+#.  The value :math:`\hat{y}_i` in the second differences corresponds
+    to circular padding for indices greater than :math:`m-1` .
 
 Implementation
 ==============
@@ -97,6 +107,7 @@ namespace {
     using ad_tensor::adten_t;
     using ad_tensor::adfn_t;
     using torch::nn::functional::Conv1dFuncOptions;
+    using torch::nn::functional::PadFuncOptions;
     //
     // previous_time, elapsed_ms
     chrono::time_point previous_time = chrono::steady_clock::now();
@@ -124,27 +135,31 @@ namespace {
     adten_t conv1d(
         const adten_t&           input   ,
         const adten_t&           weight  ,
-        const Conv1dFuncOptions& options ) {
+        const Conv1dFuncOptions& conv_options ) {
         adten_t bias = adten_t( at::Tensor() );
-        return ad_tensor::conv1d(input, weight, bias, options);
+        return ad_tensor::conv1d(input, weight, bias, conv_options);
     }
     //
-    // data, weight
+    // data, weight_at
     double pi    = 3.1412592653;
     double dx    = 2.0 * pi / double(number_grid_points - 1);
     double dx_sq = dx * dx;
     double scale = 1.0 / ( dx_sq * double( number_grid_points) );
     at::Tensor grid      = torch::linspace(-pi, pi, number_grid_points);
     at::Tensor data      = grid.sin();
-    auto       options   = Conv1dFuncOptions();
     at::Tensor weight_at =
         torch::tensor({1.0, -2.0, 1.0}).view({1, 1, 3}) * torch::tensor(scale);
+    //
+    // conv_options, pad_options
+    auto conv_options = Conv1dFuncOptions();
+    auto pad_options  = PadFuncOptions( {0, 2} ).mode(torch::kCircular);
     //
     // BEGIN_LOSS
     template<class TensorType>
     TensorType loss(const TensorType& y ) {
+        TensorType y_hat       = pad(y, pad_options);
         TensorType weight      = TensorType( weight_at );
-        TensorType finite_diff = conv1d(y, weight, options);
+        TensorType finite_diff = conv1d(y_hat, weight, conv_options);
         TensorType data_res    = (TensorType(data) - y);
         return (finite_diff*finite_diff).sum() + (data_res*data_res).sum();
     }
