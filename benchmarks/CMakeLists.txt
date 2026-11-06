@@ -28,12 +28,13 @@ The benchmarks above also serve as a tutorials for using AD Tensors.
 
 Running Benchmarks on Your Machine
 **********************************
-If podman is installed and the Dockerfile below
+If podman (or docker) is installed and the Dockerfile below
 is in the current working directory,
-The following commands (in a bash shell) will run the benchmarks:
+the commands below (in a bash shell) will run the benchmarks.
+If you are using docker, change podman to docker in the commands below.
 {xrst_code sh}
     # create the ad-tensor image
-    podman build -f Dockerfile -t ad-tensor
+    podman build -f Dockerfile -t ad-tensor .
     #
     # create and run a container starting with the image
     podman run -it ad-tensor bash
@@ -63,13 +64,17 @@ RUN apt install python3 python3-pip python3-venv -y
 #
 # install pytorch in a virtual environment
 RUN python3 -m venv my_env
-ENV PATH="$PWD/my_env/bin:$PATH"
+ENV PATH="/my_env/bin:$PATH"
 RUN pip3 install torch torchvision torchaudio \
         --index-url https://download.pytorch.org/whl/cpu
 #
 # ad-tensor.git
 RUN     git clone https://github.com/bradbell/ad-tensor.git ad-tensor.git
 WORKDIR ad-tensor.git
+#
+# The following command reserves 2GB of memory for docker and is not necessary
+# (can be commented out) when using podman.
+RUN sed -i.bak -e 's|$n_job|$(($n_job - 2))|' tools/n_compile_job.sh
 #
 # Build and test examples, tests, and benchmarks
 RUN tools/check_gtest.sh --release
