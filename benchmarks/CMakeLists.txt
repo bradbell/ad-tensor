@@ -70,7 +70,7 @@ RUN pip3 install torch torchvision torchaudio \
 #
 # ad-tensor.git
 RUN     git clone https://github.com/bradbell/ad-tensor.git ad-tensor.git
-WORKDIR ad-tensor.git
+WORKDIR /ad-tensor.git
 #
 # The following command reserves 2GB of memory for docker and is not necessary
 # (can be commented out) when using podman.
