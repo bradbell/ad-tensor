@@ -10,27 +10,27 @@
     adfn
 }
 
-Types Corresponding to A Graph Indices
-######################################
+A Graph Index Type
+##################
 
 constant
 ********
-a constant is an index in the m_con_vec vector for the
+a constant index in the m_con_vec vector for the
 tape that holds this graph.
 
 parameter
 *********
-a parameter is an index in the :ref:`adfn_forward_par@par_all` vector
+a parameter index in the :ref:`adfn_forward_par@par_all` vector
 for the adfn that holds this graph.
 
 variable
 ********
-a variable is an index in the :ref:`adfn_forward_var@var_all` vector
+a variable index in the :ref:`adfn_forward_var@var_all` vector
 for the adfn that holds this graph.
 
 none
 ****
-The type none is used when the adtype does not correspond to an AD tensor.
+The type none is used when the index does not correspond to an AD tensor.
 
 Enum Values
 ***********
