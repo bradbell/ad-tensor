@@ -88,7 +88,6 @@ that are not backward compatible.
     CMakeLists.txt
     cmake/ad_tensorConfig.cmake.in
     include/ad_tensor/vector.hpp
-    include/ad_tensor/adtype.hpp
     include/ad_tensor/adten.hpp
     src/adfn/adfn.cpp
     include/ad_tensor/defined.hpp

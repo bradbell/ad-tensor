@@ -4,7 +4,7 @@
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
 /*
-{xrst_begin adtype usr}
+{xrst_begin adtype dev}
 {xrst_spell
     enum
 }

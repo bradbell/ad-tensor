@@ -15,6 +15,7 @@ Contents
     docs/new_op.xrst
     docs/wish_dev.xrst
     include/ad_tensor/adten.hpp
+    include/ad_tensor/dev/adtype.hpp
     include/ad_tensor/dev/agraph.hpp
     include/ad_tensor/dev/atom.hpp
     include/ad_tensor/dev/base_op.hpp

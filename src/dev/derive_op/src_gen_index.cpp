@@ -62,7 +62,7 @@ Is the source code corresponding to the index array operator at index op_index.
 #include <string>
 #include <functional>
 #include <iostream>
-#include <ad_tensor/adtype.hpp>
+#include <ad_tensor/dev/adtype.hpp>
 #include <ad_tensor/dev/agraph.hpp>
 #include <ad_tensor/dev/op_enum.hpp>
 #include <ad_tensor/dev/to_string.hpp>

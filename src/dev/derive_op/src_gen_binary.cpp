@@ -60,7 +60,7 @@ Is the source code corresponding to the binary operator at index op_index.
 #include <format>
 #include <string>
 #include <functional>
-#include <ad_tensor/adtype.hpp>
+#include <ad_tensor/dev/adtype.hpp>
 #include <ad_tensor/dev/agraph.hpp>
 #include <ad_tensor/dev/op_enum.hpp>
 #include <ad_tensor/dev/to_string.hpp>

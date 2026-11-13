@@ -5,7 +5,7 @@
 // ----------------------------------------------------------------------------
 #include <functional>
 #include <string>
-#include <ad_tensor/adtype.hpp>
+#include <ad_tensor/dev/adtype.hpp>
 #include <ad_tensor/dev/agraph.hpp>
 namespace ad_tensor { namespace dev {
     std::string src_gen_unary(

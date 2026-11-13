@@ -183,7 +183,7 @@ The adten_t Private Constructor
 #include <torch/torch.h>
 //
 #include <ad_tensor/adfn.hpp>
-#include <ad_tensor/adtype.hpp>
+#include <ad_tensor/dev/adtype.hpp>
 #include <ad_tensor/dev/op_enum.hpp>
 //
 // AD_TENSOR_UNARY_OP

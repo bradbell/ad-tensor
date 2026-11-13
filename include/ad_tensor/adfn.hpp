@@ -7,7 +7,7 @@
 #include <ad_tensor/vector.hpp>
 #include <torch/torch.h>
 #include <ad_tensor/direction.hpp>
-#include <ad_tensor/adtype.hpp>
+#include <ad_tensor/dev/adtype.hpp>
 #include <ad_tensor/sparsity.hpp>
 #include <ad_tensor/dev/agraph.hpp>
 #include <ad_tensor/dev/call_op_depend.hpp>

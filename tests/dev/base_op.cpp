@@ -7,7 +7,7 @@
 #include <ad_tensor/defined.hpp>
 //
 #include <ad_tensor/vector.hpp>
-#include <ad_tensor/adtype.hpp>
+#include <ad_tensor/dev/adtype.hpp>
 #include <ad_tensor/dev/op_enum.hpp>
 #include <ad_tensor/dev/agraph.hpp>
 #include <ad_tensor/dev/derive_op.hpp>

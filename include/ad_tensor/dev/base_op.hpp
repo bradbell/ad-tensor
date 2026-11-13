@@ -150,7 +150,7 @@ There are no newline characters in src.
 #include <ad_tensor/vector.hpp>
 #include <torch/torch.h>
 //
-#include <ad_tensor/adtype.hpp>
+#include <ad_tensor/dev/adtype.hpp>
 #include <ad_tensor/dev/op_enum.hpp>
 #include <ad_tensor/dev/agraph.hpp>
 //

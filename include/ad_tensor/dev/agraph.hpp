@@ -76,7 +76,7 @@ This member function returns true if all the vectors in the graph are empty.
 */
 #include <cstdint>
 #include <ad_tensor/vector.hpp>
-#include <ad_tensor/adtype.hpp>
+#include <ad_tensor/dev/adtype.hpp>
 #include <ad_tensor/dev/op_enum.hpp>
 
 // BEGIN_AGRAPH
