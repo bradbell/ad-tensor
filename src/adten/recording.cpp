@@ -68,6 +68,27 @@ adom_var
 This is the domain variable vectors of AD tensors.
 The recording can be used to compute derivatives with respect to these tensors.
 
+AD Tensor Types
+***************
+
+Constant
+========
+a constant AD tensor does not depend on the
+domain parameter tensor dom_par or
+the domain variable tensor dom_var .
+The elements of a constant tensor are called constants.
+
+Parameter
+=========
+a parameter AD tensor depends on the
+domain parameter tensor but not on the domain variable tensor.
+The elements of a parameter tensor are called parameters.
+
+Variable
+========
+a variable tensor depends on the domain variable tensor.
+The elements of a variable tensor are called variables.
+
 First Constant
 **************
 Each recording starts with an undefined tensor as its first constant.

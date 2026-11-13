@@ -7,28 +7,26 @@
 {xrst_begin adtype dev}
 {xrst_spell
     enum
+    adfn
 }
 
-The Types Corresponding to AD tensors
-#####################################
+Types Corresponding to A Graph Indices
+######################################
 
 constant
 ********
-a constant tensor does not depend on the
-domain parameter tensor :ref:`start_recording@dom_par` or
-the domain variable tensor :ref:`start_recording@dom_var` .
-The elements of a constant tensor are called constants.
+a constant is an index in the m_con_vec vector for the
+tape that holds this graph.
 
 parameter
 *********
-a parameter tensor depends on the
-domain parameter tensor but not on the domain variable tensor.
-The elements of a parameter tensor are called parameters.
+a parameter is an index in the :ref:`adfn_forward_par@par_all` vector
+for the adfn that holds this graph.
 
 variable
 ********
-a variable tensor depends on the domain variable tensor.
-The elements of a variable tensor are called variables.
+a variable is an index in the :ref:`adfn_forward_var@var_all` vector
+for the adfn that holds this graph.
 
 none
 ****
