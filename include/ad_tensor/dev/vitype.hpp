@@ -7,37 +7,49 @@
 {xrst_begin vitype dev}
 {xrst_spell
     enum
-    adfn
 }
 
 The Vector Index Type
 #####################
 
+Enum Values
+***********
+
 constant
-********
-a constant index in the m_con_vec vector for the
+========
+an index in the m_con_vec vector for the
 tape that holds this graph.
 
 parameter
-*********
-a parameter index in the :ref:`adfn_forward_par@par_all` vector
-for the adfn that holds this graph.
+=========
+corresponding value is an index in the :ref:`adfn_forward_par@par_all` vector
+for the tape that holds this graph.
 
 variable
-********
-a variable index in the :ref:`adfn_forward_var@var_all` vector
-for the adfn that holds this graph.
+========
+corresponding value is an index in the :ref:`adfn_forward_var@var_all` vector
+for the tape that holds this graph.
+
+int64vector
+===========
+corresponding value is an index in the m_int64_vec vector
+for the tape that holds this graph.
 
 none
-****
+====
 The type none is used this is not an index in a
-vector in the operation sequence.
+vector for the tape that holds this graph.
 
-Enum Values
-***********
-{xrst_literal ,
-    BEGIN_AD_TYPE_T, END_AD_TYPE_T
-}
+
+AD Tensor Types
+***************
+The AD Tensor types are constant, parameter, and variable; see
+:ref:`start_recording@AD Tensor Types@Constant`,
+:ref:`start_recording@AD Tensor Types@Parameter`, and
+:ref:`start_recording@AD Tensor Types@Variable` .
+They satisfy the following relation:
+
+    constant < parameter < variable
 
 {xrst_end vitype}
 */
@@ -46,6 +58,7 @@ namespace ad_tensor { enum struct vitype_t {
     constant,
     parameter,
     variable,
-    none,      // This does not correspond to an AD tensor
+    int64vector,
+    none,
 }; }
 // END_AD_TYPE_T

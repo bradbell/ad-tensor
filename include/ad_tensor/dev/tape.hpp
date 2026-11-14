@@ -16,6 +16,11 @@ m_con_vec
 *********
 is the vector of constant values.
 
+m_int64_vec
+***********
+is the vector of int64_t sub-vectors.
+Each sub-vector starts with a size and is followed by its element values.
+
 m_par
 *****
 is the acyclic graph for the operation sequence that determines
@@ -62,6 +67,7 @@ namespace ad_tensor { namespace dev { class tape_t {
     friend class ad_tensor::adten_t;
 private:
     vector<at::Tensor>    m_con_vec;
+    vector<int64_t>       m_int64_vec;
     agraph_t              m_par;
     agraph_t              m_var;
     size_t                m_tape_id;

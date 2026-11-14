@@ -15,6 +15,7 @@ overline  = [ false, false, false, false, false,  ]
 data = [
     # C++ keywords
     '''
+    int
     const
     ''',
     # local abbreviations
