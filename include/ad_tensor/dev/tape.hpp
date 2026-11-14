@@ -12,26 +12,26 @@ Tape that Records Operation Sequences
     BEGIN_TAPE_T, END_TAPE_T
 }
 
-con
-***
+m_con_vec
+*********
 is the vector of constant values.
 
-par
-***
+m_par
+*****
 is the acyclic graph for the operation sequence that determines
 the dependent parameter tensors.
 
-var
-***
+m_var
+*****
 is the acyclic graph for the operation sequence that determines
 the dependent variable tensors.
 
-tape_id
-*******
+m_tape_id
+*********
 If *recording* is true, this is the unique identifier for the recording.
 
-recording
-*********
+m_recording
+***********
 is true (false) if this tape is currently recording (not recording)
 AD operations.
 
