@@ -47,18 +47,21 @@ namespace ad_tensor { // Begin ad_tensor
 // BEGIN_OPTIMIZE
 void adfn_t::optimize(void)
 {   // END_OPTIMIZE
+    using std::cout;
     //
     // adfn_old
     const adfn_t& adfn_old = *this;
     //
-    // depend_con, depend_par, depend_var
-    auto [depend_con, depend_par, depend_var] = dev::rng_depend( this );
+    // depend_int64, depend_con, depend_par, depend_var
+    auto [depend_int64, depend_con, depend_par, depend_var]
+        = dev::rng_depend( this );
     //
     if( adfn_old.get_trace() ) {
-        std::cout << "Begin tracing " + adfn_old.get_name() + ".optimize\n";
-        std::cout << "depend_con = " << dev::to_string( depend_con ) << "\n";
-        std::cout << "depend_par = " << dev::to_string( depend_par ) << "\n";
-        std::cout << "depend_var = " << dev::to_string( depend_var ) << "\n";
+        cout << "Begin tracing " + adfn_old.get_name() + ".optimize\n";
+        cout << "depend_int64 = " << dev::to_string( depend_int64 ) << "\n";
+        cout << "depend_con = " << dev::to_string( depend_con ) << "\n";
+        cout << "depend_par = " << dev::to_string( depend_par ) << "\n";
+        cout << "depend_var = " << dev::to_string( depend_var ) << "\n";
     }
     //
     // m_con_vec, m_par, m_var, m_rng_index
@@ -102,7 +105,7 @@ void adfn_t::optimize(void)
     m_name = m_name + "_optimize";
     //
     if( get_trace() ) {
-        std::cout << "End tracing " + adfn_old.get_name() + ".optimize\n";
+        cout << "End tracing " + adfn_old.get_name() + ".optimize\n";
     }
 }
 

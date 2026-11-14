@@ -65,7 +65,8 @@ TEST(tests_optimize, rng_depend_simple) {
     bool equal = r[0].equal( v[1] + p[0] + c_used );
     EXPECT_TRUE( equal );
     //
-    auto [depend_con, depend_par, depend_var] = ad_tensor::dev::rng_depend(&f);
+    auto [depend_int64, depend_con, depend_par, depend_var]
+        = ad_tensor::dev::rng_depend(&f);
     //
     // depend_con
     EXPECT_EQ( depend_con[0], false);
@@ -159,7 +160,8 @@ TEST(tests_optimize, rng_depend_chkpnt) {
     bool equal = r[0].equal( v[0] + p[0] + c_used );
     EXPECT_TRUE( equal );
     //
-    auto [depend_con, depend_par, depend_var] = ad_tensor::dev::rng_depend(&g);
+    auto [depend_int64, depend_con, depend_par, depend_var]
+        = ad_tensor::dev::rng_depend(&g);
     //
     // depend_var
     EXPECT_EQ( depend_var.size(), 6);
@@ -181,4 +183,7 @@ TEST(tests_optimize, rng_depend_chkpnt) {
     EXPECT_EQ( depend_con[2], false);
     EXPECT_EQ( depend_con[1], true);
     EXPECT_EQ( depend_con[0], false);
+    //
+    // depend_int64
+    EXPECT_EQ( depend_int64.size(), 0);
 }

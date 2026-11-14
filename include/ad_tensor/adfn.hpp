@@ -18,7 +18,7 @@ namespace ad_tensor { class adten_t; class adfn_t; }
 // dev::rng_depend
 // cannot use include/dev/optimize.hpp because it includes this file
 namespace ad_tensor { namespace dev {
-    std::array< vector<bool>, 3> rng_depend(
+    std::array< vector<bool>, 4> rng_depend(
         const adfn_t* adfn
     );
 } }
@@ -37,7 +37,7 @@ namespace ad_tensor { class adfn_t
     );
     // ad_tensor::rng_depend
     // is a link to the private function rng_depend defined in this class
-    friend std::array< vector<bool>, 3 > dev::rng_depend(const adfn_t* adfn);
+    friend std::array< vector<bool>, 4 > dev::rng_depend(const adfn_t* adfn);
     //
 private:
 // BEGIN_MEMBER_DATA
@@ -58,7 +58,7 @@ private:
         c10::ArrayRef<direction_t>   directions
     );
     //
-    std::array< vector<bool>, 3 > rng_depend
+    std::array< vector<bool>, 4 > rng_depend
     (void) const;
     //
     // optimize_con

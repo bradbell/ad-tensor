@@ -106,6 +106,15 @@ The AD Function Class Private Members
     BEGIN_MEMBER_DATA, END_MEMBER_DATA
 }
 
+m_int64_vec
+***********
+contains the int64_t sub-vectors.
+Each sub-vector starts with its size and is followed by its elements.
+
+m_con_vec
+*********
+is the vector of constant tensors.
+
 m_par
 *****
 is the acyclic graph for the dependent parameters.
@@ -113,10 +122,6 @@ is the acyclic graph for the dependent parameters.
 m_var
 *****
 is the acyclic graph for the dependent variables.
-
-m_con_vec
-*********
-is the vector of constant tensors.
 
 m_rng_index
 ***********
@@ -140,7 +145,8 @@ namespace ad_tensor {
     // BEGIN_DEFAULT_CTOR
     adfn_t::adfn_t(void)
     // END_DEFAULT_CTOR
-    : m_con_vec()
+    : m_int64_vec()
+    , m_con_vec()
     , m_par()
     , m_var()
     , m_rng_index()
@@ -154,10 +160,10 @@ namespace ad_tensor {
     bool adfn_t::is_empty(void) const
     // END_IS_EMPTY
     { return
-        m_par.is_empty() &&
-        m_var.is_empty() &&
-        m_con_vec.empty() &&
         m_int64_vec.empty() &&
+        m_par.is_empty() &&
+        m_con_vec.empty() &&
+        m_var.is_empty() &&
         m_rng_index.empty() &&
         m_rng_vitype.empty() &&
         m_rng_shapes.empty() &&

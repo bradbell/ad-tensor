@@ -28,7 +28,7 @@ The Optimizer Implementation
 namespace ad_tensor { namespace dev {
     //
     // rng_depend
-    std::array< vector<bool>, 3 > rng_depend(const adfn_t* adfn);
+    std::array< vector<bool>, 4 > rng_depend(const adfn_t* adfn);
     //
     // new_call
     size_t new_call(

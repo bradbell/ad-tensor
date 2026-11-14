@@ -15,7 +15,7 @@ Determine Which Values the Range Depends on
 Syntax
 ******
 {xrst_code cpp}
-auto [depend_con, depend_par, depend_var] = dev::rng_depend(adfn)
+auto [depend_int64, depend_con, depend_par, depend_var] = dev::rng_depend(adfn)
 {xrst_code}
 
 Prototype
@@ -27,6 +27,14 @@ Prototype
 adfn
 ****
 is the AD function object we are computing the dependencies for.
+
+depend_int64
+************
+The length of this vector is the same as :ref:`adfn_dev@m_int64_vec` .
+If depend_int64[k] is true (false), the range depends (does not depend)
+on the sub-vector that is starts at index k in adfn.m_int64_vec.
+If adfn.int64_vec + k is not the start of a sub-vector, then
+depend_int64[k] is false.
 
 depend_con
 **********
@@ -65,6 +73,7 @@ void atom_depend(
     size_t          call_op_index    ,
     bool            var_op           ,
     const agraph_t& agraph           ,
+    vector<bool>&   depend_int64     ,
     vector<bool>&   depend_con       ,
     vector<bool>&   depend_par       ,
     vector<bool>&   depend_var       ) {
@@ -98,7 +107,7 @@ void atom_depend(
     sparsity_t pattern = opt.value();
     pattern.sort();
     //
-    // depend_con, depend_par, depend_var
+    // depend_int64, depend_con, depend_par, depend_var
     size_t s_index = 0;
     for(size_t res_index = 0; res_index < n_result; ++res_index) {
     if( res_depend(call_op_index + res_index) ) {
@@ -115,7 +124,7 @@ void atom_depend(
         while(s_index < pattern.size() && pattern[s_index][0] == rng_index ) {
             size_t d_index    = pattern[s_index][1];
             size_t value      = agraph.m_arg_value[arg_start + 4 + d_index];
-            vitype_t vitype = agraph.m_arg_type[arg_start + 4 + d_index];
+            vitype_t vitype   = agraph.m_arg_type[arg_start + 4 + d_index];
             switch( vitype ) {
                 //
                 case vitype_t::constant:
@@ -131,6 +140,9 @@ void atom_depend(
                 depend_var[value] = true;
                 break;
                 //
+                case vitype_t::int64vector:
+                depend_int64[value] = true;
+                //
                 default:
                 assert(false);
             }
@@ -141,11 +153,12 @@ void atom_depend(
 //
 // op_depend
 void op_depend(
-    bool            var_op      ,
-    const agraph_t& agraph      ,
-    vector<bool>&   depend_con  ,
-    vector<bool>&   depend_par  ,
-    vector<bool>&   depend_var  ) {
+    bool            var_op       ,
+    const agraph_t& agraph       ,
+    vector<bool>&   depend_int64 ,
+    vector<bool>&   depend_con   ,
+    vector<bool>&   depend_par   ,
+    vector<bool>&   depend_var   ) {
     //
     // res_depend
     auto res_depend = [&](size_t op_index) {
@@ -185,7 +198,8 @@ void op_depend(
                 op_enum = agraph.m_op_seq[op_index];
             }
             atom_depend(
-                op_index, var_op, agraph, depend_con, depend_par, depend_var
+                op_index, var_op, agraph,
+                depend_int64, depend_con, depend_par, depend_var
             );
         } else if( res_depend(op_index) ) {
             if( is_split_op(op_enum) ) {
@@ -215,6 +229,10 @@ void op_depend(
                     depend_var[value] = true;
                     break;
                     //
+                    case vitype_t::int64vector:
+                    depend_int64[value] = true;
+                    break;
+                    //
                     default:
                     break;
                 }
@@ -225,7 +243,7 @@ void op_depend(
 }
 //
 // BEGIN_RNG_DEPEND
-std::array< vector<bool>, 3 >
+std::array< vector<bool>, 4 >
 rng_depend(const adfn_t* adfn)
 {   // END_RNG_DEPEND
     return adfn->rng_depend();
@@ -235,20 +253,22 @@ rng_depend(const adfn_t* adfn)
 namespace ad_tensor {
     //
     // adfn::depend
-    std::array< vector<bool>, 3 > adfn_t::rng_depend(
+    std::array< vector<bool>, 4 > adfn_t::rng_depend(
         void
     ) const {
         //
-        // depend_con, depend_par, depend_var
-        vector<bool> depend_con, depend_par, depend_var;
+        // depend_int64, depend_con, depend_par, depend_var
+        vector<bool> depend_int64, depend_con, depend_par, depend_var;
         //
-        // n_con, n_par, n_var, n_rng
-        size_t n_con = m_con_vec.size();
-        size_t n_par = m_par.m_op_seq.size();
-        size_t n_var = m_var.m_op_seq.size();
-        size_t n_rng = m_rng_index.size();
+        // n_int64, n_con, n_par, n_var, n_rng
+        size_t n_int64 = m_int64_vec.size();
+        size_t n_con   = m_con_vec.size();
+        size_t n_par   = m_par.m_op_seq.size();
+        size_t n_var   = m_var.m_op_seq.size();
+        size_t n_rng   = m_rng_index.size();
         //
         // depend_con, depend_par, depend_var
+        depend_int64.resize(n_int64, false);
         depend_con.resize(n_con, false);
         depend_par.resize(n_par, false);
         depend_var.resize(n_var, false);
@@ -268,20 +288,28 @@ namespace ad_tensor {
             depend_var[ m_rng_index[i] ] = true;
             break;
             //
+            case vitype_t::int64vector:
+            depend_var[ m_rng_index[i] ] = true;
+            break;
+            //
             default:
             assert(false);
         } }
         //
-        // depend_con, depend_par, depend_var
+        // depend_int64, depend_con, depend_par, depend_var
         bool var_op = true;
-        op_depend(var_op, m_var, depend_con, depend_par, depend_var);
+        op_depend(
+            var_op, m_var, depend_int64, depend_con, depend_par, depend_var
+        );
         //
-        // depend_con, depend_par
+        // depend_int64, depend_con, depend_par
         var_op = false;
-        op_depend(var_op, m_par, depend_con, depend_par, depend_var);
+        op_depend(
+            var_op, m_par, depend_int64, depend_con, depend_par, depend_var
+        );
         //
-        return std::array< vector<bool>, 3 > (
-            { depend_con, depend_par, depend_var }
+        return std::array< vector<bool>, 4 > (
+            { depend_int64, depend_con, depend_par, depend_var }
         );
     }
 }
