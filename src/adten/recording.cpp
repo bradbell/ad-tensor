@@ -287,9 +287,11 @@ adfn_t adten_t::stop_recording(
     //
     // adfn
     adfn_t adfn;
+    assert( adfn.is_empty() && "stop_recording: initial adfn is not empty" );
     //
-    // adfn, tape: m_con_vec, m_par, m_var
+    // adfn, tape: m_con_vec, m_int64_vec, m_par, m_var
     dev::move_swap( adfn.m_con_vec, tape.m_con_vec );
+    dev::move_swap( adfn.m_int64_vec, tape.m_int64_vec );
     dev::move_swap( adfn.m_par, tape.m_par );
     dev::move_swap( adfn.m_var, tape.m_var );
     //

@@ -157,6 +157,7 @@ namespace ad_tensor {
         m_par.is_empty() &&
         m_var.is_empty() &&
         m_con_vec.empty() &&
+        m_int64_vec.empty() &&
         m_rng_index.empty() &&
         m_rng_vitype.empty() &&
         m_rng_shapes.empty() &&

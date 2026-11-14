@@ -30,6 +30,7 @@ external_links='no'
 skip_check_copy='no'
 release_flag=''
 plugin_flag=''
+clang_flag=''
 while [ $# -ge 1 ]
 do
     case "$1" in
@@ -46,10 +47,13 @@ do
         --no_plugin)
         plugin_flag='--no_plugin'
         ;;
+        --clang)
+        clang_flag='--clang'
+        ;;
         *)
 cat << EOF
 usage: tools/check_all.sh \
-    [-skip_check_copy] [--external_links] [--release] [--no_plugin]
+    [-skip_check_copy] [--external_links] [--release] [--no_plugin] [--clang]
 EOF
         exit 1
     esac
@@ -95,7 +99,7 @@ done
 # check_gtest.sh
 # Do other checks first because this takes longer and other tests may change
 # things that require this to re-run.
-echo_eval check_gtest.sh $release_flag $plugin_flag
+echo_eval check_gtest.sh $release_flag $plugin_flag $clang_flag
 #
 # test_install.sh
 tools/test_install.sh

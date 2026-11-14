@@ -42,6 +42,7 @@ namespace ad_tensor { class adfn_t
 private:
 // BEGIN_MEMBER_DATA
     vector<at::Tensor>        m_con_vec;
+    vector<int64_t>           m_int64_vec;
     dev::agraph_t             m_par;
     dev::agraph_t             m_var;
     vector<size_t>            m_rng_index;

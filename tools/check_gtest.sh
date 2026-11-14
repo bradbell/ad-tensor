@@ -25,6 +25,7 @@ fi
 # release_flag, plugin_flag
 release_flag=''
 plugin_flag=''
+clang_flag=''
 while [ $# -ge 1 ]
 do
     case "$1" in
@@ -35,9 +36,12 @@ do
         --no_plugin)
         plugin_flag='--no_plugin'
         ;;
+        --clang)
+        clang_flag='--clang'
+        ;;
         *)
 cat << EOF
-usage: tools/check_gtest.sh [--release] [--no_plugin]
+usage: tools/check_gtest.sh [--release] [--no_plugin] [--clang]
 EOF
         exit 1
     esac
@@ -46,7 +50,7 @@ EOF
 done
 #
 # run_cmake.sh
-tools/run_cmake.sh $release_flag $plugin_flag
+tools/run_cmake.sh $release_flag $plugin_flag $clang_flag
 #
 # n_job
 if ! n_job=$(tools/n_compile_job.sh)
