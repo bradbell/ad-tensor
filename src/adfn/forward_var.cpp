@@ -120,7 +120,9 @@ vector<TensorType> adfn_t::forward_var(
             dev::enum2derive<TensorType>( op_enum );
         //
         // var_all
-        base_op.forward_var(op_index, m_var, m_con_vec, par_all, var_all);
+        base_op.forward_var(
+            op_index, m_var, m_con_vec, m_int64_vec, par_all, var_all
+        );
         //
         if( m_trace) {
             string element = to_string( var_all[op_index] );

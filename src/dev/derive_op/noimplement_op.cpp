@@ -13,6 +13,7 @@ void noimplement_op_t<TensorType>::forward_par(
     size_t                       op_index    ,
     const agraph_t&              agraph      ,
     const vector<at::Tensor>&    con_vec     ,
+    const vector<int64_t>&       int64_vec   ,
     vector<TensorType>&          par_all
 ) const {
     user_assert(false,
@@ -23,12 +24,14 @@ template void noimplement_op_t<at::Tensor>::forward_par(
     size_t                       op_index    ,
     const agraph_t&              agraph      ,
     const vector<at::Tensor>&    con_vec     ,
+    const vector<int64_t>&       int64_vec   ,
     vector<at::Tensor>&          par_all
 ) const;
 template void noimplement_op_t<adten_t>::forward_par(
     size_t                       op_index    ,
     const agraph_t&              agraph      ,
     const vector<at::Tensor>&    con_vec     ,
+    const vector<int64_t>&       int64_vec   ,
     vector<adten_t>&             par_all
 ) const;
 // ------------------------------------------------------------------------
@@ -38,6 +41,7 @@ void noimplement_op_t<TensorType>::forward_var(
     size_t                       op_index    ,
     const agraph_t&              agraph      ,
     const vector<at::Tensor>&    con_vec     ,
+    const vector<int64_t>&       int64_vec   ,
     const vector<TensorType>&    par_all     ,
     vector<TensorType>&          var_all
 ) const {
@@ -49,6 +53,7 @@ template void noimplement_op_t<at::Tensor>::forward_var(
     size_t                       op_index    ,
     const agraph_t&              agraph      ,
     const vector<at::Tensor>&    con_vec     ,
+    const vector<int64_t>&       int64_vec   ,
     const vector<at::Tensor>&    par_all     ,
     vector<at::Tensor>&          var_all
 ) const;
@@ -56,6 +61,7 @@ template void noimplement_op_t<adten_t>::forward_var(
     size_t                       op_index    ,
     const agraph_t&              agraph      ,
     const vector<at::Tensor>&    con_vec     ,
+    const vector<int64_t>&       int64_vec   ,
     const vector<adten_t>&       par_all     ,
     vector<adten_t>&             var_all
 ) const;
@@ -66,6 +72,7 @@ void noimplement_op_t<TensorType>::forward_der(
     size_t                       op_index    ,
     const agraph_t&              agraph      ,
     const vector<at::Tensor>&    con_vec     ,
+    const vector<int64_t>&       int64_vec   ,
     const vector<TensorType>&    par_all     ,
     const vector<TensorType>&    var_all     ,
     vector<TensorType>&          for_der
@@ -78,6 +85,7 @@ template void noimplement_op_t<at::Tensor>::forward_der(
     size_t                       op_index    ,
     const agraph_t&              agraph      ,
     const vector<at::Tensor>&    con_vec     ,
+    const vector<int64_t>&       int64_vec   ,
     const vector<at::Tensor>&    par_all     ,
     const vector<at::Tensor>&    var_all     ,
     vector<at::Tensor>&          for_der
@@ -86,6 +94,7 @@ template void noimplement_op_t<adten_t>::forward_der(
     size_t                       op_index    ,
     const agraph_t&              agraph      ,
     const vector<at::Tensor>&    con_vec     ,
+    const vector<int64_t>&       int64_vec   ,
     const vector<adten_t>&       par_all     ,
     const vector<adten_t>&       var_all     ,
     vector<adten_t>&             for_der
@@ -96,6 +105,7 @@ void noimplement_op_t<TensorType>::reverse_der(
     size_t                       op_index    ,
     const agraph_t&              agraph      ,
     const vector<at::Tensor>&    con_vec     ,
+    const vector<int64_t>&       int64_vec   ,
     const vector<TensorType>&    par_all     ,
     const vector<TensorType>&    var_all     ,
     vector<TensorType>&          rev_der
@@ -108,6 +118,7 @@ template void noimplement_op_t<at::Tensor>::reverse_der(
     size_t                       op_index    ,
     const agraph_t&              agraph      ,
     const vector<at::Tensor>&    con_vec     ,
+    const vector<int64_t>&       int64_vec   ,
     const vector<at::Tensor>&    par_all     ,
     const vector<at::Tensor>&    var_all     ,
     vector<at::Tensor>&          rev_der
@@ -116,6 +127,7 @@ template void noimplement_op_t<adten_t>::reverse_der(
     size_t                       op_index    ,
     const agraph_t&              agraph      ,
     const vector<at::Tensor>&    con_vec     ,
+    const vector<int64_t>&       int64_vec   ,
     const vector<adten_t>&       par_all     ,
     const vector<adten_t>&       var_all     ,
     vector<adten_t>&             rev_der

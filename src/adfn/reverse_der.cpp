@@ -166,7 +166,7 @@ vector<TensorType> adfn_t::reverse_der(
             //
             // all_der
             base_op.reverse_der(
-                op_index, m_var, m_con_vec, par_all, var_all, all_der
+            op_index, m_var, m_con_vec, m_int64_vec, par_all, var_all, all_der
             );
         } else {
             // no longer need this memory so free it.

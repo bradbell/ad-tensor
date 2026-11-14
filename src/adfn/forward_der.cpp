@@ -137,7 +137,9 @@ vector<TensorType> adfn_t::forward_der(
             dev::enum2derive<TensorType>( op_enum );
         //
         // all_der
-        base_op.forward_der(op_index, m_var, m_con_vec, par_all, var_all, all_der);
+        base_op.forward_der(
+            op_index, m_var, m_con_vec, m_int64_vec, par_all, var_all, all_der
+        );
         //
         if( m_trace) {
             string element = to_string( all_der[op_index] );

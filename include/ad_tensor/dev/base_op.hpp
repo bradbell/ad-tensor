@@ -164,6 +164,7 @@ template<class TensorType> struct base_op_t
         size_t                       op_index    ,
         const agraph_t&              agraph      ,
         const vector<at::Tensor>&    con_vec     ,
+        const vector<int64_t>&       int64_vec   ,
         vector<TensorType>&          par_all
     ) const = 0;
     // END_FORWARD_PAR
@@ -173,6 +174,7 @@ template<class TensorType> struct base_op_t
         size_t                       op_index    ,
         const agraph_t&              agraph      ,
         const vector<at::Tensor>&    con_vec     ,
+        const vector<int64_t>&       int64_vec   ,
         const vector<TensorType>&    par_all     ,
         vector<TensorType>&          var_all
     ) const = 0;
@@ -183,6 +185,7 @@ template<class TensorType> struct base_op_t
         size_t                       op_index    ,
         const agraph_t&              agraph      ,
         const vector<at::Tensor>&    con_vec     ,
+        const vector<int64_t>&       int64_vec   ,
         const vector<TensorType>&    par_all     ,
         const vector<TensorType>&    var_all     ,
         vector<TensorType>&          for_der
@@ -194,6 +197,7 @@ template<class TensorType> struct base_op_t
         size_t                       op_index    ,
         const agraph_t&              agraph      ,
         const vector<at::Tensor>&    con_vec     ,
+        const vector<int64_t>&       int64_vec   ,
         const vector<TensorType>&    par_all     ,
         const vector<TensorType>&    var_all     ,
         vector<TensorType>&          rev_der
