@@ -123,8 +123,8 @@ adten_t adten_t::unary( dev::op_enum_t op_enum, const adten_t& operand )
         "unary operand's tape is not tape that is recording"
     );
     //
-    // res_adtype
-    adtype_t res_adtype = operand.m_adtype;
+    // res_vitype
+    vitype_t res_vitype = operand.m_vitype;
     //
     // res_tape_id
     size_t res_tape_id = tape.m_tape_id;
@@ -132,7 +132,7 @@ adten_t adten_t::unary( dev::op_enum_t op_enum, const adten_t& operand )
     // res_index
     size_t res_index;
     //
-    if(res_adtype == adtype_t::constant ) {
+    if(res_vitype == vitype_t::constant ) {
         // res_index, tape.m_con_vec
         res_index = tape.m_con_vec.size();
         tape.m_con_vec.push_back( res_at_ten.clone() );
@@ -140,10 +140,10 @@ adten_t adten_t::unary( dev::op_enum_t op_enum, const adten_t& operand )
         //
         // agraph
         dev::agraph_t* agraph = nullptr;
-        if( res_adtype == adtype_t::parameter )
+        if( res_vitype == vitype_t::parameter )
             agraph = &tape.m_par;
         else {
-            assert( res_adtype == adtype_t::variable  &&
+            assert( res_vitype == vitype_t::variable  &&
                 "unary operand is not constant, parameter, or variable"
             );
             agraph = &tape.m_var;
@@ -155,9 +155,9 @@ adten_t adten_t::unary( dev::op_enum_t op_enum, const adten_t& operand )
         agraph->m_arg_start.push_back( agraph->m_arg_value.size() );
         //
         agraph->m_arg_value.push_back( operand.m_index );
-        agraph->m_arg_type.push_back( operand.m_adtype );
+        agraph->m_arg_type.push_back( operand.m_vitype );
     }
-    return adten_t(res_tape_id, res_index, res_at_ten, res_adtype);
+    return adten_t(res_tape_id, res_index, res_at_ten, res_vitype);
 }
 // ---------------------------------------------------------------------------
 } // End ad_tensor

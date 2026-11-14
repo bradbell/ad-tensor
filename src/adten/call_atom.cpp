@@ -45,7 +45,7 @@ acyclic graph:
     start + 4, index of first domain argument, argument type
     ..., ..., ...
     start + 3 + n_domain, index of last domain argument, argument type
-    start + 4 + n_domain, range index of first result that's used, adtype::none
+    start + 4 + n_domain, range index of first result that's used, vitype::none
     ..., ..., ...
     start + 3 + n_domain + n_result, range index of last used result, none
 
@@ -124,12 +124,12 @@ vector<adten_t> adten_t::call_atom(
     }
     sparsity_t pattern = opt_depend.value();
     //
-    // rng_adtype
-    vector<adtype_t> rng_adtype(n_range, adtype_t::constant);
+    // rng_vitype
+    vector<vitype_t> rng_vitype(n_range, vitype_t::constant);
     for(size_t k = 0; k < pattern.size(); ++k) {
         size_t row       = pattern[k][0];
         size_t col       = pattern[k][1];
-        rng_adtype[row] = std::max(rng_adtype[row],  adomain[col].m_adtype);
+        rng_vitype[row] = std::max(rng_vitype[row],  adomain[col].m_vitype);
     }
     //
     // arange, tape.m_con_vec, m_index, par_rng_index, var_rng_index
@@ -137,40 +137,40 @@ vector<adten_t> adten_t::call_atom(
     vector<size_t> par_rng_index, var_rng_index;
     size_t par_index = tape.m_par.m_op_seq.size();
     size_t var_index = tape.m_var.m_op_seq.size();
-    for(size_t i = 0; i < n_range; ++i) switch( rng_adtype[i] ) {
+    for(size_t i = 0; i < n_range; ++i) switch( rng_vitype[i] ) {
         //
-        // adtype_t::constant
+        // vitype_t::constant
         // This adds the constant to tape.m_con_vec.
-        case adtype_t::constant:
+        case vitype_t::constant:
         arange.push_back( adten_t( range[i] ) );
         break;
         //
-        // adtype_t::parameter
-        case adtype_t::parameter:
+        // vitype_t::parameter
+        case vitype_t::parameter:
         arange.push_back( adten_t(
             tape.m_tape_id,
             par_index,
             range[i],
-            adtype_t::parameter
+            vitype_t::parameter
         ) );
         ++par_index;
         par_rng_index.push_back(i);
         break;
         //
-        // adtype_t::variable
-        case adtype_t::variable:
+        // vitype_t::variable
+        case vitype_t::variable:
         arange.push_back( adten_t(
             tape.m_tape_id,
             var_index,
             range[i],
-            adtype_t::variable
+            vitype_t::variable
         ) );
         ++var_index;
         var_rng_index.push_back(i);
         break;
         //
         default:
-        assert( false && "call_atom: a domain type is adtype_t::none");
+        assert( false && "call_atom: a domain type is vitype_t::none");
         break;
     }
     // n_result
@@ -202,22 +202,22 @@ vector<adten_t> adten_t::call_atom(
         agraph->m_arg_value.push_back(n_range);
         agraph->m_arg_value.push_back(n_result[ig]);
         for(size_t k = 0; k < 4; ++k) {
-            agraph->m_arg_type.push_back( adtype_t::none );
+            agraph->m_arg_type.push_back( vitype_t::none );
         }
         for(size_t j = 0; j < n_domain; ++j) {
-            adtype_t adtype = adomain[j].m_adtype;
-            if( ig == 0 && adtype == adtype_t::variable ) {
+            vitype_t vitype = adomain[j].m_vitype;
+            if( ig == 0 && vitype == vitype_t::variable ) {
                 // The undefined tensor
                 agraph->m_arg_value.push_back( 0 );
-                agraph->m_arg_type.push_back( adtype_t::constant );
+                agraph->m_arg_type.push_back( vitype_t::constant );
             } else {
                 agraph->m_arg_value.push_back( adomain[j].m_index );
-                agraph->m_arg_type.push_back( adomain[j].m_adtype );
+                agraph->m_arg_type.push_back( adomain[j].m_vitype );
             }
         }
         for(size_t k = 0; k < n_result[ig]; ++k) {
             agraph->m_arg_value.push_back( (*rng_index)[k] );
-            agraph->m_arg_type.push_back( adtype_t::none );
+            agraph->m_arg_type.push_back( vitype_t::none );
         }
         //
         // agraph: m_op_seq, m_arg_start

@@ -4,14 +4,14 @@
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
 /*
-{xrst_begin adtype dev}
+{xrst_begin vitype dev}
 {xrst_spell
     enum
     adfn
 }
 
-A Graph Index Type
-##################
+The Vector Index Type
+#####################
 
 constant
 ********
@@ -30,7 +30,8 @@ for the adfn that holds this graph.
 
 none
 ****
-The type none is used when the index does not correspond to an AD tensor.
+The type none is used this is not an index in a
+vector in the operation sequence.
 
 Enum Values
 ***********
@@ -38,10 +39,10 @@ Enum Values
     BEGIN_AD_TYPE_T, END_AD_TYPE_T
 }
 
-{xrst_end adtype}
+{xrst_end vitype}
 */
 // BEGIN_AD_TYPE_T
-namespace ad_tensor { enum struct adtype_t {
+namespace ad_tensor { enum struct vitype_t {
     constant,
     parameter,
     variable,

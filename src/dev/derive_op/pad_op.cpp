@@ -43,17 +43,17 @@ void pad_op_t<TensorType>::forward_par(
 #ifndef NDEBUG
     //
     // input_type, constant_type
-    adtype_t input_type   = agraph.m_arg_type[arg_start];
-    assert( input_type  == adtype_t::parameter );
-    adtype_t constant_type   = agraph.m_arg_type[arg_start + 1];
-    assert( constant_type  == adtype_t::constant );
+    vitype_t input_type   = agraph.m_arg_type[arg_start];
+    assert( input_type  == vitype_t::parameter );
+    vitype_t constant_type   = agraph.m_arg_type[arg_start + 1];
+    assert( constant_type  == vitype_t::constant );
     //
     // n_arg
     size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
     assert( n_arg == 4 + n_sizes && "pad_op: n_arg != 4 + n_sizes" );
     //
     for(size_t i = 2; i < n_arg; ++i) {
-        assert( agraph.m_arg_type[arg_start +i] == adtype_t::none );
+        assert( agraph.m_arg_type[arg_start +i] == vitype_t::none );
     }
 #endif
     //
@@ -134,17 +134,17 @@ void pad_op_t<TensorType>::forward_var(
 #ifndef NDEBUG
     //
     // input_type, constant_type
-    adtype_t input_type   = agraph.m_arg_type[arg_start];
-    assert( input_type  == adtype_t::variable );
-    adtype_t constant_type   = agraph.m_arg_type[arg_start + 1];
-    assert( constant_type  == adtype_t::constant );
+    vitype_t input_type   = agraph.m_arg_type[arg_start];
+    assert( input_type  == vitype_t::variable );
+    vitype_t constant_type   = agraph.m_arg_type[arg_start + 1];
+    assert( constant_type  == vitype_t::constant );
     //
     // n_arg
     size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
     assert( n_arg == 4 + n_sizes && "pad_op: n_arg != 4 + n_sizes" );
     //
     for(size_t i = 2; i < n_arg; ++i) {
-        assert( agraph.m_arg_type[arg_start +i] == adtype_t::none );
+        assert( agraph.m_arg_type[arg_start +i] == vitype_t::none );
     }
 #endif
     //
@@ -224,17 +224,17 @@ void pad_op_t<TensorType>::forward_der(
 #ifndef NDEBUG
     //
     // input_type, constant_type
-    adtype_t input_type   = agraph.m_arg_type[arg_start];
-    assert( input_type  == adtype_t::variable );
-    adtype_t constant_type   = agraph.m_arg_type[arg_start + 1];
-    assert( constant_type  == adtype_t::constant );
+    vitype_t input_type   = agraph.m_arg_type[arg_start];
+    assert( input_type  == vitype_t::variable );
+    vitype_t constant_type   = agraph.m_arg_type[arg_start + 1];
+    assert( constant_type  == vitype_t::constant );
     //
     // n_arg
     size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
     assert( n_arg == 4 + n_sizes && "pad_op: n_arg != 4 + n_sizes" );
     //
     for(size_t i = 2; i < n_arg; ++i) {
-        assert( agraph.m_arg_type[arg_start +i] == adtype_t::none );
+        assert( agraph.m_arg_type[arg_start +i] == vitype_t::none );
     }
 #endif
     //
@@ -314,17 +314,17 @@ void pad_op_t<TensorType>::reverse_der(
 #ifndef NDEBUG
     //
     // input_type, constant_type
-    adtype_t input_type   = agraph.m_arg_type[arg_start];
-    assert( input_type  == adtype_t::variable );
-    adtype_t constant_type   = agraph.m_arg_type[arg_start + 1];
-    assert( constant_type  == adtype_t::constant );
+    vitype_t input_type   = agraph.m_arg_type[arg_start];
+    assert( input_type  == vitype_t::variable );
+    vitype_t constant_type   = agraph.m_arg_type[arg_start + 1];
+    assert( constant_type  == vitype_t::constant );
     //
     // n_arg
     size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
     assert( n_arg == 4 + n_sizes && "pad_op: n_arg != 4 + n_sizes" );
     //
     for(size_t i = 2; i < n_arg; ++i) {
-        assert( agraph.m_arg_type[arg_start +i] == adtype_t::none );
+        assert( agraph.m_arg_type[arg_start +i] == vitype_t::none );
     }
 #endif
     //
@@ -452,9 +452,9 @@ template void pad_op_t<adten_t>::reverse_der(
 // src_gen
 template <> std::string pad_op_t<at::Tensor>::src_gen(
     size_t                                                op_index        ,
-    adtype_t                                              op_adtype       ,
+    vitype_t                                              op_vitype       ,
     const agraph_t&                                       agraph          ,
-    const std::function< std::string(size_t, adtype_t) >& tensor_src
+    const std::function< std::string(size_t, vitype_t) >& tensor_src
 ) const {
     //
     // string
@@ -465,15 +465,15 @@ template <> std::string pad_op_t<at::Tensor>::src_gen(
     //
     // input_src
     size_t   input_index   = agraph.m_arg_value[arg_start];
-    adtype_t input_adtype  = agraph.m_arg_type[arg_start];
-    string   input_src     = tensor_src(input_index, input_adtype);
+    vitype_t input_vitype  = agraph.m_arg_type[arg_start];
+    string   input_src     = tensor_src(input_index, input_vitype);
     //
     // constant_src
     size_t constant_index = agraph.m_arg_value[arg_start + 1];
-    string constant_src   = tensor_src(constant_index, adtype_t::constant);
+    string constant_src   = tensor_src(constant_index, vitype_t::constant);
     //
     // target_src
-    string target_src = tensor_src(op_index, op_adtype);
+    string target_src = tensor_src(op_index, op_vitype);
     //
     // pad_mode_src
     size_t mode_size_t  = agraph.m_arg_value[arg_start + 2];
@@ -504,15 +504,15 @@ template <> std::string pad_op_t<at::Tensor>::src_gen(
 #ifndef NDEBUG
     //
     // constant_type
-    adtype_t constant_type   = agraph.m_arg_type[arg_start + 1];
-    assert( constant_type  == adtype_t::constant );
+    vitype_t constant_type   = agraph.m_arg_type[arg_start + 1];
+    assert( constant_type  == vitype_t::constant );
     //
     // n_arg
     size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
     assert( n_arg == 4 + n_sizes && "pad_op: n_arg != 4 + n_sizes" );
     //
     for(size_t i = 2; i < n_arg; ++i) {
-        assert( agraph.m_arg_type[arg_start +i] == adtype_t::none );
+        assert( agraph.m_arg_type[arg_start +i] == vitype_t::none );
     }
 #endif
     //
@@ -549,9 +549,9 @@ R"|({{   auto options = torch::nn::functional::PadFuncOptions( {} );
 }
 template <> std::string pad_op_t<adten_t>::src_gen(
     size_t                                                op_index        ,
-    adtype_t                                              op_adtype       ,
+    vitype_t                                              op_vitype       ,
     const agraph_t&                                       agraph          ,
-    const std::function< std::string(size_t, adtype_t) >& tensor_src
+    const std::function< std::string(size_t, vitype_t) >& tensor_src
 ) const {
     assert(false && "adten_t version of src_gen called for pad operator");
     return "";

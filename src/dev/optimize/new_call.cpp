@@ -40,8 +40,8 @@ We use the notation
 
 agraph_type
 ***********
-is the type for the graphs and must be adtype_t::parameter
-or adtype_t::variable.
+is the type for the graphs and must be vitype_t::parameter
+or vitype_t::variable.
 
 agraph_new
 **********
@@ -103,7 +103,7 @@ namespace ad_tensor { namespace dev { // Begin ad_tensor::dev
 //
 // BEGIN_NEW_CALL
 size_t new_call(
-    adtype_t                  agraph_type,
+    vitype_t                  agraph_type,
     agraph_t&                 agraph_new,
     const agraph_t&           agraph_old,
     size_t                    op_index_old,
@@ -174,20 +174,20 @@ size_t new_call(
         agraph_new.m_arg_value.push_back( n_range );
         agraph_new.m_arg_value.push_back( n_result_new );
         for(size_t k = 0; k < 4; ++k) {
-            agraph_new.m_arg_type.push_back( adtype_t::none );
+            agraph_new.m_arg_type.push_back( vitype_t::none );
         }
         // agraph_new: m_arg_value, m_arg_type
         for(size_t j = 0; j < n_domain; ++j) {
             size_t    arg_index     = arg_start + 4 + j;
             size_t    arg_value_old = agraph_old.m_arg_value[arg_index];
-            adtype_t arg_type      = agraph_old.m_arg_type[arg_index];
+            vitype_t arg_type      = agraph_old.m_arg_type[arg_index];
             if( arg_type != agraph_type ) {
                 agraph_new.m_arg_value.push_back( arg_value_old );
             } else {
                 if( ! depend_old[arg_value_old] ) {
                     // The undefined tensor
                     agraph_new.m_arg_value.push_back( 0 );
-                    arg_type = adtype_t::constant;
+                    arg_type = vitype_t::constant;
                 } else {
                     agraph_new.m_arg_value.push_back( old2new[arg_value_old] );
                 }
@@ -200,7 +200,7 @@ size_t new_call(
                 size_t arg_index = arg_start + 4 + n_domain + k;
                 size_t arg_value = agraph_old.m_arg_value[ arg_index ];
                 agraph_new.m_arg_value.push_back( arg_value );
-                agraph_new.m_arg_type.push_back( adtype_t::none );
+                agraph_new.m_arg_type.push_back( vitype_t::none );
             }
         }
         //

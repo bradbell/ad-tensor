@@ -22,7 +22,7 @@
     {   size_t n_arg = agraph.m_arg_start[op_index + 1] - arg_start; \
         assert( n_arg == 5  ); \
         for(size_t i = 1; i < 5; ++i) { \
-            assert( agraph.m_arg_type[arg_start+i] == adtype_t::none ); \
+            assert( agraph.m_arg_type[arg_start+i] == vitype_t::none ); \
         } \
     }
 #endif
@@ -41,7 +41,7 @@ void slice_op_t<TensorType>::forward_par(
     // arg_start, dim, start, end, step
     UNPACK
     CHECK_ARGUMENTS
-    assert( agraph.m_arg_type[arg_start] == (adtype_t::parameter) );
+    assert( agraph.m_arg_type[arg_start] == (vitype_t::parameter) );
     //
     // operand_index
     size_t operand_index  = agraph.m_arg_value[arg_start];
@@ -75,7 +75,7 @@ void slice_op_t<TensorType>::forward_var(
     // arg_start, dim, start, end, step
     UNPACK
     CHECK_ARGUMENTS
-    assert( agraph.m_arg_type[arg_start] == (adtype_t::variable) );
+    assert( agraph.m_arg_type[arg_start] == (vitype_t::variable) );
     //
     // operand_index
     size_t operand_index  = agraph.m_arg_value[arg_start];
@@ -112,7 +112,7 @@ void slice_op_t<TensorType>::forward_der(
     // arg_start, dim, start, end, step
     UNPACK
     CHECK_ARGUMENTS
-    assert( agraph.m_arg_type[arg_start] == (adtype_t::variable) );
+    assert( agraph.m_arg_type[arg_start] == (vitype_t::variable) );
     //
     // operand_index
     size_t operand_index  = agraph.m_arg_value[arg_start];
@@ -150,7 +150,7 @@ void slice_op_t<TensorType>::reverse_der(
     // arg_start, dim, start, end, step
     UNPACK
     CHECK_ARGUMENTS
-    assert( agraph.m_arg_type[arg_start] == (adtype_t::variable) );
+    assert( agraph.m_arg_type[arg_start] == (vitype_t::variable) );
     //
     if( step != 1 ) { user_assert(false ,
         "reverse_der: slice operation with step !=1 is not yet implemented"
@@ -208,9 +208,9 @@ template void slice_op_t<adten_t>::reverse_der(
 // src_gen
 template <> std::string slice_op_t<at::Tensor>::src_gen(
     size_t                                                op_index        ,
-    adtype_t                                              op_adtype       ,
+    vitype_t                                              op_vitype       ,
     const agraph_t&                                       agraph          ,
-    const std::function< std::string(size_t, adtype_t) >& tensor_src
+    const std::function< std::string(size_t, vitype_t) >& tensor_src
 ) const {
     //
     // string
@@ -220,17 +220,17 @@ template <> std::string slice_op_t<at::Tensor>::src_gen(
     UNPACK
     CHECK_ARGUMENTS
     assert(
-        agraph.m_arg_type[arg_start] == adtype_t::parameter ||
-        agraph.m_arg_type[arg_start] == adtype_t::variable
+        agraph.m_arg_type[arg_start] == vitype_t::parameter ||
+        agraph.m_arg_type[arg_start] == vitype_t::variable
     );
     //
     // operand_src
     size_t   operand_index  = agraph.m_arg_value[arg_start];
-    adtype_t operand_adtype = agraph.m_arg_type[arg_start];
-    string   operand_src    = tensor_src(operand_index, operand_adtype);
+    vitype_t operand_vitype = agraph.m_arg_type[arg_start];
+    string   operand_src    = tensor_src(operand_index, operand_vitype);
     //
     // target_src
-    string target_src = tensor_src(op_index, op_adtype);
+    string target_src = tensor_src(op_index, op_vitype);
     //
     // src
     constexpr const char* fmt = "{} = {}.slice({}, {}, {}, {});";
@@ -242,9 +242,9 @@ template <> std::string slice_op_t<at::Tensor>::src_gen(
 }
 template <> std::string slice_op_t<adten_t>::src_gen(
     size_t                                                op_index        ,
-    adtype_t                                              op_adtype       ,
+    vitype_t                                              op_vitype       ,
     const agraph_t&                                       agraph          ,
-    const std::function< std::string(size_t, adtype_t) >& tensor_src
+    const std::function< std::string(size_t, vitype_t) >& tensor_src
 ) const {
     assert(false && "adten_t version of src_gen called for slice operator");
     return "";

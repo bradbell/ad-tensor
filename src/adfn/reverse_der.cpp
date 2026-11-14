@@ -3,7 +3,7 @@
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
 #include <ad_tensor/adfn.hpp>
-#include <ad_tensor/dev/adtype.hpp>
+#include <ad_tensor/dev/vitype.hpp>
 #include <ad_tensor/dev/base_op.hpp>
 #include <ad_tensor/dev/derive_op.hpp>
 #include <ad_tensor/dev/to_string.hpp>
@@ -128,7 +128,7 @@ vector<TensorType> adfn_t::reverse_der(
     // all_der
     vector<TensorType> all_der(n_op, no_elem);
     for(size_t i = 0; i < m_rng_index.size(); ++i) {
-        if( m_rng_adtype[i] == adtype_t::variable )  {
+        if( m_rng_vitype[i] == vitype_t::variable )  {
             all_der[ m_rng_index[i] ] = rng_der[i];
         }
     }

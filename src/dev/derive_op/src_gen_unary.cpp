@@ -31,7 +31,7 @@ It is also the index of the result for this operator.
 It must be greater than zero, because the first result is an
 independent parameter tensor.
 
-op_adtype
+op_vitype
 *********
 is the type of the operator sequence; i.e., parameter or variable.
 
@@ -44,10 +44,10 @@ tensor_src
 **********
 The function call
 {xrst_code cpp}
-    src = tensor_src(index, adtype)
+    src = tensor_src(index, vitype)
 {xrst_code}
 returns a source code representation of a
-constant, parameter of variable (depending on adtype) with the specified index.
+constant, parameter of variable (depending on vitype) with the specified index.
 The return, src, can be used to set or get the corresponding value.
 There are no newline characters in src; hence it is one line of source code.
 
@@ -62,7 +62,7 @@ Is the source code corresponding to the unary operator at index op_index.
 #include <string>
 #include <functional>
 #include <iostream>
-#include <ad_tensor/dev/adtype.hpp>
+#include <ad_tensor/dev/vitype.hpp>
 #include <ad_tensor/dev/agraph.hpp>
 #include <ad_tensor/dev/op_enum.hpp>
 #include <ad_tensor/dev/to_string.hpp>
@@ -72,11 +72,11 @@ namespace ad_tensor { namespace dev { // ad_tensor::dev
 // BEGIN_SRC_GEN_BINARY
 std::string src_gen_unary(
     size_t                                                op_index        ,
-    adtype_t                                              op_adtype       ,
+    vitype_t                                              op_vitype       ,
     const agraph_t&                                       agraph          ,
-    const std::function< std::string(size_t, adtype_t) >& tensor_src      )
+    const std::function< std::string(size_t, vitype_t) >& tensor_src      )
 {   // END_SRC_GEN_BINARY
-    assert( op_adtype==adtype_t::parameter || op_adtype==adtype_t::variable );
+    assert( op_vitype==vitype_t::parameter || op_vitype==vitype_t::variable );
     //
     // string
     using std::string;
@@ -91,11 +91,11 @@ std::string src_gen_unary(
     //
     // operand_src
     size_t   operand_index  = agraph.m_arg_value[arg_start];
-    adtype_t operand_adtype = agraph.m_arg_type[arg_start];
-    string   operand_src    = tensor_src(operand_index, operand_adtype);
+    vitype_t operand_vitype = agraph.m_arg_type[arg_start];
+    string   operand_src    = tensor_src(operand_index, operand_vitype);
     //
     // target_src
-    string target_src = tensor_src(op_index, op_adtype);
+    string target_src = tensor_src(op_index, op_vitype);
     //
     // op_enum
     op_enum_t op_enum = agraph.m_op_seq[op_index];

@@ -108,8 +108,8 @@ void minus_op_t<TensorType>::forward_der(
 #ifndef NDEBUG
     size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
     assert( n_arg == 1 && "minus: n_arg != 1" );
-    adtype_t operand_type  = agraph.m_arg_type[arg_start];
-    assert( operand_type == adtype_t::variable && "minus::forward_der: "
+    vitype_t operand_type  = agraph.m_arg_type[arg_start];
+    assert( operand_type == vitype_t::variable && "minus::forward_der: "
         "operand is not a variable"
     );
 # endif
@@ -156,8 +156,8 @@ void minus_op_t<TensorType>::reverse_der(
 #ifndef NDEBUG
     size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
     assert( n_arg == 1 && "minus: n_arg != 1" );
-    adtype_t operand_type  = agraph.m_arg_type[arg_start];
-    assert( operand_type == adtype_t::variable &&
+    vitype_t operand_type  = agraph.m_arg_type[arg_start];
+    assert( operand_type == vitype_t::variable &&
         "minus::forward_der: operand is not a variable"
     );
 # endif
@@ -192,17 +192,17 @@ template void minus_op_t<adten_t>::reverse_der(
 // src_gen
 template <> std::string minus_op_t<at::Tensor>::src_gen(
     size_t                                                op_index        ,
-    adtype_t                                              op_adtype       ,
+    vitype_t                                              op_vitype       ,
     const agraph_t&                                       agraph          ,
-    const std::function< std::string(size_t, adtype_t) >& tensor_src
+    const std::function< std::string(size_t, vitype_t) >& tensor_src
 ) const {
-    return src_gen_unary(op_index, op_adtype, agraph, tensor_src);
+    return src_gen_unary(op_index, op_vitype, agraph, tensor_src);
 }
 template <> std::string minus_op_t<adten_t>::src_gen(
     size_t                                                op_index        ,
-    adtype_t                                              op_adtype       ,
+    vitype_t                                              op_vitype       ,
     const agraph_t&                                       agraph          ,
-    const std::function< std::string(size_t, adtype_t) >& tensor_src
+    const std::function< std::string(size_t, vitype_t) >& tensor_src
 ) const {
     assert(false && "adten_t version of src_gen called for minus operator");
     return "";

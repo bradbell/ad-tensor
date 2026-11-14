@@ -87,18 +87,18 @@ template<> void result_op_t<at::Tensor>::reverse_der(
 // src_gen
 template <> std::string result_op_t<at::Tensor>::src_gen(
     size_t                                                op_index        ,
-    adtype_t                                              op_adtype       ,
+    vitype_t                                              op_vitype       ,
     const agraph_t&                                       agraph          ,
-    const std::function< std::string(size_t, adtype_t) >& tensor_src
+    const std::function< std::string(size_t, vitype_t) >& tensor_src
 ) const {
     // call_op generates results for this operator
     return "";
 }
 template <> std::string result_op_t<adten_t>::src_gen(
     size_t                                                op_index        ,
-    adtype_t                                              op_adtype       ,
+    vitype_t                                              op_vitype       ,
     const agraph_t&                                       agraph          ,
-    const std::function< std::string(size_t, adtype_t) >& tensor_src
+    const std::function< std::string(size_t, vitype_t) >& tensor_src
 ) const {
     assert(false && "adten_t version of src_gen called for call_result operator");
     return "";

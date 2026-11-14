@@ -130,8 +130,8 @@ adten_t adten_t::pad(
         "input AD tensor's tape is not tape that is recording"
     );
     //
-    // res_adtype
-    adtype_t res_adtype =  input.m_adtype;
+    // res_vitype
+    vitype_t res_vitype =  input.m_vitype;
     //
     // res_tape_id
     size_t res_tape_id = tape.m_tape_id;
@@ -139,7 +139,7 @@ adten_t adten_t::pad(
     // res_index
     size_t res_index;
     //
-    if( res_adtype == adtype_t::constant ) {
+    if( res_vitype == vitype_t::constant ) {
         // res_index, tape.m_con_vec
         res_index = tape.m_con_vec.size();
         tape.m_con_vec.push_back( res_tensor.clone() );
@@ -173,10 +173,10 @@ adten_t adten_t::pad(
         //
         // agraph
         dev::agraph_t* agraph = nullptr;
-        if( res_adtype == adtype_t::parameter )
+        if( res_vitype == vitype_t::parameter )
             agraph = &tape.m_par;
         else {
-            assert( res_adtype == adtype_t::variable  && "AD tensor in "
+            assert( res_vitype == vitype_t::variable  && "AD tensor in "
                 "pad is not constant, parameter, or variable"
             );
             agraph = &tape.m_var;
@@ -190,23 +190,23 @@ adten_t adten_t::pad(
         agraph->m_arg_start.push_back( agraph->m_arg_value.size() );
         //
         agraph->m_arg_value.push_back( input.m_index );
-        agraph->m_arg_type.push_back( input.m_adtype );
+        agraph->m_arg_type.push_back( input.m_vitype );
         //
         agraph->m_arg_value.push_back( constant_index );
-        agraph->m_arg_type.push_back( adtype_t::constant );
+        agraph->m_arg_type.push_back( vitype_t::constant );
         //
         agraph->m_arg_value.push_back( mode_size_t );
-        agraph->m_arg_type.push_back( adtype_t::none );
+        agraph->m_arg_type.push_back( vitype_t::none );
         //
         agraph->m_arg_value.push_back( pad_sizes.size() );
-        agraph->m_arg_type.push_back( adtype_t::none );
+        agraph->m_arg_type.push_back( vitype_t::none );
         //
         for(size_t i = 0; i < pad_sizes.size(); ++i)
         {   agraph->m_arg_value.push_back( size_t( pad_sizes[i] ) );
-            agraph->m_arg_type.push_back( adtype_t::none );
+            agraph->m_arg_type.push_back( vitype_t::none );
         }
     }
-    return adten_t(res_tape_id, res_index, res_tensor, res_adtype);
+    return adten_t(res_tape_id, res_index, res_tensor, res_vitype);
 }
 adten_t pad(
     const adten_t&                               input   ,

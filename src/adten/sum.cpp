@@ -117,8 +117,8 @@ adten_t adten_t::sum(const c10::IntArrayRef& dim, bool keepdim) const
         "Tape for AD tensor being summed is not tape that is recording"
     );
     //
-    // res_adtype
-    adtype_t res_adtype = m_adtype;
+    // res_vitype
+    vitype_t res_vitype = m_vitype;
     //
     // res_tape_id
     size_t res_tape_id = tape.m_tape_id;
@@ -126,7 +126,7 @@ adten_t adten_t::sum(const c10::IntArrayRef& dim, bool keepdim) const
     // res_index
     size_t res_index;
     //
-    if( res_adtype == adtype_t::constant ) {
+    if( res_vitype == vitype_t::constant ) {
         // res_index, tape.m_con_vec
         res_index = tape.m_con_vec.size();
         tape.m_con_vec.push_back( res_tensor.clone() );
@@ -134,10 +134,10 @@ adten_t adten_t::sum(const c10::IntArrayRef& dim, bool keepdim) const
         //
         // agraph
         dev::agraph_t* agraph = nullptr;
-        if( res_adtype == adtype_t::parameter )
+        if( res_vitype == vitype_t::parameter )
             agraph = &tape.m_par;
         else {
-            assert( res_adtype == adtype_t::variable  && "AD tensor being "
+            assert( res_vitype == vitype_t::variable  && "AD tensor being "
                 "summed is not constant, parameter, or variable"
             );
             agraph = &tape.m_var;
@@ -149,24 +149,24 @@ adten_t adten_t::sum(const c10::IntArrayRef& dim, bool keepdim) const
         agraph->m_arg_start.push_back( agraph->m_arg_value.size() );
         //
         agraph->m_arg_value.push_back( m_index );
-        agraph->m_arg_type.push_back( m_adtype );
+        agraph->m_arg_type.push_back( m_vitype );
         //
         agraph->m_arg_value.push_back( size_t(keepdim) );
-        agraph->m_arg_type.push_back( adtype_t::none );
+        agraph->m_arg_type.push_back( vitype_t::none );
         //
         size_t n_dim = dim.size();
         agraph->m_arg_value.push_back( n_dim );
-        agraph->m_arg_type.push_back( adtype_t::none );
+        agraph->m_arg_type.push_back( vitype_t::none );
         //
         for(size_t i = 0; i < n_dim; ++i) {
             dev::user_assert( 0 <= dim[i],
                 "AD Tensor sum: a dimension index is less than zero"
             );
             agraph->m_arg_value.push_back( size_t( dim[i] ) );
-            agraph->m_arg_type.push_back( adtype_t::none );
+            agraph->m_arg_type.push_back( vitype_t::none );
         }
     }
-    return adten_t(res_tape_id, res_index, res_tensor, res_adtype);
+    return adten_t(res_tape_id, res_index, res_tensor, res_vitype);
 }
 // ---------------------------------------------------------------------------
 } // End ad_tensor

@@ -75,15 +75,15 @@ namespace ad_tensor { namespace dev {
         const vector<TensorType>& par_vec   )
     // END_TENSOR_AT_ARG_INDEX_PAR
     {   size_t    index   = agraph.m_arg_value[arg_index];
-        adtype_t adtype = agraph.m_arg_type[arg_index];
-        switch( adtype ) {
+        vitype_t vitype = agraph.m_arg_type[arg_index];
+        switch( vitype ) {
             //
             // constant
-            case adtype_t::constant:
+            case vitype_t::constant:
             return TensorType( con_vec[index] );
             //
             // parameter
-            case adtype_t::parameter:
+            case vitype_t::parameter:
             return par_vec[index];
             //
             // default
@@ -119,19 +119,19 @@ namespace ad_tensor { namespace dev {
         const vector<TensorType>& var_vec   )
     // END_TENSOR_AT_ARG_INDEX_VAR
     {   size_t    index   = agraph.m_arg_value[arg_index];
-        adtype_t adtype = agraph.m_arg_type[arg_index];
-        switch( adtype ) {
+        vitype_t vitype = agraph.m_arg_type[arg_index];
+        switch( vitype ) {
             //
             // constant
-            case adtype_t::constant:
+            case vitype_t::constant:
             return TensorType( con_vec[index] );
             //
             // parameter
-            case adtype_t::parameter:
+            case vitype_t::parameter:
             return par_vec[index];
             //
             // variable
-            case adtype_t::variable:
+            case vitype_t::variable:
             return var_vec[index];
             //
             // default

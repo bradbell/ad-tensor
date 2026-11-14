@@ -7,7 +7,7 @@
 #include <ad_tensor/vector.hpp>
 #include <torch/torch.h>
 #include <ad_tensor/direction.hpp>
-#include <ad_tensor/dev/adtype.hpp>
+#include <ad_tensor/dev/vitype.hpp>
 #include <ad_tensor/sparsity.hpp>
 #include <ad_tensor/dev/agraph.hpp>
 #include <ad_tensor/dev/call_op_depend.hpp>
@@ -45,7 +45,7 @@ private:
     dev::agraph_t             m_par;
     dev::agraph_t             m_var;
     vector<size_t>            m_rng_index;
-    vector<adtype_t>          m_rng_adtype;
+    vector<vitype_t>          m_rng_vitype;
     vector< vector<int64_t> > m_rng_shapes;
     std::string               m_name;
     bool                      m_trace;

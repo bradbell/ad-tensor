@@ -122,9 +122,9 @@ m_rng_index
 ***********
 is the constant, parameter, or variable index for each of the range tensors.
 
-m_rng_adtype
+m_rng_vitype
 ************
-is the adtype for each of the range tensors.
+is the vitype for each of the range tensors.
 
 m_rng_shapes
 ************
@@ -144,7 +144,7 @@ namespace ad_tensor {
     , m_par()
     , m_var()
     , m_rng_index()
-    , m_rng_adtype()
+    , m_rng_vitype()
     , m_rng_shapes()
     , m_name()
     , m_trace(false)
@@ -158,7 +158,7 @@ namespace ad_tensor {
         m_var.is_empty() &&
         m_con_vec.empty() &&
         m_rng_index.empty() &&
-        m_rng_adtype.empty() &&
+        m_rng_vitype.empty() &&
         m_rng_shapes.empty() &&
         m_name.empty()
         ;

@@ -23,17 +23,17 @@ void transpose_op_t<TensorType>::forward_par(
     //
     // dim1
     int64_t dim1 = int64_t( agraph.m_arg_value[arg_start + 1] );
-    assert( adtype_t::none ==  agraph.m_arg_type[arg_start + 1] );
+    assert( vitype_t::none ==  agraph.m_arg_type[arg_start + 1] );
     //
     // dim2
     int64_t dim2 = int64_t( agraph.m_arg_value[arg_start + 2] );
-    assert( adtype_t::none ==  agraph.m_arg_type[arg_start + 2] );
+    assert( vitype_t::none ==  agraph.m_arg_type[arg_start + 2] );
     //
 #ifndef NDEBUG
     //
-    // adtype
-    adtype_t adtype   = agraph.m_arg_type[arg_start];
-    assert( adtype  == adtype_t::parameter );
+    // vitype
+    vitype_t vitype   = agraph.m_arg_type[arg_start];
+    assert( vitype  == vitype_t::parameter );
     //
     // n_arg
     size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
@@ -73,17 +73,17 @@ void transpose_op_t<TensorType>::forward_var(
     //
     // dim1
     int64_t dim1 = int64_t( agraph.m_arg_value[arg_start + 1] );
-    assert( adtype_t::none ==  agraph.m_arg_type[arg_start + 1] );
+    assert( vitype_t::none ==  agraph.m_arg_type[arg_start + 1] );
     //
     // dim2
     int64_t dim2 = int64_t( agraph.m_arg_value[arg_start + 2] );
-    assert( adtype_t::none ==  agraph.m_arg_type[arg_start + 2] );
+    assert( vitype_t::none ==  agraph.m_arg_type[arg_start + 2] );
     //
 #ifndef NDEBUG
     //
-    // adtype
-    adtype_t adtype   = agraph.m_arg_type[arg_start];
-    assert( adtype  == adtype_t::variable );
+    // vitype
+    vitype_t vitype   = agraph.m_arg_type[arg_start];
+    assert( vitype  == vitype_t::variable );
     //
     // n_arg
     size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
@@ -126,17 +126,17 @@ void transpose_op_t<TensorType>::forward_der(
     //
     // dim1
     int64_t dim1 = int64_t( agraph.m_arg_value[arg_start + 1] );
-    assert( adtype_t::none ==  agraph.m_arg_type[arg_start + 1] );
+    assert( vitype_t::none ==  agraph.m_arg_type[arg_start + 1] );
     //
     // dim2
     int64_t dim2 = int64_t( agraph.m_arg_value[arg_start + 2] );
-    assert( adtype_t::none ==  agraph.m_arg_type[arg_start + 2] );
+    assert( vitype_t::none ==  agraph.m_arg_type[arg_start + 2] );
     //
 #ifndef NDEBUG
     //
-    // adtype
-    adtype_t adtype   = agraph.m_arg_type[arg_start];
-    assert( adtype  == adtype_t::variable );
+    // vitype
+    vitype_t vitype   = agraph.m_arg_type[arg_start];
+    assert( vitype  == vitype_t::variable );
     //
     // n_arg
     size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
@@ -183,17 +183,17 @@ void transpose_op_t<TensorType>::reverse_der(
     //
     // dim1
     int64_t dim1 = int64_t( agraph.m_arg_value[arg_start + 1] );
-    assert( adtype_t::none ==  agraph.m_arg_type[arg_start + 1] );
+    assert( vitype_t::none ==  agraph.m_arg_type[arg_start + 1] );
     //
     // dim2
     int64_t dim2 = int64_t( agraph.m_arg_value[arg_start + 2] );
-    assert( adtype_t::none ==  agraph.m_arg_type[arg_start + 2] );
+    assert( vitype_t::none ==  agraph.m_arg_type[arg_start + 2] );
     //
 #ifndef NDEBUG
     //
-    // adtype
-    adtype_t adtype   = agraph.m_arg_type[arg_start];
-    assert( adtype  == adtype_t::variable );
+    // vitype
+    vitype_t vitype   = agraph.m_arg_type[arg_start];
+    assert( vitype  == vitype_t::variable );
     //
     // n_arg
     size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
@@ -229,9 +229,9 @@ template void transpose_op_t<adten_t>::reverse_der(
 // src_gen
 template <> std::string transpose_op_t<at::Tensor>::src_gen(
     size_t                                                op_index        ,
-    adtype_t                                              op_adtype       ,
+    vitype_t                                              op_vitype       ,
     const agraph_t&                                       agraph          ,
-    const std::function< std::string(size_t, adtype_t) >& tensor_src
+    const std::function< std::string(size_t, vitype_t) >& tensor_src
 ) const {
     //
     // string
@@ -247,16 +247,16 @@ template <> std::string transpose_op_t<at::Tensor>::src_gen(
     //
     // operand_src
     size_t   operand_index  = agraph.m_arg_value[arg_start];
-    adtype_t operand_adtype = agraph.m_arg_type[arg_start];
-    string   operand_src    = tensor_src(operand_index, operand_adtype);
+    vitype_t operand_vitype = agraph.m_arg_type[arg_start];
+    string   operand_src    = tensor_src(operand_index, operand_vitype);
     //
     // target_src
-    string target_src = tensor_src(op_index, op_adtype);
+    string target_src = tensor_src(op_index, op_vitype);
     //
     // dim1, dim_2
-    assert( agraph.m_arg_type[arg_start + 1] == adtype_t::none );
+    assert( agraph.m_arg_type[arg_start + 1] == vitype_t::none );
     size_t dim1 = agraph.m_arg_value[arg_start + 1];
-    assert( agraph.m_arg_type[arg_start + 2] == adtype_t::none );
+    assert( agraph.m_arg_type[arg_start + 2] == vitype_t::none );
     size_t dim2 = agraph.m_arg_value[arg_start + 2];
     //
     // src
@@ -267,9 +267,9 @@ template <> std::string transpose_op_t<at::Tensor>::src_gen(
 }
 template <> std::string transpose_op_t<adten_t>::src_gen(
     size_t                                                op_index        ,
-    adtype_t                                              op_adtype       ,
+    vitype_t                                              op_vitype       ,
     const agraph_t&                                       agraph          ,
-    const std::function< std::string(size_t, adtype_t) >& tensor_src
+    const std::function< std::string(size_t, vitype_t) >& tensor_src
 ) const {
     assert(false && "adten_t version of src_gen called for transpose operator");
     return "";

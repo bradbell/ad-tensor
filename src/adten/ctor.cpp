@@ -17,13 +17,13 @@ adten_t::adten_t(void)
 : m_tape_id(0)
 , m_index(0)
 , m_at_ten( not_defined() )
-, m_adtype(adtype_t::constant)
+, m_vitype(vitype_t::constant)
 { }
 adten_t::adten_t( const at::Tensor& tensor )
 : m_tape_id(0)
 , m_index(0)
 , m_at_ten(tensor)
-, m_adtype(adtype_t::constant)
+, m_vitype(vitype_t::constant)
 {   //
     if( is_defined(tensor) ) {
         // tape

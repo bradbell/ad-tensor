@@ -162,7 +162,7 @@ The contribution w.r.t. the bias is given by
         size_t n_arg = arg_end - arg_start; \
         assert( n_arg == 6  ); \
         for(size_t i = 3; i < 6; ++i) { \
-            assert( agraph.m_arg_type[arg_start+i] == adtype_t::none ); \
+            assert( agraph.m_arg_type[arg_start+i] == vitype_t::none ); \
         } \
     }
 #endif
@@ -275,23 +275,23 @@ void conv_transpose1d_op_t<TensorType>::forward_der(
     size_t arg_start = agraph.m_arg_start[op_index];
     //
     // variable
-    adtype_t variable = adtype_t::variable;
+    vitype_t variable = vitype_t::variable;
     //
     // input_index, input_type, input_zero_der
     size_t   input_index    = agraph.m_arg_value[arg_start];
-    adtype_t input_type     = agraph.m_arg_type[arg_start];
+    vitype_t input_type     = agraph.m_arg_type[arg_start];
     bool     input_zero_der =
         input_type != variable || not_defined( for_der[input_index] );
     //
     // weight_index, weight_type, weight_zero_der
     size_t   weight_index    = agraph.m_arg_value[arg_start + 1];
-    adtype_t weight_type     = agraph.m_arg_type[arg_start + 1];
+    vitype_t weight_type     = agraph.m_arg_type[arg_start + 1];
     bool     weight_zero_der =
         weight_type != variable || not_defined( for_der[weight_index] );
     //
     // bias_index, bias_type, bias_zero_der
     size_t   bias_index    = agraph.m_arg_value[arg_start + 2];
-    adtype_t bias_type     = agraph.m_arg_type[arg_start + 2];
+    vitype_t bias_type     = agraph.m_arg_type[arg_start + 2];
     bool     bias_zero_der =
         bias_type != variable || not_defined( for_der[bias_index] );
     //
@@ -375,19 +375,19 @@ void conv_transpose1d_op_t<TensorType>::reverse_der(
     size_t arg_start = agraph.m_arg_start[op_index];
     //
     // variable
-    adtype_t variable = adtype_t::variable;
+    vitype_t variable = vitype_t::variable;
     //
     // input_index, input_type
     size_t   input_index    = agraph.m_arg_value[arg_start];
-    adtype_t input_type     = agraph.m_arg_type[arg_start];
+    vitype_t input_type     = agraph.m_arg_type[arg_start];
     //
     // weight_index, weight_type
     size_t   weight_index    = agraph.m_arg_value[arg_start + 1];
-    adtype_t weight_type     = agraph.m_arg_type[arg_start + 1];
+    vitype_t weight_type     = agraph.m_arg_type[arg_start + 1];
     //
     // bias_index, bias_type
     size_t   bias_index    = agraph.m_arg_value[arg_start + 2];
-    adtype_t bias_type     = agraph.m_arg_type[arg_start + 2];
+    vitype_t bias_type     = agraph.m_arg_type[arg_start + 2];
     //
     // rev_der[bias_index]
     if( bias_type == variable ) {
@@ -462,9 +462,9 @@ template void conv_transpose1d_op_t<at::Tensor>::reverse_der(
 // src_gen
 template <> std::string conv_transpose1d_op_t<at::Tensor>::src_gen(
     size_t                                                op_index        ,
-    adtype_t                                              op_adtype       ,
+    vitype_t                                              op_vitype       ,
     const agraph_t&                                       agraph          ,
-    const std::function< std::string(size_t, adtype_t) >& tensor_src
+    const std::function< std::string(size_t, vitype_t) >& tensor_src
 ) const {
     CHECK_ARGUMENTS
     //
@@ -476,21 +476,21 @@ template <> std::string conv_transpose1d_op_t<at::Tensor>::src_gen(
     //
     // input_src
     size_t   input_index   = agraph.m_arg_value[arg_start];
-    adtype_t input_adtype  = agraph.m_arg_type[arg_start];
-    string   input_src     = tensor_src(input_index, input_adtype);
+    vitype_t input_vitype  = agraph.m_arg_type[arg_start];
+    string   input_src     = tensor_src(input_index, input_vitype);
     //
     // weight_src
     size_t   weight_index   = agraph.m_arg_value[arg_start + 1];
-    adtype_t weight_adtype  = agraph.m_arg_type[arg_start + 1];
-    string   weight_src     = tensor_src(weight_index, weight_adtype);
+    vitype_t weight_vitype  = agraph.m_arg_type[arg_start + 1];
+    string   weight_src     = tensor_src(weight_index, weight_vitype);
     //
     // bias_src
     size_t   bias_index   = agraph.m_arg_value[arg_start + 2];
-    adtype_t bias_adtype  = agraph.m_arg_type[arg_start + 2];
-    string   bias_src     = tensor_src(bias_index, bias_adtype);
+    vitype_t bias_vitype  = agraph.m_arg_type[arg_start + 2];
+    string   bias_src     = tensor_src(bias_index, bias_vitype);
     //
     // target_src
-    string target_src = tensor_src(op_index, op_adtype);
+    string target_src = tensor_src(op_index, op_vitype);
     //
     // src
     size_t stride   = agraph.m_arg_value[arg_start + 3];
@@ -514,9 +514,9 @@ R"|({{   auto options = torch::nn::functional::ConvTranspose1dFuncOptions()
 }
 template <> std::string conv_transpose1d_op_t<adten_t>::src_gen(
     size_t                                                op_index        ,
-    adtype_t                                              op_adtype       ,
+    vitype_t                                              op_vitype       ,
     const agraph_t&                                       agraph          ,
-    const std::function< std::string(size_t, adtype_t) >& tensor_src
+    const std::function< std::string(size_t, vitype_t) >& tensor_src
 ) const {
     assert(false &&
         "adten_t version of src_gen called for conv_transpose1d operator"

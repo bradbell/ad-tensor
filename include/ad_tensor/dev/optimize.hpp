@@ -42,7 +42,7 @@ namespace ad_tensor { namespace dev {
     //
     // new_call
     size_t new_call(
-        adtype_t                  agraph_type,
+        vitype_t                  agraph_type,
         agraph_t&                 agraph_new,
         const agraph_t&           agraph_old,
         size_t                    op_index_old,
@@ -53,7 +53,7 @@ namespace ad_tensor { namespace dev {
     //
     // new_split
     size_t new_split(
-        adtype_t                  agraph_type,
+        vitype_t                  agraph_type,
         agraph_t&                 agraph_new,
         const agraph_t&           agraph_old,
         size_t                    op_index_old,
@@ -64,10 +64,10 @@ namespace ad_tensor { namespace dev {
     //
     // new_agraph
     std::tuple< agraph_t, vector<size_t> > new_agraph(
-        adtype_t                 agraph_type     ,
+        vitype_t                 agraph_type     ,
         const agraph_t&          agraph_old      ,
         const vector<size_t>&    rng_index_old   ,
-        const vector<adtype_t>&  rng_adtype_old ,
+        const vector<vitype_t>&  rng_vitype_old ,
         const vector<bool>&      depend_old
     );
 } }

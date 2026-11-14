@@ -157,10 +157,10 @@ m_index
 If this thread matches the current recording,
 m_index is the index in this threads tape for this AD tensor.
 
-m_adtype
+m_vitype
 ********
 If this thread matches the current recording,
-m_adtype is the :ref:`adtype-name` in this threads tape for this AD tensor.
+m_vitype is the :ref:`vitype-name` in this threads tape for this AD tensor.
 
 m_at_ten
 ********
@@ -183,7 +183,7 @@ The adten_t Private Constructor
 #include <torch/torch.h>
 //
 #include <ad_tensor/adfn.hpp>
-#include <ad_tensor/dev/adtype.hpp>
+#include <ad_tensor/dev/vitype.hpp>
 #include <ad_tensor/dev/op_enum.hpp>
 //
 // AD_TENSOR_UNARY_OP
@@ -218,7 +218,7 @@ private:
     size_t        m_tape_id;
     size_t        m_index;
     at::Tensor    m_at_ten;
-    adtype_t      m_adtype;
+    vitype_t      m_vitype;
     // END_MEMBER_DATA
     //
     // BEGIN_PRIVATE_CTOR
@@ -226,8 +226,8 @@ private:
         size_t tape_id,
         size_t index,
         const at::Tensor& tensor,
-        adtype_t adtype )
-    : m_tape_id(tape_id), m_index(index), m_at_ten(tensor), m_adtype(adtype)
+        vitype_t vitype )
+    : m_tape_id(tape_id), m_index(index), m_at_ten(tensor), m_vitype(vitype)
     { }
     // END_PRIVATE_CTOR
     //
@@ -270,7 +270,7 @@ public:
     // BEGIN_CLONE
     adten_t clone(void) const
     // END_CLONE
-    {   return adten_t(m_tape_id, m_index,  m_at_ten.clone(), m_adtype ); }
+    {   return adten_t(m_tape_id, m_index,  m_at_ten.clone(), m_vitype ); }
     //
     // BEGIN_AT_TEN
     const at::Tensor& at_ten(void) const

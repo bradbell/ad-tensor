@@ -34,7 +34,7 @@ void solve_op_t<TensorType>::forward_par(
 #ifndef NDEBUG
     size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
     assert( n_arg == 3  );
-    assert( agraph.m_arg_type[arg_start+2] == adtype_t::none );
+    assert( agraph.m_arg_type[arg_start+2] == vitype_t::none );
 # endif
     //
     // linear_ten, rhs_ten
@@ -80,7 +80,7 @@ void solve_op_t<TensorType>::forward_var(
 #ifndef NDEBUG
     size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
     assert( n_arg == 3 );
-    assert( agraph.m_arg_type[arg_start+2] == adtype_t::none );
+    assert( agraph.m_arg_type[arg_start+2] == vitype_t::none );
 # endif
     //
     // linear_ten, rhs_ten
@@ -132,20 +132,20 @@ void solve_op_t<TensorType>::forward_der(
 #ifndef NDEBUG
     size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
     assert( n_arg == 3 );
-    assert( agraph.m_arg_type[arg_start+2] == adtype_t::none );
+    assert( agraph.m_arg_type[arg_start+2] == vitype_t::none );
 # endif
     // variable
-    adtype_t variable = adtype_t::variable;
+    vitype_t variable = vitype_t::variable;
     //
     // linear_index, linear_type, linear_zero_der
     size_t   linear_index     = agraph.m_arg_value[arg_start];
-    adtype_t linear_type     = agraph.m_arg_type[arg_start];
+    vitype_t linear_type     = agraph.m_arg_type[arg_start];
     bool     linear_zero_der =
         linear_type != variable || not_defined( for_der[linear_index] );
     //
     // rhs_index, rhs_type, rhs_zero_der
     size_t   rhs_index    = agraph.m_arg_value[arg_start + 1];
-    adtype_t rhs_type     = agraph.m_arg_type[arg_start + 1];
+    vitype_t rhs_type     = agraph.m_arg_type[arg_start + 1];
     bool     rhs_zero_der =
         rhs_type != variable || not_defined( for_der[rhs_index] );
     //
@@ -226,12 +226,12 @@ void solve_op_t<TensorType>::reverse_der(
 #ifndef NDEBUG
     size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
     assert( n_arg == 3 );
-    assert( agraph.m_arg_type[arg_start+2] == adtype_t::none );
+    assert( agraph.m_arg_type[arg_start+2] == vitype_t::none );
 # endif
     //
     // linear_type, rhs_type
-    adtype_t linear_type     = agraph.m_arg_type[arg_start];
-    adtype_t rhs_type        = agraph.m_arg_type[arg_start + 1];
+    vitype_t linear_type     = agraph.m_arg_type[arg_start];
+    vitype_t rhs_type        = agraph.m_arg_type[arg_start + 1];
     //
     // linear_index, rhs_index
     size_t linear_index = agraph.m_arg_value[arg_start];
@@ -259,7 +259,7 @@ void solve_op_t<TensorType>::reverse_der(
     //
     // rhs_bar
     TensorType rhs_bar = linalg_solve(linear_tra, rev_der[op_index], left);
-    if( rhs_type == adtype_t::variable ) {
+    if( rhs_type == vitype_t::variable ) {
         //
         // dim
         c10::IntArrayRef rhs_shape = shape_at_arg_index(
@@ -273,7 +273,7 @@ void solve_op_t<TensorType>::reverse_der(
     }
     //
     // linear_bar
-    if( linear_type == adtype_t::variable ) {
+    if( linear_type == vitype_t::variable ) {
         // dim
         size_t skip = 2;
         broadcast( solution_shape, linear_shape, array, skip);
@@ -308,9 +308,9 @@ template void solve_op_t<adten_t>::reverse_der(
 // src_gen
 template <> std::string solve_op_t<at::Tensor>::src_gen(
     size_t                                                op_index        ,
-    adtype_t                                              op_adtype       ,
+    vitype_t                                              op_vitype       ,
     const agraph_t&                                       agraph          ,
-    const std::function< std::string(size_t, adtype_t) >& tensor_src
+    const std::function< std::string(size_t, vitype_t) >& tensor_src
 ) const {
     //
     // string
@@ -325,24 +325,24 @@ template <> std::string solve_op_t<at::Tensor>::src_gen(
 #ifndef NDEBUG
     size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
     assert( n_arg == 3  );
-    assert( agraph.m_arg_type[arg_start+2] == adtype_t::none );
+    assert( agraph.m_arg_type[arg_start+2] == vitype_t::none );
 # endif
     //
     // linear_src
     size_t   linear_index  = agraph.m_arg_value[arg_start];
-    adtype_t linear_adtype = agraph.m_arg_type[arg_start];
-    string   linear_src    = tensor_src(linear_index, linear_adtype);
+    vitype_t linear_vitype = agraph.m_arg_type[arg_start];
+    string   linear_src    = tensor_src(linear_index, linear_vitype);
     //
     // rhs_src
     size_t   rhs_index  = agraph.m_arg_value[arg_start + 1];
-    adtype_t rhs_adtype = agraph.m_arg_type[arg_start + 1];
-    string   rhs_src    = tensor_src(rhs_index, rhs_adtype);
+    vitype_t rhs_vitype = agraph.m_arg_type[arg_start + 1];
+    string   rhs_src    = tensor_src(rhs_index, rhs_vitype);
     //
     // left_src
     string left_src = left ? "true" : "false";
     //
     // target_src
-    string target_src = tensor_src(op_index, op_adtype);
+    string target_src = tensor_src(op_index, op_vitype);
     //
     // src
     string src = std::format( "{} = linalg_solve({}, {}, {});",
@@ -353,9 +353,9 @@ template <> std::string solve_op_t<at::Tensor>::src_gen(
 }
 template <> std::string solve_op_t<adten_t>::src_gen(
     size_t                                                op_index        ,
-    adtype_t                                              op_adtype       ,
+    vitype_t                                              op_vitype       ,
     const agraph_t&                                       agraph          ,
-    const std::function< std::string(size_t, adtype_t) >& tensor_src
+    const std::function< std::string(size_t, vitype_t) >& tensor_src
 ) const {
     assert(false && "adten_t version of src_gen called for solve operator");
     return "";

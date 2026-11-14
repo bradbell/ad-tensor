@@ -125,7 +125,7 @@ op_index
 --------
 is the operator index in agraph for this operation.
 
-op_adtype
+op_vitype
 ---------
 is the type corresponding to this operator
 
@@ -137,10 +137,10 @@ tensor_src
 ----------
 The function call
 {xrst_code cpp}
-    src = tensor_src(index, adtype)
+    src = tensor_src(index, vitype)
 {xrst_code}
 returns a source code representation of a
-constant, parameter of variable (depending on adtype) with the specified index.
+constant, parameter of variable (depending on vitype) with the specified index.
 The return, src, can be used to get the corresponding value.
 There are no newline characters in src.
 
@@ -150,7 +150,7 @@ There are no newline characters in src.
 #include <ad_tensor/vector.hpp>
 #include <torch/torch.h>
 //
-#include <ad_tensor/dev/adtype.hpp>
+#include <ad_tensor/dev/vitype.hpp>
 #include <ad_tensor/dev/op_enum.hpp>
 #include <ad_tensor/dev/agraph.hpp>
 //
@@ -203,9 +203,9 @@ template<class TensorType> struct base_op_t
     // BEGIN_SRC_GEN
     virtual std::string src_gen(
         size_t                       op_index        ,
-        adtype_t                     op_adtype       ,
+        vitype_t                     op_vitype       ,
         const agraph_t&              agraph          ,
-        const std::function< std::string(size_t, adtype_t) >& tensor_src
+        const std::function< std::string(size_t, vitype_t) >& tensor_src
     ) const = 0;
     // END_SRC_GEN
 };

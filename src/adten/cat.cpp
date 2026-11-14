@@ -119,10 +119,10 @@ adten_t adten_t::cat(
         }
     }
     //
-    // res_adtype
-    adtype_t res_adtype = adtype_t::constant;
+    // res_vitype
+    vitype_t res_vitype = vitype_t::constant;
     for(size_t i = 0; i < n_ten; ++i) {
-        res_adtype  = std::max(res_adtype, tensor_list[i].m_adtype);
+        res_vitype  = std::max(res_vitype, tensor_list[i].m_vitype);
     }
     //
     // res_tape_id
@@ -131,7 +131,7 @@ adten_t adten_t::cat(
     // res_index
     size_t res_index;
     //
-    if( res_adtype == adtype_t::constant ) {
+    if( res_vitype == vitype_t::constant ) {
         // res_index, tape.m_con_vec
         res_index = tape.m_con_vec.size();
         tape.m_con_vec.push_back( res_at_ten.clone() );
@@ -139,10 +139,10 @@ adten_t adten_t::cat(
         //
         // agraph
         dev::agraph_t* agraph = nullptr;
-        if( res_adtype == adtype_t::parameter )
+        if( res_vitype == vitype_t::parameter )
             agraph = &tape.m_par;
         else {
-            assert( res_adtype == adtype_t::variable );
+            assert( res_vitype == vitype_t::variable );
             agraph = &tape.m_var;
         }
         //
@@ -152,17 +152,17 @@ adten_t adten_t::cat(
         agraph->m_arg_start.push_back( agraph->m_arg_value.size() );
         //
         agraph->m_arg_value.push_back( size_t(dim) );
-        agraph->m_arg_type.push_back( adtype_t::none );
+        agraph->m_arg_type.push_back( vitype_t::none );
         //
         agraph->m_arg_value.push_back( n_ten );
-        agraph->m_arg_type.push_back( adtype_t::none );
+        agraph->m_arg_type.push_back( vitype_t::none );
         //
         for(size_t i = 0; i < n_ten; ++i) {
             agraph->m_arg_value.push_back( tensor_list[i].m_index );
-            agraph->m_arg_type.push_back( tensor_list[i].m_adtype );
+            agraph->m_arg_type.push_back( tensor_list[i].m_vitype );
         }
     }
-    return adten_t(res_tape_id, res_index, res_at_ten, res_adtype);
+    return adten_t(res_tape_id, res_index, res_at_ten, res_vitype);
 }
 //
 // ad_tensor::cat

@@ -139,7 +139,7 @@ using std::cout;
 using std::string;
 using std::format;
 using ad_tensor::vector;
-using ad_tensor::adtype_t;
+using ad_tensor::vitype_t;
 //
 // -----------------------------------------------------------------------
 // src_out = indent(src_in)
@@ -398,18 +398,18 @@ R"|(    //
     //
     // ------------------------------------------------------------------------
     // tensor_src
-    // src = tensor_src(index, adtype)
-    auto tensor_src = [n_par_dom, n_var_dom] (size_t index, adtype_t adtype) {
+    // src = tensor_src(index, vitype)
+    auto tensor_src = [n_par_dom, n_var_dom] (size_t index, vitype_t vitype) {
         string src;
-        switch(adtype) {
+        switch(vitype) {
             //
-            case adtype_t::constant: {
+            case vitype_t::constant: {
                 constexpr const char* fmt = "con_vec[{}]";\
                 src = std::format(fmt, index);
             }
             break;
             //
-            case adtype_t::parameter: {
+            case vitype_t::parameter: {
                 if( index < n_par_dom ) {
                     constexpr const char* fmt = "dom_par[{}]";\
                     src = std::format(fmt, index);
@@ -420,7 +420,7 @@ R"|(    //
             }
             break;
             //
-            case adtype_t::variable: {
+            case vitype_t::variable: {
                 if( index < n_var_dom ) {
                     constexpr const char* fmt = "dom_var[{}]";\
                     src = std::format(fmt, index);
@@ -463,9 +463,9 @@ R"|(    //
             dev::enum2derive<at::Tensor>( op_enum );
         //
         // src
-        adtype_t op_adtype = adtype_t::parameter;
+        vitype_t op_vitype = vitype_t::parameter;
         string src = base_op.src_gen(
-            op_index, op_adtype, m_par, tensor_src
+            op_index, op_vitype, m_par, tensor_src
         );
         if( m_trace) {
             cout << src << " , " << dev::to_string(op_enum)  << "(";
@@ -507,9 +507,9 @@ R"|(    //
             dev::enum2derive<at::Tensor>( op_enum );
         //
         // src
-        adtype_t op_adtype = adtype_t::variable;
+        vitype_t op_vitype = vitype_t::variable;
         string src = base_op.src_gen(
-            op_index, op_adtype, m_var, tensor_src
+            op_index, op_vitype, m_var, tensor_src
         );
         if( m_trace) {
             cout << src << " , " << dev::to_string(op_enum)  << "(";
@@ -543,8 +543,8 @@ R"|(    //
     }
     for(size_t i = 0; i < n_range; ++i) {
         size_t    index  = m_rng_index[i];
-        adtype_t  adtype = m_rng_adtype[i];
-        string    rhs    = tensor_src(index, adtype);
+        vitype_t  vitype = m_rng_vitype[i];
+        string    rhs    = tensor_src(index, vitype);
         constexpr const char* fmt = "range[{}] = {};\n";
         file_cpp << indent + std::format(fmt, i, rhs);
     }

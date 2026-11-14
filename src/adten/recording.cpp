@@ -175,7 +175,7 @@ adten_t::start_recording(
     //
     // adom_par
     // tape.m_par: m_op_seq, m_arg_strt
-    adtype_t parameter = adtype_t::parameter;
+    vitype_t parameter = vitype_t::parameter;
     vector<adten_t> adom_par;
     for(size_t index = 0; index < dom_par.size(); ++index) {
         tape.m_par.m_op_seq.push_back( dev::op_enum_t::dom );
@@ -187,7 +187,7 @@ adten_t::start_recording(
     //
     // adom_var
     // tape.m_var: m_op_seq, m_arg_strt
-    adtype_t variable = adtype_t::variable;
+    vitype_t variable = vitype_t::variable;
     vector<adten_t> adom_var;
     for(size_t index = 0; index < dom_var.size(); ++index) {
         tape.m_var.m_op_seq.push_back( dev::op_enum_t::dom );
@@ -293,10 +293,10 @@ adfn_t adten_t::stop_recording(
     dev::move_swap( adfn.m_par, tape.m_par );
     dev::move_swap( adfn.m_var, tape.m_var );
     //
-    // adfn: m_rng_index, m_rng_adtype
+    // adfn: m_rng_index, m_rng_vitype
     for(size_t i = 0; i < arange.size(); ++i)
     {   adfn.m_rng_index.push_back( arange[i].m_index );
-        adfn.m_rng_adtype.push_back( arange[i].m_adtype );
+        adfn.m_rng_vitype.push_back( arange[i].m_vitype );
     }
     //
     // adfn: m_rng_shapes

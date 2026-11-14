@@ -72,12 +72,12 @@ void adfn_t::optimize(void)
     // of equivalent operators is easier.
     {   // Start a block so that the old m_par and m_rng_index get freeded
         // before we optimize the variables...
-        adtype_t agraph_type = adtype_t::parameter;
+        vitype_t agraph_type = vitype_t::parameter;
         auto [ agraph_new, rng_index_new ] = dev::new_agraph(
             agraph_type,
             m_par,
             m_rng_index,
-            m_rng_adtype,
+            m_rng_vitype,
             depend_par
         );
         dev::move_swap(m_par, agraph_new);
@@ -87,12 +87,12 @@ void adfn_t::optimize(void)
     // m_var, m_rng_index
     // Variables can have constant and parameter arguments. We optimize them
     // last to make detection of equivalent operators easier.
-    adtype_t agraph_type = adtype_t::variable;
+    vitype_t agraph_type = vitype_t::variable;
     auto [ agraph_new, rng_index_new ] = dev::new_agraph(
         agraph_type,
         m_var,
         m_rng_index,
-        m_rng_adtype,
+        m_rng_vitype,
         depend_var
     );
     dev::move_swap(m_var, agraph_new);

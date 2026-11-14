@@ -3,7 +3,7 @@
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
 #include <ad_tensor/adfn.hpp>
-#include <ad_tensor/dev/adtype.hpp>
+#include <ad_tensor/dev/vitype.hpp>
 #include <ad_tensor/dev/base_op.hpp>
 #include <ad_tensor/dev/derive_op.hpp>
 #include <ad_tensor/dev/to_string.hpp>
@@ -158,20 +158,20 @@ vector<TensorType> adfn_t::forward_der(
     TensorType zero = TensorType( torch::tensor( { 0.0 } ) );
     for(size_t i = 0; i < m_rng_index.size(); ++i) {
         size_t index = m_rng_index[i];
-        adtype_t adtype  = m_rng_adtype[i];
-        switch(adtype) {
+        vitype_t vitype  = m_rng_vitype[i];
+        switch(vitype) {
             //
-            case adtype_t::constant: {
+            case vitype_t::constant: {
                 rng_der.push_back( TensorType(not_defined()) );
             }
             break;
             //
-            case adtype_t::parameter: {
+            case vitype_t::parameter: {
                 rng_der.push_back( TensorType(not_defined()) );
             }
             break;
             //
-            case adtype_t::variable:
+            case vitype_t::variable:
             rng_der.push_back( all_der[index] );
             break;
             //

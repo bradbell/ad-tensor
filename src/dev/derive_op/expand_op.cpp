@@ -26,13 +26,13 @@ void expand_op_t<TensorType>::forward_par(
     //
     // n_dim
     size_t n_dim = agraph.m_arg_value[arg_start + 1];
-    assert( adtype_t::none ==  agraph.m_arg_type[arg_start + 1] );
+    assert( vitype_t::none ==  agraph.m_arg_type[arg_start + 1] );
     //
 #ifndef NDEBUG
     //
-    // adtype
-    adtype_t adtype   = agraph.m_arg_type[arg_start];
-    assert( adtype  == adtype_t::parameter );
+    // vitype
+    vitype_t vitype   = agraph.m_arg_type[arg_start];
+    assert( vitype  == vitype_t::parameter );
     //
     // n_arg
     size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
@@ -77,13 +77,13 @@ void expand_op_t<TensorType>::forward_var(
     //
     // n_dim
     size_t n_dim = agraph.m_arg_value[arg_start + 1];
-    assert( adtype_t::none ==  agraph.m_arg_type[arg_start + 1] );
+    assert( vitype_t::none ==  agraph.m_arg_type[arg_start + 1] );
     //
 #ifndef NDEBUG
     //
-    // adtype
-    adtype_t adtype   = agraph.m_arg_type[arg_start];
-    assert( adtype  == adtype_t::variable );
+    // vitype
+    vitype_t vitype   = agraph.m_arg_type[arg_start];
+    assert( vitype  == vitype_t::variable );
     //
     // n_arg
     size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
@@ -207,17 +207,17 @@ template void expand_op_t<adten_t>::reverse_der(
 // src_gen
 template <> std::string expand_op_t<at::Tensor>::src_gen(
     size_t                                                op_index        ,
-    adtype_t                                              op_adtype       ,
+    vitype_t                                              op_vitype       ,
     const agraph_t&                                       agraph          ,
-    const std::function< std::string(size_t, adtype_t) >& tensor_src
+    const std::function< std::string(size_t, vitype_t) >& tensor_src
 ) const {
-    return src_gen_index_array(op_index, op_adtype, agraph, tensor_src);
+    return src_gen_index_array(op_index, op_vitype, agraph, tensor_src);
 }
 template <> std::string expand_op_t<adten_t>::src_gen(
     size_t                                                op_index        ,
-    adtype_t                                              op_adtype       ,
+    vitype_t                                              op_vitype       ,
     const agraph_t&                                       agraph          ,
-    const std::function< std::string(size_t, adtype_t) >& tensor_src
+    const std::function< std::string(size_t, vitype_t) >& tensor_src
 ) const {
     assert(false && "adten_t version of src_gen called for expand operator");
     return "";

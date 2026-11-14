@@ -79,13 +79,13 @@ std::array<size_t, 5> unpack_call(
     size_t n_arg     = arg_end - arg_start;
     assert( n_arg == 4 + n_domain + n_result);
     for(size_t i = 0; i < 4; ++i) {
-        assert( agraph.m_arg_type[arg_start + i] == adtype_t::none );
+        assert( agraph.m_arg_type[arg_start + i] == vitype_t::none );
     }
     for(size_t i = 4; i < 4 + n_domain; ++i) {
-        assert( agraph.m_arg_type[arg_start + i] != adtype_t::none );
+        assert( agraph.m_arg_type[arg_start + i] != vitype_t::none );
     }
     for(size_t i = 4 + n_domain; i < 4 + n_domain + n_result; ++i) {
-        assert( agraph.m_arg_type[arg_start + i] == adtype_t::none );
+        assert( agraph.m_arg_type[arg_start + i] == vitype_t::none );
     }
 # endif
     return std::array<size_t, 5> (

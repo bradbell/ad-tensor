@@ -7,7 +7,7 @@ namespace ad_tensor { namespace dev {
     //
     // new_op_hash
     size_t new_op_hash(
-        adtype_t            adtype,
+        vitype_t            vitype,
         const agraph_t&      agraph_old,
         const vector<size_t> old2new,
         size_t               old_index
@@ -15,7 +15,7 @@ namespace ad_tensor { namespace dev {
     //
     // new_op_equal
     bool new_op_equal(
-        adtype_t            adtype,
+        vitype_t            vitype,
         const agraph_t&      agraph_old,
         const vector<size_t> old2new ,
         size_t               old_index_1 ,

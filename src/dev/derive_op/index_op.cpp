@@ -150,8 +150,8 @@ void index_op_t<TensorType>::forward_der(
     // from_index
     size_t from_index  = agraph.m_arg_value[arg_start];
 #ifndef NDEBUG
-    adtype_t from_type = agraph.m_arg_type[arg_start];
-    assert( from_type == adtype_t::variable );
+    vitype_t from_type = agraph.m_arg_type[arg_start];
+    assert( from_type == vitype_t::variable );
 #endif
     //
     // for_der[op_index]
@@ -240,9 +240,9 @@ template void index_op_t<adten_t>::reverse_der(
 // src_gen
 template <> std::string index_op_t<at::Tensor>::src_gen(
     size_t                                                op_index        ,
-    adtype_t                                              op_adtype       ,
+    vitype_t                                              op_vitype       ,
     const agraph_t&                                       agraph          ,
-    const std::function< std::string(size_t, adtype_t) >& tensor_src
+    const std::function< std::string(size_t, vitype_t) >& tensor_src
 ) const {
     //
     // string
@@ -262,18 +262,18 @@ template <> std::string index_op_t<at::Tensor>::src_gen(
     string src = "{    c10::List< std::optional<at::Tensor> > index_list;\n";
     for(size_t i = 0; i < n_idx; ++i) {
         size_t con_index = agraph.m_arg_value[arg_start + 2 + i];
-        string index_src = tensor_src(con_index, adtype_t::constant);
+        string index_src = tensor_src(con_index, vitype_t::constant);
         index_src = "std::optional<at::Tensor> (" + index_src + ")";
         src += "    index_list.push_back( " + index_src + ");\n";
     }
     //
     // from_src
     size_t   from_index  = agraph.m_arg_value[arg_start];
-    adtype_t from_adtype = agraph.m_arg_type[arg_start];
-    string from_src      = tensor_src(from_index, from_adtype);
+    vitype_t from_vitype = agraph.m_arg_type[arg_start];
+    string from_src      = tensor_src(from_index, from_vitype);
     //
     // target_src
-    string target_src = tensor_src(op_index, op_adtype);
+    string target_src = tensor_src(op_index, op_vitype);
     //
     // src
     constexpr const char* fmt = "    {} = {}.index( index_list );\n";
@@ -284,9 +284,9 @@ template <> std::string index_op_t<at::Tensor>::src_gen(
 }
 template <> std::string index_op_t<adten_t>::src_gen(
     size_t                                                op_index        ,
-    adtype_t                                              op_adtype       ,
+    vitype_t                                              op_vitype       ,
     const agraph_t&                                       agraph          ,
-    const std::function< std::string(size_t, adtype_t) >& tensor_src
+    const std::function< std::string(size_t, vitype_t) >& tensor_src
 ) const {
     assert(false && "adten_t version of src_gen called for index operator");
     return "";

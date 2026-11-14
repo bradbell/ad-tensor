@@ -15,7 +15,6 @@ Contents
     docs/new_op.xrst
     docs/wish_dev.xrst
     include/ad_tensor/adten.hpp
-    include/ad_tensor/dev/adtype.hpp
     include/ad_tensor/dev/agraph.hpp
     include/ad_tensor/dev/atom.hpp
     include/ad_tensor/dev/base_op.hpp
@@ -25,6 +24,7 @@ Contents
     include/ad_tensor/dev/pad_enum.hpp
     include/ad_tensor/dev/plus_minus_equal.hpp
     include/ad_tensor/dev/tape.hpp
+    include/ad_tensor/dev/vitype.hpp
     src/adfn/adfn.cpp
     src/dev/broadcast.cpp
     src/dev/derive_op/call_op.cpp

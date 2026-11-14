@@ -74,8 +74,8 @@ void call_op_depend(
     assert( agraph.m_op_seq[op_index] == op_enum_t::call );
     //
     // parameter, variable
-    adtype_t parameter = adtype_t::parameter;
-    adtype_t variable  = adtype_t::variable;
+    vitype_t parameter = vitype_t::parameter;
+    vitype_t variable  = vitype_t::variable;
     //
 # ifndef NDEBUG
     // n_set
@@ -127,7 +127,7 @@ void call_op_depend(
                 );
             }
             arg_index           = arg_start + 4 + dom_index;
-            adtype_t arg_type  = agraph.m_arg_type[arg_index];
+            vitype_t arg_type  = agraph.m_arg_type[arg_index];
             size_t    arg_value = agraph.m_arg_value[arg_index];
             if( arg_type == parameter ) {
                 sub_sets.push_back( arg_value );
@@ -355,21 +355,21 @@ void call_op_t<TensorType>::forward_der(
     for(size_t j = 0; j < n_domain; ++j) {
         size_t    arg_index = arg_start + 4 + j;
         size_t    vec_index = agraph.m_arg_value[arg_index];
-        adtype_t arg_type  = agraph.m_arg_type[arg_index];
+        vitype_t arg_type  = agraph.m_arg_type[arg_index];
         switch( arg_type ) {
-            case adtype_t::constant: {
+            case vitype_t::constant: {
                 TensorType domain_j = TensorType( con_vec[vec_index] );
                 domain.push_back( domain_j );
                 dom_der.push_back( TensorType( not_defined() ) );
             }
             break;
-            case adtype_t::parameter: {
+            case vitype_t::parameter: {
                 const TensorType& domain_j = par_all[vec_index];
                 domain.push_back( domain_j );
                 dom_der.push_back( TensorType( not_defined() ) );
             }
             break;
-            case adtype_t::variable: {
+            case vitype_t::variable: {
                 const TensorType& domain_j = var_all[vec_index];
                 domain.push_back( domain_j );
                 dom_der.push_back( for_der[vec_index] );
@@ -478,8 +478,8 @@ void call_op_t<TensorType>::reverse_der(
     // rev_der
     for(size_t j = 0; j < n_domain; ++j) {
         size_t    arg_index  = arg_start + 4 + j;
-        adtype_t adtype    = agraph.m_arg_type[arg_index];
-        if( adtype == adtype_t::variable ) {
+        vitype_t vitype    = agraph.m_arg_type[arg_index];
+        if( vitype == vitype_t::variable ) {
             size_t rev_index = agraph.m_arg_value[arg_index];
             plus_equal( rev_der[rev_index], dom_der[j] );
         }
@@ -505,9 +505,9 @@ template void call_op_t<adten_t>::reverse_der(
 // src_gen
 template <> std::string call_op_t<at::Tensor>::src_gen(
     size_t                                                op_index        ,
-    adtype_t                                              op_adtype       ,
+    vitype_t                                              op_vitype       ,
     const agraph_t&                                       agraph          ,
-    const std::function< std::string(size_t, adtype_t) >& tensor_src
+    const std::function< std::string(size_t, vitype_t) >& tensor_src
 ) const {
     //
     // string
@@ -527,8 +527,8 @@ template <> std::string call_op_t<at::Tensor>::src_gen(
     string src = "{   vector<at::Tensor> domain, empty;\n";
     for(size_t j = 0; j < n_domain; ++j) {
         size_t   ten_index  = agraph.m_arg_value[arg_start + 4 + j];
-        adtype_t ten_adtype = agraph.m_arg_type[arg_start + 4 + j];
-        string   ten_src    = tensor_src(ten_index, ten_adtype);
+        vitype_t ten_vitype = agraph.m_arg_type[arg_start + 4 + j];
+        string   ten_src    = tensor_src(ten_index, ten_vitype);
         src += std::format( "    domain.push_back( {} );\n", ten_src);
     }
     //
@@ -542,7 +542,7 @@ R"|(    extern vector<at::Tensor> {}_plugin(
 )|";
     src += std::format(fmt, atom_name, atom_name);
     for(size_t i = 0; i < n_result; ++i) {
-        string ten_src     = tensor_src(op_index + i, op_adtype);
+        string ten_src     = tensor_src(op_index + i, op_vitype);
         size_t range_index = agraph.m_arg_value[arg_start + 4 + n_domain + i];
         src += std::format("    {} = range[{}];\n", ten_src, range_index);
     }
@@ -552,9 +552,9 @@ R"|(    extern vector<at::Tensor> {}_plugin(
 }
 template <> std::string call_op_t<adten_t>::src_gen(
     size_t                                                op_index        ,
-    adtype_t                                              op_adtype       ,
+    vitype_t                                              op_vitype       ,
     const agraph_t&                                       agraph          ,
-    const std::function< std::string(size_t, adtype_t) >& tensor_src
+    const std::function< std::string(size_t, vitype_t) >& tensor_src
 ) const {
     assert(false && "adten_t version of src_gen called for call operator");
     return "";

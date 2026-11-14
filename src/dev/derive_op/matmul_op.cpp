@@ -116,17 +116,17 @@ void matmul_op_t<TensorType>::forward_der(
     assert( n_arg == 2 && "matmul: n_arg != 2" );
 # endif
     // variable
-    adtype_t variable = adtype_t::variable;
+    vitype_t variable = vitype_t::variable;
     //
     // lhs_index, lhs_type, lhs_zero_der
     size_t   lhs_index    = agraph.m_arg_value[arg_start];
-    adtype_t lhs_type     = agraph.m_arg_type[arg_start];
+    vitype_t lhs_type     = agraph.m_arg_type[arg_start];
     bool     lhs_zero_der =
         lhs_type != variable || not_defined( for_der[lhs_index] );
     //
     // rhs_index, rhs_type, rhs_zero_der
     size_t   rhs_index    = agraph.m_arg_value[arg_start + 1];
-    adtype_t rhs_type     = agraph.m_arg_type[arg_start + 1];
+    vitype_t rhs_type     = agraph.m_arg_type[arg_start + 1];
     bool     rhs_zero_der =
         rhs_type != variable || not_defined( for_der[rhs_index] );
     //
@@ -136,7 +136,7 @@ void matmul_op_t<TensorType>::forward_der(
     //
     // for_der[op_index]
     if( lhs_zero_der ) {
-        assert( rhs_type == adtype_t::variable );
+        assert( rhs_type == vitype_t::variable );
         //
         // lhs_tensor
         TensorType lhs_tensor  = tensor_at_arg_index(
@@ -147,7 +147,7 @@ void matmul_op_t<TensorType>::forward_der(
         for_der[op_index] = lhs_tensor.matmul( for_der[rhs_index] );
         //
     } else if( rhs_zero_der ) {
-        assert( lhs_type == adtype_t::variable );
+        assert( lhs_type == vitype_t::variable );
         //
         // rhs_tensor
         TensorType rhs_tensor  = tensor_at_arg_index(
@@ -206,15 +206,15 @@ void matmul_op_t<TensorType>::reverse_der(
 # endif
     //
     // lhs_type, rhs_type
-    adtype_t lhs_type = agraph.m_arg_type[arg_start];
-    adtype_t rhs_type = agraph.m_arg_type[arg_start + 1];
+    vitype_t lhs_type = agraph.m_arg_type[arg_start];
+    vitype_t rhs_type = agraph.m_arg_type[arg_start + 1];
     //
     // lhs_index, rhs_index
     size_t lhs_index = agraph.m_arg_value[arg_start];
     size_t rhs_index = agraph.m_arg_value[arg_start + 1];
     //
     // rev_der[lhs_index]
-    if( lhs_type == adtype_t::variable ) {
+    if( lhs_type == vitype_t::variable ) {
         //
         // rhs_tensor
         TensorType rhs_tensor  = tensor_at_arg_index(
@@ -243,7 +243,7 @@ void matmul_op_t<TensorType>::reverse_der(
     }
     //
     // rev_der[rhs_index]
-    if( rhs_type == adtype_t::variable ) {
+    if( rhs_type == vitype_t::variable ) {
         //
         // lhs_tensor
         TensorType lhs_tensor  = tensor_at_arg_index(
@@ -291,17 +291,17 @@ template void matmul_op_t<adten_t>::reverse_der(
 // src_gen
 template <> std::string matmul_op_t<at::Tensor>::src_gen(
     size_t                                                op_index        ,
-    adtype_t                                              op_adtype       ,
+    vitype_t                                              op_vitype       ,
     const agraph_t&                                       agraph          ,
-    const std::function< std::string(size_t, adtype_t) >& tensor_src
+    const std::function< std::string(size_t, vitype_t) >& tensor_src
 ) const {
-    return src_gen_binary(op_index, op_adtype, agraph, tensor_src);
+    return src_gen_binary(op_index, op_vitype, agraph, tensor_src);
 }
 template <> std::string matmul_op_t<adten_t>::src_gen(
     size_t                                                op_index        ,
-    adtype_t                                              op_adtype       ,
+    vitype_t                                              op_vitype       ,
     const agraph_t&                                       agraph          ,
-    const std::function< std::string(size_t, adtype_t) >& tensor_src
+    const std::function< std::string(size_t, vitype_t) >& tensor_src
 ) const {
     assert(false && "adten_t version of src_gen called for matmul operator");
     return "";

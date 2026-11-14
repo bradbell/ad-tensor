@@ -19,21 +19,21 @@
     size_t    dim           = agraph.m_arg_value[arg_start + 1]; \
     size_t    n_split       = agraph.m_arg_value[arg_start + 2];
 //
-// EXPECT_ARGUMENTS(operand_adtype)
+// EXPECT_ARGUMENTS(operand_vitype)
 #if NDEBUG
-#define EXPECT_ARGUMENTS(operand_adtype)
+#define EXPECT_ARGUMENTS(operand_vitype)
 #else
-#define EXPECT_ARGUMENTS(operand_adtype) \
+#define EXPECT_ARGUMENTS(operand_vitype) \
     size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start; \
     assert( n_arg == 3 + n_split && "split_op: n_arg != 3 + n_split" ); \
-    if( operand_adtype == adtype_t::none ) { \
+    if( operand_vitype == vitype_t::none ) { \
         assert(  \
-            agraph.m_arg_type[arg_start] == adtype_t::parameter || \
-            agraph.m_arg_type[arg_start] == adtype_t::variable \
+            agraph.m_arg_type[arg_start] == vitype_t::parameter || \
+            agraph.m_arg_type[arg_start] == vitype_t::variable \
         ); \
     } \
     for(size_t i = 1; i < n_arg; ++i) { \
-        assert( agraph.m_arg_type[arg_start + i] == adtype_t::none ); \
+        assert( agraph.m_arg_type[arg_start + i] == vitype_t::none ); \
     }
 #endif
 //
@@ -50,7 +50,7 @@ void split_op_t<TensorType>::forward_par(
     //
     // arg_start, operand_index, dim, n_split
     UNPACK
-    EXPECT_ARGUMENTS( adtype_t::parameter );
+    EXPECT_ARGUMENTS( vitype_t::parameter );
     //
     // split_size
     const size_t* begin = agraph.m_arg_value.data() + arg_start + 3;
@@ -88,7 +88,7 @@ void split_op_t<TensorType>::forward_var(
     //
     // arg_start, operand_index, dim, n_split
     UNPACK
-    EXPECT_ARGUMENTS( adtype_t::variable );
+    EXPECT_ARGUMENTS( vitype_t::variable );
     //
     // split_size
     const size_t* begin = agraph.m_arg_value.data() + arg_start + 3;
@@ -129,7 +129,7 @@ void split_op_t<TensorType>::forward_der(
     //
     // arg_start, operand_index, dim, n_split
     UNPACK
-    EXPECT_ARGUMENTS( adtype_t::variable );
+    EXPECT_ARGUMENTS( vitype_t::variable );
     //
     // split_size
     const size_t* begin = agraph.m_arg_value.data() + arg_start + 3;
@@ -172,7 +172,7 @@ void split_op_t<TensorType>::reverse_der(
     //
     // arg_start, operand_index, dim, n_split
     UNPACK
-    EXPECT_ARGUMENTS( adtype_t::variable );
+    EXPECT_ARGUMENTS( vitype_t::variable );
     //
     // tensor_list
     vector<TensorType> tensor_list;
@@ -203,14 +203,14 @@ template void split_op_t<adten_t>::reverse_der(
 // src_gen
 template <> std::string split_op_t<at::Tensor>::src_gen(
     size_t                                                op_index        ,
-    adtype_t                                              op_adtype       ,
+    vitype_t                                              op_vitype       ,
     const agraph_t&                                       agraph          ,
-    const std::function< std::string(size_t, adtype_t) >& tensor_src
+    const std::function< std::string(size_t, vitype_t) >& tensor_src
 ) const {
     //
     // arg_start, operand_index, dim, n_split
     UNPACK
-    EXPECT_ARGUMENTS(adtype_t::none)
+    EXPECT_ARGUMENTS(vitype_t::none)
     //
     // string
     using std::string;
@@ -219,8 +219,8 @@ template <> std::string split_op_t<at::Tensor>::src_gen(
     string op_enum_src = to_string( agraph.m_op_seq[op_index] );
     //
     // operand_src
-    adtype_t operand_adtype = agraph.m_arg_type[arg_start];
-    string   operand_src    = tensor_src(operand_index, operand_adtype);
+    vitype_t operand_vitype = agraph.m_arg_type[arg_start];
+    string   operand_src    = tensor_src(operand_index, operand_vitype);
     //
     // src
     constexpr const char* fmt = "{{   vector<Tensor> at_split = {}.split({{";
@@ -235,7 +235,7 @@ template <> std::string split_op_t<at::Tensor>::src_gen(
     }
     src += std::format("}}, {});\n", dim);
     for(size_t i = 0; i < n_split; ++i) {
-        string ten_src     = tensor_src(op_index + i, operand_adtype);
+        string ten_src     = tensor_src(op_index + i, operand_vitype);
         src += std::format("    {} = at_split[{}];\n", ten_src, i);
     }
     src += "}";
@@ -244,9 +244,9 @@ template <> std::string split_op_t<at::Tensor>::src_gen(
 }
 template <> std::string split_op_t<adten_t>::src_gen(
     size_t                                                op_index        ,
-    adtype_t                                              op_adtype       ,
+    vitype_t                                              op_vitype       ,
     const agraph_t&                                       agraph          ,
-    const std::function< std::string(size_t, adtype_t) >& tensor_src
+    const std::function< std::string(size_t, vitype_t) >& tensor_src
 ) const {
     assert(false && "adten_t version of src_gen called for sum operator");
     return "";

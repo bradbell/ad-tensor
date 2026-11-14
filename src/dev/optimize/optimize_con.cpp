@@ -169,8 +169,8 @@ void adfn_t::optimize_con(
             for(size_t arg_index = start; arg_index < end; ++arg_index) {
                 //
                 // arg_type
-                adtype_t arg_type = agraph->m_arg_type[arg_index];
-                if( arg_type == adtype_t::constant ) {
+                vitype_t arg_type = agraph->m_arg_type[arg_index];
+                if( arg_type == vitype_t::constant ) {
                     //
                     // argraph->m_arg_value[arg_index]
                     if( ! (*depend_agraph)[op_index] ) {
@@ -188,7 +188,7 @@ void adfn_t::optimize_con(
     //
     // m_rng_index
     for(size_t i = 0; i < m_rng_index.size(); ++i) {
-        if( m_rng_adtype[i] == adtype_t::constant ) {
+        if( m_rng_vitype[i] == vitype_t::constant ) {
             m_rng_index[i] = old2new_con[ m_rng_index[i] ];
         }
     }

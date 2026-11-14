@@ -10,7 +10,7 @@
 #include <ad_tensor/chkpnt.hpp>
 #include <ad_tensor/configure.hpp>
 #include <ad_tensor/defined.hpp>
-#include <ad_tensor/dev/adtype.hpp>
+#include <ad_tensor/dev/vitype.hpp>
 #include <ad_tensor/direction.hpp>
 #include <ad_tensor/sparsity.hpp>
 #include <ad_tensor/to_string.hpp>

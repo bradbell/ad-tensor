@@ -6,15 +6,15 @@
 //
 namespace ad_tensor { namespace dev {
     //
-    // adtype
-    std::string to_string( adtype_t adtype)
-    {   switch(adtype) {
-            case adtype_t::constant:  return "con";
-            case adtype_t::parameter: return "par";
-            case adtype_t::variable:  return "var";
-            case adtype_t::none:      return "none";
+    // vitype
+    std::string to_string( vitype_t vitype)
+    {   switch(vitype) {
+            case vitype_t::constant:  return "con";
+            case vitype_t::parameter: return "par";
+            case vitype_t::variable:  return "var";
+            case vitype_t::none:      return "none";
             default:
-            assert( false && "to_string(adtype): unexpected adtype" );
+            assert( false && "to_string(vitype): unexpected vitype" );
         }
         return "";
     }

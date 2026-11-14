@@ -126,17 +126,17 @@ void where_op_t<TensorType>::forward_der(
     );
     //
     // variable
-    adtype_t  variable = adtype_t::variable;
+    vitype_t  variable = vitype_t::variable;
     //
     // true_index, true_type, true_zero_der
     size_t   true_index    = agraph.m_arg_value[arg_start + 1];
-    adtype_t true_type     = agraph.m_arg_type[arg_start + 1];
+    vitype_t true_type     = agraph.m_arg_type[arg_start + 1];
     bool     true_zero_der =
         true_type != variable || not_defined( for_der[true_index] );
     //
     // false_index, false_type, false_zero_der
     size_t   false_index    = agraph.m_arg_value[arg_start + 2];
-    adtype_t false_type     = agraph.m_arg_type[arg_start + 2];
+    vitype_t false_type     = agraph.m_arg_type[arg_start + 2];
     bool     false_zero_der =
         false_type != variable || not_defined( for_der[false_index] );
     //
@@ -202,11 +202,11 @@ void where_op_t<TensorType>::reverse_der(
     );
     //
     // true_type, false_type
-    adtype_t true_type  = agraph.m_arg_type[arg_start + 1];
-    adtype_t false_type = agraph.m_arg_type[arg_start + 2];
+    vitype_t true_type  = agraph.m_arg_type[arg_start + 1];
+    vitype_t false_type = agraph.m_arg_type[arg_start + 2];
     //
     // rev_der[true_index]
-    if( true_type  == adtype_t::variable ) {
+    if( true_type  == vitype_t::variable ) {
         //
         // true_index
         size_t true_index  = agraph.m_arg_value[arg_start + 1];
@@ -223,7 +223,7 @@ void where_op_t<TensorType>::reverse_der(
     }
     //
     // rev_der[false_index]
-    if( false_type  == adtype_t::variable ) {
+    if( false_type  == vitype_t::variable ) {
         //
         // false_index
         size_t false_index  = agraph.m_arg_value[arg_start];
@@ -259,9 +259,9 @@ template void where_op_t<adten_t>::reverse_der(
 // src_gen
 template <> std::string where_op_t<at::Tensor>::src_gen(
     size_t                                                op_index        ,
-    adtype_t                                              op_adtype       ,
+    vitype_t                                              op_vitype       ,
     const agraph_t&                                       agraph          ,
-    const std::function< std::string(size_t, adtype_t) >& tensor_src
+    const std::function< std::string(size_t, vitype_t) >& tensor_src
 ) const {
     //
     // string
@@ -277,21 +277,21 @@ template <> std::string where_op_t<at::Tensor>::src_gen(
     //
     // cond_src
     size_t   cond_index  = agraph.m_arg_value[arg_start];
-    adtype_t cond_adtype = agraph.m_arg_type[arg_start];
-    string   cond_src    = tensor_src(cond_index, cond_adtype);
+    vitype_t cond_vitype = agraph.m_arg_type[arg_start];
+    string   cond_src    = tensor_src(cond_index, cond_vitype);
     //
     // true_case_src
     size_t   true_case_index  = agraph.m_arg_value[arg_start + 1];
-    adtype_t true_case_adtype = agraph.m_arg_type[arg_start + 1];
-    string   true_case_src    = tensor_src(true_case_index, true_case_adtype);
+    vitype_t true_case_vitype = agraph.m_arg_type[arg_start + 1];
+    string   true_case_src    = tensor_src(true_case_index, true_case_vitype);
     //
     // false_case_src
     size_t   false_case_index  = agraph.m_arg_value[arg_start + 2];
-    adtype_t false_case_adtype = agraph.m_arg_type[arg_start + 2];
-    string   false_case_src = tensor_src(false_case_index, false_case_adtype);
+    vitype_t false_case_vitype = agraph.m_arg_type[arg_start + 2];
+    string   false_case_src = tensor_src(false_case_index, false_case_vitype);
     //
     // target_src
-    string target_src = tensor_src(op_index, op_adtype);
+    string target_src = tensor_src(op_index, op_vitype);
     //
     // src
     constexpr const char* fmt = "{} = where({}, {}, {});";
@@ -303,9 +303,9 @@ template <> std::string where_op_t<at::Tensor>::src_gen(
 }
 template <> std::string where_op_t<adten_t>::src_gen(
     size_t                                                op_index        ,
-    adtype_t                                              op_adtype       ,
+    vitype_t                                              op_vitype       ,
     const agraph_t&                                       agraph          ,
-    const std::function< std::string(size_t, adtype_t) >& tensor_src
+    const std::function< std::string(size_t, vitype_t) >& tensor_src
 ) const {
     assert(false && "adten_t version of src_gen called for where operator");
     return "";

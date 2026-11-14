@@ -40,8 +40,8 @@ We use the notation
 
 agraph_type
 ***********
-is the type for the graphs and must be adtype_t::parameter
-or adtype_t::variable.
+is the type for the graphs and must be vitype_t::parameter
+or vitype_t::variable.
 
 agraph_new
 **********
@@ -101,7 +101,7 @@ namespace ad_tensor { namespace dev { // Begin ad_tensor::dev
 //
 // BEGIN_NEW_SPLIT
 size_t new_split(
-    adtype_t                  agraph_type,
+    vitype_t                  agraph_type,
     agraph_t&                 agraph_new,
     const agraph_t&           agraph_old,
     size_t                    op_index_old,
@@ -167,11 +167,11 @@ size_t new_split(
         size_t end   = agraph_old.m_arg_start[op_index_old + 1];
         for(size_t arg_index = start; arg_index < end; ++arg_index) {
             //
-            adtype_t adtype = agraph_old.m_arg_type[arg_index];
-            agraph_new.m_arg_type.push_back( adtype );
+            vitype_t vitype = agraph_old.m_arg_type[arg_index];
+            agraph_new.m_arg_type.push_back( vitype );
             size_t value_old = agraph_old.m_arg_value[arg_index];
             size_t value_new = value_old;
-            if( adtype == agraph_type ) {
+            if( vitype == agraph_type ) {
                 value_new = old2new[value_old];
             }
             agraph_new.m_arg_value.push_back( value_new );

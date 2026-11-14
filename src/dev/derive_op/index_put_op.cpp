@@ -167,19 +167,19 @@ void index_put_op_t<TensorType>::forward_der(
     size_t replace_index = agraph.m_arg_value[arg_start + 1];
     //
     // before_type, replace_type
-    adtype_t before_type  = agraph.m_arg_type[arg_start];
-    adtype_t replace_type = agraph.m_arg_type[arg_start + 1];
+    vitype_t before_type  = agraph.m_arg_type[arg_start];
+    vitype_t replace_type = agraph.m_arg_type[arg_start + 1];
     //
     // for_der[op_index]
-    if( before_type != adtype_t::variable ) {
-        assert( replace_type == adtype_t::variable );
+    if( before_type != vitype_t::variable ) {
+        assert( replace_type == vitype_t::variable );
         //
         TensorType zeros  = TensorType( torch::zeros(before_shape) );
         for_der[op_index] = zeros.index_put(
             index_list, for_der[replace_index]
         );
-    } else if( replace_type != adtype_t::variable ) {
-        assert( before_type == adtype_t::variable );
+    } else if( replace_type != vitype_t::variable ) {
+        assert( before_type == vitype_t::variable );
         //
         TensorType zeros  = TensorType( torch::zeros(replace_shape) );
         for_der[op_index] = for_der[before_index].index_put(
@@ -250,21 +250,21 @@ void index_put_op_t<TensorType>::reverse_der(
     size_t replace_index = agraph.m_arg_value[arg_start + 1];
     //
     // before_type, replace_type
-    adtype_t before_type  = agraph.m_arg_type[arg_start];
-    adtype_t replace_type = agraph.m_arg_type[arg_start + 1];
+    vitype_t before_type  = agraph.m_arg_type[arg_start];
+    vitype_t replace_type = agraph.m_arg_type[arg_start + 1];
     //
     // replace_der
     TensorType replace_der = rev_der[op_index].index(index_list);
     //
     // rev_der[replace_index]
-    if( replace_type == adtype_t::variable ) {
+    if( replace_type == vitype_t::variable ) {
         //
         // rev_der[replace_index] += replace_der
         plus_equal(rev_der[replace_index], replace_der);
     }
     //
     // rev_der[before_index]
-    if( before_type == adtype_t::variable ) {
+    if( before_type == vitype_t::variable ) {
         //
         // rev_der[before_index] += rev_der[op_index]
         plus_equal(rev_der[before_index], rev_der[op_index]);
@@ -295,9 +295,9 @@ template void index_put_op_t<adten_t>::reverse_der(
 // src_gen
 template <> std::string index_put_op_t<at::Tensor>::src_gen(
     size_t                                                op_index        ,
-    adtype_t                                              op_adtype       ,
+    vitype_t                                              op_vitype       ,
     const agraph_t&                                       agraph          ,
-    const std::function< std::string(size_t, adtype_t) >& tensor_src
+    const std::function< std::string(size_t, vitype_t) >& tensor_src
 ) const {
     //
     // string
@@ -320,23 +320,23 @@ template <> std::string index_put_op_t<at::Tensor>::src_gen(
     string src = "{    c10::List< std::optional<at::Tensor> > index_list;\n";
     for(size_t i = 0; i < n_idx; ++i) {
         size_t con_index = agraph.m_arg_value[arg_start + 3 + i];
-        string index_src = tensor_src(con_index, adtype_t::constant);
+        string index_src = tensor_src(con_index, vitype_t::constant);
         index_src = "std::optional<at::Tensor> (" + index_src + ")";
         src += "    index_list.push_back( " + index_src + ");\n";
     }
     //
     // before_src
     size_t   before_index  = agraph.m_arg_value[arg_start];
-    adtype_t before_adtype = agraph.m_arg_type[arg_start];
-    string before_src      = tensor_src(before_index, before_adtype);
+    vitype_t before_vitype = agraph.m_arg_type[arg_start];
+    string before_src      = tensor_src(before_index, before_vitype);
     //
     // replace_src
     size_t   replace_index  = agraph.m_arg_value[arg_start + 1];
-    adtype_t replace_adtype = agraph.m_arg_type[arg_start + 1];
-    string replace_src      = tensor_src(replace_index, replace_adtype);
+    vitype_t replace_vitype = agraph.m_arg_type[arg_start + 1];
+    string replace_src      = tensor_src(replace_index, replace_vitype);
     //
     // target_src
-    string target_src = tensor_src(op_index, op_adtype);
+    string target_src = tensor_src(op_index, op_vitype);
     //
     // src
     constexpr const char* fmt = "    {} = {}.index_put( index_list, {} );\n";
@@ -347,9 +347,9 @@ template <> std::string index_put_op_t<at::Tensor>::src_gen(
 }
 template <> std::string index_put_op_t<adten_t>::src_gen(
     size_t                                                op_index        ,
-    adtype_t                                              op_adtype       ,
+    vitype_t                                              op_vitype       ,
     const agraph_t&                                       agraph          ,
-    const std::function< std::string(size_t, adtype_t) >& tensor_src
+    const std::function< std::string(size_t, vitype_t) >& tensor_src
 ) const {
     assert(false && "adten_t version of src_gen called for index_put operator");
     return "";

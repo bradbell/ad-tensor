@@ -92,7 +92,7 @@ the following is added to the parameter (variable) acyclic graph:
     arg_index, arg_value,                  arg_type
     start + 0, index for linear,           type for linear
     start + 1, index for rhs,              type for rhs
-    start + 2, 1 (0) is left true (false), adtype::none
+    start + 2, 1 (0) is left true (false), vitype::none
 
 where start be the length of arg_value and arg_type before this call to
 ``adten_t::binary`` .
@@ -143,8 +143,8 @@ adten_t adten_t::solve(const adten_t& rhs, bool left) const
         "rhs AD tensor's tape is not tape that is recording"
     );
     //
-    // res_adtype
-    adtype_t res_adtype = std::max( m_adtype, rhs.m_adtype );
+    // res_vitype
+    vitype_t res_vitype = std::max( m_vitype, rhs.m_vitype );
     //
     // res_tape_id
     size_t res_tape_id = tape.m_tape_id;
@@ -152,7 +152,7 @@ adten_t adten_t::solve(const adten_t& rhs, bool left) const
     // res_index
     size_t res_index;
     //
-    if( res_adtype == adtype_t::constant ) {
+    if( res_vitype == vitype_t::constant ) {
         // res_index, tape.m_con_vec
         res_index = tape.m_con_vec.size();
         tape.m_con_vec.push_back( res_tensor.clone() );
@@ -160,10 +160,10 @@ adten_t adten_t::solve(const adten_t& rhs, bool left) const
         //
         // agraph
         dev::agraph_t* agraph = nullptr;
-        if( res_adtype == adtype_t::parameter )
+        if( res_vitype == vitype_t::parameter )
             agraph = &tape.m_par;
         else {
-            assert( res_adtype == adtype_t::variable  && "AD tensor in "
+            assert( res_vitype == vitype_t::variable  && "AD tensor in "
                 "solve is not constant, parameter, or variable"
             );
             agraph = &tape.m_var;
@@ -175,15 +175,15 @@ adten_t adten_t::solve(const adten_t& rhs, bool left) const
         agraph->m_arg_start.push_back( agraph->m_arg_value.size() );
         //
         agraph->m_arg_value.push_back( m_index );
-        agraph->m_arg_type.push_back( m_adtype );
+        agraph->m_arg_type.push_back( m_vitype );
         //
         agraph->m_arg_value.push_back( rhs.m_index );
-        agraph->m_arg_type.push_back( rhs.m_adtype );
+        agraph->m_arg_type.push_back( rhs.m_vitype );
         //
         agraph->m_arg_value.push_back( size_t(left) );
-        agraph->m_arg_type.push_back( adtype_t::none );
+        agraph->m_arg_type.push_back( vitype_t::none );
     }
-    return adten_t(res_tape_id, res_index, res_tensor, res_adtype);
+    return adten_t(res_tape_id, res_index, res_tensor, res_vitype);
 }
 adten_t linalg_solve(const adten_t& linear, const adten_t& rhs, bool left)
 {   return linear.solve(rhs, left);

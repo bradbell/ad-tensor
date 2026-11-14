@@ -76,7 +76,7 @@ This member function returns true if all the vectors in the graph are empty.
 */
 #include <cstdint>
 #include <ad_tensor/vector.hpp>
-#include <ad_tensor/dev/adtype.hpp>
+#include <ad_tensor/dev/vitype.hpp>
 #include <ad_tensor/dev/op_enum.hpp>
 
 // BEGIN_AGRAPH
@@ -87,7 +87,7 @@ public:
     vector<op_enum_t>            m_op_seq;
     vector<size_t>               m_arg_start;
     vector<size_t>               m_arg_value;
-    vector<adtype_t>             m_arg_type;
+    vector<vitype_t>             m_arg_type;
 // END_MEMBER_VARIABLES
     //
     // BEGIN_COPY_CTOR

@@ -20,8 +20,8 @@
 #define EXPECT_ARGUMENTS
 #else
 #define EXPECT_ARGUMENTS \
-    assert( agraph.m_arg_type[arg_start] == adtype_t::none ); \
-    assert( agraph.m_arg_type[arg_start + 1] == adtype_t::none ); \
+    assert( agraph.m_arg_type[arg_start] == vitype_t::none ); \
+    assert( agraph.m_arg_type[arg_start + 1] == vitype_t::none ); \
     size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start; \
     assert( n_arg == 2 + n_ten && "cat: n_arg != 2 + n_ten" );
 #endif
@@ -135,21 +135,21 @@ void cat_op_t<TensorType>::forward_der(
     tensor_list.resize(0);
     for(size_t i = 0; i < n_ten; ++i) {
         size_t   tensor_index  = agraph.m_arg_value[arg_start + 2 + i];
-        adtype_t tensor_adtype = agraph.m_arg_type[arg_start + 2 + i];
-        switch( tensor_adtype ) {
+        vitype_t tensor_vitype = agraph.m_arg_type[arg_start + 2 + i];
+        switch( tensor_vitype ) {
             //
-            case adtype_t::variable:
+            case vitype_t::variable:
             tensor_list.push_back( for_der[tensor_index] );
             break;
             //
-            case adtype_t::parameter: {
+            case vitype_t::parameter: {
                 c10::IntArrayRef shape = par_all[tensor_index].sizes();
                 TensorType       zero  = TensorType( torch::zeros( shape ) );
                 tensor_list.push_back( zero );
             }
             break;
             //
-            case adtype_t::constant: {
+            case vitype_t::constant: {
                 c10::IntArrayRef shape = con_vec[tensor_index].sizes();
                 TensorType       zero  = TensorType( torch::zeros( shape ) );
                 tensor_list.push_back( zero );
@@ -203,18 +203,18 @@ void cat_op_t<TensorType>::reverse_der(
         // shape
         c10::IntArrayRef shape;
         size_t   tensor_index  = agraph.m_arg_value[arg_start + 2 + i];
-        adtype_t tensor_adtype = agraph.m_arg_type[arg_start + 2 + i];
-        switch( tensor_adtype ) {
+        vitype_t tensor_vitype = agraph.m_arg_type[arg_start + 2 + i];
+        switch( tensor_vitype ) {
             //
-            case adtype_t::variable:
+            case vitype_t::variable:
             shape = var_all[tensor_index].sizes();
             break;
             //
-            case adtype_t::parameter:
+            case vitype_t::parameter:
             shape = par_all[tensor_index].sizes();
             break;
             //
-            case adtype_t::constant:
+            case vitype_t::constant:
             shape = con_vec[tensor_index].sizes();
             break;
             //
@@ -254,9 +254,9 @@ template void cat_op_t<adten_t>::reverse_der(
 // src_gen
 template <> std::string cat_op_t<at::Tensor>::src_gen(
     size_t                                                op_index        ,
-    adtype_t                                              op_adtype       ,
+    vitype_t                                              op_vitype       ,
     const agraph_t&                                       agraph          ,
-    const std::function< std::string(size_t, adtype_t) >& tensor_src
+    const std::function< std::string(size_t, vitype_t) >& tensor_src
 ) const {
     //
     // string
@@ -267,14 +267,14 @@ template <> std::string cat_op_t<at::Tensor>::src_gen(
     EXPECT_ARGUMENTS
     //
     // target_src
-    string target_src = tensor_src(op_index, op_adtype);
+    string target_src = tensor_src(op_index, op_vitype);
     //
     // src
     string src = std::format("{} = ad_tensor::cat({{", target_src);
     for(size_t i = 0; i < n_ten; ++i) {
         size_t   operand_index  = agraph.m_arg_value[arg_start + 2 + i];
-        adtype_t operand_adtype = agraph.m_arg_type[arg_start + 2 + i];
-        string   operand_src    = tensor_src(operand_index, operand_adtype);
+        vitype_t operand_vitype = agraph.m_arg_type[arg_start + 2 + i];
+        string   operand_src    = tensor_src(operand_index, operand_vitype);
         if( i == 0 ) {
             src += std::format("{}", operand_src);
         } else {
@@ -287,9 +287,9 @@ template <> std::string cat_op_t<at::Tensor>::src_gen(
 }
 template <> std::string cat_op_t<adten_t>::src_gen(
     size_t                                                op_index        ,
-    adtype_t                                              op_adtype       ,
+    vitype_t                                              op_vitype       ,
     const agraph_t&                                       agraph          ,
-    const std::function< std::string(size_t, adtype_t) >& tensor_src
+    const std::function< std::string(size_t, vitype_t) >& tensor_src
 ) const {
     assert(false && "adten_t version of src_gen called for where operator");
     return "";

@@ -84,10 +84,10 @@ the following is added to the parameter (variable) acyclic graph:
 
     arg_index, arg_value, arg_type
     start + 0, index for from tensor,                     type of from
-    start + 1, number of indices in index_list  (n_idx),  adtype_t::none
-    start + 2, index  of tensor index_list[0]             adtype_t::constant
+    start + 1, number of indices in index_list  (n_idx),  vitype_t::none
+    start + 2, index  of tensor index_list[0]             vitype_t::constant
     ..., ..., ...
-    start + 1 + n_idx, index of index_list[n_idx-1]       adtype_t::constant
+    start + 1 + n_idx, index of index_list[n_idx-1]       vitype_t::constant
 
 where start is the length of arg_value and arg_type before this call to
 ``adten_t::binary``,
@@ -128,8 +128,8 @@ adten_t adten_t::index(
         "index: index_list.size() not equal number of dimensions in from"
     );
     //
-    // res_adtype
-    adtype_t res_adtype = from.m_adtype;
+    // res_vitype
+    vitype_t res_vitype = from.m_vitype;
     //
     // res_tape_id
     size_t res_tape_id = tape.m_tape_id;
@@ -137,7 +137,7 @@ adten_t adten_t::index(
     // res_index
     size_t res_index;
     //
-    if( res_adtype == adtype_t::constant ) {
+    if( res_vitype == vitype_t::constant ) {
         // res_index, tape.m_con_vec
         res_index = tape.m_con_vec.size();
         tape.m_con_vec.push_back( res_tensor.clone() );
@@ -145,10 +145,10 @@ adten_t adten_t::index(
         //
         // agraph
         dev::agraph_t* agraph = nullptr;
-        if( res_adtype == adtype_t::parameter )
+        if( res_vitype == vitype_t::parameter )
             agraph = &tape.m_par;
         else {
-            assert( res_adtype == adtype_t::variable  && "index: "
+            assert( res_vitype == vitype_t::variable  && "index: "
                 "before or replace is not constant, parameter, or variable"
             );
             agraph = &tape.m_var;
@@ -161,22 +161,22 @@ adten_t adten_t::index(
         //
         // start + 0
         agraph->m_arg_value.push_back( from.m_index );
-        agraph->m_arg_type.push_back( from.m_adtype );
+        agraph->m_arg_type.push_back( from.m_vitype );
         //
         // start + 1
         size_t n_idx = index_list.size();
         agraph->m_arg_value.push_back( n_idx );
-        agraph->m_arg_type.push_back( adtype_t::none );
+        agraph->m_arg_type.push_back( vitype_t::none );
         //
         // start + 2 + i
         for (const std::optional<at::Tensor>& index : index_list) {
             size_t con_index  = tape.m_con_vec.size();
             tape.m_con_vec.push_back( index.value().clone() );
             agraph->m_arg_value.push_back( con_index );
-            agraph->m_arg_type.push_back( adtype_t::constant );
+            agraph->m_arg_type.push_back( vitype_t::constant );
         }
     }
-    return adten_t(res_tape_id, res_index, res_tensor, res_adtype);
+    return adten_t(res_tape_id, res_index, res_tensor, res_vitype);
 }
 // ---------------------------------------------------------------------------
 } // End ad_tensor
