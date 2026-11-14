@@ -13,13 +13,13 @@ namespace ad_tensor { namespace dev {
         size_t                    arg_index ,
         const agraph_t&           agraph    ,
         const vector<at::Tensor>& con_vec   ,
-        const vector<TensorType>& par_vec   );
+        const vector<TensorType>& par_all   );
     //
     template <class TensorType>
     c10::IntArrayRef shape_at_arg_index(
         size_t                    arg_index ,
         const agraph_t&           agraph    ,
         const vector<at::Tensor>& con_vec   ,
-        const vector<TensorType>& par_vec   ,
-        const vector<TensorType>& var_vec   );
+        const vector<TensorType>& par_all   ,
+        const vector<TensorType>& var_all   );
 } }

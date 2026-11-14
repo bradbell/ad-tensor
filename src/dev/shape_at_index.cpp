@@ -29,20 +29,20 @@ is the acyclic graph that contains the information for this operator usage.
 
 m_arg_type
 ==========
-If var_vec is present, m_arg_type[arg_index] must be
+If var_all is present, m_arg_type[arg_index] must be
 constant, parameter, or variable.
-If var_vec is not present, m_arg_type[arg_index] must be
+If var_all is not present, m_arg_type[arg_index] must be
 constant or parameter.
 
 con_vec
 *******
 is the vector of constant tensors.
 
-par_vec
+par_all
 *******
 is the vector of parameter tensors.
 
-var_vec
+var_all
 *******
 This argument should (should not) be present when
 agraph is a variable (parameter) acyclic graph.
@@ -69,7 +69,7 @@ namespace ad_tensor { namespace dev {
         size_t                    arg_index ,
         const agraph_t&           agraph    ,
         const vector<at::Tensor>& con_vec   ,
-        const vector<TensorType>& par_vec   )
+        const vector<TensorType>& par_all   )
     // END_SHAPE_AT_ARG_INDEX_PAR
     {   size_t    index   = agraph.m_arg_value[arg_index];
         vitype_t vitype = agraph.m_arg_type[arg_index];
@@ -81,7 +81,7 @@ namespace ad_tensor { namespace dev {
             //
             // parameter
             case vitype_t::parameter:
-            return par_vec[index].sizes();
+            return par_all[index].sizes();
             //
             // default
             default:
@@ -90,19 +90,19 @@ namespace ad_tensor { namespace dev {
             );
         }
         // should not get here
-        return par_vec[0].sizes();
+        return par_all[0].sizes();
     }
     template c10::IntArrayRef shape_at_arg_index<adten_t>(
         size_t                    arg_index ,
         const agraph_t&           agraph    ,
         const vector<at::Tensor>& con_vec   ,
-        const vector<adten_t>&    par_vec
+        const vector<adten_t>&    par_all
     );
     template c10::IntArrayRef shape_at_arg_index<at::Tensor>(
         size_t                    arg_index ,
         const agraph_t&           agraph    ,
         const vector<at::Tensor>& con_vec   ,
-        const vector<at::Tensor>& par_vec
+        const vector<at::Tensor>& par_all
     );
     // ----------------------------------------------------------------------
     // BEGIN_SHAPE_AT_ARG_INDEX_VAR
@@ -111,8 +111,8 @@ namespace ad_tensor { namespace dev {
         size_t                    arg_index ,
         const agraph_t&           agraph    ,
         const vector<at::Tensor>& con_vec   ,
-        const vector<TensorType>& par_vec   ,
-        const vector<TensorType>& var_vec   )
+        const vector<TensorType>& par_all   ,
+        const vector<TensorType>& var_all   )
     // END_SHAPE_AT_ARG_INDEX_VAR
     {   size_t    index   = agraph.m_arg_value[arg_index];
         vitype_t vitype = agraph.m_arg_type[arg_index];
@@ -125,11 +125,11 @@ namespace ad_tensor { namespace dev {
             //
             // parameter
             case vitype_t::parameter:
-            return par_vec[index].sizes();
+            return par_all[index].sizes();
             //
             // variable
             case vitype_t::variable:
-            return var_vec[index].sizes();
+            return var_all[index].sizes();
             //
             // default
             default:
@@ -138,20 +138,20 @@ namespace ad_tensor { namespace dev {
             );
         }
         // should not get here
-        return var_vec[0].sizes();
+        return var_all[0].sizes();
     }
     template c10::IntArrayRef shape_at_arg_index<adten_t>(
         size_t                    arg_index ,
         const agraph_t&           agraph    ,
         const vector<at::Tensor>& con_vec   ,
-        const vector<adten_t>&    par_vec   ,
-        const vector<adten_t>&    var_vec
+        const vector<adten_t>&    par_all   ,
+        const vector<adten_t>&    var_all
     );
     template c10::IntArrayRef shape_at_arg_index<at::Tensor>(
         size_t                    arg_index ,
         const agraph_t&           agraph    ,
         const vector<at::Tensor>& con_vec   ,
-        const vector<at::Tensor>& par_vec   ,
-        const vector<at::Tensor>& var_vec
+        const vector<at::Tensor>& par_all   ,
+        const vector<at::Tensor>& var_all
     );
 } }

@@ -53,11 +53,11 @@ con_vec
 =======
 is the vector containing all the constant tensors.
 
-par_vec
+par_all
 =======
 is the vector containing all the parameter tensors.
 
-var_vec
+var_all
 =======
 is the vector containing all the variable tensors..
 
@@ -67,8 +67,8 @@ Pure Virtual Functions
 forward_par
 ===========
 For this function, arg_type[arg_index] is never variable.
-In addition, par_vec[index] for index < op_index is an input
-and par_vec[op_index] is an output.
+In addition, par_all[index] for index < op_index is an input
+and par_all[op_index] is an output.
 {xrst_literal ,
     BEGIN_FORWARD_PAR, END_FORWARD_PAR
 }
@@ -76,8 +76,8 @@ and par_vec[op_index] is an output.
 forward_var
 ===========
 For this function,
-var_vec[index] for index < op_index is an input
-and var_vec[op_index] is an output.
+var_all[index] for index < op_index is an input
+and var_all[op_index] is an output.
 {xrst_literal ,
     BEGIN_FORWARD_VAR, END_FORWARD_VAR
 }
@@ -164,7 +164,7 @@ template<class TensorType> struct base_op_t
         size_t                       op_index    ,
         const agraph_t&              agraph      ,
         const vector<at::Tensor>&    con_vec     ,
-        vector<TensorType>&          par_vec
+        vector<TensorType>&          par_all
     ) const = 0;
     // END_FORWARD_PAR
     //
@@ -173,8 +173,8 @@ template<class TensorType> struct base_op_t
         size_t                       op_index    ,
         const agraph_t&              agraph      ,
         const vector<at::Tensor>&    con_vec     ,
-        const vector<TensorType>&    par_vec     ,
-        vector<TensorType>&          var_vec
+        const vector<TensorType>&    par_all     ,
+        vector<TensorType>&          var_all
     ) const = 0;
     // END_FORWARD_VAR
     //
@@ -183,8 +183,8 @@ template<class TensorType> struct base_op_t
         size_t                       op_index    ,
         const agraph_t&              agraph      ,
         const vector<at::Tensor>&    con_vec     ,
-        const vector<TensorType>&    par_vec     ,
-        const vector<TensorType>&    var_vec     ,
+        const vector<TensorType>&    par_all     ,
+        const vector<TensorType>&    var_all     ,
         vector<TensorType>&          for_der
     ) const = 0;
     // END_FORWARD_DER
@@ -194,8 +194,8 @@ template<class TensorType> struct base_op_t
         size_t                       op_index    ,
         const agraph_t&              agraph      ,
         const vector<at::Tensor>&    con_vec     ,
-        const vector<TensorType>&    par_vec     ,
-        const vector<TensorType>&    var_vec     ,
+        const vector<TensorType>&    par_all     ,
+        const vector<TensorType>&    var_all     ,
         vector<TensorType>&          rev_der
     ) const = 0;
     // END_REVERSE_DER
