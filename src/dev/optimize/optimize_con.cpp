@@ -8,6 +8,7 @@
     adfn
     op
     seq
+    rng
 }
 
 Remove Unnecessary Constants From an AD function
@@ -16,7 +17,7 @@ Remove Unnecessary Constants From an AD function
 Syntax
 ******
 {xrst_code cpp}
-    adfn.optimized_con( depend_con, depend_par, depend_var )
+    adfn.optimize_con( depend_con, depend_par, depend_var )
 {xrst_code}
 
 Prototype
@@ -29,19 +30,16 @@ depend_con
 **********
 If depend_con[i_old] is true (false) then the range values for adfn depend
 on the constant with index i_old in the input value of adfn.m_con_vec.
-The size of this vector is equal the size of the input value of adfn.m_con_vec.
 
 depend_par
 **********
 If depend_par[op_index] is true (false) then the range values for adfn depend
 on the parameter with index op_seq in the value of adfn.m_par.
-The size of this vector is equal the size of adfn.m_par.m_op_seq.
 
 depend_var
 **********
 If depend_var[op_index] is true (false) then the range values for adfn depend
 on the variable with index op_seq in the value of adfn.m_var.
-The size of this vector is equal the size of adfn.m_var.m_op_seq.
 
 adfn
 ****
@@ -52,10 +50,11 @@ m_con_vec
 The unnecessary constants are removed from this vector.
 It new size is less than or equal its old size.
 
-m_par.m_arg_value, m_var.arg_value
-==================================
+m_par.m_arg_value, m_var.arg_value, m_rng_index
+===============================================
 The entries in these vectors, that have m_arg_type constant,
-get mapped from their index in the old m_con_vec to their index in the new m_con_vec.
+get mapped from their index in the old m_con_vec to their index in the new
+m_con_vec.
 
 Test
 ****
@@ -77,7 +76,10 @@ void adfn_t::optimize_con(
     const vector<bool>& depend_con ,
     const vector<bool>& depend_par ,
     const vector<bool>& depend_var )
-{   // END_OPTIMIZE_CON
+{   assert( depend_con.size() == m_con_vec.size() );
+    assert( depend_par.size() == m_par.m_op_seq.size() );
+    assert( depend_var.size() == m_var.m_op_seq.size() );
+    // END_OPTIMIZE_CON
     //
     // hash2new_con, const_iterator
     // multimap would be more complicated, but it might be better when
@@ -87,7 +89,6 @@ void adfn_t::optimize_con(
     //
     // n_old
     size_t n_old = depend_con.size();
-    assert( n_old == m_con_vec.size() );
     //
     // not_used
     size_t not_used = std::numeric_limits<size_t>::max();
@@ -141,10 +142,7 @@ void adfn_t::optimize_con(
         }
     } }
     // m_con_vec
-    // shrink to fit is non-binding, so ensure this memory gets freed
-    for(size_t i_old = n_new; i_old < n_old; ++i_old) {
-        m_con_vec[i_old] = not_defined();
-    }
+    // ad_tensor tapes are expected to be small so we do not use shrink_to_fit.
     m_con_vec.resize(n_new);
     //
     // agraph
