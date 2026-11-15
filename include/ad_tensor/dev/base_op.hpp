@@ -33,10 +33,21 @@ that are grouped by derived class.
     src/dev/derive_op/unpack_call.cpp
 }
 
+Non-Virtual Functions
+*********************
+
+int64_sub_vec
+*************
+returns the sub-vector that has size = int64_vec[offset] and first element
+int64_vec[offset + 1].
+{xrst_literal ,
+    BEGIN_INT64_SUB_VEC, END_INT64_SUB_VEC
+}
+
 Common Arguments
 ****************
 For each argument below, its documentation is common for
-all the member functions where the corresponding argument appears:
+all the virtual member functions where the corresponding argument appears:
 
 op_index
 ========
@@ -61,8 +72,8 @@ var_all
 =======
 is the vector containing all the variable tensors..
 
-Pure Virtual Functions
-**********************
+Virtual Functions
+*****************
 
 forward_par
 ===========
@@ -159,6 +170,18 @@ namespace ad_tensor { namespace dev {
 template<class TensorType> struct base_op_t
 // END_BASE_OP
 {   //
+public:
+    // BEGIN_INT64_SUB_VEC
+    static c10::IntArrayRef int64_sub_vec(
+        size_t offset, const vector<int64_t>& int64_vec
+    )
+    {   // END_INT64_SUB_VEC
+        size_t   size   = size_t( int64_vec[offset] );
+        int64_t* begin  = int64_vec.data() + offset + 1;
+        return c10::IntArrayRef(begin, size);
+    }
+    // END_INT_ARRAY_REF
+    //
     // BEGIN_FORWARD_PAR
     virtual void forward_par(
         size_t                       op_index    ,
@@ -209,6 +232,7 @@ template<class TensorType> struct base_op_t
         size_t                       op_index        ,
         vitype_t                     op_vitype       ,
         const agraph_t&              agraph          ,
+        const vector<int64_t>&       int64_vec       ,
         const std::function< std::string(size_t, vitype_t) >& tensor_src
     ) const = 0;
     // END_SRC_GEN

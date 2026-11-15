@@ -222,6 +222,7 @@ template <> std::string slice_op_t<at::Tensor>::src_gen(
     size_t                                                op_index        ,
     vitype_t                                              op_vitype       ,
     const agraph_t&                                       agraph          ,
+    const vector<int64_t>&                                int64_vec       ,
     const std::function< std::string(size_t, vitype_t) >& tensor_src
 ) const {
     //
@@ -256,6 +257,7 @@ template <> std::string slice_op_t<adten_t>::src_gen(
     size_t                                                op_index        ,
     vitype_t                                              op_vitype       ,
     const agraph_t&                                       agraph          ,
+    const vector<int64_t>&                                int64_vec       ,
     const std::function< std::string(size_t, vitype_t) >& tensor_src
 ) const {
     assert(false && "adten_t version of src_gen called for slice operator");

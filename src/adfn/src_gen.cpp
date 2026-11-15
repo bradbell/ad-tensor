@@ -465,7 +465,7 @@ R"|(    //
         // src
         vitype_t op_vitype = vitype_t::parameter;
         string src = base_op.src_gen(
-            op_index, op_vitype, m_par, tensor_src
+            op_index, op_vitype, m_par, m_int64_vec, tensor_src
         );
         if( m_trace) {
             cout << src << " , " << dev::to_string(op_enum)  << "(";
@@ -509,7 +509,7 @@ R"|(    //
         // src
         vitype_t op_vitype = vitype_t::variable;
         string src = base_op.src_gen(
-            op_index, op_vitype, m_var, tensor_src
+            op_index, op_vitype, m_var, m_int64_vec, tensor_src
         );
         if( m_trace) {
             cout << src << " , " << dev::to_string(op_enum)  << "(";

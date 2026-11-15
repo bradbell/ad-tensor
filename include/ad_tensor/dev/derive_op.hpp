@@ -84,6 +84,7 @@ This maps op_enum_t values to the corresponding base_op_t<TensorType> value:
             size_t                       op_index        , \
             vitype_t                     op_vitype       , \
             const agraph_t&              agraph          , \
+            const vector<int64_t>&       int64_vec       , \
             const std::function< std::string(size_t, vitype_t) >& tensor_src \
         ) const override;  \
         \
