@@ -3,23 +3,6 @@
 // SPDX-FileCopyrightText: Bradley M. Bell <bradbell@seanet.com>
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
-/*
-{xrst_begin optimize_dev dev}
-
-The Optimizer Implementation
-############################
-
-{xrst_toc_table
-    src/dev/optimize/rng_depend.cpp
-    src/dev/optimize/optimize_con.cpp
-    src/dev/optimize/new_call.cpp
-    src/dev/optimize/new_split.cpp
-    src/dev/optimize/new_agraph.cpp
-    src/dev/optimize/new_operator.cpp
-}
-
-{xrst_end optimize_dev}
-*/
 // TODO; split this up into separate include files for each function
 // in the include/ad_tensor/dev/optimize directory.
 #include <array>

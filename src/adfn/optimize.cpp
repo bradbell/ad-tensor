@@ -36,6 +36,24 @@ name
 The name for the function will be changed to its old name plus "_optimize" .
 
 {xrst_end adfn_optimize}
+-------------------------------------------------------------------------------
+{xrst_begin optimize_dev dev}
+
+The Optimizer Implementation
+############################
+
+{xrst_toc_table
+    src/dev/optimize/rng_depend.cpp
+    src/dev/optimize/optimize_int64.cpp
+    src/dev/optimize/optimize_con.cpp
+    src/dev/optimize/new_call.cpp
+    src/dev/optimize/new_split.cpp
+    src/dev/optimize/new_agraph.cpp
+    src/dev/optimize/new_operator.cpp
+}
+
+{xrst_end optimize_dev}
+
 */
 #include <ad_tensor/adfn.hpp>
 #include <ad_tensor/dev/optimize.hpp>
@@ -64,8 +82,12 @@ void adfn_t::optimize(void)
         cout << "depend_var = " << dev::to_string( depend_var ) << "\n";
     }
     //
+    // m_int64_vec, m_par, m_var
+    // must optimize int64_t vectors before parameters and variables
+    optimize_int64( depend_int64 , depend_par, depend_var );
+    //
     // m_con_vec, m_par, m_var, m_rng_index
-    // constants do not depend on parameters or variables so do this first
+    // must optimize constants before parameters and variables
     optimize_con( depend_con , depend_par, depend_var );
     //
     //

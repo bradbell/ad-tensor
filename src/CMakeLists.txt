@@ -101,6 +101,7 @@ add_library(ad_tensor SHARED
     dev/optimize/new_operator.cpp
     dev/optimize/new_split.cpp
     dev/optimize/optimize_con.cpp
+    dev/optimize/optimize_int64.cpp
     dev/optimize/rng_depend.cpp
     dev/rev_sum_view.cpp
     dev/shape_at_index.cpp
