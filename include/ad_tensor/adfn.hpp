@@ -90,6 +90,9 @@ public:
     // n_range
     size_t n_range(void) const;
     //
+    // n_int64
+    size_t n_int64(void) const;
+    //
     // n_con
     size_t n_con(void) const;
     //

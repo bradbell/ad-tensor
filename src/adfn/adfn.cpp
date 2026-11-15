@@ -4,6 +4,9 @@
 // ----------------------------------------------------------------------------
 /*
 {xrst_begin adfn usr}
+{xrst_spell
+    libtorch
+}
 
 The AD Function Class
 #####################
@@ -45,6 +48,17 @@ n_range
     BEGIN_N_RANGE, END_N_RANGE
 }
 Returns the number of tensors in the range space for this AD function.
+
+n_int64
+*******
+{xrst_literal ,
+    BEGIN_N_INT64, END_N_INT64
+}
+Many of the libtorch functions have a vector, with int64_t elements,
+as an argument.
+Each such vector is represented as a size followed by its elements.
+The return from n_int64 is the number of these vectors
+plus the sum of the sizes of these vectors.
 
 n_con
 *****
@@ -175,6 +189,12 @@ namespace ad_tensor {
     size_t adfn_t::n_range(void) const
     {   // END_N_RANGE
         return m_rng_index.size();
+    }
+    //
+    // BEGIN_N_INT64
+    size_t adfn_t::n_int64(void) const
+    {   // END_N_INT64
+        return m_int64_vec.size();
     }
     //
     // BEGIN_N_CON
