@@ -26,7 +26,9 @@
 #define EXPECT_ARGUMENTS(operand_vitype) \
     size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start; \
     assert( n_arg == 3 + n_split && "split_op: n_arg != 3 + n_split" ); \
-    if( operand_vitype == vitype_t::none ) { \
+    if( operand_vitype != vitype_t::none ) { \
+        assert( agraph.m_arg_type[arg_start] == operand_vitype ); \
+    } else { \
         assert(  \
             agraph.m_arg_type[arg_start] == vitype_t::parameter || \
             agraph.m_arg_type[arg_start] == vitype_t::variable \
