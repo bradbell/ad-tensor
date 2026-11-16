@@ -25,24 +25,16 @@ Derived Classes and Static Functions
 All the member functions for this base class,
 and its derived classes, are static or like static functions
 that are grouped by derived class.
+{xrst_comment BEGIN_SORT_THIS_LINE_PLUS_2}
 {xrst_toc_table
     include/ad_tensor/dev/derive_op.hpp
-    src/dev/derive_op/src_gen_index.cpp
+    include/ad_tensor/dev/int64_sub_vec.hpp
     src/dev/derive_op/src_gen_binary.cpp
+    src/dev/derive_op/src_gen_index.cpp
     src/dev/derive_op/src_gen_unary.cpp
     src/dev/derive_op/unpack_call.cpp
 }
-
-Non-Virtual Functions
-*********************
-
-int64_sub_vec
-*************
-returns the sub-vector that has size = int64_vec[offset] and first element
-int64_vec[offset + 1].
-{xrst_literal ,
-    BEGIN_INT64_SUB_VEC, END_INT64_SUB_VEC
-}
+{xrst_comment END_SORT_THIS_LINE_MINUS_2N}
 
 Common Arguments
 ****************
@@ -171,16 +163,6 @@ template<class TensorType> struct base_op_t
 // END_BASE_OP
 {   //
 public:
-    // BEGIN_INT64_SUB_VEC
-    static c10::IntArrayRef int64_sub_vec(
-        size_t offset, const vector<int64_t>& int64_vec
-    )
-    {   // END_INT64_SUB_VEC
-        size_t   size   = size_t( int64_vec[offset] );
-        int64_t* begin  = int64_vec.data() + offset + 1;
-        return c10::IntArrayRef(begin, size);
-    }
-    // END_INT_ARRAY_REF
     //
     // BEGIN_FORWARD_PAR
     virtual void forward_par(

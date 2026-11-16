@@ -2,6 +2,7 @@
 // SPDX-FileCopyrightText: Bradley M. Bell <bradbell@seanet.com>
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
+#include <ad_tensor/dev/int64_sub_vec.hpp>
 #include <ad_tensor/dev/to_string.hpp>
 #include <ad_tensor/dev/derive_op.hpp>
 #include <ad_tensor/adten.hpp>
@@ -14,7 +15,7 @@
 #else
 #define EXPECT_ARGUMENTS(operand_vitype) \
     size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start; \
-    assert( n_arg == 4 + n_sizes && "pad_op: n_arg != 4 + n_sizes" ); \
+    assert( n_arg == 4 && "pad_op: n_arg != 4" ); \
     if( operand_vitype != vitype_t::none ) { \
         assert( agraph.m_arg_type[arg_start] == operand_vitype ); \
     } else { \
@@ -24,9 +25,8 @@
         ); \
     } \
     assert( agraph.m_arg_type[arg_start + 1] == vitype_t::constant ); \
-    for(size_t i = 2; i < n_arg; ++i) { \
-        assert( agraph.m_arg_type[arg_start + i] == vitype_t::none ); \
-    }
+    assert( agraph.m_arg_type[arg_start + 2] == vitype_t::none ); \
+    assert( agraph.m_arg_type[arg_start + 3] == vitype_t::int64vector );
 #endif
 //
 namespace ad_tensor { namespace dev { // Begin ad_tensor::dev
@@ -46,6 +46,7 @@ void pad_op_t<TensorType>::forward_par(
     //
     // arg_start
     size_t    arg_start = agraph.m_arg_start[op_index];
+    EXPECT_ARGUMENTS(vitype_t::parameter)
     //
     // input
     size_t     input_index = agraph.m_arg_value[arg_start];
@@ -59,15 +60,9 @@ void pad_op_t<TensorType>::forward_par(
     size_t mode_size_t  = agraph.m_arg_value[arg_start + 2];
     pad_enum_t pad_mode = static_cast<pad_enum_t>(mode_size_t);
     //
-    // n_sizes
-    size_t n_sizes = agraph.m_arg_value[arg_start + 3];
-    //
-    EXPECT_ARGUMENTS(vitype_t::parameter)
-    //
     // pad_sizes
-    const size_t* begin = agraph.m_arg_value.data() + arg_start + 4;
-    const size_t* end   = begin + n_sizes;
-    vector<int64_t> pad_sizes(begin, end);
+    size_t offset = agraph.m_arg_value[arg_start + 3];
+    vector<int64_t> pad_sizes = int64_sub_vec(offset, int64_vec).vec();
     //
     // options
     torch::nn::functional::PadFuncOptions options(pad_sizes);
@@ -125,6 +120,7 @@ void pad_op_t<TensorType>::forward_var(
     //
     // arg_start
     size_t    arg_start = agraph.m_arg_start[op_index];
+    EXPECT_ARGUMENTS(vitype_t::variable)
     //
     // input
     size_t     input_index = agraph.m_arg_value[arg_start];
@@ -138,15 +134,9 @@ void pad_op_t<TensorType>::forward_var(
     size_t mode_size_t  = agraph.m_arg_value[arg_start + 2];
     pad_enum_t pad_mode = static_cast<pad_enum_t>(mode_size_t);
     //
-    // n_sizes
-    size_t n_sizes = agraph.m_arg_value[arg_start + 3];
-    //
-    EXPECT_ARGUMENTS(vitype_t::variable)
-    //
     // pad_sizes
-    const size_t* begin = agraph.m_arg_value.data() + arg_start + 4;
-    const size_t* end   = begin + n_sizes;
-    vector<int64_t> pad_sizes(begin, end);
+    size_t offset = agraph.m_arg_value[arg_start + 3];
+    vector<int64_t> pad_sizes = int64_sub_vec(offset, int64_vec).vec();
     //
     // options
     torch::nn::functional::PadFuncOptions options(pad_sizes);
@@ -207,6 +197,7 @@ void pad_op_t<TensorType>::forward_der(
     //
     // arg_start
     size_t    arg_start = agraph.m_arg_start[op_index];
+    EXPECT_ARGUMENTS(vitype_t::variable)
     //
     // input
     size_t     input_index = agraph.m_arg_value[arg_start];
@@ -216,15 +207,9 @@ void pad_op_t<TensorType>::forward_der(
     size_t mode_size_t  = agraph.m_arg_value[arg_start + 2];
     pad_enum_t pad_mode = static_cast<pad_enum_t>(mode_size_t);
     //
-    // n_sizes
-    size_t n_sizes = agraph.m_arg_value[arg_start + 3];
-    //
-    EXPECT_ARGUMENTS(vitype_t::variable)
-    //
     // pad_sizes
-    const size_t* begin = agraph.m_arg_value.data() + arg_start + 4;
-    const size_t* end   = begin + n_sizes;
-    vector<int64_t> pad_sizes(begin, end);
+    size_t offset = agraph.m_arg_value[arg_start + 3];
+    vector<int64_t> pad_sizes = int64_sub_vec(offset, int64_vec).vec();
     //
     // options
     torch::nn::functional::PadFuncOptions options(pad_sizes);
@@ -286,6 +271,7 @@ void pad_op_t<TensorType>::reverse_der(
     //
     // arg_start
     size_t    arg_start = agraph.m_arg_start[op_index];
+    EXPECT_ARGUMENTS(vitype_t::variable)
     //
     // input_index
     size_t     input_index = agraph.m_arg_value[arg_start];
@@ -294,20 +280,14 @@ void pad_op_t<TensorType>::reverse_der(
     size_t mode_size_t  = agraph.m_arg_value[arg_start + 2];
     pad_enum_t pad_mode = static_cast<pad_enum_t>(mode_size_t);
     //
-    // n_sizes
-    size_t n_sizes = agraph.m_arg_value[arg_start + 3];
-    //
-    EXPECT_ARGUMENTS(vitype_t::variable)
-    //
     // pad_sizes
-    const size_t* begin = agraph.m_arg_value.data() + arg_start + 4;
-    const size_t* end   = begin + n_sizes;
-    vector<int64_t> pad_sizes(begin, end);
+    size_t offset = agraph.m_arg_value[arg_start + 3];
+    vector<int64_t> pad_sizes = int64_sub_vec(offset, int64_vec).vec();
     //
     // in_bar
     c10::IntArrayRef out_shape = var_all[op_index].sizes();
     TensorType       in_bar    = rev_der[op_index];
-    size_t           n_dim     = n_sizes / 2;
+    size_t           n_dim     = pad_sizes.size() / 2;
     for(size_t i = 0; i < n_dim; ++i)
     if( pad_sizes[2 * i] != 0 || pad_sizes[2 * i + 1] != 0 ) {
         int64_t dim       = int64_t( out_shape.size() - i - 1 );
@@ -436,6 +416,7 @@ template <> std::string pad_op_t<at::Tensor>::src_gen(
     //
     // arg_start
     size_t    arg_start = agraph.m_arg_start[op_index];
+    EXPECT_ARGUMENTS(vitype_t::none)
     //
     // input_src
     size_t   input_index   = agraph.m_arg_value[arg_start];
@@ -472,16 +453,14 @@ template <> std::string pad_op_t<at::Tensor>::src_gen(
         break;
     }
     //
-    // n_sizes
-    size_t n_sizes = agraph.m_arg_value[arg_start + 3];
-    //
-    EXPECT_ARGUMENTS(vitype_t::none)
+    // pad_sizes
+    size_t offset = agraph.m_arg_value[arg_start + 3];
+    c10::IntArrayRef pad_sizes = int64_sub_vec(offset, int64_vec);
     //
     // pad_sizes_src
-    const size_t* begin = agraph.m_arg_value.data() + arg_start + 4;
-    string pad_sizes_src = "{" + std::to_string( begin[0] );
-    for(size_t i = 1; i < n_sizes; ++i) {
-        pad_sizes_src += "," + std::to_string( begin[i] );
+    string pad_sizes_src = "{" + std::to_string( pad_sizes[0] );
+    for(size_t i = 1; i < pad_sizes.size(); ++i) {
+        pad_sizes_src += "," + std::to_string( pad_sizes[i] );
     }
     pad_sizes_src += "}";
     //

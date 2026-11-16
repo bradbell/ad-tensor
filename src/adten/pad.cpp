@@ -62,14 +62,10 @@ the following is added to the parameter (variable) acyclic graph:
     :header-rows: 1
 
     arg_index, arg_value,                   arg_type
-    start + 0, index for input,             type for input
+    start + 0, index for input,             AD type for input
     start + 1, index for constant_value,    constant
     start + 2, mode_size_t,                 none
-    start + 3, n_sizes,                     none
-    start + 4, first padding size,          none
-    ..., ..., ...
-    start + n_sizes + 3, last padding size, none
-    ...
+    start + 3, offset ,                     int64vector
 
 where start be the length of arg_value and arg_type before this call to
 ``adten_t::binary`` .
@@ -198,12 +194,14 @@ adten_t adten_t::pad(
         agraph->m_arg_value.push_back( mode_size_t );
         agraph->m_arg_type.push_back( vitype_t::none );
         //
-        agraph->m_arg_value.push_back( pad_sizes.size() );
-        agraph->m_arg_type.push_back( vitype_t::none );
+        size_t offset  = tape.m_int64_vec.size();
+        agraph->m_arg_value.push_back( offset );
+        agraph->m_arg_type.push_back( vitype_t::int64vector );
         //
-        for(size_t i = 0; i < pad_sizes.size(); ++i)
-        {   agraph->m_arg_value.push_back( size_t( pad_sizes[i] ) );
-            agraph->m_arg_type.push_back( vitype_t::none );
+        size_t n_sizes = pad_sizes.size();
+        tape.m_int64_vec.push_back( int64_t( n_sizes ) );
+        for(size_t i = 0; i < n_sizes; ++i) {
+            tape.m_int64_vec.push_back( pad_sizes[i] );
         }
     }
     return adten_t(res_tape_id, res_index, res_tensor, res_vitype);
