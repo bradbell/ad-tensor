@@ -86,7 +86,7 @@ the following is added to the parameter (variable) acyclic graph:
     :header-rows: 1
 
     arg_index, arg_value,                                     arg_type
-    start + 0, index for operand,                             operand type
+    start + 0, operand index,                                 operand AD type
     start + 1, dim,                                           none
     start + 2, number of split sizes (n_split),               none
     start + 3, size of first piece in dim direction,          none

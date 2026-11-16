@@ -86,7 +86,7 @@ the following is added to the parameter (variable) acyclic graph:
     :header-rows: 1
 
     arg_index, arg_value, arg_type
-    start + 0, index for operand, type for operand
+    start + 0, operand index,     operand AD type
     start + 1, number of dimensions being flipped (n_dim),    vitype_t::none
     start + 2, index of first dimension being flipped,        vitype_t::none
     ..., ..., ...

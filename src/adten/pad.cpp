@@ -62,8 +62,8 @@ the following is added to the parameter (variable) acyclic graph:
     :header-rows: 1
 
     arg_index, arg_value,                   arg_type
-    start + 0, index for input,             AD type for input
-    start + 1, index for constant_value,    constant
+    start + 0, input index,                 input AD type
+    start + 1, constant_value index,        constant
     start + 2, mode_size_t,                 none
     start + 3, offset ,                     int64vector
 

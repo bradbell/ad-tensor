@@ -76,7 +76,7 @@ the following is added to the parameter (variable) acyclic graph:
     :header-rows: 1
 
     arg_index, arg_value, arg_type
-    start + 0, index for operand,                         type of the operand
+    start + 0, operand index,                             operand AD type
     start + 1, first dimension that we are switching,     vitype::none
     start + 2, second dimension that we are switching,    vitype::none
 

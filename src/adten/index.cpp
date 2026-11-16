@@ -83,7 +83,7 @@ the following is added to the parameter (variable) acyclic graph:
     :header-rows: 1
 
     arg_index, arg_value, arg_type
-    start + 0, index for from tensor,                     type of from
+    start + 0, from tensor index,                         from AD type
     start + 1, number of indices in index_list  (n_idx),  vitype_t::none
     start + 2, index  of tensor index_list[0]             vitype_t::constant
     ..., ..., ...

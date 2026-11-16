@@ -90,8 +90,8 @@ the following is added to the parameter (variable) acyclic graph:
     :header-rows: 1
 
     arg_index, arg_value,                  arg_type
-    start + 0, index for linear,           type for linear
-    start + 1, index for rhs,              type for rhs
+    start + 0, linear index,               linear AD type
+    start + 1, rhs index,                  rhs AD type
     start + 2, 1 (0) is left true (false), vitype::none
 
 where start be the length of arg_value and arg_type before this call to

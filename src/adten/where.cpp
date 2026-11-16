@@ -76,9 +76,9 @@ the following is added to the parameter (variable) acyclic graph:
     :header-rows: 1
 
     arg_index, arg_value, arg_type
-    start + 0, index for cond,        type of the cond
-    start + 1, index for true_case,   type of true_case
-    start + 2, index for false_case,  type of false_case
+    start + 0, cond index,            cond AD type
+    start + 1, true_case index,       true_case AD type
+    start + 2, false_case index,      false_case AD type
 
 where start is the length of arg_value and arg_type before this call to
 ``adten_t::where`` .

@@ -73,9 +73,9 @@ the following is added to the parameter (variable) acyclic graph:
     arg_index, arg_value, arg_type
     start + 0, dim,                                  none
     start + 1, n_ten: number of tensors in the list, none
-    start + 2, index for first tensor,               type of first tensor
+    start + 2, first tensor index,                   first tensor AD type
     ...,...,...
-    start + n_ten + 1, index for last tensor,        type of last tensor
+    start + n_ten + 1, last tensor index,            last tensor AD type
 
 where start is the length of arg_value and arg_type before this call to
 ``adten_t::cat`` .

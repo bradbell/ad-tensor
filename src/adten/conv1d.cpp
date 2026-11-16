@@ -65,9 +65,9 @@ the following is added to the parameter (variable) acyclic graph:
     :header-rows: 1
 
     arg_index, arg_value,                  arg_type
-    start + 0, index for input,            type for input
-    start + 1, index for weight,           type for weight
-    start + 3, index for bias,             type for bias
+    start + 0, input index,                input AD type
+    start + 1, weight index,               weight AD type
+    start + 3, bias index,                 bias AD type
     start + 4, stride                      none
     start + 5, dilation                    none
     start + 6, groups                      none
