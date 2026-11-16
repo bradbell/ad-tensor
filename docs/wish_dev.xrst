@@ -5,17 +5,16 @@
 {xrst_begin wish_dev dev}
 {xrst_spell
     typedefs
-    agraph
-    int
+    der
 }
 
 The Developer Wish List
 #######################
 
+#.  Ensure that all forward_der routines check that the derivatives
+    of the arguments are defined before using them.
+
 #.  Change typedefs to using statements.
 
-#.  The script tools/agraph_value_type.sh will change agraph.m_arg_value
-    from vector<size_t> to vector<int64_t>. This may or may not be a good idea;
-    see the comments at the top of agraph_value_type.sh.
 
 {xrst_end wish_dev}
