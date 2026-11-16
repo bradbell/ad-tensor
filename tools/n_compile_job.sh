@@ -39,7 +39,7 @@ then
         echo 'check_gtest.sh: Unexpected column order in output of free'
         exit 1
     fi
-    max_jobs=$( free -g | awk '{ if ($1 == "Mem:") { print $7 } }' )
+    max_jobs=$( free -g | awk '{ if ($1 == "Mem:") { print int($7 - 0.5) } }' )
 else
     max_jobs=$( vm_stat | awk -v pagesize=$(pagesize) '
         /Pages free/ {free=$3}
@@ -53,6 +53,11 @@ else
             print int( (free + inactive + speculative + purgeable) * to_gb );
         }
     ')
+fi
+if (( max_jobs < 1 ))
+then
+    echo 'n_compile_jobs: less than 1.5 GB of available memory'
+    exit 1
 fi
 #
 # n_job
