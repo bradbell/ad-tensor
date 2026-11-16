@@ -73,10 +73,7 @@ the following is added to the parameter (variable) acyclic graph:
 
     arg_index, arg_value, arg_type
     start + 0, operand index,                             operand AD type
-    start + 1, number of dimensions in new shape (n_dim), vitype::none
-    start + 2, first dimension in new shape,              vitype_t::none
-    ..., ..., ...
-    start + n_dim + 1, last dimension in new shape,       vitype_t::none
+    start + 1, offset,                                    int64vector
 
 where start is the length of arg_value and arg_type before this call to
 ``adten_t::expand`` .
@@ -141,27 +138,28 @@ adten_t adten_t::expand(const c10::IntArrayRef& shape) const
         agraph->m_arg_value.push_back( m_index );
         agraph->m_arg_type.push_back( m_vitype );
         //
-        agraph->m_arg_value.push_back( n_dim_new );
-        agraph->m_arg_type.push_back( vitype_t::none );
+        size_t offset = tape.m_int64_vec.size();
+        agraph->m_arg_value.push_back( offset );
+        agraph->m_arg_type.push_back( vitype_t::int64vector );
         //
+        tape.m_int64_vec.push_back( n_dim_new );
         for(size_t i = 0; i < n_dim_new; ++i) {
-            agraph->m_arg_type.push_back( vitype_t::none );
             if( i < n_dim_new - n_dim_old ) {
                 dev::user_assert( 0 <= shape[i],
                     "expand: a shape element is less than zero and its "
                     "dimension is before dimensions in tensor being expanded"
                 );
-                agraph->m_arg_value.push_back( size_t( shape[i] ) );
+                tape.m_int64_vec.push_back( shape[i] );
             } else {
                 size_t j = i - (n_dim_new - n_dim_old);
                 if( shape[i] == -1 ) {
-                    agraph->m_arg_value.push_back( size_t( shape_old[j] ) );
+                    tape.m_int64_vec.push_back( shape_old[j] );
                 } else {
                     dev::user_assert( 0 <= shape[i],
                         "AD Tensor expand: a shape element is less than zero "
                         "and not -1 for a dimension in tensor being expanded"
                     );
-                    agraph->m_arg_value.push_back( size_t( shape[i] ) );
+                    tape.m_int64_vec.push_back( shape[i] );
                 }
             }
         }

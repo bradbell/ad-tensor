@@ -2,6 +2,8 @@
 // SPDX-FileCopyrightText: Bradley M. Bell <bradbell@seanet.com>
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
+#include <ad_tensor/dev/to_string.hpp>
+#include <ad_tensor/dev/int64_sub_vec.hpp>
 #include <ad_tensor/dev/broadcast.hpp>
 #include <ad_tensor/dev/src_gen_index.hpp>
 #include <ad_tensor/dev/derive_op.hpp>
@@ -24,28 +26,21 @@ void expand_op_t<TensorType>::forward_par(
     //
     // arg_start
     size_t    arg_start = agraph.m_arg_start[op_index];
-    //
-    // n_dim
-    size_t n_dim = agraph.m_arg_value[arg_start + 1];
-    assert( vitype_t::none ==  agraph.m_arg_type[arg_start + 1] );
-    //
 #ifndef NDEBUG
-    //
     // vitype
     vitype_t vitype   = agraph.m_arg_type[arg_start];
     assert( vitype  == vitype_t::parameter );
     //
     // n_arg
     size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
-    assert( n_arg == 2 + n_dim && "expand_op: n_arg != 2 + n_dim");
+    assert( n_arg == 2 && "expand_op: n_arg != 2");
 #endif
     // operand_index
     size_t operand_index  = agraph.m_arg_value[arg_start];
     //
     // shape
-    const size_t* begin = agraph.m_arg_value.data() + arg_start + 2;
-    const size_t* end   = begin + n_dim;
-    const vector<int64_t> shape(begin, end);
+    size_t offset = agraph.m_arg_value[arg_start + 1];
+    const c10::IntArrayRef shape = int64_sub_vec(offset, int64_vec);
     //
     // par_all
     par_all[op_index] = par_all[operand_index].expand(shape);
@@ -78,28 +73,21 @@ void expand_op_t<TensorType>::forward_var(
     //
     // arg_start
     size_t    arg_start = agraph.m_arg_start[op_index];
-    //
-    // n_dim
-    size_t n_dim = agraph.m_arg_value[arg_start + 1];
-    assert( vitype_t::none ==  agraph.m_arg_type[arg_start + 1] );
-    //
 #ifndef NDEBUG
-    //
     // vitype
     vitype_t vitype   = agraph.m_arg_type[arg_start];
     assert( vitype  == vitype_t::variable );
     //
     // n_arg
     size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
-    assert( n_arg == 2 + n_dim  && "expand_op: n_arg != 2 + n_dim ");
+    assert( n_arg == 2 && "expand_op: n_arg != 2");
 #endif
     // operand_index
     size_t operand_index  = agraph.m_arg_value[arg_start];
     //
     // shape
-    const size_t* begin = agraph.m_arg_value.data() + arg_start + 2;
-    const size_t* end   = begin + n_dim;
-    const vector<int64_t> shape(begin, end);
+    size_t offset = agraph.m_arg_value[arg_start + 1];
+    const c10::IntArrayRef shape = int64_sub_vec(offset, int64_vec);
     //
     // var_all
     var_all[op_index] = var_all[operand_index].expand(shape);
@@ -135,12 +123,21 @@ void expand_op_t<TensorType>::forward_der(
     //
     // arg_start
     size_t    arg_start = agraph.m_arg_start[op_index];
+#ifndef NDEBUG
+    // vitype
+    vitype_t vitype   = agraph.m_arg_type[arg_start];
+    assert( vitype  == vitype_t::variable );
     //
+    // n_arg
+    size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
+    assert( n_arg == 2 && "expand_op: n_arg != 2");
+#endif
     // operand_index
     size_t operand_index  = agraph.m_arg_value[arg_start];
     //
-    // for_der
-    c10::IntArrayRef shape = var_all[op_index].sizes();
+    // shape
+    size_t offset = agraph.m_arg_value[arg_start + 1];
+    const c10::IntArrayRef shape = int64_sub_vec(offset, int64_vec);
     //
     // for_der[op_index]
     if( is_defined(for_der[operand_index]) ) {
@@ -224,7 +221,48 @@ template <> std::string expand_op_t<at::Tensor>::src_gen(
     const vector<int64_t>&                                int64_vec       ,
     const std::function< std::string(size_t, vitype_t) >& tensor_src
 ) const {
-    return src_gen_index_array(op_index, op_vitype, agraph, tensor_src);
+    assert( op_vitype==vitype_t::parameter || op_vitype==vitype_t::variable );
+    //
+    // string
+    using std::string;
+    //
+    // arg_start
+    size_t    arg_start = agraph.m_arg_start[op_index];
+#ifndef NDEBUG
+    size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
+    assert( n_arg == 2 && "index_array: n_arg != 2");
+#endif
+    //
+    // shape
+    size_t offset = agraph.m_arg_value[arg_start + 1];
+    assert( vitype_t::int64vector ==  agraph.m_arg_type[arg_start + 1] );
+    c10::IntArrayRef shape = int64_sub_vec(offset, int64_vec);
+    //
+    // openum_src
+    string openum_src = to_string( agraph.m_op_seq[op_index] );
+    //
+    // operand_src
+    size_t   operand_index  = agraph.m_arg_value[arg_start];
+    vitype_t operand_vitype = agraph.m_arg_type[arg_start];
+    string   operand_src    = tensor_src(operand_index, operand_vitype);
+    //
+    // target_src
+    string target_src = tensor_src(op_index, op_vitype);
+    //
+    // src
+    string src = std::format(
+        "{} = {}.{}({{", target_src, operand_src, openum_src
+    );
+    for(size_t i = 0; i < shape.size(); ++i) {
+        if( i == 0 ) {
+            src += std::format("{}", shape[i]);
+        } else {
+            src += std::format(", {}", shape[i]);
+        }
+    }
+    src += "});";
+    //
+    return src;
 }
 template <> std::string expand_op_t<adten_t>::src_gen(
     size_t                                                op_index        ,

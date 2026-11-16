@@ -68,9 +68,9 @@ the following is added to the parameter (variable) acyclic graph:
     start + 0, input index,                input AD type
     start + 1, weight index,               weight AD type
     start + 3, bias index,                 bias AD type
-    start + 4, stride                      none
-    start + 5, dilation                    none
-    start + 6, groups                      none
+    start + 4, stride,                     none
+    start + 5, dilation,                   none
+    start + 6, groups,                     none
 
 where start be the length of arg_value and arg_type before this call to
 ``adten_t::conv1d`` .
