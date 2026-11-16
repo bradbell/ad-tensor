@@ -8,6 +8,27 @@
 #include <ad_tensor/dev/pad_enum.hpp>
 #include <ad_tensor/dev/plus_minus_equal.hpp>
 //
+// EXPECT_ARGUMENTS(operand_vitype)
+#if NDEBUG
+#define EXPECT_ARGUMENTS(operand_vitype)
+#else
+#define EXPECT_ARGUMENTS(operand_vitype) \
+    size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start; \
+    assert( n_arg == 4 + n_sizes && "pad_op: n_arg != 4 + n_sizes" ); \
+    if( operand_vitype != vitype_t::none ) { \
+        assert( agraph.m_arg_type[arg_start] == operand_vitype ); \
+    } else { \
+        assert(  \
+            agraph.m_arg_type[arg_start] == vitype_t::parameter || \
+            agraph.m_arg_type[arg_start] == vitype_t::variable \
+        ); \
+    } \
+    assert( agraph.m_arg_type[arg_start + 1] == vitype_t::constant ); \
+    for(size_t i = 2; i < n_arg; ++i) { \
+        assert( agraph.m_arg_type[arg_start + i] == vitype_t::none ); \
+    }
+#endif
+//
 namespace ad_tensor { namespace dev { // Begin ad_tensor::dev
 // ------------------------------------------------------------------------
 // forward_par
@@ -41,22 +62,7 @@ void pad_op_t<TensorType>::forward_par(
     // n_sizes
     size_t n_sizes = agraph.m_arg_value[arg_start + 3];
     //
-#ifndef NDEBUG
-    //
-    // input_type, constant_type
-    vitype_t input_type   = agraph.m_arg_type[arg_start];
-    assert( input_type  == vitype_t::parameter );
-    vitype_t constant_type   = agraph.m_arg_type[arg_start + 1];
-    assert( constant_type  == vitype_t::constant );
-    //
-    // n_arg
-    size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
-    assert( n_arg == 4 + n_sizes && "pad_op: n_arg != 4 + n_sizes" );
-    //
-    for(size_t i = 2; i < n_arg; ++i) {
-        assert( agraph.m_arg_type[arg_start +i] == vitype_t::none );
-    }
-#endif
+    EXPECT_ARGUMENTS(vitype_t::parameter)
     //
     // pad_sizes
     const size_t* begin = agraph.m_arg_value.data() + arg_start + 4;
@@ -135,22 +141,7 @@ void pad_op_t<TensorType>::forward_var(
     // n_sizes
     size_t n_sizes = agraph.m_arg_value[arg_start + 3];
     //
-#ifndef NDEBUG
-    //
-    // input_type, constant_type
-    vitype_t input_type   = agraph.m_arg_type[arg_start];
-    assert( input_type  == vitype_t::variable );
-    vitype_t constant_type   = agraph.m_arg_type[arg_start + 1];
-    assert( constant_type  == vitype_t::constant );
-    //
-    // n_arg
-    size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
-    assert( n_arg == 4 + n_sizes && "pad_op: n_arg != 4 + n_sizes" );
-    //
-    for(size_t i = 2; i < n_arg; ++i) {
-        assert( agraph.m_arg_type[arg_start +i] == vitype_t::none );
-    }
-#endif
+    EXPECT_ARGUMENTS(vitype_t::variable)
     //
     // pad_sizes
     const size_t* begin = agraph.m_arg_value.data() + arg_start + 4;
@@ -228,22 +219,7 @@ void pad_op_t<TensorType>::forward_der(
     // n_sizes
     size_t n_sizes = agraph.m_arg_value[arg_start + 3];
     //
-#ifndef NDEBUG
-    //
-    // input_type, constant_type
-    vitype_t input_type   = agraph.m_arg_type[arg_start];
-    assert( input_type  == vitype_t::variable );
-    vitype_t constant_type   = agraph.m_arg_type[arg_start + 1];
-    assert( constant_type  == vitype_t::constant );
-    //
-    // n_arg
-    size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
-    assert( n_arg == 4 + n_sizes && "pad_op: n_arg != 4 + n_sizes" );
-    //
-    for(size_t i = 2; i < n_arg; ++i) {
-        assert( agraph.m_arg_type[arg_start +i] == vitype_t::none );
-    }
-#endif
+    EXPECT_ARGUMENTS(vitype_t::variable)
     //
     // pad_sizes
     const size_t* begin = agraph.m_arg_value.data() + arg_start + 4;
@@ -321,22 +297,7 @@ void pad_op_t<TensorType>::reverse_der(
     // n_sizes
     size_t n_sizes = agraph.m_arg_value[arg_start + 3];
     //
-#ifndef NDEBUG
-    //
-    // input_type, constant_type
-    vitype_t input_type   = agraph.m_arg_type[arg_start];
-    assert( input_type  == vitype_t::variable );
-    vitype_t constant_type   = agraph.m_arg_type[arg_start + 1];
-    assert( constant_type  == vitype_t::constant );
-    //
-    // n_arg
-    size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
-    assert( n_arg == 4 + n_sizes && "pad_op: n_arg != 4 + n_sizes" );
-    //
-    for(size_t i = 2; i < n_arg; ++i) {
-        assert( agraph.m_arg_type[arg_start +i] == vitype_t::none );
-    }
-#endif
+    EXPECT_ARGUMENTS(vitype_t::variable)
     //
     // pad_sizes
     const size_t* begin = agraph.m_arg_value.data() + arg_start + 4;
@@ -514,20 +475,7 @@ template <> std::string pad_op_t<at::Tensor>::src_gen(
     // n_sizes
     size_t n_sizes = agraph.m_arg_value[arg_start + 3];
     //
-#ifndef NDEBUG
-    //
-    // constant_type
-    vitype_t constant_type   = agraph.m_arg_type[arg_start + 1];
-    assert( constant_type  == vitype_t::constant );
-    //
-    // n_arg
-    size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
-    assert( n_arg == 4 + n_sizes && "pad_op: n_arg != 4 + n_sizes" );
-    //
-    for(size_t i = 2; i < n_arg; ++i) {
-        assert( agraph.m_arg_type[arg_start +i] == vitype_t::none );
-    }
-#endif
+    EXPECT_ARGUMENTS(vitype_t::none)
     //
     // pad_sizes_src
     const size_t* begin = agraph.m_arg_value.data() + arg_start + 4;
