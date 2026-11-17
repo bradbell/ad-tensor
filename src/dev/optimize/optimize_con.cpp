@@ -142,7 +142,7 @@ void adfn_t::optimize_con(
         }
     } }
     // m_con_vec
-    // ad_tensor tapes are expected to be small so we do not use shrink_to_fit.
+    // TODO: Perhaps we should shrink_to_fit instead of resize ?
     m_con_vec.resize(n_new);
     //
     // agraph

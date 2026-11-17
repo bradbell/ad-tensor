@@ -101,49 +101,52 @@ void adfn_t::optimize_int64(
     // i_new, i_old
     size_t i_new = 0;
     size_t i_old = 0;
-    while( i_old < n_old ) { if( depend_int64[i_old] ) {
+    while( i_old < n_old ) {
         assert( i_new <= i_old );
         //
-        // hash
-        assert( 0 <= m_int64_vec[i_old] );
-        size_t size    = size_t( m_int64_vec[i_old] );
-        int64_t* begin = m_int64_vec.data() + i_old + 1;
-        int64_t* end   = m_int64_vec.data() + i_old + 1 + size;
-        size_t   hash  = boost::hash_range(begin, end);
+        // length
+        size_t   length  = size_t( m_int64_vec[i_old] );
+        assert( 0 <= length );
         //
-        // match
-        const_iterator itr   = hash2new_int64.find(hash);
-        bool           match = false;
-        if( itr != hash2new_int64.end() ) {
-            size_t i_previous = itr->second;
-            assert( i_previous < i_new );
-            if( size == size_t( m_int64_vec[i_previous] ) ) {
+        if( depend_int64[i_old] ) {
+            //
+            // hash
+            int64_t* begin   = m_int64_vec.data() + i_old + 1;
+            int64_t* end     = m_int64_vec.data() + i_old + 1 + length;
+            size_t   hash    = boost::hash_range(begin, end);
+            //
+            // match
+            const_iterator itr   = hash2new_int64.find(hash);
+            bool           match = false;
+            if( itr != hash2new_int64.end() ) {
+                size_t i_previous = itr->second;
+                assert( i_previous < i_new );
                 match = true;
-                for(size_t i = 0; i < size; ++i) {
+                for(size_t i = 0; i <= length; ++i) {
                     match &= m_int64_vec[i_old + i] == m_int64_vec[i_new + i];
                 }
             }
-        }
-        //
-        // old2new_int64, m_int64_vec, i_new, i_old
-        if( match ) {
-            // old2new_int64[i_old]
-            old2new_int64[i_old] = itr->second;
-        } else {
-            // old2new[i_old], m_int64_vec[i_new], hash2new_int64[hash]
-            old2new_int64[i_old] = i_new;
-            if( i_new < i_old ) {
-                for(size_t i = 0; i < size + 1; ++i) {
-                    m_int64_vec[i_new + i] = m_int64_vec[i_old + i];
+            //
+            // old2new_int64, m_int64_vec, i_new, i_old
+            if( match ) {
+                // old2new_int64[i_old]
+                old2new_int64[i_old] = itr->second;
+            } else {
+                // old2new[i_old], m_int64_vec[i_new], hash2new_int64[hash]
+                old2new_int64[i_old] = i_new;
+                if( i_new < i_old ) {
+                    for(size_t i = 0; i <= length; ++i) {
+                        m_int64_vec[i_new + i] = m_int64_vec[i_old + i];
+                    }
                 }
+                i_new += length + 1;
             }
-            i_new += size + 1;
         }
-        i_old += size + 1;
-    } }
+        i_old += length + 1;
+    }
     //
     // m_int64_vec
-    // ad_tensor tapes are expected to be small so we do not shrink to fit.
+    // TODO: Perhaps we should shrink_to_fit instead of resize ?
     size_t n_new = i_new;
     m_int64_vec.resize(n_new);
     //
