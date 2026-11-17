@@ -181,7 +181,7 @@ adten_t adten_t::pad(
         // res_index
         res_index       = agraph->m_op_seq.size();
         //
-        // agraph
+        // agraph, tape.m_int64_vec
         agraph->m_op_seq.push_back( dev::op_enum_t::pad );
         agraph->m_arg_start.push_back( agraph->m_arg_value.size() );
         //

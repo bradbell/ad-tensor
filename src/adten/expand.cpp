@@ -130,7 +130,7 @@ adten_t adten_t::expand(const c10::IntArrayRef& shape) const
             agraph = &tape.m_var;
         }
         //
-        // res_index, agraph
+        // res_index, agraph, tape.m_int64_vec
         res_index       = agraph->m_op_seq.size();
         agraph->m_op_seq.push_back( dev::op_enum_t::expand );
         agraph->m_arg_start.push_back( agraph->m_arg_value.size() );
@@ -142,7 +142,7 @@ adten_t adten_t::expand(const c10::IntArrayRef& shape) const
         agraph->m_arg_value.push_back( offset );
         agraph->m_arg_type.push_back( vitype_t::int64vector );
         //
-        tape.m_int64_vec.push_back( n_dim_new );
+        tape.m_int64_vec.push_back( int64_t(n_dim_new) );
         for(size_t i = 0; i < n_dim_new; ++i) {
             if( i < n_dim_new - n_dim_old ) {
                 dev::user_assert( 0 <= shape[i],

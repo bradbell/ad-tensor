@@ -6,15 +6,23 @@
 {xrst_spell
     typedefs
     der
+    api
+    op
+    hpp
 }
 
 The Developer Wish List
 #######################
 
-#.  Ensure that all forward_der routines check that the derivatives
-    of the arguments are defined before using them.
+#.  Move derive_op includes from include/dev to include/dev/derive_op.
+
+#.  Remove ad_tensor/to_string.hpp; i.e., remove to_string from user api.
 
 #.  Change typedefs to using statements.
+
+#.  Check that all forward_der routines check that the derivatives
+    of the arguments are defined before using them.
+
 
 
 {xrst_end wish_dev}

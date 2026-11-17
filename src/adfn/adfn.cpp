@@ -84,13 +84,15 @@ n_var
 Returns the number of variables in the AD function; i.e.,
 the length of the vector :ref:`adfn_forward_var@var_all` .
 
-print_con
-*********
+print_vectors
+*************
 {xrst_literal ,
-    BEGIN_PRINT_CON, END_PRINT_CON
+    BEGIN_PRINT_VECTORS, END_PRINT_VECTORS
 }
-print the constants stored in an AD function object.
-This may be useful for understanding the trace output.
+Print the vectors stored in an AD function object.
+Currently the is the constant tensors and the int64_t sub-vectors.
+This is useful for understanding the trace output because some instructions
+use indices in these vectors.
 
 Other Public Members
 ********************
@@ -153,7 +155,7 @@ is the shape for each of the range tensors.
 ------------------------------------------------------------------------------
 */
 #include <ad_tensor/adfn.hpp>
-#include <ad_tensor/to_string.hpp>
+#include <ad_tensor/dev/to_string.hpp>
 namespace ad_tensor {
     //
     // BEGIN_DEFAULT_CTOR
@@ -233,11 +235,12 @@ namespace ad_tensor {
         m_trace = trace;
     }
     //
-    // BEGIN_PRINT_CON
-    void adfn_t::print_con(void) const
-    {   // END_PRINT_CON
-        std::cout << "Begin " + get_name() + ".print_con\n";
-        std::cout << to_string( m_con_vec );
-        std::cout << "End " + get_name() + ".print_con\n";
+    // BEGIN_PRINT_VECTORS
+    void adfn_t::print_vectors(void) const
+    {   // END_PRINT_VECTORS
+        std::cout << "Begin " + get_name() + ": vectors\n";
+        std::cout << "int64_vec = \n" << dev::to_string( m_int64_vec ) << "\n";
+        std::cout << "constants = \n" << dev::to_string( m_con_vec );
+        std::cout << "End " + get_name() + ": vectors\n";
     }
 }

@@ -89,15 +89,11 @@ the following is added to the parameter (variable) acyclic graph:
     arg_index, arg_value,                                   arg_type
     start + 0, operand index,                               operand AD type
     start + 1, keepdim,                                     none
-    start + 1, number of dimensions being summed (n_dim),   none
-    start + 2, index of first dimension being summed,       none
-    ..., ..., ...
-    start + n_dim + 1, index of last dimension being summed,none
+    start + 1, offset,                                      int64vector
 
 where start is the length of arg_value and arg_type before this call to
 ``adten_t::binary`` .
 If n_dim is zero, all the dimensions are summed.
-
 
 {xrst_end adten_sum_dev}
 */
@@ -143,7 +139,7 @@ adten_t adten_t::sum(const c10::IntArrayRef& dim, bool keepdim) const
             agraph = &tape.m_var;
         }
         //
-        // res_index, agraph
+        // res_index, agraph, tape.m_int64_vec
         res_index       = agraph->m_op_seq.size();
         agraph->m_op_seq.push_back( dev::op_enum_t::sum );
         agraph->m_arg_start.push_back( agraph->m_arg_value.size() );
@@ -155,15 +151,16 @@ adten_t adten_t::sum(const c10::IntArrayRef& dim, bool keepdim) const
         agraph->m_arg_type.push_back( vitype_t::none );
         //
         size_t n_dim = dim.size();
-        agraph->m_arg_value.push_back( n_dim );
-        agraph->m_arg_type.push_back( vitype_t::none );
+        size_t offset = tape.m_int64_vec.size();
+        agraph->m_arg_value.push_back( offset );
+        agraph->m_arg_type.push_back( vitype_t::int64vector );
         //
+        tape.m_int64_vec.push_back( int64_t(n_dim) );
         for(size_t i = 0; i < n_dim; ++i) {
             dev::user_assert( 0 <= dim[i],
                 "AD Tensor sum: a dimension index is less than zero"
             );
-            agraph->m_arg_value.push_back( size_t( dim[i] ) );
-            agraph->m_arg_type.push_back( vitype_t::none );
+            tape.m_int64_vec.push_back( dim[i] );
         }
     }
     return adten_t(res_tape_id, res_index, res_tensor, res_vitype);

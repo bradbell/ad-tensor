@@ -20,6 +20,7 @@ namespace ad_tensor { namespace dev {
     std::string to_string(const vector<adten_t>& avec);
     std::string to_string(const vector<at::Tensor>& vec);
     std::string to_string(const vector<bool>& vec);
+    std::string to_string(const vector<int64_t>& vec);
     std::string to_string(op_enum_t op_enum);
     std::string to_string(vitype_t vitype);
     // END_SORT_THIS_LINE_MINUS_1

@@ -2,6 +2,7 @@
 // SPDX-FileCopyrightText: Bradley M. Bell <bradbell@seanet.com>
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
+#include <ad_tensor/dev/int64_sub_vec.hpp>
 #include <ad_tensor/dev/to_string.hpp>
 #include <ad_tensor/dev/src_gen_index.hpp>
 #include <ad_tensor/dev/derive_op.hpp>
@@ -16,7 +17,7 @@
     size_t    arg_start     = agraph.m_arg_start[op_index]; \
     size_t    operand_index = agraph.m_arg_value[arg_start]; \
     bool      keepdim       = agraph.m_arg_value[arg_start + 1]; \
-    size_t    n_dim         = agraph.m_arg_value[arg_start + 2];
+    size_t    offset        = agraph.m_arg_value[arg_start + 2];
 //
 // EXPECT_ARGUMENTS(operand_vitype)
 #if NDEBUG
@@ -24,17 +25,14 @@
 #else
 #define EXPECT_ARGUMENTS(operand_vitype) \
     size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start; \
-    assert( n_arg == 3 + n_dim && "sum_op: n_arg != 3 + n_dim" ); \
-    if( operand_vitype != vitype_t::none ) { \
-        assert( agraph.m_arg_type[arg_start] == operand_vitype ); \
-    } else { \
+    assert( n_arg == 3 && "sum_op: n_arg != 3" ); \
+    if( operand_vitype == vitype_t::none ) { \
         assert(  \
             agraph.m_arg_type[arg_start] == vitype_t::parameter || \
             agraph.m_arg_type[arg_start] == vitype_t::variable \
         ); \
-    } \
-    for(size_t i = 1; i < n_arg; ++i) { \
-        assert( agraph.m_arg_type[arg_start + i] == vitype_t::none ); \
+    } else { \
+        assert( agraph.m_arg_type[arg_start] == operand_vitype ); \
     }
 #endif
 //
@@ -54,20 +52,11 @@ void sum_op_t<TensorType>::forward_par(
     UNPACK
     EXPECT_ARGUMENTS( vitype_t::parameter );
     //
-    if( n_dim == 0 ) {
-        // par_all
-        auto dim          = c10::IntArrayRef();
-        par_all[op_index] = par_all[operand_index].sum(dim, keepdim);
-    } else {
-        //
-        // dim
-        const size_t* begin = agraph.m_arg_value.data() + arg_start + 3;
-        const size_t* end   = begin + n_dim;
-        const vector<int64_t> dim(begin, end);
-        //
-        // par_all
-        par_all[op_index] = par_all[operand_index].sum(dim, keepdim);
-    }
+    // dim
+    c10::IntArrayRef dim = int64_sub_vec(offset, int64_vec);
+    //
+    // par_all
+    par_all[op_index] = par_all[operand_index].sum(dim, keepdim);
 }
 template void sum_op_t<at::Tensor>::forward_par(
     size_t                       op_index    ,
@@ -99,20 +88,11 @@ void sum_op_t<TensorType>::forward_var(
     UNPACK
     EXPECT_ARGUMENTS( vitype_t::variable );
     //
-    if( n_dim == 0 ) {
-        // var_all
-        auto dim          = c10::IntArrayRef();
-        var_all[op_index] = var_all[operand_index].sum(dim, keepdim);
-    } else {
-        //
-        // dim
-        const size_t* begin = agraph.m_arg_value.data() + arg_start + 3;
-        const size_t* end   = begin + n_dim;
-        const vector<int64_t> dim(begin, end);
-        //
-        // var_all
-        var_all[op_index] = var_all[operand_index].sum(dim, keepdim);
-    }
+    // dim
+    c10::IntArrayRef dim = int64_sub_vec(offset, int64_vec);
+    //
+    // var_all
+    var_all[op_index] = var_all[operand_index].sum(dim, keepdim);
 }
 template void sum_op_t<at::Tensor>::forward_var(
     size_t                       op_index    ,
@@ -151,20 +131,11 @@ void sum_op_t<TensorType>::forward_der(
         return;
     }
     //
-    if( n_dim == 0 ) {
-        // for_der
-        auto dim          = c10::IntArrayRef();
-        for_der[op_index] = for_der[operand_index].sum(dim, keepdim);
-    } else {
-        //
-        // dim
-        const size_t* begin = agraph.m_arg_value.data() + arg_start + 3;
-        const size_t* end   = begin + n_dim;
-        const vector<int64_t> dim(begin, end);
-        //
-        // for_der
-        for_der[op_index] = for_der[operand_index].sum(dim, keepdim);
-    }
+    // dim
+    c10::IntArrayRef dim = int64_sub_vec(offset, int64_vec);
+    //
+    // for_der
+    for_der[op_index] = for_der[operand_index].sum(dim, keepdim);
 }
 template void sum_op_t<at::Tensor>::forward_der(
     size_t                       op_index    ,
@@ -203,10 +174,7 @@ void sum_op_t<TensorType>::reverse_der(
     // arg_start, operand_index, keepdim, n_dim
     UNPACK
     EXPECT_ARGUMENTS( vitype_t::variable );
-    //
-    if( not_defined(rev_der[op_index]) ) {
-        return;
-    }
+    assert( is_defined(rev_der[op_index]) );
     //
     // operand_shape
     c10::IntArrayRef operand_shape  = var_all[operand_index].sizes();
@@ -220,12 +188,10 @@ void sum_op_t<TensorType>::reverse_der(
             rev_der[operand_index] += rev_der[op_index];
         }
     } else {
-        assert( n_dim != 0 );
         //
         // dim
-        const size_t* begin = agraph.m_arg_value.data() + arg_start + 3;
-        const size_t* end   = begin + n_dim;
-        const vector<int64_t> dim(begin, end);
+        c10::IntArrayRef dim = int64_sub_vec(offset, int64_vec);
+        assert( dim.size() != 0 );
         //
         // res_reshape
         rev_sum_view(
@@ -276,6 +242,9 @@ template <> std::string sum_op_t<at::Tensor>::src_gen(
     UNPACK
     EXPECT_ARGUMENTS(vitype_t::none)
     //
+    // dim
+    c10::IntArrayRef dim = int64_sub_vec(offset, int64_vec);
+    //
     // string
     using std::string;
     //
@@ -293,12 +262,11 @@ template <> std::string sum_op_t<at::Tensor>::src_gen(
     string src = std::format(
         "{} = {}.{}({{", target_src, operand_src, op_enum_src
     );
-    for(size_t i = 0; i < n_dim; ++i) {
-        size_t size = agraph.m_arg_value[arg_start + 3 + i];
+    for(size_t i = 0; i < dim.size(); ++i) {
         if( i == 0 ) {
-            src += std::format("{}", size);
+            src += std::format("{}", dim[i]);
         } else {
-            src += std::format(", {}", size);
+            src += std::format(", {}", dim[i]);
         }
     }
     if( keepdim ) {

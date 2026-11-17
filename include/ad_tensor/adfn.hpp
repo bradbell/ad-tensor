@@ -111,8 +111,8 @@ public:
     // set_trace
     void set_trace(bool trace);
     //
-    // print_con
-    void print_con(void) const;
+    // print_vectors
+    void print_vectors(void) const;
     //
     // BEGIN_FORWARD_DEP
     std::array<sparsity_t, 2> forward_dep(void) const;

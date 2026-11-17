@@ -9,9 +9,10 @@ namespace ad_tensor { namespace dev {
     // vitype
     std::string to_string( vitype_t vitype)
     {   switch(vitype) {
-            case vitype_t::constant:  return "con";
-            case vitype_t::parameter: return "par";
-            case vitype_t::variable:  return "var";
+            case vitype_t::constant:        return "con";
+            case vitype_t::parameter:       return "par";
+            case vitype_t::variable:        return "var";
+            case vitype_t::int64vector:     return "int64_vec";
             case vitype_t::none:      return "none";
             default:
             assert( false && "to_string(vitype): unexpected vitype" );
@@ -141,6 +142,19 @@ namespace ad_tensor { namespace dev {
             } else {
                 res += "F";
             }
+            if( i + 1 < vec.size() ) {
+                res += ", ";
+            }
+        }
+        res += " ]";
+        return res;
+    }
+    //
+    // vector<int64_t>
+    std::string to_string(const vector<int64_t>& vec) {
+        std::string res = "[ ";
+        for(size_t i = 0; i < vec.size(); ++i) {
+            res += std::to_string( vec[i] );
             if( i + 1 < vec.size() ) {
                 res += ", ";
             }
