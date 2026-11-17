@@ -58,7 +58,7 @@ new m_con_vec.
 
 Test
 ****
-{xrst_comment ,
+{xrst_literal ,
     tests/adfn/optimize.cpp
     BEGIN_ADFN_OPTIMIZE_INT64, END_ADFN_OPTIMIZE_INT64
 }
@@ -134,6 +134,7 @@ void adfn_t::optimize_int64(
             } else {
                 // old2new[i_old], m_int64_vec[i_new], hash2new_int64[hash]
                 old2new_int64[i_old] = i_new;
+                hash2new_int64[hash] = i_new;
                 if( i_new < i_old ) {
                     for(size_t i = 0; i <= length; ++i) {
                         m_int64_vec[i_new + i] = m_int64_vec[i_old + i];

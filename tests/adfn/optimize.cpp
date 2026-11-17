@@ -53,6 +53,56 @@ TEST(tests_adfn, optimize_split) {
     EXPECT_TRUE( equal );
 }
 //
+// BEGIN_ADFN_OPTIMIZE_INT64
+TEST(tests_adfn, optimize_int64) {
+    using ad_tensor::adten_t;
+    using ad_tensor::adfn_t;
+    using at::Tensor;
+    using ad_tensor::vector;
+    //
+    // p
+    // We use p for the domain parameters
+    vector<Tensor> p;
+    p.push_back( torch::tensor( {1.0, 1.0} ) );
+    p.push_back( torch::tensor( {1.0, 1.0} ) );
+    //
+    // v
+    // We use v for the domain variables
+    vector<Tensor> v;
+    v.push_back( torch::tensor( {1.0, 1.0} ) );
+    //
+    // ap, av
+    auto [av, ap] = adten_t::start_recording(v, p);
+    //
+    // not_used_int64, used_int64, repeat_int64
+    adten_t not_used_int64 = ap[0].view({1, 2});
+    adten_t used_int64     = ap[0].view({2, 1});
+    adten_t repeat_int64   = av[0].view({2, 1});
+    //
+    vector<adten_t> ar;
+    ar.push_back( used_int64 );
+    ar.push_back( repeat_int64 );
+    //
+    // r = f(v, p)
+    adfn_t f = adten_t::stop_recording(ar, "f");
+    EXPECT_EQ( f.n_int64(), 9);
+    //
+    // f
+    f.optimize();
+    EXPECT_EQ( f.n_int64(), 3 );
+    //
+    vector<Tensor> p_all = f.forward_par(p);
+    vector<Tensor> v_all = f.forward_var(v, p_all);
+    vector<Tensor> range = f.get_range(v_all, p_all);
+    //
+    bool equal = range[0].equal( p[0].view({2, 1}) );
+    EXPECT_TRUE( equal );
+    //
+    equal = range[1].equal( v[0].view({2, 1}) );
+    EXPECT_TRUE( equal );
+}
+// END_ADFN_OPTIMIZE_INT64
+//
 // BEGIN_ADFN_OPTIMIZE_CON
 TEST(tests_adfn, optimize_con) {
     using ad_tensor::adten_t;
