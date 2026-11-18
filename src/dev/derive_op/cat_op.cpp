@@ -235,10 +235,16 @@ void cat_op_t<TensorType>::reverse_der(
         // end
         int64_t end = start + shape[dim];
         //
-        // rev_der[tensor_index]
-        int64_t step = 1;
-        TensorType tensor_bar = rev_der[op_index].slice(dim, start, end, step);
-        plus_equal( rev_der[tensor_index], tensor_bar );
+        if( tensor_vitype == vitype_t::variable ) {
+            //
+            // rev_der[tensor_index]
+            int64_t step = 1;
+            TensorType tensor_bar =
+                rev_der[op_index].slice(dim, start, end, step);
+            plus_equal(
+                rev_der[tensor_index], shape, tensor_bar
+            );
+        }
         //
         // start
         start = end;

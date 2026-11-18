@@ -196,7 +196,10 @@ void slice_op_t<TensorType>::reverse_der(
     }
     //
     // rev_der[operand_index]
-    plus_equal(rev_der[operand_index], operand_bar);
+    c10::IntArrayRef shape = var_all[operand_index].sizes();
+    plus_equal(
+        rev_der[operand_index], shape, operand_bar
+    );
 }
 template void slice_op_t<at::Tensor>::reverse_der(
     size_t                       op_index    ,

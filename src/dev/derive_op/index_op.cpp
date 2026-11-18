@@ -228,7 +228,10 @@ void index_op_t<TensorType>::reverse_der(
     extract_der             = zeros.index_put(index_list, extract_der);
     //
     // rev_der[from_index] += extract_der
-    plus_equal(rev_der[from_index], extract_der);
+    c10::IntArrayRef shape = var_all[from_index].sizes();
+    plus_equal(
+        rev_der[from_index], shape, extract_der
+    );
 }
 template void index_op_t<at::Tensor>::reverse_der(
     size_t                       op_index    ,

@@ -176,10 +176,13 @@ void solve_op_t<TensorType>::forward_der(
     }
     // diff
     TensorType diff = TensorType( not_defined() );
-    if( ! rhs_zero_der ) {
+    if( rhs_zero_der ) {
+        diff = - prod;
+    } else {
         diff = for_der[rhs_index];
+        c10::IntArrayRef shape = var_all[rhs_index].sizes();
+        minus_equal(for_der[rhs_index], shape, prod);
     }
-    minus_equal(diff, prod);
     assert( is_defined(diff) );
     //
     // solution_dot
@@ -279,7 +282,10 @@ void solve_op_t<TensorType>::reverse_der(
         broadcast(solution_shape, rhs_shape, array, skip);
         c10::IntArrayRef dim(array);
         //
-        plus_equal(rev_der[rhs_index], rhs_bar, dim);
+        c10::IntArrayRef shape = var_all[rhs_index].sizes();
+        plus_equal(
+            rev_der[rhs_index], shape, rhs_bar, dim
+        );
     }
     //
     // linear_bar
@@ -291,10 +297,16 @@ void solve_op_t<TensorType>::reverse_der(
         //
         if( left ) {
             TensorType prod = rhs_bar.matmul(solution_tra);
-            minus_equal(rev_der[linear_index], prod, dim);
+            c10::IntArrayRef shape = var_all[linear_index].sizes();
+            minus_equal(
+                rev_der[linear_index], shape, prod, dim
+            );
         } else {
             TensorType prod = solution_tra.matmul( rhs_bar );
-            minus_equal(rev_der[linear_index], prod, dim);
+            c10::IntArrayRef shape = var_all[linear_index].sizes();
+            minus_equal(
+                rev_der[linear_index], shape, prod, dim
+            );
         }
     }
 }

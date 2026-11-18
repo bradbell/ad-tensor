@@ -422,8 +422,11 @@ void conv1d_op_t<TensorType>::reverse_der(
     //
     // rev_der[bias_index]
     if( bias_type == variable ) {
-        TensorType bias_bar = rev_der[op_index].sum(2);
-        plus_equal(rev_der[bias_index], bias_bar);
+        c10::IntArrayRef shape = var_all[bias_index].sizes();
+        TensorType bias_bar    = rev_der[op_index].sum(2).view(shape);
+        plus_equal(
+            rev_der[bias_index], shape, bias_bar
+        );
     }
     if( input_type != variable && weight_type != variable ) {
         return;
@@ -451,7 +454,10 @@ void conv1d_op_t<TensorType>::reverse_der(
         TensorType weight_bar = conv1d(
             input, rev_der[op_index], no_bias, options
         );
-        plus_equal(rev_der[weight_index], weight_bar);
+        c10::IntArrayRef shape = var_all[weight_index].sizes();
+        plus_equal(
+            rev_der[weight_index], shape, weight_bar
+        );
     }
     //
     // rev_der[input_index]
@@ -470,7 +476,10 @@ void conv1d_op_t<TensorType>::reverse_der(
             rev_der[op_index], weight, no_bias, options
         );
         //
-        plus_equal(rev_der[input_index], input_bar);
+        c10::IntArrayRef shape = var_all[input_index].sizes();
+        plus_equal(
+            rev_der[input_index], shape, input_bar
+        );
     }
 }
 template void conv1d_op_t<at::Tensor>::reverse_der(

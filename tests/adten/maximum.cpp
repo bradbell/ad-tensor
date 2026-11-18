@@ -15,7 +15,7 @@ TEST(tests_adten, maximum)  {
     // first, second
     at::Tensor first  = torch::tensor( {1.0, 2.0, 3.0} );
     at::Tensor second = torch::tensor( {4.0, 2.0, 0.0} );
-    at::Tensor third  = torch::tensor( 2.5 );
+    at::Tensor third  = torch::tensor( {2.5} );
     //
     // ---------------------------------------------------------------------
     // f
@@ -53,7 +53,7 @@ TEST(tests_adten, maximum)  {
     // ---------------------------------------------------------------------
     at::Tensor         first_dx   = torch::tensor( {5.0, 6.0, 7.0} );
     at::Tensor         second_dx  = torch::tensor( {8.0, 6.0, 9.0} );
-    at::Tensor         third_dx   = torch::tensor( 10.0 );
+    at::Tensor         third_dx   = torch::tensor( {10.0} );
     vector<at::Tensor> dx         = {first_dx, second_dx, third_dx};
     vector<at::Tensor> dy         = f.forward_der(dx, v_all);
     //
@@ -76,7 +76,7 @@ TEST(tests_adten, maximum)  {
     check                         = torch::tensor( {5.0 + 8.0, 0.0, 0.0} );
     EXPECT_TRUE( px[1].equal(check) );
     //
-    check                         = torch::tensor( 9.0 );
+    check                         = torch::tensor( {9.0} );
     EXPECT_TRUE( px[2].equal(check) );
     std::cout << "px[2] = \n" << px[2] << "\n";
 }

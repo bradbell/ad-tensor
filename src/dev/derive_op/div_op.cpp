@@ -230,7 +230,10 @@ void div_op_t<TensorType>::reverse_der(
         c10::IntArrayRef dim(array);
         //
         // rev_der[lhs_index] += quotient
-        plus_equal(rev_der[lhs_index], quotient, dim);
+        c10::IntArrayRef shape = var_all[lhs_index].sizes();
+        plus_equal(
+            rev_der[lhs_index], shape, quotient, dim
+        );
         //
     }
     //
@@ -247,7 +250,10 @@ void div_op_t<TensorType>::reverse_der(
         c10::IntArrayRef dim(array);
         //
         // rev_der[rhs_index] -= prod
-        minus_equal(rev_der[rhs_index], prod, dim);
+        c10::IntArrayRef shape = var_all[rhs_index].sizes();
+        minus_equal(
+            rev_der[rhs_index], shape, prod, dim
+        );
     }
 }
 template void div_op_t<at::Tensor>::reverse_der(

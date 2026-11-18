@@ -240,7 +240,10 @@ void mul_op_t<TensorType>::reverse_der(
         TensorType prod = rev_der[op_index] * rhs_tensor;
         //
         // rev_der[lhs_index] += prod
-        plus_equal(rev_der[lhs_index], prod, dim);
+        c10::IntArrayRef shape = var_all[lhs_index].sizes();
+        plus_equal(
+            rev_der[lhs_index], shape, prod, dim
+        );
         //
     }
     //
@@ -262,7 +265,10 @@ void mul_op_t<TensorType>::reverse_der(
         TensorType prod = rev_der[op_index] * lhs_tensor;
         //
         // rev_der[rhs_index] += prod
-        plus_equal(rev_der[rhs_index], prod, dim);
+        c10::IntArrayRef shape = var_all[rhs_index].sizes();
+        plus_equal(
+            rev_der[rhs_index], shape, prod, dim
+        );
     }
 }
 template void mul_op_t<at::Tensor>::reverse_der(

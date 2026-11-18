@@ -270,19 +270,27 @@ void index_put_op_t<TensorType>::reverse_der(
     if( replace_type == vitype_t::variable ) {
         //
         // rev_der[replace_index] += replace_der
-        plus_equal(rev_der[replace_index], replace_der);
+        c10::IntArrayRef shape = var_all[replace_index].sizes();
+        plus_equal(
+            rev_der[replace_index], shape, replace_der
+        );
     }
     //
     // rev_der[before_index]
     if( before_type == vitype_t::variable ) {
         //
         // rev_der[before_index] += rev_der[op_index]
-        plus_equal(rev_der[before_index], rev_der[op_index]);
+        c10::IntArrayRef shape = var_all[before_index].sizes();
+        plus_equal(
+            rev_der[before_index], shape, rev_der[op_index]
+        );
         //
         // rev_der[before_index] -= replace_der
         TensorType zeros  = TensorType( torch::zeros( before_shape ) );
         replace_der       = zeros.index_put(index_list, replace_der);
-        minus_equal(rev_der[before_index], replace_der);
+        minus_equal(
+            rev_der[before_index], before_shape, replace_der
+        );
     }
 }
 template void index_put_op_t<at::Tensor>::reverse_der(

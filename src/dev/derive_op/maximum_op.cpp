@@ -251,7 +251,10 @@ void maximum_op_t<TensorType>::reverse_der(
         c10::IntArrayRef dim(array);
         //
         // rev_der[first_index] += first_rev
-        plus_equal(rev_der[first_index], first_rev, dim);
+        c10::IntArrayRef shape = var_all[first_index].sizes();
+        plus_equal(
+            rev_der[first_index], shape, first_rev, dim
+        );
     }
     //
     // rev_der[second_index]
@@ -269,7 +272,10 @@ void maximum_op_t<TensorType>::reverse_der(
         c10::IntArrayRef dim(array);
         //
         // rev_der[second_index] += second_rev
-        plus_equal(rev_der[second_index], second_rev, dim);
+        c10::IntArrayRef shape = var_all[second_index].sizes();
+        plus_equal(
+            rev_der[second_index], shape, second_rev, dim
+        );
     }
 }
 template void maximum_op_t<at::Tensor>::reverse_der(

@@ -381,7 +381,10 @@ void pad_op_t<TensorType>::reverse_der(
     }
     //
     // rev_der[input_index] += in_bar
-    plus_equal(rev_der[input_index], in_bar);
+    c10::IntArrayRef shape = var_all[input_index].sizes();
+    plus_equal(
+        rev_der[input_index], shape, in_bar
+    );
 };
 template void pad_op_t<at::Tensor>::reverse_der(
     size_t                       op_index    ,

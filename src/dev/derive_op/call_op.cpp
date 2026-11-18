@@ -489,7 +489,10 @@ void call_op_t<TensorType>::reverse_der(
         vitype_t vitype    = agraph.m_arg_type[arg_index];
         if( vitype == vitype_t::variable ) {
             size_t rev_index = agraph.m_arg_value[arg_index];
-            plus_equal( rev_der[rev_index], dom_der[j] );
+            c10::IntArrayRef shape = var_all[rev_index].sizes();
+            plus_equal(
+                 rev_der[rev_index], shape, dom_der[j]
+            );
         }
     }
 }

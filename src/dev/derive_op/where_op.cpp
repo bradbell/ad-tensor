@@ -228,7 +228,10 @@ void where_op_t<TensorType>::reverse_der(
         c10::IntArrayRef dim(array);
         //
         // rev_der[true_index] += rev_der[op_index]
-        plus_equal(rev_der[true_index], rev_der[op_index], dim);
+        c10::IntArrayRef shape = var_all[true_index].sizes();
+        plus_equal(
+            rev_der[true_index], shape, rev_der[op_index], dim
+        );
         //
     }
     //
@@ -245,7 +248,10 @@ void where_op_t<TensorType>::reverse_der(
         c10::IntArrayRef dim(array);
         //
         // rev_der[false_index] += rev_der[op_index]
-        plus_equal(rev_der[false_index], rev_der[op_index], dim);
+        c10::IntArrayRef shape = var_all[false_index].sizes();
+        plus_equal(
+            rev_der[false_index], shape, rev_der[op_index], dim
+        );
         //
     }
 }

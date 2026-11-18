@@ -158,6 +158,7 @@ vector<TensorType> adfn_t::reverse_der(
         // all_der[op_index]
         // Only propcess this operator if its result is connected to the range
         if( is_defined(all_der[op_index]) ) {
+            assert( all_der[op_index].sizes() == var_all[op_index].sizes() );
             //
             // base_op
             dev::op_enum_t op_enum = m_var.m_op_seq[ op_index ];
@@ -177,6 +178,10 @@ vector<TensorType> adfn_t::reverse_der(
     // dom_der
     vector<TensorType> dom_der;
     for(size_t j = 0; j < n_dom_var; ++j) {
+        assert(
+            not_defined( all_der[j] ) ||
+            all_der[j].sizes() == var_all[j].sizes()
+        );
         dom_der.push_back( all_der[j] );
     }
     if( m_trace ) {

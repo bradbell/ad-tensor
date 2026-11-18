@@ -29,6 +29,11 @@ This is the target we are adding to (or subtracting from).
 The special case where on input is_defined(target) is false
 corresponds to a zero target value.
 
+shape
+*****
+is the expected shape of the target after the summation.
+Upon return, the target is not defined or has this shape.
+
 rhs
 ***
 this is the right hand side that was are adding to (or subtracting from).
@@ -42,13 +47,15 @@ this is the dimensions rhs that are summed before adding to
 (or subtracting from) target.
 if this has size zero (its default value), no such summing is done.
 
+
 {xrst_end plus_minus_equal}
 */
 namespace ad_tensor { namespace dev {
 // BEGIN_PLUS_EQUAL
     template <class TensorType> void inline plus_equal(
         TensorType&                    target ,
-        const TensorType&              rhs ,
+        const c10::IntArrayRef&        shape  ,
+        const TensorType&              rhs    ,
         const c10::IntArrayRef&        dim  = c10::IntArrayRef() )
 // END_PLUS_EQUAL
     {   //
@@ -64,16 +71,18 @@ namespace ad_tensor { namespace dev {
         } else {
             TensorType compress = rhs.sum(dim);
             if( not_defined(target) ) {
-                target = compress;
+                target = compress.view(shape);
             } else {
                 target += compress;
             }
         }
+        assert( not_defined(target) || target.sizes() == shape );
     }
 // BEGIN_MINUS_EQUAL
     template <class TensorType> void inline minus_equal(
         TensorType&                    target ,
-        const TensorType&              rhs ,
+        const c10::IntArrayRef&        shape  ,
+        const TensorType&              rhs    ,
         const c10::IntArrayRef&        dim  = c10::IntArrayRef() )
 // END_MINUS_EQUAL
     {   //
@@ -89,10 +98,11 @@ namespace ad_tensor { namespace dev {
         } else {
             TensorType compress = rhs.sum(dim);
             if( not_defined(target) ) {
-                target = - compress;
+                target = - compress.view(shape);
             } else {
                 target -= compress;
             }
         }
+        assert( not_defined(target) || target.sizes() == shape );
     }
 } }
