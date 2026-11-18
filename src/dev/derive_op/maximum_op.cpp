@@ -24,22 +24,21 @@ void maximum_op_t<TensorType>::forward_par(
     //
     // arg_start
     size_t arg_start = agraph.m_arg_start[op_index];
-    //
 #ifndef NDEBUG
     size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
     assert( n_arg == 2 && "maximum: n_arg != 2" );
 # endif
     //
-    // lhs_tensor, rhs_tensor
-    TensorType lhs_tensor  = tensor_at_arg_index(
+    // first_tensor, second_tensor
+    TensorType first_tensor  = tensor_at_arg_index(
         arg_start, agraph, con_vec, par_all
     );
-    TensorType rhs_tensor  = tensor_at_arg_index(
+    TensorType second_tensor  = tensor_at_arg_index(
         arg_start + 1, agraph, con_vec, par_all
     );
     //
     // par_all
-    par_all[op_index] = lhs_tensor.maximum(rhs_tensor);
+    par_all[op_index] = first_tensor.maximum(second_tensor);
 }
 template void maximum_op_t<at::Tensor>::forward_par(
     size_t                       op_index    ,
@@ -75,16 +74,16 @@ void maximum_op_t<TensorType>::forward_var(
     assert( n_arg == 2 && "maximum: n_arg != 2" );
 # endif
     //
-    // lhs_tensor, rhs_tensor
-    TensorType lhs_tensor  = tensor_at_arg_index(
+    // first_tensor, second_tensor
+    TensorType first_tensor  = tensor_at_arg_index(
         arg_start, agraph, con_vec, par_all, var_all
     );
-    TensorType rhs_tensor  = tensor_at_arg_index(
+    TensorType second_tensor  = tensor_at_arg_index(
         arg_start + 1, agraph, con_vec, par_all, var_all
     );
     //
     // var_all
-    var_all[op_index] = lhs_tensor.maximum(rhs_tensor);
+    var_all[op_index] = first_tensor.maximum(second_tensor);
 }
 template void maximum_op_t<at::Tensor>::forward_var(
     size_t                       op_index    ,
