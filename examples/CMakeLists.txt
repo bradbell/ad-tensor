@@ -34,6 +34,7 @@ add_executable(examples
     adten/index.cpp
     adten/index_put.cpp
     adten/matmul.cpp
+    adten/maximum.cpp
     adten/minus.cpp
     adten/pad.cpp
     adten/recording.cpp

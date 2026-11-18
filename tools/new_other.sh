@@ -45,8 +45,7 @@ echo "$file_new"
 file_other=src/dev/derive_op/${name_other}_op.cpp
 file_new=src/dev/derive_op/${name_new}_op.cpp
 cat << EOF > temp.sed
-s|${name_other}_op|${name_new}_op|
-s|$name_other()|$name_new()|
+s|${name_other}|${name_new}|g
 EOF
 git checkout --quiet $file_other
 sed -f temp.sed $file_other > $file_new
@@ -71,7 +70,7 @@ file_other=tests/adten/$name_other.cpp
 file_new=tests/adten/$name_new.cpp
 cat << EOF > temp.sed
 s|$name_other|$name_new|g
-s|^TEST(examples.*|&\\n#if 0|
+s|^TEST(tests.*|&\\n#if 0|
 s|^}$|#endif\\n&|
 EOF
 if [ -e $file_other ]

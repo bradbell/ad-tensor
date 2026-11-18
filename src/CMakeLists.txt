@@ -41,6 +41,7 @@ add_library(ad_tensor SHARED
     adten/index.cpp
     adten/index_put.cpp
     adten/matmul.cpp
+    adten/maximum.cpp
     adten/minus.cpp
     adten/pad.cpp
     adten/recording.cpp
@@ -78,6 +79,7 @@ add_library(ad_tensor SHARED
     dev/derive_op/logdet_op.cpp
     dev/derive_op/lt_op.cpp
     dev/derive_op/matmul_op.cpp
+    dev/derive_op/maximum_op.cpp
     dev/derive_op/minus_op.cpp
     dev/derive_op/mul_op.cpp
     dev/derive_op/ne_op.cpp

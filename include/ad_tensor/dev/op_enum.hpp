@@ -80,6 +80,7 @@ namespace ad_tensor { namespace dev { enum struct op_enum_t
     index,               // extract elements of a tensor
     index_put,           // replace elements of a tensor
     matmul,              // matrix multiplication
+    maximum,             // element-wise maximum
     minus,               // unary minus
     pad,                 // functional padding
     slice,               // slice in one dimension
