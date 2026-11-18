@@ -116,7 +116,6 @@ void maximum_op_t<TensorType>::forward_der(
     //
     // arg_start
     size_t arg_start = agraph.m_arg_start[op_index];
-    //
 #ifndef NDEBUG
     size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
     assert( n_arg == 2 && "maximum: n_arg != 2" );
@@ -140,7 +139,7 @@ void maximum_op_t<TensorType>::forward_der(
         return;
     }
     //
-    // less_than
+    // greater_than
     TensorType first_tensor  = tensor_at_arg_index(
         arg_start, agraph, con_vec, par_all, var_all
     );
@@ -194,7 +193,6 @@ template void maximum_op_t<adten_t>::forward_der(
     vector<adten_t>&             for_der
 ) const;
 // ------------------------------------------------------------------------
-// see Section 2.2.2 of Guiles-2008
 // reverse_der
 template<class TensorType>
 void maximum_op_t<TensorType>::reverse_der(
@@ -212,76 +210,66 @@ void maximum_op_t<TensorType>::reverse_der(
     //
     // arg_start
     size_t arg_start = agraph.m_arg_start[op_index];
-    //
 #ifndef NDEBUG
     size_t n_arg = agraph.m_arg_start[op_index+1] - arg_start;
     assert( n_arg == 2 && "maximum: n_arg != 2" );
 # endif
     //
-    // lhs_type, rhs_type
-    vitype_t lhs_type = agraph.m_arg_type[arg_start];
-    vitype_t rhs_type = agraph.m_arg_type[arg_start + 1];
+    // greater_than
+    TensorType first_tensor  = tensor_at_arg_index(
+        arg_start, agraph, con_vec, par_all, var_all
+    );
+    TensorType second_tensor  = tensor_at_arg_index(
+        arg_start + 1, agraph, con_vec, par_all, var_all
+    );
+    TensorType greater_than = first_tensor > second_tensor;
     //
-    // lhs_index, rhs_index
-    size_t lhs_index = agraph.m_arg_value[arg_start];
-    size_t rhs_index = agraph.m_arg_value[arg_start + 1];
+    // first_type, second_type
+    vitype_t first_type  = agraph.m_arg_type[arg_start];
+    vitype_t second_type = agraph.m_arg_type[arg_start + 1];
     //
-    // rev_der[lhs_index]
-    if( lhs_type == vitype_t::variable ) {
+    // first_index, second_index
+    size_t first_index = agraph.m_arg_value[arg_start];
+    size_t second_index = agraph.m_arg_value[arg_start + 1];
+    //
+    // res_shape, zero
+    c10::IntArrayRef res_shape = var_all[op_index].sizes();
+    TensorType       zero      = TensorType( torch::zeros(res_shape) );
+    //
+    // rev_der[first_index]
+    if( first_type == vitype_t::variable ) {
         //
-        // rhs_tensor
-        TensorType rhs_tensor  = tensor_at_arg_index(
-            arg_start + 1, agraph, con_vec, par_all, var_all
-        );
+        // first_rev
+        TensorType first_rev = where(greater_than, rev_der[op_index], zero);
         //
         // dim
-        size_t skip = 2;
         broadcast(
-            var_all[op_index].sizes(),
-            var_all[lhs_index].sizes(),
-            array,
-            skip
+            res_shape,
+            var_all[first_index].sizes(),
+            array
         );
         c10::IntArrayRef dim(array);
         //
-        // rhs_transpose
-        int64_t n_dim = static_cast<int64_t>( rhs_tensor.sizes().size() );
-        TensorType rhs_transpose = rhs_tensor.transpose(n_dim-2, n_dim-1);
-        //
-        // prod
-        TensorType prod = rev_der[op_index].maximum( rhs_transpose );
-        //
-        // rev_der[lhs_index] += prod
-        plus_equal(rev_der[lhs_index], prod, dim);
+        // rev_der[first_index] += first_rev
+        plus_equal(rev_der[first_index], first_rev, dim);
     }
     //
-    // rev_der[rhs_index]
-    if( rhs_type == vitype_t::variable ) {
+    // rev_der[second_index]
+    if( second_type == vitype_t::variable ) {
         //
-        // lhs_tensor
-        TensorType lhs_tensor  = tensor_at_arg_index(
-            arg_start, agraph, con_vec, par_all, var_all
-        );
+        // second_rev
+        TensorType second_rev = where(greater_than, zero, rev_der[op_index]);
         //
         // dim
-        size_t skip = 2;
         broadcast(
-            var_all[op_index].sizes(),
-            var_all[rhs_index].sizes(),
-            array,
-            skip
+            res_shape,
+            var_all[second_index].sizes(),
+            array
         );
         c10::IntArrayRef dim(array);
         //
-        // lhs_transpose
-        int64_t n_dim = static_cast<int64_t>( lhs_tensor.sizes().size() );
-        TensorType lhs_transpose = lhs_tensor.transpose(n_dim-2, n_dim-1);
-        //
-        // prod
-        TensorType prod = lhs_transpose.maximum( rev_der[op_index] );
-        //
-        // rev_der[rhs_index] += prod
-        plus_equal(rev_der[rhs_index], prod, dim);
+        // rev_der[second_index] += second_rev
+        plus_equal(rev_der[second_index], second_rev, dim);
     }
 }
 template void maximum_op_t<at::Tensor>::reverse_der(

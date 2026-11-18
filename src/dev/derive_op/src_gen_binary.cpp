@@ -173,6 +173,12 @@ std::string src_gen_binary(
         }
         break;
         //
+        case op_enum_t::maximum: {
+            constexpr const char* fmt = "{} = {}.maximum( {} );";
+            src = std::format(fmt, target_src, lhs_src, rhs_src);
+        }
+        break;
+        //
         default: {
             std::cerr << "src_gen_binary: the " << to_string(op_enum);
             std::cerr << " is not implemented\n";
