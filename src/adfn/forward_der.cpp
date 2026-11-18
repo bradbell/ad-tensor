@@ -140,6 +140,10 @@ vector<TensorType> adfn_t::forward_der(
         base_op.forward_der(
             op_index, m_var, m_con_vec, m_int64_vec, par_all, var_all, all_der
         );
+        assert(
+            not_defined( all_der[op_index] ) ||
+            all_der[op_index].sizes() == var_all[op_index].sizes()
+        );
         //
         if( m_trace) {
             string element = to_string( all_der[op_index] );

@@ -61,7 +61,7 @@ namespace ad_tensor { namespace dev {
             } else {
                 target += rhs;
                 }
-                } else {
+        } else {
             TensorType compress = rhs.sum(dim);
             if( not_defined(target) ) {
                 target = compress;
