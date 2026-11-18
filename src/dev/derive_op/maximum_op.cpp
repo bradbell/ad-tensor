@@ -124,51 +124,55 @@ void maximum_op_t<TensorType>::forward_der(
     // variable
     vitype_t variable = vitype_t::variable;
     //
-    // lhs_index, lhs_type, lhs_zero_der
-    size_t   lhs_index    = agraph.m_arg_value[arg_start];
-    vitype_t lhs_type     = agraph.m_arg_type[arg_start];
-    bool     lhs_zero_der =
-        lhs_type != variable || not_defined( for_der[lhs_index] );
+    // first_tensor, first_index, first_type, first_zero_der
+    size_t   first_index    = agraph.m_arg_value[arg_start];
+    vitype_t first_type     = agraph.m_arg_type[arg_start];
+    bool     first_zero_der =
+        first_type != variable || not_defined( for_der[first_index] );
     //
-    // rhs_index, rhs_type, rhs_zero_der
-    size_t   rhs_index    = agraph.m_arg_value[arg_start + 1];
-    vitype_t rhs_type     = agraph.m_arg_type[arg_start + 1];
-    bool     rhs_zero_der =
-        rhs_type != variable || not_defined( for_der[rhs_index] );
+    // second_index, second_type, second_zero_der
+    size_t   second_index    = agraph.m_arg_value[arg_start + 1];
+    vitype_t second_type     = agraph.m_arg_type[arg_start + 1];
+    bool     second_zero_der =
+        second_type != variable || not_defined( for_der[second_index] );
     //
-    if( lhs_zero_der && rhs_zero_der ) {
+    if( first_zero_der && second_zero_der ) {
         return;
     }
     //
+    // less_than
+    TensorType first_tensor  = tensor_at_arg_index(
+        arg_start, agraph, con_vec, par_all, var_all
+    );
+    TensorType second_tensor  = tensor_at_arg_index(
+        arg_start + 1, agraph, con_vec, par_all, var_all
+    );
+    TensorType greater_than = first_tensor > second_tensor;
+    //
     // for_der[op_index]
-    if( lhs_zero_der ) {
-        assert( rhs_type == vitype_t::variable );
+    if( first_zero_der ) {
+        assert( second_type == vitype_t::variable );
         //
-        // lhs_tensor
-        TensorType lhs_tensor  = tensor_at_arg_index(
-            arg_start, agraph, con_vec, par_all, var_all
-        );
-        //
-        // for_der
-        for_der[op_index] = lhs_tensor.maximum( for_der[rhs_index] );
-        //
-    } else if( rhs_zero_der ) {
-        assert( lhs_type == vitype_t::variable );
-        //
-        // rhs_tensor
-        TensorType rhs_tensor  = tensor_at_arg_index(
-            arg_start + 1, agraph, con_vec, par_all, var_all
-        );
+        // zero
+        c10::IntArrayRef shape = for_der[second_index].sizes();
+        TensorType       zero  = TensorType( torch::zeros(shape) );
         //
         // for_der
-        for_der[op_index] = for_der[lhs_index].maximum(rhs_tensor);
+        for_der[op_index] = where(greater_than, zero, for_der[second_index]);
         //
+    } else if( second_zero_der ) {
+        assert( first_type == vitype_t::variable );
+        //
+        // zero
+        c10::IntArrayRef shape = for_der[first_index].sizes();
+        TensorType       zero  = TensorType( torch::zeros(shape) );
+        //
+        // for_der
+        for_der[op_index] = where(greater_than, for_der[first_index], zero);
     } else {
-        //
-        // for_der
-        for_der[op_index] =
-            var_all[lhs_index].maximum( for_der[rhs_index] ) +
-            for_der[lhs_index].maximum( var_all[rhs_index] );
+        for_der[op_index] = where(
+            greater_than, for_der[first_index], for_der[second_index]
+        );
     };
 }
 template void maximum_op_t<at::Tensor>::forward_der(

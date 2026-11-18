@@ -28,17 +28,15 @@ TEST(examples_adten, maximum)  {
     // y = f(x)
     adfn_t f = adten_t::stop_recording(ay, "f");
     //
-    // var_all
-    vector<at::Tensor> var_all = f.forward_var(x);
+    // v_all
+    vector<at::Tensor> v_all = f.forward_var(x);
     //
     // y
-    vector<at::Tensor> y = f.get_range(var_all);
+    vector<at::Tensor> y = f.get_range(v_all);
     //
     EXPECT_EQ( y.size(), ay.size() );
     //
     at::Tensor check = torch::tensor( {4.0, 2.0, 3.0} );
-    bool equal = y[0].equal( check );
-    EXPECT_TRUE( equal );
-    //
+    EXPECT_TRUE( y[0].equal( check ) );
 }
 // END_CPP
