@@ -3,8 +3,10 @@
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
 // BEGIN_CPP
+#include <ad_tensor/defined.hpp>
+#include <ad_tensor/adten.hpp>
+#
 #include <gtest/gtest.h>
-#include <ad_tensor/ad_tensor.hpp>
 #include <torch/torch.h>
 //
 TEST(tests_adten, flip)  {

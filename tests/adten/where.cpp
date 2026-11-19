@@ -5,7 +5,7 @@
 // BEGIN_CPP
 #include <torch/torch.h>
 #include <gtest/gtest.h>
-#include <ad_tensor/ad_tensor.hpp>
+#include <ad_tensor/adten.hpp>
 //
 TEST(tests_adten, where)  {
     using ad_tensor::adten_t;

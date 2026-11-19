@@ -4,7 +4,10 @@
 // ----------------------------------------------------------------------------
 #include <filesystem>
 #include <gtest/gtest.h>
-#include <ad_tensor/ad_tensor.hpp>
+//
+#include <ad_tensor/plugin.hpp>
+#include <ad_tensor/chkpnt.hpp>
+#include <ad_tensor/adten.hpp>
 //
 namespace {
     using ad_tensor::adten_t;

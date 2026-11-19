@@ -2,8 +2,11 @@
 // SPDX-FileCopyrightText: Bradley M. Bell <bradbell@seanet.com>
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
+#include <ad_tensor/chkpnt.hpp>
+#include <ad_tensor/adfn.hpp>
+#include <ad_tensor/adten.hpp>
+//
 #include <gtest/gtest.h>
-#include <ad_tensor/ad_tensor.hpp>
 #include <ad_tensor/defined.hpp>
 //
 TEST(tests_adfn, optimize_split) {

@@ -5,7 +5,7 @@
 // BEGIN_CPP
 #include <gtest/gtest.h>
 #include <torch/torch.h>
-#include <ad_tensor/ad_tensor.hpp>
+#include <ad_tensor/adten.hpp>
 TEST(tests_adten, conv_transpose1d) {
     using ad_tensor::adten_t;
     using ad_tensor::adfn_t;

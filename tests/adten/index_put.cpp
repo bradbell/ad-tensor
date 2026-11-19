@@ -4,7 +4,7 @@
 // ----------------------------------------------------------------------------
 // BEGIN_CPP
 #include <gtest/gtest.h>
-#include <ad_tensor/ad_tensor.hpp>
+#include <ad_tensor/adten.hpp>
 #include <torch/torch.h>
 //
 TEST(tests_adten, index_put)  {

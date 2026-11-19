@@ -3,7 +3,7 @@
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
 #include <gtest/gtest.h>
-#include <ad_tensor/ad_tensor.hpp>
+#include <ad_tensor/adten.hpp>
 #include <torch/torch.h>
 namespace {
     // all_close
