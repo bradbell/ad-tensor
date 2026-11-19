@@ -56,6 +56,7 @@ Other Member Functions
 {xrst_toc_table after
     src/adten/binary.cpp
     src/adten/cat.cpp
+    src/adten/clamp.cpp
     src/adten/conv1d.cpp
     src/adten/conv_transpose1d.cpp
     src/adten/expand.cpp
@@ -322,8 +323,9 @@ public:
     AD_TENSOR_BINARY_OP(!=, ne)
     AD_TENSOR_BINARY_OP(>=, ge)
     AD_TENSOR_BINARY_OP(>,  gt)
+    //
     // -----------------------------------------------------------------------
-    // The functions below are in alphabetical order
+    // The adten_t member functions below are in alphabetical order
     // -----------------------------------------------------------------------
     //
     // cat
@@ -331,6 +333,9 @@ public:
         const c10::ArrayRef<adten_t>&  tensor_list ,
         int64_t                        dim
     );
+    //
+    // clamp
+    adten_t clamp(const adten_t& lower, const adten_t& upper) const;
     //
     // conv1d
     adten_t conv1d(
@@ -385,13 +390,6 @@ public:
     ) const;
     // END_SPLIT
     //
-    // BEGIN_SUM
-    adten_t sum(
-        const c10::IntArrayRef& dim     = c10::IntArrayRef() ,
-        bool                    keepdim = false
-    ) const;
-    // END_SUM
-    //
     // transpose
     adten_t transpose(int64_t dim1, int64_t dim2) const;
     //
@@ -407,6 +405,13 @@ public:
     // solve
     adten_t solve(const adten_t& rhs, bool left) const;
     //
+    // BEGIN_SUM
+    adten_t sum(
+        const c10::IntArrayRef& dim     = c10::IntArrayRef() ,
+        bool                    keepdim = false
+    ) const;
+    // END_SUM
+    //
     // view
     adten_t view(const c10::IntArrayRef& shape) const;
     //
@@ -418,6 +423,9 @@ public:
     );
 }; }
 
+// ----------------------------------------------------------------------------
+// The ad_tensor functions below are in alphabetical order
+// ----------------------------------------------------------------------------
 namespace ad_tensor {
     //
     // BEGIN_CAT BEGIN_DEV_CAT

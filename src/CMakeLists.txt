@@ -33,6 +33,7 @@ add_library(ad_tensor SHARED
     adten/binary.cpp
     adten/call_atom.cpp
     adten/cat.cpp
+    adten/clamp.cpp
     adten/conv1d.cpp
     adten/conv_transpose1d.cpp
     adten/ctor.cpp

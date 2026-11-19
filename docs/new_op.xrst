@@ -119,7 +119,7 @@ Make minor corrections changes in the following files
     adten_t::NEW or ad_tensor::NEW.
     You should place your new prototype (possibly more than one)
     below the comment about functions being in alphabetical order.
-    Prototypes in this file are not automatically sorted because some
+    Prototypes in this file are not automatically sorted because they
     are more than one line long.
 
 #.  include/ad_tensor/dev/op_enum.hpp:
@@ -228,7 +228,7 @@ Test and Commit src_gen.cpp
 ===========================
 Run ``check_all.sh`` (not ``check_all.sh --no_plugin``)
 to check that the modified example compiles, runs, and passes it tests.
-You can use tools/one_gtest.sh tests_adfn.src_gen 
+You can use tools/one_gtest.sh tests_adfn.src_gen
 to only run the src_gen.cpp test.
 
 Step 6: If NEW has Multiple Results

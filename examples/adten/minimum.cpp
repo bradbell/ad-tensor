@@ -15,6 +15,7 @@ TEST(examples_adten, minimum)  {
     // first
     at::Tensor first  = torch::tensor( {1.0, 2.0, 3.0} );
     at::Tensor second = torch::tensor( {4.0, 2.0, 0.0} );
+    //
     // x
     vector<at::Tensor> x = {first, second};
     //
@@ -33,7 +34,6 @@ TEST(examples_adten, minimum)  {
     //
     // y
     vector<at::Tensor> y = f.get_range(v_all);
-    //
     EXPECT_EQ( y.size(), ay.size() );
     //
     at::Tensor check = torch::tensor( {1.0, 2.0, 0.0} );

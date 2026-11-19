@@ -39,7 +39,7 @@ then
         echo 'check_gtest.sh: Unexpected column order in output of free'
         exit 1
     fi
-    max_jobs=$( free -g | awk '{ if ($1 == "Mem:") { print int($7 - 0.5) } }' )
+    max_jobs=$( free -g | awk '{ if ($1 == "Mem:") { print int($7-1.0)} }' )
 else
     max_jobs=$( vm_stat | awk -v pagesize=$(pagesize) '
         /Pages free/ {free=$3}

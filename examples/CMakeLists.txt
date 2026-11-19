@@ -26,6 +26,7 @@ add_executable(examples
     adfn/reverse_der.cpp
     adten/binary.cpp
     adten/cat.cpp
+    adten/clamp.cpp
     adten/compound.cpp
     adten/conv1d.cpp
     adten/conv_transpose1d.cpp
