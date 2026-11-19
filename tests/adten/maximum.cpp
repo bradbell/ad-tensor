@@ -78,6 +78,5 @@ TEST(tests_adten, maximum)  {
     //
     check                         = torch::tensor( {9.0} );
     EXPECT_TRUE( px[2].equal(check) );
-    std::cout << "px[2] = \n" << px[2] << "\n";
 }
 // END_CPP

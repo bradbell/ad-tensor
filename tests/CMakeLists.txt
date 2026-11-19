@@ -28,6 +28,7 @@ add_executable(tests
     adten/index_put.cpp
     adten/matmul.cpp
     adten/maximum.cpp
+    adten/minimum.cpp
     adten/minus.cpp
     adten/pad.cpp
     adten/slice.cpp

@@ -131,6 +131,7 @@ TEST(tests_adfn, src_gen)  {
     // binary operators
     ar.push_back( av[0].matmul( ap[0] ) );
     ar.push_back( av[0].maximum( ap[0] ) );
+    ar.push_back( av[0].minimum( ap[0] ) );
     ar.push_back( av[0] <= ap[0] );
     ar.push_back( linalg_solve( av[0], ap[0], true ) );
     //
@@ -206,6 +207,7 @@ TEST(tests_adfn, src_gen)  {
     //
     EXPECT_TRUE( r[i++].equal( v[0].matmul( p[0] ) ) );
     EXPECT_TRUE( r[i++].equal( v[0].maximum( p[0] ) ) );
+    EXPECT_TRUE( r[i++].equal( v[0].minimum( p[0] ) ) );
     EXPECT_TRUE( r[i++].equal( v[0] <= p[0] ) );
     EXPECT_TRUE( r[i++].equal( linalg_solve( v[0], p[0], true ) ) );
     //

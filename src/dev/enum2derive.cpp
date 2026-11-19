@@ -31,6 +31,7 @@ const base_op_t<TensorType>& enum2derive(op_enum_t op_enum) {
     static const lt_op_t<TensorType>                  lt_op;
     static const matmul_op_t<TensorType>              matmul_op;
     static const maximum_op_t<TensorType>             maximum_op;
+    static const minimum_op_t<TensorType>             minimum_op;
     static const minus_op_t<TensorType>               minus_op;
     static const mul_op_t<TensorType>                 mul_op;
     static const ne_op_t<TensorType>                  ne_op;
@@ -70,6 +71,7 @@ const base_op_t<TensorType>& enum2derive(op_enum_t op_enum) {
         case op_enum_t::lt:                  return lt_op;
         case op_enum_t::matmul:              return matmul_op;
         case op_enum_t::maximum:             return maximum_op;
+        case op_enum_t::minimum:             return minimum_op;
         case op_enum_t::minus:               return minus_op;
         case op_enum_t::mul:                 return mul_op;
         case op_enum_t::ne:                  return ne_op;

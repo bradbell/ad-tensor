@@ -46,6 +46,7 @@ namespace ad_tensor { namespace dev {
             case op_enum_t::lt:               return "lt";
             case op_enum_t::matmul:           return "matmul";
             case op_enum_t::maximum:          return "maximum";
+            case op_enum_t::minimum:          return "minimum";
             case op_enum_t::minus:            return "minus";
             case op_enum_t::mul:              return "mul";
             case op_enum_t::ne:               return "ne";

@@ -64,6 +64,7 @@ Other Member Functions
     src/adten/index_put.cpp
     src/adten/matmul.cpp
     src/adten/maximum.cpp
+    src/adten/minimum.cpp
     src/adten/minus.cpp
     src/adten/pad.cpp
     src/adten/recording.cpp
@@ -125,6 +126,7 @@ The adten_t Class Developer Documentation
     src/adten/index_put.cpp
     src/adten/matmul.cpp
     src/adten/maximum.cpp
+    src/adten/minimum.cpp
     src/adten/minus.cpp
     src/adten/pad.cpp
     src/adten/slice.cpp
@@ -366,6 +368,9 @@ public:
     //
     // maximum
     adten_t maximum(const adten_t& second) const;
+    //
+    // minimum
+    adten_t minimum(const adten_t& second) const;
     //
     // minus
     adten_t operator -(void) const;

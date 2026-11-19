@@ -192,11 +192,17 @@ Make minor corrections changes in the following files:
 The following file will require a lot of corrections:
     src/adten/${name_new}.cpp
 
-Implement and test forward_par, forward_var, forward_der, reverse_der,
-and src_gen in the ${name_new}_op.cpp (in that order):
+Implement and test forward_par, forward_var in following files:
     src/dev/derive_op/${name_new}_op.cpp
-    src/examples/adten/${name_new}.cpp
-    src/tests/adten/${name_new}.cpp
+    examples/adten/${name_new}.cpp
+
+Implement and test forward_der, reverse_der in following files:
+    src/dev/derive_op/${name_new}_op.cpp
+    tests/adten/${name_new}.cpp
+
+Implement and test src_gen in following files:
+    src/dev/derive_op/${name_new}_op.cpp
+    tests/adfn/src_gen.cpp
 EOF
 echo "$script_path: OK"
 exit 0
