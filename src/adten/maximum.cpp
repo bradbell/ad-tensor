@@ -36,6 +36,15 @@ result
 ******
 is the result of the element-wise maximum.
 
+
+equality
+********
+The derivative does not exist for indices where the first and second tensors
+are equal. The forward mode derivative of result is only specified to
+be between derivative of first and second (for such indices).
+In addition, the reverse mode derivative for first and second is between
+zero and the reverse mode derivative of result (for such indices).
+
 Example
 *******
 {xrst_literal ,
