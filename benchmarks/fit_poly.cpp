@@ -440,9 +440,6 @@ TEST(benchmarks_fit_poly, plugin) {
     double initial_loss      = loss(c, grid, data).item<double>();
     for(size_t t = 0; t < number_learning_steps; ++t) {
         //
-        // var_all
-        vector<at::Tensor> var_all = f_grad.forward_var(c);
-        //
         // grad
         vector<at::Tensor> grad  = f_plugin(c, dom_par);
         //

@@ -412,9 +412,6 @@ TEST(benchmarks_smooth_spline, plugin) {
     double initial_loss      = loss(y[0]).item<double>();
     for(size_t t = 0; t < number_learning_steps; ++t) {
         //
-        // var_all
-        vector<at::Tensor> var_all = f_grad.forward_var(y);
-        //
         // grad
         vector<at::Tensor> grad  = f_plugin(y, dom_par);
         //
