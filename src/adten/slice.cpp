@@ -165,7 +165,8 @@ adten_t adten_t::slice(
         if( end.has_value() ) {
             agraph->m_arg_value.push_back( size_t(end.value()) );
         } else {
-            agraph->m_arg_value.push_back( size_t(m_at_ten.sizes()[dim]) );
+            size_t end = size_t(m_at_ten.sizes()[ size_t(dim) ]);
+            agraph->m_arg_value.push_back( end );
         }
         agraph->m_arg_type.push_back( vitype_t::none );
         //

@@ -61,7 +61,8 @@ void split_op_t<TensorType>::forward_par(
     const vector<int64_t> split_size(begin, end);
     //
     // var_all
-    vector<TensorType> vec = par_all[operand_index].split(split_size, dim);
+    vector<TensorType> vec =
+        par_all[operand_index].split(split_size, int64_t(dim));
     for(size_t i = 0; i < n_split; ++i) {
         par_all[op_index + i] = std::move( vec[i] );
     }
@@ -102,7 +103,8 @@ void split_op_t<TensorType>::forward_var(
     const vector<int64_t> split_size(begin, end);
     //
     // var_all
-    vector<TensorType> vec = var_all[operand_index].split(split_size, dim);
+    vector<TensorType> vec =
+        var_all[operand_index].split(split_size, int64_t(dim));
     for(size_t i = 0; i < n_split; ++i) {
         var_all[op_index + i] = std::move( vec[i] );
     }
@@ -146,7 +148,8 @@ void split_op_t<TensorType>::forward_der(
     const vector<int64_t> split_size(begin, end);
     //
     // var_all
-    vector<TensorType> vec = for_der[operand_index].split(split_size, dim);
+    vector<TensorType> vec =
+        for_der[operand_index].split(split_size, int64_t(dim));
     for(size_t i = 0; i < n_split; ++i) {
         for_der[op_index + i] = std::move( vec[i] );
     }
@@ -193,7 +196,7 @@ void split_op_t<TensorType>::reverse_der(
     }
     //
     // rev_der[operand_index]
-    rev_der[operand_index] = ad_tensor::cat(tensor_list, dim);
+    rev_der[operand_index] = ad_tensor::cat(tensor_list, int64_t(dim));
 }
 template void split_op_t<at::Tensor>::reverse_der(
     size_t                       op_index    ,

@@ -55,7 +55,7 @@ void cat_op_t<TensorType>::forward_par(
     }
     //
     // par_all
-    par_all[op_index] = ad_tensor::cat(tensor_list, dim);
+    par_all[op_index] = ad_tensor::cat(tensor_list, size_t(dim));
 }
 template void cat_op_t<at::Tensor>::forward_par(
     size_t                       op_index    ,
@@ -100,7 +100,7 @@ void cat_op_t<TensorType>::forward_var(
     }
     //
     // var_all
-    var_all[op_index] = ad_tensor::cat(tensor_list, dim);
+    var_all[op_index] = ad_tensor::cat(tensor_list, size_t(dim));
 }
 template void cat_op_t<at::Tensor>::forward_var(
     size_t                       op_index    ,
@@ -169,7 +169,7 @@ void cat_op_t<TensorType>::forward_der(
     }
     //
     // for_der
-    for_der[op_index] = ad_tensor::cat(tensor_list, dim);
+    for_der[op_index] = ad_tensor::cat(tensor_list, size_t(dim));
 }
 template void cat_op_t<at::Tensor>::forward_der(
     size_t                       op_index    ,
@@ -240,7 +240,7 @@ void cat_op_t<TensorType>::reverse_der(
             // rev_der[tensor_index]
             int64_t step = 1;
             TensorType tensor_bar =
-                rev_der[op_index].slice(dim, start, end, step);
+                rev_der[op_index].slice(size_t(dim), start, end, step);
             plus_equal(
                 rev_der[tensor_index], shape, tensor_bar
             );

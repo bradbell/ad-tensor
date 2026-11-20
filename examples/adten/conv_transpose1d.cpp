@@ -57,7 +57,7 @@ TEST(examples_adten, conv_transpose1d) {
     // nx, nw, ny
     int64_t nx = x.sizes()[2];
     int64_t nw = w.sizes()[2];
-    size_t  ny = y.sizes()[2];
+    int64_t ny = y.sizes()[2];
     EXPECT_EQ( ny,  nx + nw - 1 );
     // ------------------------------------------------------------------------`
     // check function value
@@ -66,7 +66,7 @@ TEST(examples_adten, conv_transpose1d) {
         y.data_ptr<float>(),
         y.data_ptr<float>() + y.numel()
     );
-    for(size_t i = 0; i < ny; ++i) {
+    for(size_t i = 0; i < size_t(ny); ++i) {
         float sum = b_vec[0];
         size_t k_first = size_t( std::max( int64_t(0), int64_t(i) - nw + 1 ) );
         size_t k_last  = size_t( std::min( int64_t(i), nx -1 ) );

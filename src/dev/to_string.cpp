@@ -97,7 +97,7 @@ namespace ad_tensor { namespace dev {
         }
         //
         // length
-        size_t length = size_t( tensor.numel() );
+        int64_t length = size_t( tensor.numel() );
         //
         // vector_view
         at::Tensor vector_view = tensor.contiguous().view(length);
@@ -110,7 +110,7 @@ namespace ad_tensor { namespace dev {
         //
         // res
         res += "[";
-        for(size_t i = 0; i < length; ++i) {
+        for(int64_t i = 0; i < length; ++i) {
             // TODO: better conversion of more types; e.g., kChar.
             switch( tensor.scalar_type() ) {
                 case torch::kShort:
