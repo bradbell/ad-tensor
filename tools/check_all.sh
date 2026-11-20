@@ -102,7 +102,12 @@ done
 echo_eval check_gtest.sh $release_flag $plugin_flag $clang_flag
 #
 # test_install.sh
-tools/test_install.sh
+if [ "$plugin_flag" == '' ]
+then
+    tools/test_install.sh yes_plugin
+else
+    tools/test_install.sh no_plugin
+fi
 #
 echo "start time: $start_time"
 echo "end time:   $(date)"

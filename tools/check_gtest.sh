@@ -26,6 +26,7 @@ fi
 release_flag=''
 plugin_flag=''
 clang_flag=''
+build_dir='build/yes_plugin'
 while [ $# -ge 1 ]
 do
     case "$1" in
@@ -35,6 +36,7 @@ do
         ;;
         --no_plugin)
         plugin_flag='--no_plugin'
+        build_dir='build/no_plugin'
         ;;
         --clang)
         clang_flag='--clang'
@@ -59,18 +61,18 @@ then
     exit 1
 fi
 #
-# build
-cd build
+# $build_dir
+cd $build_dir
 #
-# build/examples/examples
+# $build_dir/examples/examples
 echo_eval ninja -j $n_job examples
 echo_eval ./examples/examples
 #
-# build/tests/tests
+# $build_dir/tests/tests
 echo_eval ninja -j $n_job tests
 echo_eval ./tests/tests
 #
-# build/benchmarks/benchmarks
+# $build_dir/benchmarks/benchmarks
 echo_eval ninja -j $n_job benchmarks
 echo_eval ./benchmarks/benchmarks
 #

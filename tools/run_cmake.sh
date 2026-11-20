@@ -26,6 +26,7 @@ cmake_c_compiler='gcc'
 cmake_cxx_compiler='g++'
 include_gtest="true"
 include_plugin='true'
+build_dir='build/yes_plugin'
 while [ "$#" -ge 1 ]
 do
     case $1 in
@@ -51,6 +52,7 @@ do
 
         --no_plugin)
         include_plugin='false'
+        build_dir='build/no_plugin'
         ;;
 
         *)
@@ -66,12 +68,15 @@ done
 # toch_dir
 torch_dir=$(tools/torch_dir.py)
 #
-# build
-if [ ! -e build ]
+# prefix
+prefix="$(pwd)/build/prefix"
+#
+# $build_dir
+if [ ! -e $build_dir ]
 then
-    mkdir build
+    mkdir $build_dir
 fi
-cd build
+cd $build_dir
 if [ -e CMakeCache.txt ]
 then
     rm -r CMakeCache.txt
@@ -99,7 +104,7 @@ cxx_flags='-Wall -pedantic-errors -Wshadow -Wfloat-conversion -Wconversion'
 #
 # cmake
 cat << EOF > temp.cmd
-cmake -S .. -B . \\
+cmake -S ../.. -B . \\
     -G Ninja \\
     -D include_gtest=$include_gtest \\
     -D include_plugin=$include_plugin \\
@@ -108,7 +113,7 @@ cmake -S .. -B . \\
     -D CMAKE_CXX_FLAGS='$cxx_flags' \\
     -D CMAKE_C_COMPILER=$cmake_c_compiler \\
     -D CMAKE_CXX_COMPILER=$cmake_cxx_compiler \\
-    -D CMAKE_INSTALL_PREFIX=$(pwd)/prefix
+    -D CMAKE_INSTALL_PREFIX=$prefix
 EOF
 cat temp.cmd
 if ! source temp.cmd 2> cmake.err

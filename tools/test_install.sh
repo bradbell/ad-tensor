@@ -21,24 +21,38 @@ then
    exit 1
 fi
 # -----------------------------------------------------------------------------
-if [ ! -e build/CMakeCache.txt ]
+#
+# build_dir
+if [ $# != 1 ]
 then
-    echo 'test_install.sh: must first create build directory and run cmake'
+    echo 'usage: tools/test_install.sh [yes_plugin|no_plugin]'
     exit 1
 fi
-#
-# install
-if [ -d build/prefix/include/ad_tensor ]
+if [ "$1" != 'yes_plugin' ] && [ "$1" != 'no_plugin' ]
 then
-    rm -r build/prefix/include/ad_tensor
+    echo 'usage: tools/test_install.sh [yes_plugin|no_plugin]'
+    exit 1
 fi
-cmake --build build --target install
+build_dir="build/$1"
+#
+if [ ! -e $build_dir/CMakeCache.txt ]
+then
+    echo "test_install.sh: must first create $build_dir and run cmake"
+    exit 1
+fi
 #
 # repository
 repository=$(pwd)
 #
 # prefix
 prefix=$repository/build/prefix
+#
+# install
+if [ -d $prefix/include/ad_tensor ]
+then
+    rm -r $prefix/include/ad_tensor
+fi
+cmake --build $build_dir --target install
 #
 if [ ! -e $prefix/include/ad_tensor/ad_tensor.hpp ]
 then
