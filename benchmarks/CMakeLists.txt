@@ -87,6 +87,7 @@ RUN tools/check_gtest.sh --release
 #
 # BEGIN_SORT_THIS_LINE_PLUS_2
 add_executable(benchmarks
+    elapsed_ms.cpp
     fit_poly.cpp
     multi_normal.cpp
     smooth_spline.cpp

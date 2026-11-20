@@ -142,6 +142,7 @@ This benchmark will only run when
 #include <gtest/gtest.h>
 #include <torch/torch.h>
 #include <ad_tensor/ad_tensor.hpp>
+#include "elapsed_ms.hpp"
 namespace {
     //
     // chrono, vector, adten_t, adfn_t
@@ -149,18 +150,6 @@ namespace {
     using ad_tensor::vector;
     using ad_tensor::adten_t;
     using ad_tensor::adfn_t;
-    //
-    // previous_time, elapsed_ms
-    chrono::time_point previous_time = chrono::steady_clock::now();
-    double elapsed_ms(void) {
-        chrono::time_point current_time = chrono::steady_clock::now();
-        auto microseconds = chrono::duration_cast<chrono::microseconds>(
-            current_time - previous_time
-        ).count();
-        double ms = double(microseconds) / 1000.0;
-        previous_time = current_time;
-        return ms;
-    }
     //
     // inf
     const double inf = std::numeric_limits<double>::infinity();
