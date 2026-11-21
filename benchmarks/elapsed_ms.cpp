@@ -3,12 +3,12 @@
 // SPDX-FileContributor: 2026 Bradley M. Bell
 // ----------------------------------------------------------------------------
 /*
-{xrst_begin elapsed_ms_benchmarks ben}
+{xrst_begin elapsed_ms ben}
 {xrst_spell
 }
 
-Computing Elapsed Time
-######################
+The Elapsed Time Utility
+########################
 
 Syntax
 ******
@@ -20,7 +20,7 @@ ms
 **
 is the number of milliseconds since the previous call to elapsed_ms.
 
-{xrst_end elapsed_ms_benchmarks}
+{xrst_end elapsed_ms}
 */
 // BEGIN_SETUP
 #include <chrono>

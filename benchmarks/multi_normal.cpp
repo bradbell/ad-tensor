@@ -10,8 +10,8 @@
     gtest
 }
 
-Fitting a Multivariate Normal Distribution
-##########################################
+Fitting a Multivariate Normal Distribution Benchmark
+####################################################
 
 Loss Function
 *************

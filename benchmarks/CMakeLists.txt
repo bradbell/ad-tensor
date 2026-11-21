@@ -14,9 +14,10 @@
 Comparing Execution Time for AD Tensor Versus Autograd
 ######################################################
 
-Test Problems
-*************
+Contents
+********
 {xrst_toc_table
+    benchmarks/elapsed_ms.cpp
     benchmarks/fit_poly.cpp
     benchmarks/multi_normal.cpp
     benchmarks/smooth_spline.cpp
