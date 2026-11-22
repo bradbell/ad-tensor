@@ -71,6 +71,7 @@ namespace ad_tensor { namespace dev { enum struct op_enum_t
     // END_BINARY  END_SORT_THIS_LINE_MINUS_1
     //
     // BEGIN_OTHER BEGIN_SORT_THIS_LINE_PLUS_1
+    bucketize,           // split by value
     call,                // call atomic function
     call_result,         // place holder when more than one result for a call
     cat,                 // concatenate tensors along one dimension
@@ -86,7 +87,7 @@ namespace ad_tensor { namespace dev { enum struct op_enum_t
     pad,                 // functional padding
     slice,               // slice in one dimension
     solve,               // solve matrix equation
-    split,               // split along a dimension
+    split,               // split by one dimension's index
     split_result,        // place holder when more than one result for a split
     sum,                 // summation along a dimension
     transpose,           // transpose

@@ -25,6 +25,7 @@ add_executable(examples
     adfn/optimize.cpp
     adfn/reverse_der.cpp
     adten/binary.cpp
+    adten/bucketize.cpp
     adten/cat.cpp
     adten/clamp.cpp
     adten/compound.cpp

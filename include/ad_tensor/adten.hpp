@@ -55,6 +55,7 @@ Other Member Functions
 {xrst_comment BEGIN_SORT_THIS_LINE_PLUS_2}
 {xrst_toc_table after
     src/adten/binary.cpp
+    src/adten/bucketize.cpp
     src/adten/cat.cpp
     src/adten/clamp.cpp
     src/adten/conv1d.cpp
@@ -118,6 +119,7 @@ The adten_t Class Developer Documentation
 {xrst_comment BEGIN_SORT_THIS_LINE_PLUS_2}
 {xrst_toc_table after
     src/adten/binary.cpp
+    src/adten/bucketize.cpp
     src/adten/cat.cpp
     src/adten/conv1d.cpp
     src/adten/conv_transpose1d.cpp
@@ -328,6 +330,14 @@ public:
     // The adten_t member functions below are in alphabetical order
     // -----------------------------------------------------------------------
     //
+    // bucketize
+    static adten_t bucketize(
+        const adten_t& input,
+        const adten_t& boundaries,
+        bool           out_int32,
+        bool           right
+    );
+    //
     // cat
     static adten_t cat(
         const c10::ArrayRef<adten_t>&  tensor_list ,
@@ -427,6 +437,16 @@ public:
 // The ad_tensor functions below are in alphabetical order
 // ----------------------------------------------------------------------------
 namespace ad_tensor {
+    //
+    // BEGIN_BUCKETIZE BEGIN_DEV_BUCKETIZE
+    // ad_tensor::bucketize
+    adten_t bucketize(
+        const adten_t& input             ,
+        const adten_t& boundaries        ,
+        bool           out_int32 = false ,
+        bool           right     = false
+    );
+    // END_BUCKETIZE END_DEV_BUCKETIZE
     //
     // BEGIN_CAT BEGIN_DEV_CAT
     // ad_tensor::cat

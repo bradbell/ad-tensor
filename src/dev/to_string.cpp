@@ -25,6 +25,7 @@ namespace ad_tensor { namespace dev {
         switch(op_enum) {
             // BEGIN_SORT_THIS_LINE_PLUS_1
             case op_enum_t::add:              return "add";
+            case op_enum_t::bucketize:        return "bucketize";
             case op_enum_t::call:             return "call";
             case op_enum_t::call_result:      return "call_result";
             case op_enum_t::cat:              return "cat";

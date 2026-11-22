@@ -31,6 +31,7 @@ add_library(ad_tensor SHARED
     adfn/reverse_der.cpp
     adfn/src_gen.cpp
     adten/binary.cpp
+    adten/bucketize.cpp
     adten/call_atom.cpp
     adten/cat.cpp
     adten/clamp.cpp
@@ -62,6 +63,7 @@ add_library(ad_tensor SHARED
     dev/broadcast.cpp
     dev/chkpnt.cpp
     dev/derive_op/add_op.cpp
+    dev/derive_op/bucketize_op.cpp
     dev/derive_op/call_op.cpp
     dev/derive_op/cat_op.cpp
     dev/derive_op/conv1d_op.cpp

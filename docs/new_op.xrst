@@ -14,6 +14,7 @@
     agraph
     rng
     gtest
+    bucketize
 }
 
 Implementation of a New Operator Using new_other.sh
@@ -172,6 +173,8 @@ Implement the forward_der for the NEW operator
 The function forward_der determines the forward derivative with index op_index.
 During this function, all the parameters and variables are known
 and the forward derivatives with index less that op_index are known.
+If the derivative of the NEW operator is always zero,
+the forward_der function should be empty; e.g; see bucketize_op.cpp.
 
 tests/adten/NEW.cpp
 ===================
@@ -195,6 +198,8 @@ with indices less than or equal op_index are known.
 Upon return, the result of the operator with index op_index
 is removed (as an argument to the objective)
 and its contribution is added to each of the NEW operator arguments.
+If the derivative of the NEW operator is always zero,
+the reverse_der function should be empty; e.g; see bucketize_op.cpp.
 
 tests/adten/NEW.cpp
 ===================

@@ -87,11 +87,18 @@ and var_all[op_index] is an output.
 
 forward_der
 ===========
-On input, for_der contains the derivative w.r.t. the domain direction
-of all the variables up to but no including op_index; hence,
-for_der[index] for index < op_index is an input to this routine.
-Upon return for_der[op_index] contains the derivative w.r.t
-the domain direction of the variable corresponding to op_index.
+
+#.  On input, for_der contains the derivative w.r.t. the domain direction
+    of all the variables up to but no including op_index; hence,
+    for_der[index] for index < op_index is an input to this routine.
+    For these indices the undefined tensor corresponds to zero.
+    In addition, for_der[op_index] is undefined.
+
+#.  Upon return for_der[op_index] contains the derivative w.r.t
+    the domain direction of the variable corresponding to op_index.
+    If the derivative is always zero, forward_der leave the value of
+    for_der[op_index] as undefined.
+
 {xrst_literal ,
     BEGIN_FORWARD_DER, END_FORWARD_DER
 }
@@ -101,17 +108,17 @@ reverse_der
 {xrst_literal ,
     BEGIN_REVERSE_DER, END_REVERSE_DER
 }
-#.  On input, for_der contains the derivative of the range direction summation
+#.  On input, rev_der contains the derivative of the range direction summation
     w.r.t the variables from index zero to index op_index.
-    Hence for_der[index] for index <= op_index are inputs to this routine.
-#.  Upon return, for_der contains the derivative of the range direction
+    Hence rev_der[index] for index <= op_index are inputs to this routine.
+#.  Upon return, rev_der contains the derivative of the range direction
     summation w.r.t the variables from index zero to index op_index - 1.
-    Hence for_der[index] for index < op_index are outputs to this routine.
-    Actually all the outputs correspond to index values that are
-    arguments to the operator at index op_index.
+    Hence rev_der[index] for index < op_index are outputs to this routine.
+    The actual outputs are restricted to the tensors with to index values
+    that are arguments to the operator at index op_index.
 #.  The undefined tensor corresponds to zero
     derivative for the corresponding variable. There is no reason to process
-    cases where for_der[op_index] is not defined; hence for_der[op_index]
+    cases where rev_der[op_index] is not defined; hence rev_der[op_index]
     is defined when this routine is called.
 
 src_gen

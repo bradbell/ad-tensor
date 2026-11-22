@@ -11,6 +11,7 @@ template <class TensorType>
 const base_op_t<TensorType>& enum2derive(op_enum_t op_enum) {
     // BEGIN_SORT_THIS_LINE_PLUS_1
     static const add_op_t<TensorType>                 add_op;
+    static const bucketize_op_t<TensorType>           bucketize_op;
     static const call_op_t<TensorType>                call_op;
     static const cat_op_t<TensorType>                 cat_op;
     static const conv1d_op_t<TensorType>              conv1d_op;
@@ -50,6 +51,7 @@ const base_op_t<TensorType>& enum2derive(op_enum_t op_enum) {
     switch(op_enum) {
         // BEGIN_SORT_THIS_LINE_PLUS_1
         case op_enum_t::add:                 return add_op;
+        case op_enum_t::bucketize:           return bucketize_op;
         case op_enum_t::call:                return call_op;
         case op_enum_t::call_result:         return result_op;
         case op_enum_t::cat:                 return cat_op;

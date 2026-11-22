@@ -99,6 +99,7 @@ namespace ad_tensor { namespace dev {
     //
     // BEGIN_SORT_THIS_LINE_PLUS_1
     AD_TENSOR_DERIVE_OP(add_op)
+    AD_TENSOR_DERIVE_OP(bucketize_op)
     AD_TENSOR_DERIVE_OP(call_op)
     AD_TENSOR_DERIVE_OP(cat_op)
     AD_TENSOR_DERIVE_OP(conv1d_op)

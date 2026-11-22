@@ -6,6 +6,7 @@
 -------------------------------------------------------------------------------
 {xrst_begin adten_conv1d usr}
 {xrst_spell
+    libtorch
 }
 
 One Dimensional Cross Correlation
@@ -16,9 +17,10 @@ Syntax
 {xrst_code cpp}
     output = conv1d(input, weight, bias, options)
 {xrst_code}
-In the at::Tensor syntax for this operation, the bias is part of the options.
+The at::Tensor syntax for this operation is different for libtorch.
+(The bias is part of the options in the libtorch syntax for this operation.)
 In order to have template code that works for both at::Tensor and adten_t,
-the syntax above is implemented for both these types.
+the syntax above is implemented for both at::Tensor and adten_t types.
 An :ref:`undefined<defined-name>` bias corresponds to zero; i.e., no bias.
 
 Prototype

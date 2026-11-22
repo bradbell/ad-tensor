@@ -19,6 +19,7 @@ add_executable(tests
     adfn/forward_der.cpp
     adfn/optimize.cpp
     adfn/reverse_der.cpp
+    adten/bucketize.cpp
     adten/cat.cpp
     adten/conv1d.cpp
     adten/conv_transpose1d.cpp
