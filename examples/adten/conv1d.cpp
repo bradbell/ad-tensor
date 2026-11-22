@@ -54,9 +54,9 @@ TEST(examples_adten, conv1d) {
     at::Tensor y = r[0].contiguous();
     //
     // nx, nw, ny
-    size_t nx = size_t( x.sizes()[2] );
-    size_t nw = size_t( w.sizes()[2] );
-    size_t ny = size_t( y.sizes()[2] );
+    size_t nx = size_t( x.size(2) );
+    size_t nw = size_t( w.size(2) );
+    size_t ny = size_t( y.size(2) );
     EXPECT_EQ( ny,  nx - nw + 1 );
     // ------------------------------------------------------------------------`
     // check function value

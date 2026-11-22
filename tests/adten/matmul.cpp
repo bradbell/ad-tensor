@@ -129,9 +129,9 @@ TEST(tests_adten, matmul_batch)  {
     //
     // y[0]
     EXPECT_EQ( y[0].sizes().size(), 3);
-    EXPECT_EQ( y[0].sizes()[0], 3 );
-    EXPECT_EQ( y[0].sizes()[1], 1 );
-    EXPECT_EQ( y[0].sizes()[2], 2);
+    EXPECT_EQ( y[0].size(0), 3 );
+    EXPECT_EQ( y[0].size(1), 1 );
+    EXPECT_EQ( y[0].size(2), 2);
     for(int64_t k = 0; k < 3; ++k) {
         Tensor yk = y[0][k];
         Tensor vk = batch_vec[k];

@@ -53,9 +53,9 @@ TEST(tests_adten, conv_transpose1d) {
     at::Tensor y = r[0].contiguous();
     //
     // nx, nw, ny
-    int64_t nx = x.sizes()[2];
-    int64_t nw = w.sizes()[2];
-    int64_t ny = y.sizes()[2];
+    int64_t nx = x.size(2);
+    int64_t nw = w.size(2);
+    int64_t ny = y.size(2);
     EXPECT_EQ( ny,  nx + nw - 1 );
     // ------------------------------------------------------------------------`
     // check function value
