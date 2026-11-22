@@ -93,7 +93,6 @@ and then uses its plugin to compute gradients,
 {xrst_end smooth_spline_benchmark}
 */
 // BEGIN_SETUP
-#include <chrono>
 #include <filesystem>
 #include <gtest/gtest.h>
 #include <torch/torch.h>
@@ -102,8 +101,7 @@ and then uses its plugin to compute gradients,
 //
 namespace {
     //
-    // chrono, vector, adten_t, adfn_t, Conv1dFuncOptions
-    namespace chrono = std::chrono;
+    // vector, adten_t, adfn_t, Conv1dFuncOptions
     using ad_tensor::vector;
     using ad_tensor::adten_t;
     using ad_tensor::adfn_t;

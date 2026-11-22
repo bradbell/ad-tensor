@@ -10,8 +10,8 @@
     gtest
 }
 
-Fitting a Multivariate Normal Distribution Benchmark
-####################################################
+Fitting a Multivariate Normal Distribution
+##########################################
 
 Loss Function
 *************
@@ -137,7 +137,6 @@ This benchmark will only run when
 //
 //
 // BEGIN_SETUP
-#include <chrono>
 #include <filesystem>
 #include <gtest/gtest.h>
 #include <torch/torch.h>
@@ -145,8 +144,7 @@ This benchmark will only run when
 #include "elapsed_ms.hpp"
 namespace {
     //
-    // chrono, vector, adten_t, adfn_t
-    namespace chrono = std::chrono;
+    // vector, adten_t, adfn_t
     using ad_tensor::vector;
     using ad_tensor::adten_t;
     using ad_tensor::adfn_t;
