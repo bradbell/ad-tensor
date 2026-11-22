@@ -6,7 +6,7 @@
 {xrst_begin adfn_forward_der_example usr}
 {xrst_spell
     cc
-    dv
+    dx
 }
 
 Domain Direction Derivative Example
@@ -18,33 +18,33 @@ For this example
 
 .. math::
 
-    f(v) = \left[ \begin{array}{c}
-        v_0 + v_1 \\
-        v_0 - v_1 \\
-        v_0 * v_1 \\
-        v_0 / v_1 \\
+    f(x) = \left[ \begin{array}{c}
+        x_0 + x_1 \\
+        x_0 - x_1 \\
+        x_0 * x_1 \\
+        x_0 / x_1 \\
     \end{array} \right ]
 
-It follows that the derivative f'(v) is given by
+It follows that the derivative f'(x) is given by
 
 .. math::
 
-    f'(v) = \left[ \begin{array}{cc}
+    f'(x) = \left[ \begin{array}{cc}
         1 & 1  \\
         1 & - 1 \\
-        v_1 & v_0 \\
-        1 / v_1 & - v_0 / v_1^2 \\
+        x_1 & x_0 \\
+        1 / x_1 & - x_0 / x_1^2 \\
     \end{array} \right ]
 
-The domain derivative in the direction dv is given by
+The domain derivative in the direction dx is given by
 
 .. math::
 
-    f'(v) * dv = \left[ \begin{array}{cc}
-        dv_0 + dv_1  \\
-        dv_0 - dv_1   \\
-        v_1 * dv_0 + v_0 * dv_1 \\
-        dv_0 / v_1  - v_0 * dv_1 / v_1^2 \\
+    f'(x) * dx = \left[ \begin{array}{cc}
+        dx_0 + dx_1  \\
+        dx_0 - dx_1   \\
+        x_1 * dx_0 + x_0 * dx_1 \\
+        dx_0 / x_1  - x_0 * dx_1 / x_1^2 \\
     \end{array} \right ]
 
 Source Code
@@ -64,53 +64,53 @@ TEST(examples_adfn, forward_der)  {
     using ad_tensor::adfn_t;
     using ad_tensor::vector;
     //
-    // v
-    // We use v for the domain variables
-    vector<at::Tensor> v;
-    v.push_back( torch::tensor( {1.0, 1.0} ) );
-    v.push_back( torch::tensor( {1.0, 1.0} ) );
+    // x
+    // We use x for the domain variables
+    vector<at::Tensor> x;
+    x.push_back( torch::tensor( {1.0, 1.0} ) );
+    x.push_back( torch::tensor( {1.0, 1.0} ) );
     //
-    // av
-    vector<adten_t> av = adten_t::start_recording(v);
+    // ax
+    vector<adten_t> ax = adten_t::start_recording(x);
     //
-    // ar
-    // We use r for the range space
-    vector<adten_t> ar;
-    ar.push_back(  av[0] + av[1] );
-    ar.push_back(  av[0] - av[1] );
-    ar.push_back(  av[0] * av[1] );
-    ar.push_back(  av[0] / av[1] );
+    // ay
+    // We use y for the range space
+    vector<adten_t> ay;
+    ay.push_back(  ax[0] + ax[1] );
+    ay.push_back(  ax[0] - ax[1] );
+    ay.push_back(  ax[0] * ax[1] );
+    ay.push_back(  ax[0] / ax[1] );
     //
-    // r = f(v)
+    // y = f(x)
     // We use f for the adfn_t object.
-    adfn_t f = adten_t::stop_recording(ar, "f");
+    adfn_t f = adten_t::stop_recording(ay, "f");
     //
-    // v, v_all
-    v[0] = torch::tensor( {1.0, 2.0} );
-    v[1] = torch::tensor( {3.0, 4.0} );
-    vector<at::Tensor> v_all = f.forward_var(v);
+    // x, v_all
+    x[0] = torch::tensor( {1.0, 2.0} );
+    x[1] = torch::tensor( {3.0, 4.0} );
+    vector<at::Tensor> v_all = f.forward_var(x);
     //
-    // dv
-    vector<at::Tensor> dv;
-    dv.push_back( torch::tensor( {5.0, 6.0} ) );
-    dv.push_back( torch::tensor( {7.0, 8.0} ) );
+    // dx
+    vector<at::Tensor> dx;
+    dx.push_back( torch::tensor( {5.0, 6.0} ) );
+    dx.push_back( torch::tensor( {7.0, 8.0} ) );
     //
-    // dr
-    vector<at::Tensor> dr = f.forward_der(dv, v_all);
+    // dy
+    vector<at::Tensor> dy = f.forward_der(dx, v_all);
     //
     // equal, close
     bool equal, close;
     //
-    equal = dr[0].equal( dv[0] + dv[1] );
+    equal = dy[0].equal( dx[0] + dx[1] );
     EXPECT_TRUE( equal );
     //
-    equal = dr[1].equal( dv[0] - dv[1] );
+    equal = dy[1].equal( dx[0] - dx[1] );
     EXPECT_TRUE( equal );
     //
-    equal = dr[2].equal( v[1] * dv[0] + v[0] * dv[1] );
+    equal = dy[2].equal( x[1] * dx[0] + x[0] * dx[1] );
     EXPECT_TRUE( equal );
     //
-    close = dr[3].allclose( dv[0] / v[1] - v[0] * dv[1] /(v[1] * v[1]) );
+    close = dy[3].allclose( dx[0] / x[1] - x[0] * dx[1] /(x[1] * x[1]) );
     EXPECT_TRUE( close );
 }
 // END_CPP
