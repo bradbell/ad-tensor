@@ -17,7 +17,7 @@ Comparing Execution Time for AD Tensor Versus Autograd
 Contents
 ********
 {xrst_toc_table
-    benchmarks/elapsed_ms.cpp
+    benchmarks/lib/CMakeLists.txt
     benchmarks/fit_poly.cpp
     benchmarks/multi_normal.cpp
     benchmarks/smooth_spline.cpp
@@ -86,9 +86,11 @@ RUN tools/check_gtest.sh --release
 -------------------------------------------------------------------------------
 ]]
 #
+# lib
+add_subdirectory(lib)
+#
 # BEGIN_SORT_THIS_LINE_PLUS_2
 add_executable(benchmarks
-    elapsed_ms.cpp
     fit_poly.cpp
     multi_normal.cpp
     smooth_spline.cpp
@@ -97,6 +99,7 @@ add_executable(benchmarks
 #
 target_link_libraries(benchmarks PRIVATE
     ad_tensor
+    benchmarks_lib
     GTest::Main
     ${TORCH_LIBRARIES}
     ${plugin_LIBRARIES}

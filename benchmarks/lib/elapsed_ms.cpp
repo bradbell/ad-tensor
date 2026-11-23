@@ -18,7 +18,9 @@ Syntax
 
 ms
 **
-is the number of milliseconds since the previous call to elapsed_ms.
+is the number of milliseconds since the previous call,
+by this thread, to elapsed_ms.
+This value is unspecified for the first call to elapsed_ms by this thread.
 
 {xrst_end elapsed_ms}
 */
@@ -31,7 +33,7 @@ namespace {
     namespace chrono = std::chrono;
     //
     // previous_time
-    chrono::time_point previous_time = chrono::steady_clock::now();
+    thread_local chrono::time_point previous_time = chrono::steady_clock::now();
 }
 //
 // elapsed_ms

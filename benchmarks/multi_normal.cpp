@@ -141,7 +141,7 @@ This benchmark will only run when
 #include <gtest/gtest.h>
 #include <torch/torch.h>
 #include <ad_tensor/ad_tensor.hpp>
-#include "elapsed_ms.hpp"
+#include "lib/elapsed_ms.hpp"
 namespace {
     //
     // vector, adten_t, adfn_t

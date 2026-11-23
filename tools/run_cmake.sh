@@ -118,12 +118,12 @@ EOF
 cat temp.cmd
 if ! source temp.cmd 2> cmake.err
 then
-    echo 'run_cmake.sh: errors in cmake output see build/cmake.err'
+    echo "run_cmake.sh: errors in cmake output see $build_dir/cmake.err"
     exit 1
 else
     if sed -f temp.sed cmake.err | grep 'CMake Warning' > /dev/null
     then
-        echo 'run_cmake.sh: warnings in cmake output; see build/cmake.err'
+        echo "run_cmake.sh: warnings in cmake output; see $build_dir/cmake.err"
         exit 1
     fi
 fi

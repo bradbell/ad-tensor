@@ -88,7 +88,7 @@ and then uses its plugin to compute gradients,
 #include <gtest/gtest.h>
 #include <torch/torch.h>
 #include <ad_tensor/ad_tensor.hpp>
-#include "elapsed_ms.hpp"
+#include "lib/elapsed_ms.hpp"
 //
 namespace {
     //
