@@ -5,6 +5,7 @@
 /*
 {xrst_begin elapsed_ms ben}
 {xrst_spell
+    hpp
 }
 
 The Elapsed Time Utility
@@ -13,8 +14,15 @@ The Elapsed Time Utility
 Syntax
 ******
 {xrst_code cpp}
+    #include "lib/elapsed.hpp"
     ms = elapsed_ms();
 {xrst_code}
+
+Prototype
+*********
+{xrst_literal ,
+    BEGIN_ELAPSED_MS, END_ELAPSED_MS
+}
 
 ms
 **
@@ -36,8 +44,9 @@ namespace {
     thread_local chrono::time_point previous_time = chrono::steady_clock::now();
 }
 //
-// elapsed_ms
-double elapsed_ms(void) {
+// BEGIN_ELAPSED_MS
+double elapsed_ms(void)
+{   // END_ELAPSED_MS
     chrono::time_point current_time = chrono::steady_clock::now();
     auto microseconds = chrono::duration_cast<chrono::microseconds>(
         current_time - previous_time
