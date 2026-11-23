@@ -32,12 +32,14 @@ This returns the at:Tensor corresponding to this object.
     BEGIN_AT_TEN, END_AT_TEN
 }
 
-sizes, numel, defined
-*********************
-For *fun* equals ``sizes``, ``numel``, ``defined`` ,
+size, sizes, numel, defined
+***************************
+For *fun* equals ``dim``, ``size``, ``sizes``, ``numel``, ``defined`` ,
 return the result for the underlying at::Tensor.
 {xrst_literal ,
-    BEGIN_SIZES, END_SIZES
+    BEGIN_DIM, END_DIM
+    BEGIN_SIZE, END_SIZE
+    BEGIN_SHAPE, END_SHAPE
     BEGIN_NUMEL, END_NUMEL
     BEGIN_DEFINED, END_DEFINED
 }
@@ -259,9 +261,19 @@ public:
     explicit adten_t( const at::Tensor& tensor );
     // END_PUBLIC_CTOR
     //
-    // BEGIN_SIZES
+    // BEGIN_DIM
+    int64_t dim(void) const
+    // END_DIM
+    {   return m_at_ten.dim(); }
+    //
+    // BEGIN_SIZE
+    int64_t size(int64_t dim) const
+    // END_SIZE
+    {   return m_at_ten.size(dim); }
+    //
+    // BEGIN_SHAPE
     c10::IntArrayRef sizes(void) const
-    // END_SIZES
+    // END_SHAPE
     {   return m_at_ten.sizes(); }
     //
     // BEGIN_NUMEL
