@@ -8,30 +8,23 @@
 #include <torch/torch.h>
 //
 TEST(examples_adten, index)  {
-#if 0
     using ad_tensor::adten_t;
     using ad_tensor::adfn_t;
     using ad_tensor::vector;
     //
-    // index_list_t
-    //
-    // from
+    // from, row_index, col_index
     at::Tensor from = torch::tensor( { {1.0, 2.0}, {3.0, 4.0} } );
-    //
-    // index_list
-    std::optional<at::Tensor>  col_index  = torch::tensor( {0, 1} );
-    std::optional<at::Tensor>  row_index  = torch::tensor( {0, 1} );
-    c10::List< std::optional<at::Tensor> > index_list = { col_index, row_index };
-    //
+    at::Tensor row_index  = torch::tensor( {1, 1} );
+    at::Tensor col_index  = torch::tensor( {0, 1} );
     // x
-    vector<at::Tensor> x = {from};
+    vector<at::Tensor> x = {from, row_index, col_index};
     //
     // ax
     vector<adten_t> ax = adten_t::start_recording(x);
     //
     // aextract
-    adten_t& afrom   = ax[0];
-    adten_t aextract = afrom.index(index_list);
+    adten_t& afrom  = ax[0];
+    adten_t aextract = afrom.index( {ax[1], ax[2]} );
     //
     // ay
     vector<adten_t> ay = { aextract };
@@ -40,8 +33,12 @@ TEST(examples_adten, index)  {
     adfn_t f = adten_t::stop_recording(ay, "f");
     //
     // from
-    from = torch::tensor( { {6.0, 7.0}, {8.0, 9.0} } );
+    from      = torch::tensor( { {6.0, 7.0}, {8.0, 9.0} } );
+    row_index = torch::tensor( {0, 0} );
+    col_index = torch::tensor( {1, 0} );
     x[0] = from;
+    x[1] = row_index;
+    x[2] = col_index;
     //
     // var_all
     vector<at::Tensor> var_all = f.forward_var(x);
@@ -49,8 +46,7 @@ TEST(examples_adten, index)  {
     // y
     vector<at::Tensor> y = f.get_range(var_all);
     //
-    bool equal = y[0].equal( torch::tensor( {6.0, 9.0} ) );
+    bool equal = y[0].equal( torch::tensor( {7.0, 6.0} ) );
     EXPECT_TRUE( equal );
-#endif
 }
 // END_CPP

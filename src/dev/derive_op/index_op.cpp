@@ -93,7 +93,7 @@ void index_op_t<TensorType>::forward_var(
     index_vec.resize(0);
     for(size_t i = 0; i < n_dim; ++i) {
         TensorType index = tensor_at_arg_index(
-            arg_start + 2 + i, agraph, con_vec, par_all
+            arg_start + 2 + i, agraph, con_vec, par_all, var_all
         );
         index_vec.push_back( index );
     }
@@ -158,7 +158,7 @@ void index_op_t<TensorType>::forward_der(
     index_vec.resize(0);
     for(size_t i = 0; i < n_dim; ++i) {
         TensorType index = tensor_at_arg_index(
-            arg_start + 2 + i, agraph, con_vec, par_all
+            arg_start + 2 + i, agraph, con_vec, par_all, var_all
         );
         index_vec.push_back( index );
     }
@@ -214,7 +214,7 @@ void index_op_t<TensorType>::reverse_der(
     index_vec.resize(0);
     for(size_t i = 0; i < n_dim; ++i) {
         TensorType index = tensor_at_arg_index(
-            arg_start + 2 + i, agraph, con_vec, par_all
+            arg_start + 2 + i, agraph, con_vec, par_all, var_all
         );
         index_vec.push_back( index );
     }
@@ -285,12 +285,11 @@ template <> std::string index_op_t<at::Tensor>::src_gen(
 #endif
     //
     // src
-    string src = "{    vector<at::indexing::TensorIndex> > index_vec;\n";
+    string src = "{    vector<at::indexing::TensorIndex> index_vec;\n";
     for(size_t i = 0; i < n_dim; ++i) {
         size_t   index   = agraph.m_arg_value[arg_start + 2 + i];
         vitype_t vitype  = agraph.m_arg_type[arg_start + 2 + 1];
         string index_src = tensor_src(index, vitype);
-        index_src = "std::optional<at::Tensor> (" + index_src + ")";
         src += "    index_vec.push_back( " + index_src + ");\n";
     }
     //

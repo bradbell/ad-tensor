@@ -77,7 +77,7 @@ TEST(tests_adfn, src_gen)  {
     std::optional<at::Tensor>  col_index  = torch::tensor( {0, 1} );
     std::optional<at::Tensor>  row_index  = torch::tensor( {0, 1} );
     c10::List< std::optional<at::Tensor> >
-        index_list = { col_index, row_index };
+        index_list = { row_index, col_index };
     //
     // replace
     at::Tensor replace = torch::tensor( { 10.0, 11.0 } );
@@ -148,7 +148,9 @@ TEST(tests_adfn, src_gen)  {
     ar.push_back( ad_tensor::pad(av[0], pad_options) );
     //
     // index
-    ar.push_back( av[0].index( index_list ) );
+    ar.push_back( av[0].index(
+        {adten_t(row_index.value()), adten_t(col_index.value())}
+    ) );
     //
     // index_put
     ar.push_back( ap[0].index_put( index_list , adten_t(replace) ) );
