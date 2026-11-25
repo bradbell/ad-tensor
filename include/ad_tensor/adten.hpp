@@ -450,7 +450,7 @@ public:
 // ----------------------------------------------------------------------------
 namespace ad_tensor {
     //
-    // BEGIN_BUCKETIZE BEGIN_DEV_BUCKETIZE
+    // BEGIN_BUCKETIZE
     // ad_tensor::bucketize
     adten_t bucketize(
         const adten_t& input             ,
@@ -458,19 +458,21 @@ namespace ad_tensor {
         bool           out_int32 = false ,
         bool           right     = false
     );
-    // END_BUCKETIZE END_DEV_BUCKETIZE
+    // END_BUCKETIZE
     //
-    // BEGIN_CAT BEGIN_DEV_CAT
+    // BEGIN_CAT
     // ad_tensor::cat
     adten_t cat(
         const c10::ArrayRef<adten_t>&  tensor_list ,
         int64_t                        dim
     );
+    // END_CAT
+    // BEGIN_DEV_CAT
     at::Tensor cat(
         const c10::ArrayRef<at::Tensor>&  tensor_list ,
         int64_t                           dim
     );
-    // END_CAT END_DEV_CAT
+    // END_DEV_CAT
     //
     // BEGIN_CONV1D
     // ad_tensor::conv1d
@@ -480,13 +482,15 @@ namespace ad_tensor {
         const adten_t&                                  bias    ,
         const torch::nn::functional::Conv1dFuncOptions& options
     );
+    // END_CONV1D
+    // BEGIN_DEV_CONV1D
     at::Tensor conv1d(
         const at::Tensor&                               input   ,
         const at::Tensor&                               weight  ,
         const at::Tensor&                               bias    ,
         const torch::nn::functional::Conv1dFuncOptions& options
     );
-    // END_CONV1D
+    // END_DEV_CONV1D
     //
     // BEGIN_CONV_TRANSPOSE1D
     // ad_tensor::conv_transpose1d
@@ -496,13 +500,15 @@ namespace ad_tensor {
         const adten_t&                                           bias    ,
         const torch::nn::functional::ConvTranspose1dFuncOptions& options
     );
+    // END_CONV_TRANSPOSE1D
+    // BEGIN_DEV_CONV_TRANSPOSE1D
     at::Tensor conv_transpose1d(
         const at::Tensor&                                        input   ,
         const at::Tensor&                                        weight  ,
         const at::Tensor&                                        bias    ,
         const torch::nn::functional::ConvTranspose1dFuncOptions& options
     );
-    // END_CONV_TRANSPOSE1D
+    // END_DEV_CONV_TRANSPOSE1D
     //
     // BEGIN_LINALG_SOLVE
     // ad_tensor::linalg_solve

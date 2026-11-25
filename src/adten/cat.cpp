@@ -5,7 +5,6 @@
 /*
 {xrst_begin adten_cat usr}
 {xrst_spell
-    initializer
 }
 
 Concatenate Tensors Along One Dimension
@@ -16,9 +15,6 @@ Syntax
 {xrst_code cpp}
     result = cat(tensor_list, dim)
 {xrst_code}
-The syntax above is implemented for both the adten_t and at::Tensor types.
-This enables template code, that uses a braced initializer list for tensor_list,
-and works for both the at::Tensor and adten_t types.
 
 Prototype
 *********
@@ -59,6 +55,7 @@ Prototype
 *********
 {xrst_literal ,
     include/ad_tensor/adten.hpp
+    BEGIN_CAT, END_CAT
     BEGIN_DEV_CAT, END_DEV_CAT
 }
 

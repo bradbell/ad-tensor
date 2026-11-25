@@ -17,11 +17,7 @@ Syntax
 {xrst_code cpp}
     output = conv1d(input, weight, bias, options)
 {xrst_code}
-The at::Tensor syntax for this operation is different for libtorch.
-(The bias is part of the options in the libtorch syntax for this operation.)
-In order to have template code that works for both at::Tensor and adten_t,
-the syntax above is implemented for both at::Tensor and adten_t types.
-An :ref:`undefined<defined-name>` bias corresponds to zero; i.e., no bias.
+The bias is part of the options in the libtorch syntax for this operation.
 
 Prototype
 *********
@@ -51,6 +47,7 @@ Prototype
 {xrst_literal ,
     include/ad_tensor/adten.hpp
     BEGIN_CONV1D, END_CONV1D
+    BEGIN_DEV_CONV1D, END_DEV_CONV1D
 }
 
 Recording

@@ -6,6 +6,7 @@
 -------------------------------------------------------------------------------
 {xrst_begin adten_conv_transpose1d usr}
 {xrst_spell
+    libtorch
 }
 
 One Dimensional Transposed Cross Correlation
@@ -16,11 +17,7 @@ Syntax
 {xrst_code cpp}
     output = conv_transpose1d(input, weight, bias, options)
 {xrst_code}
-In the at::Tensor syntax for this operation, the bias is part of the options.
-In order to have template code that works for both at::Tensor and adten_t,
-the syntax above is implemented for both these types.
-An :ref:`undefined<defined-name>` bias corresponds to zero; i.e., no bias.
-
+The bias is part of the options in the libtorch syntax for this operation.
 
 Prototype
 *********
@@ -50,6 +47,7 @@ Prototype
 {xrst_literal ,
     include/ad_tensor/adten.hpp
     BEGIN_CONV_TRANSPOSE1D, END_CONV_TRANSPOSE1D
+    BEGIN_DEV_CONV_TRANSPOSE1D, END_DEV_CONV_TRANSPOSE1D
 }
 
 Recording
