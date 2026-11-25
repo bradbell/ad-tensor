@@ -64,6 +64,7 @@ Prototype
 *********
 {xrst_literal ,
     include/ad_tensor/adten.hpp
+    BEGIN_STATIC_WHERE, END_STATIC_WHERE
     BEGIN_WHERE, END_WHERE
 }
 

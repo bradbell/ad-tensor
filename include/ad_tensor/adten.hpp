@@ -297,6 +297,7 @@ public:
     {   return m_at_ten; }
     //
     // BEGIN_START_RECORDING
+    // adten_t::start_recording
     static vector<adten_t> start_recording(
         const vector<at::Tensor>& dom_var
     );
@@ -307,6 +308,7 @@ public:
     // END_START_RECORDING
     //
     // BEGIN_STOP_RECORDING
+    // adten_t::stop_recording
     static adfn_t stop_recording(
         const vector<adten_t>& arange ,
         const std::string&     name
@@ -342,19 +344,23 @@ public:
     // The adten_t member functions below are in alphabetical order
     // -----------------------------------------------------------------------
     //
-    // bucketize
+    // BEGIN_STATIC_BUCKETIZE
+    // adten_t::bucketize
     static adten_t bucketize(
         const adten_t& input,
         const adten_t& boundaries,
         bool           out_int32,
         bool           right
     );
+    // END_STATIC_BUCKETIZE
     //
-    // cat
+    // BEGIN_STATIC_CAT
+    // adten_t::cat
     static adten_t cat(
         const c10::ArrayRef<adten_t>&  tensor_list ,
         int64_t                        dim
     );
+    // END_STATIC_CAT
     //
     // clamp
     adten_t clamp(const adten_t& lower, const adten_t& upper) const;
@@ -406,6 +412,7 @@ public:
     adten_t pad(const torch::nn::functional::PadFuncOptions& options) const;
     //
     // BEGIN_SPLIT
+    // adten_t::split
     vector<adten_t> split(
         const c10::IntArrayRef& split_size,
         int64_t                 dim = 0
@@ -416,6 +423,7 @@ public:
     adten_t transpose(int64_t dim1, int64_t dim2) const;
     //
     // BEGIN_SLICE
+    // adten_t::slice
     adten_t slice(
         int64_t                   dim   = 0,
         std::optional< int64_t >  start = ::std::nullopt,
@@ -428,6 +436,7 @@ public:
     adten_t solve(const adten_t& rhs, bool left) const;
     //
     // BEGIN_SUM
+    // adten_t::sum
     adten_t sum(
         const c10::IntArrayRef& dim     = c10::IntArrayRef() ,
         bool                    keepdim = false
@@ -437,12 +446,14 @@ public:
     // view
     adten_t view(const c10::IntArrayRef& shape) const;
     //
-    // where
+    // BEGIN_STATIC_WHERE
+    // adten_t::where
     static adten_t where(
         const adten_t& cond      ,
         const adten_t& true_case ,
         const adten_t& false_case
     );
+    // END_STATIC_WHERE
 }; }
 
 // ----------------------------------------------------------------------------
@@ -518,6 +529,7 @@ namespace ad_tensor {
     // END_LINALG_SOLVE
     //
     // BEGIN_PAD
+    // ad_tensor::pad
     adten_t pad(
         const adten_t&                               input  ,
         const torch::nn::functional::PadFuncOptions& options

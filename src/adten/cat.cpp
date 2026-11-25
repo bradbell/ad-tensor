@@ -55,6 +55,7 @@ Prototype
 *********
 {xrst_literal ,
     include/ad_tensor/adten.hpp
+    BEGIN_STATIC_CAT, END_STATIC_CAT
     BEGIN_CAT, END_CAT
     BEGIN_DEV_CAT, END_DEV_CAT
 }

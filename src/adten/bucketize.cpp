@@ -78,6 +78,7 @@ Prototype
 *********
 {xrst_literal ,
     include/ad_tensor/adten.hpp
+    BEGIN_STATIC_BUCKETIZE, END_STATIC_BUCKETIZE
     BEGIN_BUCKETIZE, END_BUCKETIZE
 }
 
