@@ -242,12 +242,14 @@ void index_put_op_t<TensorType>::reverse_der(
     assert( n_arg  == 3 + n_idx );
 #endif
     //
-    // index_list
+    // index_list, index_vec
     index_list.resize(0);
+    vector<TensorType> index_vec;
     for(size_t i = 0; i < n_idx; ++i) {
         size_t con_index = agraph.m_arg_value[arg_start + 3 + i];
         std::optional<at::Tensor> index = con_vec[con_index];
         index_list.push_back( index );
+        index_vec.push_back( TensorType( con_vec[con_index] ) );
     }
     //
     // before_shape
@@ -264,7 +266,7 @@ void index_put_op_t<TensorType>::reverse_der(
     vitype_t replace_type = agraph.m_arg_type[arg_start + 1];
     //
     // replace_der
-    TensorType replace_der = rev_der[op_index].index(index_list);
+    TensorType replace_der = ad_tensor::index(rev_der[op_index], index_vec);
     //
     // rev_der[replace_index]
     if( replace_type == vitype_t::variable ) {

@@ -102,7 +102,6 @@ the following is added to the parameter (variable) acyclic graph:
 
 where start is the length of arg_value and arg_type before this call to
 ``adten_t::binary``,
-If n_dim is zero, all the dimensions are summed.
 
 
 {xrst_end adten_index_put_dev}

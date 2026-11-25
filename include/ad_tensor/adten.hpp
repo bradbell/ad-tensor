@@ -387,7 +387,7 @@ public:
     //
     // index
     adten_t index(
-        const c10::List< std::optional<at::Tensor> >& index_list
+        const vector<adten_t>& index_vec
     ) const;
     //
     // index_put
@@ -520,6 +520,18 @@ namespace ad_tensor {
         const torch::nn::functional::ConvTranspose1dFuncOptions& options
     );
     // END_DEV_CONV_TRANSPOSE1D
+    //
+    // BEGIN_DEV_INDEX
+    // ad_tensor::index
+    adten_t index(
+        const adten_t&            input,
+        const vector<adten_t>&    index_vec
+    );
+    at::Tensor index(
+        const at::Tensor&         input ,
+        const vector<at::Tensor>& index_vec
+    );
+    // END_DEV_INDEX
     //
     // BEGIN_LINALG_SOLVE
     // ad_tensor::linalg_solve

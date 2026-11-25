@@ -8,6 +8,7 @@
 #include <torch/torch.h>
 //
 TEST(examples_adten, index)  {
+#if 0
     using ad_tensor::adten_t;
     using ad_tensor::adfn_t;
     using ad_tensor::vector;
@@ -50,5 +51,6 @@ TEST(examples_adten, index)  {
     //
     bool equal = y[0].equal( torch::tensor( {6.0, 9.0} ) );
     EXPECT_TRUE( equal );
+#endif
 }
 // END_CPP

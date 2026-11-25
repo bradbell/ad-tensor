@@ -27,7 +27,7 @@ Syntax
 
 adten
 *****
-is a ``const aten_t&`` object.
+is a ``const adten_t&`` object.
 
 unary_function
 **************
