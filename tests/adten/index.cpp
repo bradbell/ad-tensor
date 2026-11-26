@@ -54,13 +54,10 @@ TEST(tests_adten, index)  {
     equal = dy[0].equal( torch::tensor( {5.0, 8.0} ) );
     EXPECT_TRUE( equal );
     //
-    /*
-    // TODO: get this to work
     // py
     vector<at::Tensor> py = { torch::tensor( {12.0, 13.0} ) };
     vector<at::Tensor> px = f.reverse_der(py, var_all);
     EXPECT_TRUE( px[0].equal( torch::tensor( {{12.0, 0.0}, {0.0, 13.0}} ) ) );
     EXPECT_TRUE( ad_tensor::not_defined( px[1] ) );
     EXPECT_TRUE( ad_tensor::not_defined( px[2] ) );
-    */
 }

@@ -22,10 +22,9 @@ TEST(examples_adten, index_put)  {
     at::Tensor replace;
     replace = torch::tensor( { 0.0 } );
     //
-    // index_list
-    std::optional<at::Tensor>  row_index  = torch::tensor( {0} );
-    std::optional<at::Tensor>  col_index  = torch::tensor( {1} );
-    c10::List< std::optional<at::Tensor> > index_list = { row_index, col_index };
+    // row_index, col_index
+    at::Tensor  row_index  = torch::tensor( {0} );
+    at::Tensor  col_index  = torch::tensor( {1} );
     //
     // x
     vector<at::Tensor> x = {before, replace};
@@ -34,14 +33,16 @@ TEST(examples_adten, index_put)  {
     vector<adten_t> ax = adten_t::start_recording(x);
     //
     // a_after
-    adten_t& a_before  = ax[0];
-    adten_t& a_replace = ax[1];
-    adten_t a_after    = a_before.index_put(index_list, a_replace);
+    adten_t& abefore   =  ax[0];
+    adten_t& areplace   = ax[1];
+    adten_t  arow_index = adten_t(row_index);
+    adten_t  acol_index = adten_t(col_index);
+    adten_t a_after = abefore.index_put({arow_index, acol_index}, areplace);
     //
     // ay
     vector<adten_t> ay = { a_after };
     //
-    // f(before, replace) = before.index_put(index_list, replace)
+    // f(before, replace) = before.index_put({row_index, col_index}, replace)
     adfn_t f = adten_t::stop_recording(ay, "f");
     //
     // replace

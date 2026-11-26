@@ -73,11 +73,10 @@ TEST(tests_adfn, src_gen)  {
     // chkpnt_id
     size_t chkpnt_id = create_chkpnt();
     //
-    // index_list
-    std::optional<at::Tensor>  col_index  = torch::tensor( {0, 1} );
-    std::optional<at::Tensor>  row_index  = torch::tensor( {0, 1} );
-    c10::List< std::optional<at::Tensor> >
-        index_list = { row_index, col_index };
+    // row_index, col_index, index_list
+    at::Tensor  row_index  = torch::tensor( {0, 1} );
+    at::Tensor  col_index  = torch::tensor( {0, 1} );
+    c10::List< std::optional<at::Tensor> > index_list = {row_index, col_index};
     //
     // replace
     at::Tensor replace = torch::tensor( { 10.0, 11.0 } );
@@ -147,13 +146,14 @@ TEST(tests_adfn, src_gen)  {
     // pad
     ar.push_back( ad_tensor::pad(av[0], pad_options) );
     //
+    // aindex_vec
+    vector<adten_t> aindex_vec = {adten_t(row_index), adten_t(col_index)};
+    //
     // index
-    ar.push_back( av[0].index(
-        {adten_t(row_index.value()), adten_t(col_index.value())}
-    ) );
+    ar.push_back( av[0].index( aindex_vec ) );
     //
     // index_put
-    ar.push_back( ap[0].index_put( index_list , adten_t(replace) ) );
+    ar.push_back( ap[0].index_put( aindex_vec , adten_t(replace) ) );
     //
     // where
     ar.push_back( where( ap[2] > av[2], ap[2], av[2] ) );

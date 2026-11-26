@@ -168,11 +168,11 @@ TEST(tests_adten, solve_batch) {
     //
     // X      = { {0, x0),   {x1,   0} }
     // inv(X) = { {0, 1/x1), (1/x0, 0} }
-    adten_t               azeros    = adten_t( torch::zeros( {2, 2} ) );
-    std::optional<Tensor> row_index = torch::tensor( {0, 1} );
-    std::optional<Tensor> col_index = torch::tensor( {1, 0} );
-    c10::List< std::optional<Tensor> > index_list = {row_index, col_index};
-    adten_t aX = azeros.index_put(index_list, ax[0]);
+    adten_t azeros     = adten_t( torch::zeros( {2, 2} ) );
+    adten_t arow_index = adten_t( torch::tensor( {0, 1} ) );
+    adten_t acol_index = adten_t( torch::tensor( {1, 0} ) );
+    vector<adten_t> aindex_vec = {arow_index, acol_index};
+    adten_t aX = azeros.index_put(aindex_vec, ax[0]);
     //
     // aw
     adten_t aw = adten_t(w);

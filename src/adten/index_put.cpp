@@ -6,6 +6,7 @@
 {xrst_begin adten_index_put usr}
 {xrst_spell
     numel
+    elem
 }
 
 Replacing Some Elements of a Tensor
@@ -14,7 +15,7 @@ Replacing Some Elements of a Tensor
 Syntax
 ******
 {xrst_code cpp}
-    after = before.index_put(index_list, replace)
+    after = before.index_put(index_vec, replace)
 {xrst_code}
 
 Prototype
@@ -26,34 +27,34 @@ Prototype
 before
 ******
 is the initial tensor before replacing some element values
-We use m for the number of dimensions in before; i.e.
+We use n_dim for the number of dimensions in before; i.e.
 
-    m = before.sizes().size();
+    n_dim = before.dim()
 
-index_list
-**********
-Is the list of indices that specify where in before the replacement values
-assigned to the corresponding elements.
-There must be m tensors in index_list and
-each tensor in this list must be one dimensional and
-have the same number of elements as replace.
+
+index_vec
+*********
+Is a vector with size n_dim that specifies where in before
+the replacement values are assigned.
+Each tensor in index_vec must be one dimensional and
+have the same number of elements which we denote by n_elem.
 
 replace
 *******
-is a one dimensional tensor of replacement values.
-We use n for the number of elements in replace; i.e.
-
-    n = replace.numel()
+is a one dimensional tensor that specifies the replacement values.
+It has with n_elem elements; i.e.,
+{xrst_code cpp}
+    n_elem = replace.numel()
+{xrst_code}
 
 after
 *****
 This tensor has he same shape as the before tensor.
-Let index_0, ... , index_m1 denote corresponding elements of index_list.
 The value of after is described by the following pseudo code:
 {xrst_code cpp}
     after = before;
-    for(j = 0; j < n; ++j) {
-        after[ index_0[j], ... , index_m1[j] ] = replace[j]
+    for(j = 0; j < n_elem; ++j) {
+        after[ index[0][j], ... , index[n_dim-1][j] ] = replace[j]
     }
 {xrst_code}
 
@@ -67,7 +68,6 @@ Example
 -------------------------------------------------------------------------------
 {xrst_begin adten_index_put_dev dev}
 {xrst_spell
-    idx
 }
 
 Compute and Record an Element Replace Operation
@@ -77,6 +77,10 @@ Prototype
 *********
 {xrst_literal ,
     BEGIN_DEV_INDEX_PUT, END_DEV_INDEX_PUT
+}
+{xrst_literal ,
+    include/ad_tensor/adten.hpp
+    START_DEV_INDEX_PUT, STOP_DEV_INDEX_PUT
 }
 
 Recording
@@ -93,16 +97,15 @@ the following is added to the parameter (variable) acyclic graph:
     :header-rows: 1
 
     arg_index, arg_value, arg_type
-    start + 0, before tensor index,                       before AD type
-    start + 1, replace tensor index,                      replace AD type
-    start + 2, number of indices in index_list  (n_idx),  vitype_t::none
-    start + 3, index  of tensor index_list[0]             vitype_t::constant
+    start + 0, before tensor index,               before AD type
+    start + 1, replace tensor index,              replace AD type
+    start + 2, size of index_vec (n_dim)          none
+    start + 3, index_vec[0] index,                index_vec[0] AD type
     ..., ..., ...
-    start + 2 + n_idx, index of index_list[n_idx-1]       vitype_t::constant
+    start + 2 + n_dim, index_vec[n_dim-1] index,  index_vec[n_dim-1] AD type
 
 where start is the length of arg_value and arg_type before this call to
 ``adten_t::binary``,
-
 
 {xrst_end adten_index_put_dev}
 */
@@ -116,8 +119,8 @@ namespace ad_tensor { // Begin ad_tensor::dev
 //
 // BEGIN_INDEX_PUT  BEGIN_DEV_INDEX_PUT
 adten_t adten_t::index_put(
-    const c10::List< std::optional<at::Tensor> >& index_list ,
-    const adten_t&                                replace
+    const vector<adten_t>& index_vec ,
+    const adten_t&         replace
 ) const
 {   // END_INDEX_PUT END_DEV_INDEX_PUT
     //
@@ -125,32 +128,53 @@ adten_t adten_t::index_put(
     const adten_t& before = *this;
     //
     // res_tensor
+    c10::List< std::optional<at::Tensor> > index_list;
+    for( const adten_t& index : index_vec ) {
+        index_list.push_back( index.m_at_ten );
+    }
     at::Tensor res_tensor =
         before.m_at_ten.index_put(index_list, replace.m_at_ten);
+    //
+    // n_dim
+    size_t n_dim = size_t( before.dim() );
     //
     // tape
     dev::tape_t& tape = dev::this_threads_tape();
     if( ! tape.m_recording )
         return adten_t( res_tensor );
     //
+#ifndef NDEBUG
+    dev::user_assert( 0 < n_dim ,
+        "index: before.dim() is zero"
+    );
     dev::user_assert( before.m_tape_id == tape.m_tape_id ,
         "index_put: Tape for before is not tape that is recording"
     );
     dev::user_assert( replace.m_tape_id == tape.m_tape_id ,
         "index_put: Tape for replace is not tape that is recording"
     );
-    dev::user_assert( index_list.size() == before.sizes().size(),
-        "index_put: index_list.size() not equal number of dimensions in before"
+    dev::user_assert( index_vec.size() == n_dim ,
+        "index_put: size of index_vec not equal number of dimensions in before"
     );
-    dev::user_assert( replace.sizes().size() == 1,
+    dev::user_assert( replace.dim() == 1,
         "index_put: replace is not one dimensional"
     );
-    //
-    // n_replace
-    int64_t n_replace = replace.numel();
+    for(size_t i = 0; i < n_dim; ++i) {
+        dev::user_assert( index_vec[i].dim() == 1,
+            "index: a tensor in index_vec is not one dimensional"
+        );
+        dev::user_assert( index_vec[i].numel() == replace.numel() ,
+            "index: one of the tensors in index_vec has a different "
+            "number of elements than replace"
+        );
+    }
+#endif
     //
     // res_vitype
     vitype_t res_vitype = std::max( before.m_vitype, replace.m_vitype );
+    for( const adten_t& index : index_vec ) {
+        res_vitype = std::max( res_vitype, index.m_vitype );
+    }
     //
     // res_tape_id
     size_t res_tape_id = tape.m_tape_id;
@@ -169,9 +193,7 @@ adten_t adten_t::index_put(
         if( res_vitype == vitype_t::parameter )
             agraph = &tape.m_par;
         else {
-            assert( res_vitype == vitype_t::variable  && "index_put: "
-                "before or replace is not constant, parameter, or variable"
-            );
+            assert( res_vitype == vitype_t::variable );
             agraph = &tape.m_var;
         }
         //
@@ -189,26 +211,37 @@ adten_t adten_t::index_put(
         agraph->m_arg_type.push_back( replace.m_vitype );
         //
         // start + 2
-        size_t n_idx = index_list.size();
-        agraph->m_arg_value.push_back( n_idx );
+        agraph->m_arg_value.push_back( n_dim );
         agraph->m_arg_type.push_back( vitype_t::none );
         //
         // start + 3 + i
-        for (const std::optional<at::Tensor>& index : index_list) {
-            dev::user_assert( index.value().sizes().size() == 1,
-                "index_put: one of the index tensors is not one dimensional"
-            );
-            dev::user_assert( index.value().numel() == n_replace,
-                "index_put: one of the index tensors does not have the same "
-                "number of elements as replace"
-            );
-            size_t con_index  = tape.m_con_vec.size();
-            tape.m_con_vec.push_back( index.value().clone() );
-            agraph->m_arg_value.push_back( con_index );
-            agraph->m_arg_type.push_back( vitype_t::constant );
+        for (const adten_t& index : index_vec ) {
+            agraph->m_arg_value.push_back( index.m_index );
+            agraph->m_arg_type.push_back( index.m_vitype );
         }
     }
     return adten_t(res_tape_id, res_index, res_tensor, res_vitype);
 }
+//
+adten_t index_put(
+    const adten_t&          before    ,
+    const vector<adten_t>&  index_vec ,
+    const adten_t&          replace   ) {
+    return before.index( index_vec );
+}
+//
+// Should we remove the need below to copy the index_vec buy having separate
+// implementations of index for at::Tensor and adten_t in index_op.cpp ?
+// This would eliminate the ad_tenor::index functions.
+at::Tensor index_put(
+    const at::Tensor&         before    ,
+    const vector<at::Tensor>& index_vec ,
+    const at::Tensor&         replace   ) {
+    c10::List< std::optional<at::Tensor> > index_list;
+    for( const at::Tensor& index : index_vec ) {
+        index_list.push_back( index );
+    }
+    return before.index_put( index_list, replace );
+};
 // ---------------------------------------------------------------------------
 } // End ad_tensor

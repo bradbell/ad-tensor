@@ -392,8 +392,8 @@ public:
     //
     // index_put
     adten_t index_put(
-        const c10::List< std::optional<at::Tensor> >& index_list ,
-        const adten_t&                                replace
+        const vector<adten_t>& index_vec ,
+        const adten_t&         replace
     ) const;
     //
     // matmul
@@ -532,6 +532,20 @@ namespace ad_tensor {
         const vector<at::Tensor>& index_vec
     );
     // END_DEV_INDEX
+    //
+    // START_DEV_INDEX_PUT
+    // ad_tensor::index_put
+    adten_t index_put(
+        const adten_t&            input     ,
+        const vector<adten_t>&    index_vec ,
+        const adten_t&            replace
+    );
+    at::Tensor index_put(
+        const at::Tensor&         input     ,
+        const vector<at::Tensor>& index_vec ,
+        const at::Tensor&         replace
+    );
+    // STOP_DEV_INDEX_PUT
     //
     // BEGIN_LINALG_SOLVE
     // ad_tensor::linalg_solve

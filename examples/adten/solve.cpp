@@ -115,11 +115,10 @@ TEST(examples_adten, solve)  {
     adten_t aP     = ap[0].view( {2, 2} );
     //
     // aV
-    adten_t azeros = adten_t( torch::zeros( {2, 2} ) );
-    std::optional<at::Tensor> row_index = torch::tensor( {0, 1, 1} );
-    std::optional<at::Tensor> col_index = torch::tensor( {0, 0, 1} );
-    c10::List< std::optional<at::Tensor> > index_list = {row_index, col_index};
-    adten_t aV  = azeros.index_put(index_list, av[0]);
+    adten_t azeros      = adten_t( torch::zeros( {2, 2} ) );
+    adten_t arow_index  = adten_t( torch::tensor( {0, 1, 1} ) );
+    adten_t acol_index  = adten_t( torch::tensor( {0, 0, 1} ) );
+    adten_t aV  = azeros.index_put({arow_index, acol_index}, av[0]);
     //
     // aR
     bool left = true;

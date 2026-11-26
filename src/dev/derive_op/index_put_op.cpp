@@ -21,25 +21,26 @@ void index_put_op_t<TensorType>::forward_par(
     vector<TensorType>&          par_all
 ) const {
     //
-    // index_list
-    thread_local c10::List< std::optional<at::Tensor> > index_list;
+    // index_vec
+    thread_local vector<TensorType> index_vec;
     //
-    // arg_start, n_idx
+    // arg_start, n_dim
     size_t arg_start = agraph.m_arg_start[op_index];
-    size_t n_idx     = agraph.m_arg_value[arg_start + 2];
+    size_t n_dim     = agraph.m_arg_value[arg_start + 2];
     //
 #ifndef NDEBUG
     size_t arg_end   = agraph.m_arg_start[op_index + 1];
     size_t n_arg     = arg_end - arg_start;
-    assert( n_arg  == 3 + n_idx );
+    assert( n_arg  == 3 + n_dim );
 #endif
     //
-    // index_list
-    index_list.resize(0);
-    for(size_t i = 0; i < n_idx; ++i) {
-        size_t con_index = agraph.m_arg_value[arg_start + 3 + i];
-        std::optional<at::Tensor> index = con_vec[con_index];
-        index_list.push_back( index );
+    // index_vec
+    index_vec.resize(0);
+    for(size_t i = 0; i < n_dim; ++i) {
+        TensorType index = tensor_at_arg_index(
+            arg_start + 3 + i, agraph, con_vec, par_all
+        );
+        index_vec.push_back( index );
     }
     //
     // before, replace
@@ -51,7 +52,7 @@ void index_put_op_t<TensorType>::forward_par(
     );
     //
     // par_all
-    par_all[op_index] = before.index_put( index_list, replace );
+    par_all[op_index] = index_put(before, index_vec, replace );
 }
 template void index_put_op_t<at::Tensor>::forward_par(
     size_t                       op_index    ,
@@ -79,25 +80,26 @@ void index_put_op_t<TensorType>::forward_var(
     vector<TensorType>&          var_all
 ) const {
     //
-    // index_list
-    thread_local c10::List< std::optional<at::Tensor> > index_list;
+    // index_vec
+    thread_local vector<TensorType> index_vec;
     //
-    // arg_start, n_idx
+    // arg_start, n_dim
     size_t arg_start = agraph.m_arg_start[op_index];
-    size_t n_idx     = agraph.m_arg_value[arg_start + 2];
+    size_t n_dim     = agraph.m_arg_value[arg_start + 2];
     //
 #ifndef NDEBUG
     size_t arg_end   = agraph.m_arg_start[op_index + 1];
     size_t n_arg     = arg_end - arg_start;
-    assert( n_arg  == 3 + n_idx );
+    assert( n_arg  == 3 + n_dim );
 #endif
     //
-    // index_list
-    index_list.resize(0);
-    for(size_t i = 0; i < n_idx; ++i) {
-        size_t con_index = agraph.m_arg_value[arg_start + 3 + i];
-        std::optional<at::Tensor> index = con_vec[con_index];
-        index_list.push_back( index );
+    // index_vec
+    index_vec.resize(0);
+    for(size_t i = 0; i < n_dim; ++i) {
+        TensorType index = tensor_at_arg_index(
+            arg_start + 3 + i, agraph, con_vec, par_all, var_all
+        );
+        index_vec.push_back( index );
     }
     //
     // before, replace
@@ -109,7 +111,7 @@ void index_put_op_t<TensorType>::forward_var(
     );
     //
     // par_all
-    var_all[op_index] = before.index_put( index_list, replace );
+    var_all[op_index] = index_put(before, index_vec, replace );
 }
 template void index_put_op_t<at::Tensor>::forward_var(
     size_t                       op_index    ,
@@ -140,25 +142,47 @@ void index_put_op_t<TensorType>::forward_der(
     vector<TensorType>&          for_der
 ) const {
     //
-    // index_list
-    thread_local c10::List< std::optional<at::Tensor> > index_list;
+    // index_vec
+    thread_local vector<TensorType> index_vec;
     //
-    // arg_start, n_idx
+    // arg_start, n_dim
     size_t arg_start = agraph.m_arg_start[op_index];
-    size_t n_idx     = agraph.m_arg_value[arg_start + 2];
+    size_t n_dim     = agraph.m_arg_value[arg_start + 2];
     //
 #ifndef NDEBUG
     size_t arg_end   = agraph.m_arg_start[op_index + 1];
     size_t n_arg     = arg_end - arg_start;
-    assert( n_arg  == 3 + n_idx );
+    assert( n_arg  == 3 + n_dim );
 #endif
     //
-    // index_list
-    index_list.resize(0);
-    for(size_t i = 0; i < n_idx; ++i) {
-        size_t con_index = agraph.m_arg_value[arg_start + 3 + i];
-        std::optional<at::Tensor> index = con_vec[con_index];
-        index_list.push_back( index );
+    // before_type, replace_type
+    vitype_t before_type  = agraph.m_arg_type[arg_start];
+    vitype_t replace_type = agraph.m_arg_type[arg_start + 1];
+    //
+    // before_index, replace_index
+    size_t before_index  = agraph.m_arg_value[arg_start];
+    size_t replace_index = agraph.m_arg_value[arg_start + 1];
+    //
+    // before_zero_der, replace_zero_der
+    bool before_zero_der = true;
+    if( before_type == vitype_t::variable ) {
+        before_zero_der = not_defined( for_der[before_index] );
+    }
+    bool replace_zero_der = true;
+    if( replace_type == vitype_t::variable ) {
+        replace_zero_der = not_defined( for_der[replace_index] );
+    }
+    if( before_zero_der && replace_zero_der ) {
+        return;
+    }
+    //
+    // index_vec
+    index_vec.resize(0);
+    for(size_t i = 0; i < n_dim; ++i) {
+        TensorType index = tensor_at_arg_index(
+            arg_start + 3 + i, agraph, con_vec, par_all, var_all
+        );
+        index_vec.push_back( index );
     }
     //
     // before_shape, replace_shape
@@ -169,32 +193,24 @@ void index_put_op_t<TensorType>::forward_der(
         arg_start+1, agraph, con_vec, par_all, var_all
     );
     //
-    // before_index, replace_index
-    size_t before_index  = agraph.m_arg_value[arg_start];
-    size_t replace_index = agraph.m_arg_value[arg_start + 1];
-    //
-    // before_type, replace_type
-    vitype_t before_type  = agraph.m_arg_type[arg_start];
-    vitype_t replace_type = agraph.m_arg_type[arg_start + 1];
-    //
     // for_der[op_index]
-    if( before_type != vitype_t::variable ) {
+    if( before_zero_der ) {
         assert( replace_type == vitype_t::variable );
         //
         TensorType zeros  = TensorType( torch::zeros(before_shape) );
-        for_der[op_index] = zeros.index_put(
-            index_list, for_der[replace_index]
+        for_der[op_index] = index_put(
+            zeros, index_vec, for_der[replace_index]
         );
-    } else if( replace_type != vitype_t::variable ) {
+    } else if( replace_zero_der ) {
         assert( before_type == vitype_t::variable );
         //
         TensorType zeros  = TensorType( torch::zeros(replace_shape) );
-        for_der[op_index] = for_der[before_index].index_put(
-            index_list, zeros
+        for_der[op_index] = index_put(
+            for_der[before_index], index_vec, zeros
         );
     } else {
-        for_der[op_index] = for_der[before_index].index_put(
-            index_list, for_der[replace_index]
+        for_der[op_index] = index_put(
+            for_der[before_index], index_vec, for_der[replace_index]
         );
     }
 }
@@ -229,27 +245,26 @@ void index_put_op_t<TensorType>::reverse_der(
     vector<TensorType>&          rev_der
 ) const {
     //
-    // index_list
-    thread_local c10::List< std::optional<at::Tensor> > index_list;
+    // index_vec
+    thread_local vector<TensorType> index_vec;
     //
-    // arg_start, n_idx
+    // arg_start, n_dim
     size_t arg_start = agraph.m_arg_start[op_index];
-    size_t n_idx     = agraph.m_arg_value[arg_start + 2];
+    size_t n_dim     = agraph.m_arg_value[arg_start + 2];
     //
 #ifndef NDEBUG
     size_t arg_end   = agraph.m_arg_start[op_index + 1];
     size_t n_arg     = arg_end - arg_start;
-    assert( n_arg  == 3 + n_idx );
+    assert( n_arg  == 3 + n_dim );
 #endif
     //
-    // index_list, index_vec
-    index_list.resize(0);
-    vector<TensorType> index_vec;
-    for(size_t i = 0; i < n_idx; ++i) {
-        size_t con_index = agraph.m_arg_value[arg_start + 3 + i];
-        std::optional<at::Tensor> index = con_vec[con_index];
-        index_list.push_back( index );
-        index_vec.push_back( TensorType( con_vec[con_index] ) );
+    // index_vec
+    index_vec.resize(0);
+    for(size_t i = 0; i < n_dim; ++i) {
+        TensorType index = tensor_at_arg_index(
+            arg_start + 3 + i, agraph, con_vec, par_all, var_all
+        );
+        index_vec.push_back( index );
     }
     //
     // before_shape
@@ -289,7 +304,7 @@ void index_put_op_t<TensorType>::reverse_der(
         //
         // rev_der[before_index] -= replace_der
         TensorType zeros  = TensorType( torch::zeros( before_shape ) );
-        replace_der       = zeros.index_put(index_list, replace_der);
+        replace_der       = index_put(zeros, index_vec, replace_der);
         minus_equal(
             rev_der[before_index], before_shape, replace_der
         );
@@ -326,24 +341,22 @@ template <> std::string index_put_op_t<at::Tensor>::src_gen(
     // string
     using std::string;
     //
-    // index_list
-    thread_local c10::List< std::optional<at::Tensor> > index_list;
-    //
-    // arg_start, n_idx
+    // arg_start, n_dim
     size_t arg_start = agraph.m_arg_start[op_index];
-    size_t n_idx     = agraph.m_arg_value[arg_start + 2];
+    size_t n_dim     = agraph.m_arg_value[arg_start + 2];
     //
 #ifndef NDEBUG
     size_t arg_end   = agraph.m_arg_start[op_index + 1];
     size_t n_arg     = arg_end - arg_start;
-    assert( n_arg  == 3 + n_idx );
+    assert( n_arg  == 3 + n_dim );
 #endif
     //
     // src
     string src = "{    c10::List< std::optional<at::Tensor> > index_list;\n";
-    for(size_t i = 0; i < n_idx; ++i) {
-        size_t con_index = agraph.m_arg_value[arg_start + 3 + i];
-        string index_src = tensor_src(con_index, vitype_t::constant);
+    for(size_t i = 0; i < n_dim; ++i) {
+        size_t   index   = agraph.m_arg_value[arg_start + 3 + i];
+        vitype_t vitype  = agraph.m_arg_type[arg_start + 3 + i];
+        string index_src = tensor_src(index, vitype);
         index_src = "std::optional<at::Tensor> (" + index_src + ")";
         src += "    index_list.push_back( " + index_src + ");\n";
     }

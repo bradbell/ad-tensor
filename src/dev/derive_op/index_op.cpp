@@ -228,7 +228,7 @@ void index_op_t<TensorType>::reverse_der(
     // extract_der
     TensorType zeros       = TensorType( torch::zeros( from_shape ) );
     TensorType extract_der = rev_der[op_index];
-    extract_der             = zeros.index_put(index_vec, extract_der);
+    extract_der            = index_put(zeros, index_vec, extract_der);
     //
     // rev_der[from_index] += extract_der
     c10::IntArrayRef shape = var_all[from_index].sizes();
@@ -236,10 +236,7 @@ void index_op_t<TensorType>::reverse_der(
         rev_der[from_index], shape, extract_der
     );
 }
-//
-// TODO: Change this to use routine above once index_put is changed to
-// use vecoor of index types
-template <> void index_op_t<at::Tensor>::reverse_der(
+template void index_op_t<at::Tensor>::reverse_der(
     size_t                       op_index    ,
     const agraph_t&              agraph      ,
     const vector<at::Tensor>&    con_vec     ,
@@ -247,10 +244,8 @@ template <> void index_op_t<at::Tensor>::reverse_der(
     const vector<at::Tensor>&    par_all     ,
     const vector<at::Tensor>&    var_all     ,
     vector<at::Tensor>&          rev_der
-) const {
-    assert(false && "adten_t version of rev_der called for index operator");
-};
-template <> void index_op_t<adten_t>::reverse_der(
+) const;
+template void index_op_t<adten_t>::reverse_der(
     size_t                       op_index    ,
     const agraph_t&              agraph      ,
     const vector<at::Tensor>&    con_vec     ,
@@ -258,9 +253,7 @@ template <> void index_op_t<adten_t>::reverse_der(
     const vector<adten_t>&       par_all     ,
     const vector<adten_t>&       var_all     ,
     vector<adten_t>&             rev_der
-) const {
-    assert(false && "adten_t version of rev_der called for index operator");
-};
+) const;
 // ---------------------------------------------------------------------------
 // src_gen
 template <> std::string index_op_t<at::Tensor>::src_gen(

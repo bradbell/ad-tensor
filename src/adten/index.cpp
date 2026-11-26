@@ -6,6 +6,7 @@
 {xrst_begin adten_index usr}
 {xrst_spell
     elem
+    numel
 }
 
 Extracting Some Elements from a Tensor
@@ -40,11 +41,14 @@ have the same number of elements which we denote by n_elem.
 
 extract
 *******
-is the size n_elem one dimensional tensor of extracted values.
+is the size n_elem one dimensional tensor of extracted values; i.e.,
+{xrst_code cpp}
+    n_elem = extract.numel()
+{xrst_code}
 The value of extract is described by the following pseudo code:
 {xrst_code cpp}
-    for(j = 0; j < n; ++j) {
-        extract[j] = from[ index_vec[0][j], ... , index_vec[0][j] ]
+    for(j = 0; j < n_elem; ++j) {
+        extract[j] = from[ index_vec[0][j], ... , index_vec[n_dim-1][j] ]
     }
 {xrst_code}
 
@@ -91,7 +95,7 @@ the following is added to the parameter (variable) acyclic graph:
     start + 1, size of index_vec (n_dim),        none
     start + 2, index_vec[0] index,               index_vec[0] AD type
     ..., ..., ...
-    start + 1 + index_list[n_dim-1] index,       index_vec[n_dim-1] AD type
+    start + 1 + n_dim, index_list[n_dim-1] index, index_vec[n_dim-1] AD type
 
 where start is the length of arg_value and arg_type before this call to
 ``adten_t::binary``,
@@ -131,11 +135,11 @@ adten_t adten_t::index(
         return adten_t( res_tensor );
     //
 #ifndef NDEBUG
-    dev::user_assert( from.m_tape_id == tape.m_tape_id ,
-        "index: Tape for from is not tape that is recording"
-    );
     dev::user_assert( 0 < n_dim ,
         "index: from.dim() is zero"
+    );
+    dev::user_assert( from.m_tape_id == tape.m_tape_id ,
+        "index: Tape for from is not tape that is recording"
     );
     dev::user_assert( index_vec.size() == n_dim ,
         "index: size of index_vec not equal number of dimensions in from"
@@ -205,9 +209,9 @@ adten_t index(
     return from.index( index_vec );
 }
 //
-// TODO: Remove the need below to copy the index_vec buy having separate
-// implementations of index for at::Tensor and adten_t in index_op.cpp.
-// This should eliminate the ad_tenor::index functions.
+// Should we remove the need below to copy the index_vec buy having separate
+// implementations of index for at::Tensor and adten_t in index_op.cpp ?
+// This would eliminate the ad_tenor::index functions.
 at::Tensor index(
     const at::Tensor&         from      ,
     const vector<at::Tensor>& index_vec ) {
